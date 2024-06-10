@@ -11,8 +11,8 @@ class FontFamily {
   FontFamily._();
 
   /// Font family: GESS
-  static const String gess = 'GESS';
+  static const String gess = 'DINNext';
 
   /// Font family: arista
-  static const String arista = 'arista';
+  static const String arista = 'DINNext';
 }

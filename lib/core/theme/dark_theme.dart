@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../core/utils/utils.dart';
 
+import '../../core/utils/utils.dart';
 import '../resources/text_style_manager.dart';
 
 // Define your dark theme colors
@@ -74,7 +74,8 @@ class DarkTheme {
       useMaterial3: true,
       brightness: Brightness.dark,
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      fontFamily: Utils.lang == "en" ? "arista" : "GESS",
+      fontFamily: "DINNext",
+      // Utils.lang == "en" ? "arista" : "DINNext",
       //* Card Theme *//
       appBarTheme: AppBarTheme(
         backgroundColor: DarkThemeColors.background,
@@ -85,12 +86,17 @@ class DarkTheme {
         scrolledUnderElevation: 0,
         centerTitle: true,
         titleTextStyle: Utils.lang == "en"
-            ? TextStylesManager.aristaBold
-                .copyWith(color: DarkThemeColors.textPrimary, fontSize: 16, fontWeight: FontWeight.w500)
-            : TextStylesManager.gessBold
-                .copyWith(color: DarkThemeColors.textPrimary, fontSize: 16, fontWeight: FontWeight.w500),
+            ? TextStylesManager.aristaBold.copyWith(
+                color: DarkThemeColors.textPrimary,
+                fontSize: 16,
+                fontWeight: FontWeight.w500)
+            : TextStylesManager.gessBold.copyWith(
+                color: DarkThemeColors.textPrimary,
+                fontSize: 16,
+                fontWeight: FontWeight.w500),
         iconTheme: const IconThemeData(color: DarkThemeColors.textPrimary),
-        actionsIconTheme: const IconThemeData(color: DarkThemeColors.textPrimary),
+        actionsIconTheme:
+            const IconThemeData(color: DarkThemeColors.textPrimary),
       ),
       //* Color Scheme
       //#9377B9
@@ -137,45 +143,65 @@ class DarkTheme {
       textTheme: TextTheme(
         // Display
         displayLarge: Utils.lang == "en"
-            ? TextStylesManager.aristaBold.copyWith(color: DarkThemeColors.primary)
-            : TextStylesManager.gessBold.copyWith(color: DarkThemeColors.primary),
+            ? TextStylesManager.aristaBold
+                .copyWith(color: DarkThemeColors.primary)
+            : TextStylesManager.gessBold
+                .copyWith(color: DarkThemeColors.primary),
 
         // Header
         headlineLarge: Utils.lang == "en"
-            ? TextStylesManager.aristaBold.copyWith(color: DarkThemeColors.textPrimary)
-            : TextStylesManager.gessBold.copyWith(color: DarkThemeColors.textPrimary),
+            ? TextStylesManager.aristaBold
+                .copyWith(color: DarkThemeColors.textPrimary)
+            : TextStylesManager.gessBold
+                .copyWith(color: DarkThemeColors.textPrimary),
 
         // Title
         titleLarge: Utils.lang == "en"
             ? TextStylesManager.aristaBold.copyWith(
                 color: DarkThemeColors.textPrimary,
               )
-            : TextStylesManager.gessBold.copyWith(color: DarkThemeColors.textPrimary),
+            : TextStylesManager.gessBold
+                .copyWith(color: DarkThemeColors.textPrimary),
         titleMedium: Utils.lang == "en"
-            ? TextStylesManager.aristaMedium.copyWith(color: DarkThemeColors.textPrimary, fontWeight: FontWeight.w500)
-            : TextStylesManager.aristaMedium.copyWith(color: DarkThemeColors.textPrimary, fontWeight: FontWeight.w500),
+            ? TextStylesManager.aristaMedium.copyWith(
+                color: DarkThemeColors.textPrimary, fontWeight: FontWeight.w500)
+            : TextStylesManager.aristaMedium.copyWith(
+                color: DarkThemeColors.textPrimary,
+                fontWeight: FontWeight.w500),
         titleSmall: Utils.lang == "en"
-            ? TextStylesManager.aristaRegular.copyWith(color: DarkThemeColors.textHint)
-            : TextStylesManager.gessRegular.copyWith(color: DarkThemeColors.textHint),
+            ? TextStylesManager.aristaRegular
+                .copyWith(color: DarkThemeColors.textHint)
+            : TextStylesManager.gessRegular
+                .copyWith(color: DarkThemeColors.textHint),
 
         // Body Text
         bodyLarge: Utils.lang == "en"
-            ? TextStylesManager.aristaBold.copyWith(color: DarkThemeColors.textPrimary)
-            : TextStylesManager.gessBold.copyWith(color: DarkThemeColors.textPrimary),
+            ? TextStylesManager.aristaBold
+                .copyWith(color: DarkThemeColors.textPrimary)
+            : TextStylesManager.gessBold
+                .copyWith(color: DarkThemeColors.textPrimary),
         bodyMedium: Utils.lang == "en"
-            ? TextStylesManager.aristaMedium.copyWith(color: DarkThemeColors.textPrimary)
-            : TextStylesManager.aristaMedium.copyWith(color: DarkThemeColors.textPrimary),
+            ? TextStylesManager.aristaMedium
+                .copyWith(color: DarkThemeColors.textPrimary)
+            : TextStylesManager.aristaMedium
+                .copyWith(color: DarkThemeColors.textPrimary),
         bodySmall: Utils.lang == "en"
-            ? TextStylesManager.aristaRegular.copyWith(color: DarkThemeColors.textSecondary)
-            : TextStylesManager.gessRegular.copyWith(color: DarkThemeColors.textSecondary),
+            ? TextStylesManager.aristaRegular
+                .copyWith(color: DarkThemeColors.textSecondary)
+            : TextStylesManager.gessRegular
+                .copyWith(color: DarkThemeColors.textSecondary),
 
         // label
         labelLarge: Utils.lang == "en"
-            ? TextStylesManager.aristaMedium.copyWith(color: DarkThemeColors.success)
-            : TextStylesManager.gessMedium.copyWith(color: DarkThemeColors.success),
+            ? TextStylesManager.aristaMedium
+                .copyWith(color: DarkThemeColors.success)
+            : TextStylesManager.gessMedium
+                .copyWith(color: DarkThemeColors.success),
         labelMedium: Utils.lang == "en"
-            ? TextStylesManager.aristaMedium.copyWith(color: DarkThemeColors.error)
-            : TextStylesManager.gessMedium.copyWith(color: DarkThemeColors.error),
+            ? TextStylesManager.aristaMedium
+                .copyWith(color: DarkThemeColors.error)
+            : TextStylesManager.gessMedium
+                .copyWith(color: DarkThemeColors.error),
       ),
 
       //*  bottomNavigationBarTheme

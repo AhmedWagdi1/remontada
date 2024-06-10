@@ -42,10 +42,10 @@ extension ContextExtensions on BuildContext {
 
 extension EmptyPadding on num {
   SizedBox get ph => SizedBox(
-        height: toDouble(),
+        height: this.toDouble(),
       );
   SizedBox get pw => SizedBox(
-        width: toDouble(),
+        width: this.toDouble(),
       );
 }
 
@@ -71,11 +71,10 @@ extension StringCasingExtension on String {
 
   // remove zero from the start of the string
   String get removeZero {
-    if (this == null) return "";
-    if (this!.startsWith("0")) {
-      return this!.substring(1);
+    if (this.startsWith("0")) {
+      return this.substring(1);
     } else {
-      return this!;
+      return this;
     }
   }
 
@@ -86,27 +85,21 @@ extension StringCasingExtension on String {
   }
 
   String get formateDate {
-    if (this == null) return "";
-
-    var date = DateTime.tryParse(this!) ?? DateTime.now();
+    var date = DateTime.tryParse(this) ?? DateTime.now();
     return DateFormat("yyyy-MM-dd HH:mm", "en").format(
       date,
     );
   }
 
   String get formateDateTime {
-    if (this == null) return "";
-
-    var date = DateTime.tryParse(this!) ?? DateTime.now();
+    var date = DateTime.tryParse(this) ?? DateTime.now();
     return DateFormat("yyyy-MM-dd HH:mm:ss", "en").format(
       date,
     );
   }
 
   String get formateDateOnly {
-    if (this == null) return "";
-
-    var date = DateTime.tryParse(this!) ?? DateTime.now();
+    var date = DateTime.tryParse(this) ?? DateTime.now();
     return DateFormat("yyyy-MM-dd", "en").format(
       date,
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../../core/extensions/all_extensions.dart';
 
 class TextFormFieldWidget extends StatefulWidget {
@@ -75,67 +76,76 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        widget.label.text(textTheme: context.titleLarge?.copyWith(fontWeight: FontWeight.w500, fontSize: 12.sp)),
-        10.h.verticalSpace,
-        TextFormField(
-          onTapOutside: (event) => FocusScope.of(context).unfocus(),
-          cursorColor: context.colorScheme.primary,
-          readOnly: widget.readOnly ?? false,
-          enabled: widget.enable ?? true,
-          validator: widget.validator,
-          maxLength: widget.maxLengh,
-          focusNode: widget.focusNode,
-          controller: widget.controller,
-          maxLines: widget.maxLines ?? 1,
-          minLines: widget.minLines,
-          textAlign: widget.textalign,
-          textDirection: widget.textdirection,
-          style: context.bodySmall?.copyWith(fontSize: 12.sp, fontWeight: FontWeight.w300),
-          decoration: widget.inputDecoration ??
-              InputDecoration(
-                contentPadding: widget.contentPadding ?? EdgeInsets.symmetric(horizontal: 10.w),
-                filled: true,
-                fillColor: context.formFieldColor,
-                prefixIcon: widget.prefixIcon?.toSvg(color: context.bodySmall?.color),
-                prefix: widget.prefixWidget,
-                suffix: widget.suffixWidget,
-                suffixIcon: widget.suffixIcon ??
-                    (widget.password
-                        ? IconButton(
-                            onPressed: () => setState(() => passHidden = !passHidden),
-                            icon: Icon(
-                              passHidden ? Icons.remove_red_eye_outlined : Icons.visibility_off,
-                              color: context.colorScheme.primary.withOpacity(.5),
-                            ),
-                          )
-                        : null),
-                errorText: widget.errorText,
-                helperText: "",
-                border: borderType(),
-                focusedBorder: borderType(),
-                enabledBorder: borderType(),
-                errorBorder: borderType(),
-                hintStyle:
-                    TextStyle(color: widget.hintColor, fontSize: widget.hintSize ?? 14, fontWeight: FontWeight.w400),
-                hintText: widget.hintText,
-              ),
-          keyboardType: widget.type,
-          obscureText: passHidden && widget.password,
-          onChanged: widget.onChanged,
-          onSaved: widget.onSaved,
-          onTap: () => widget.onTap?.call(),
-        ),
-      ],
+    return TextFormField(
+      onTapOutside: (event) => FocusScope.of(context).unfocus(),
+      cursorColor: context.colorScheme.primary,
+      readOnly: widget.readOnly ?? false,
+      enabled: widget.enable ?? true,
+      validator: widget.validator,
+      maxLength: widget.maxLengh,
+      focusNode: widget.focusNode,
+      controller: widget.controller,
+      maxLines: widget.maxLines ?? 1,
+      minLines: widget.minLines,
+      textAlign: widget.textalign,
+      textDirection: widget.textdirection,
+      style: context.bodySmall?.copyWith(
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w500,
+      ),
+      decoration: widget.inputDecoration ??
+          InputDecoration(
+            contentPadding: widget.contentPadding ??
+                EdgeInsets.symmetric(
+                  vertical: 22.h,
+                  horizontal: 40.3.w,
+                ),
+            // filled: true,
+            fillColor: context.formFieldColor,
+            prefixIcon:
+                widget.prefixIcon?.toSvg(color: context.bodySmall?.color),
+            prefix: widget.prefixWidget,
+            suffix: widget.suffixWidget,
+            suffixIcon: widget.suffixIcon ??
+                (widget.password
+                    ? IconButton(
+                        onPressed: () =>
+                            setState(() => passHidden = !passHidden),
+                        icon: Icon(
+                          passHidden
+                              ? Icons.remove_red_eye_outlined
+                              : Icons.visibility_off,
+                          color: context.colorScheme.primary.withOpacity(.5),
+                        ),
+                      )
+                    : null),
+            errorText: widget.errorText,
+            // helperText: "",
+            border: borderType(),
+            focusedBorder: borderType(),
+            enabledBorder: borderType(),
+            errorBorder: borderType(),
+            hintStyle: TextStyle(
+              color: widget.hintColor,
+              fontSize: widget.hintSize ?? 14,
+              fontWeight: FontWeight.w400,
+            ),
+            hintText: widget.hintText,
+          ),
+      keyboardType: widget.type,
+      obscureText: passHidden && widget.password,
+      onChanged: widget.onChanged,
+      onSaved: widget.onSaved,
+      onTap: () => widget.onTap?.call(),
     );
   }
 
   InputBorder borderType() {
     return OutlineInputBorder(
       borderSide: BorderSide(color: widget.activeBorderColor, width: 1),
-      borderRadius: BorderRadius.all(Radius.circular(widget.borderRadius)),
+      borderRadius: BorderRadius.all(
+        Radius.circular(widget.borderRadius),
+      ),
     );
   }
 }

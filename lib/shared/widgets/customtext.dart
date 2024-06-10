@@ -17,33 +17,45 @@ class CustomText extends StatelessWidget {
       FontWeight? weight}) {
     switch (textStyleEnum) {
       case TextStyleEnum.title:
-        return const TextStyle(fontSize: 25, fontFamily: "Roboto", fontWeight: FontWeight.w500).copyWith(
-            decoration: decoration,
-            color: color ?? Colors.black,
-            height: height,
-            fontWeight: weight,
-            fontSize: fontSize,
-            overflow: overflow ?? TextOverflow.visible,
-            fontFamily: fontFamily ?? "Roboto");
+        return const TextStyle(
+                fontSize: 25,
+                fontFamily: "DINNext",
+                fontWeight: FontWeight.w500)
+            .copyWith(
+                decoration: decoration,
+                color: color ?? Colors.black,
+                height: height,
+                fontWeight: weight,
+                fontSize: fontSize,
+                overflow: overflow ?? TextOverflow.visible,
+                fontFamily: fontFamily ?? "DINNext");
       case TextStyleEnum.caption:
-        return const TextStyle(fontSize: 14, fontFamily: "Roboto", fontWeight: FontWeight.w300).copyWith(
-            decoration: decoration,
-            color: color ?? Colors.black,
-            fontWeight: weight,
-            height: height,
-            fontSize: fontSize,
-            overflow: overflow ?? TextOverflow.visible,
-            fontFamily: fontFamily ?? "Roboto");
+        return const TextStyle(
+                fontSize: 14,
+                fontFamily: "DINNext",
+                fontWeight: FontWeight.w300)
+            .copyWith(
+                decoration: decoration,
+                color: color ?? Colors.black,
+                fontWeight: weight,
+                height: height,
+                fontSize: fontSize,
+                overflow: overflow ?? TextOverflow.visible,
+                fontFamily: fontFamily ?? "DINNext");
 
       default:
-        return const TextStyle(fontSize: 14, fontFamily: "Roboto", fontWeight: FontWeight.w400).copyWith(
-            decoration: decoration,
-            color: color ?? Colors.black,
-            height: height,
-            fontWeight: weight,
-            fontSize: fontSize,
-            overflow: overflow ?? TextOverflow.visible,
-            fontFamily: fontFamily ?? "Roboto");
+        return const TextStyle(
+                fontSize: 14,
+                fontFamily: "DINNext",
+                fontWeight: FontWeight.w400)
+            .copyWith(
+                decoration: decoration,
+                color: color ?? Colors.black,
+                height: height,
+                fontWeight: weight,
+                fontSize: fontSize,
+                overflow: overflow ?? TextOverflow.visible,
+                fontFamily: fontFamily ?? "DINNext");
     }
   }
 
@@ -85,7 +97,7 @@ class CustomText extends StatelessWidget {
               color: color,
               height: height,
               fontSize: fontSize,
-              fontFamily: fontFamily ?? 'Roboto',
+              fontFamily: fontFamily ?? 'DINNext',
               overflow: overflow,
               decoration: decoration,
               weight: weight),

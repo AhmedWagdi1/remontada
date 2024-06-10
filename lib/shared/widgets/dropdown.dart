@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'customtext.dart';
 
 class DropDownItem<T> extends StatefulWidget {
@@ -44,67 +46,52 @@ class _DropDownItemState<T> extends State<DropDownItem<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (widget.title?.isNotEmpty ?? false)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: CustomText(
-                widget.title ?? '',
-                fontSize: 14,
-                color: Color(0xffA1A7AD),
-              ),
-            ),
-          Container(
-            height: 60,
-            color: widget.color ?? Colors.white,
-            child: DropdownButtonFormField<T>(
-                itemHeight: 50,
-                validator: widget.validator,
-                hint: CustomText(
-                  widget.hint ?? '',
-                  fontSize: 14,
-                  color: widget.hintColor ?? Colors.grey,
-                  fontFamily: 'Roboto',
+    return Container(
+      // padding: EdgeInsets.symmetric(vertical: 22.h, horizontal: 40.3.w),
+      height: 60,
+      color: widget.color ?? Colors.white,
+      child: DropdownButtonFormField<T>(
+          itemHeight: 50,
+          validator: widget.validator,
+          hint: CustomText(
+            // weight: FontWeight.w500,
+            widget.hint ?? '',
+            fontSize: 14,
+            color: widget.hintColor ?? Colors.grey,
+            fontFamily: 'DINNext',
+          ),
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(
+                  10,
                 ),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                        10,
-                      ),
-                      borderSide: BorderSide(color: Color(0xff8CAAC5))),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                        widget.radius ?? 10,
-                      ),
-                      borderSide: BorderSide(color: Color(0xff8CAAC5))),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(
-                        widget.radius ?? 10,
-                      ),
-                      borderSide: BorderSide(color: Color(0xff8CAAC5))),
+                borderSide: BorderSide(color: Color(0xff8CAAC5))),
+            focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(
+                  widget.radius ?? 10,
                 ),
-                value: widget.inistialValue,
-                items: widget.options
-                    .map((e) => DropdownMenuItem(
-                          value: e,
-                          child: CustomText(
-                            widget.itemAsString?.call(e) ?? e.toString(),
-                            color: Colors.black,
-                          ),
-                        ))
-                    .toList(),
-                onChanged: (s) {
-                  if (s != null) {
-                    widget.onChanged.call(s);
-                  }
-                }),
-          )
-        ],
-      ),
+                borderSide: BorderSide(color: Color(0xff8CAAC5))),
+            enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(
+                  widget.radius ?? 10,
+                ),
+                borderSide: BorderSide(color: Color(0xff8CAAC5))),
+          ),
+          value: widget.inistialValue,
+          items: widget.options
+              .map((e) => DropdownMenuItem(
+                    value: e,
+                    child: CustomText(
+                      widget.itemAsString?.call(e) ?? e.toString(),
+                      color: Colors.black,
+                    ),
+                  ))
+              .toList(),
+          onChanged: (s) {
+            if (s != null) {
+              widget.onChanged.call(s);
+            }
+          }),
     );
   }
 }

@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
 
-import '../theme/light_theme.dart';
 import '../../core/extensions/all_extensions.dart';
+import '../theme/light_theme.dart';
 import 'dimansion_manager.dart';
 
 class TextStylesManager {
   const TextStylesManager._();
 
-  static TextStyle gessRegular = const TextStyle(fontFamily: 'GESS', fontWeight: FontWeight.w400);
-  static TextStyle gessMedium = const TextStyle(fontFamily: 'GESS', fontWeight: FontWeight.w500);
-  static TextStyle gessSemiBold = const TextStyle(fontFamily: 'GESS', fontWeight: FontWeight.w600);
-  static TextStyle gessBold = const TextStyle(fontFamily: 'GESS', fontWeight: FontWeight.w700);
-  static TextStyle aristaRegular = const TextStyle(fontFamily: 'arista', fontWeight: FontWeight.w400);
-  static TextStyle aristaMedium = const TextStyle(fontFamily: 'arista', fontWeight: FontWeight.w500);
-  static TextStyle aristaSemiBold = const TextStyle(fontFamily: 'arista', fontWeight: FontWeight.w600);
-  static TextStyle aristaBold = const TextStyle(fontFamily: 'arista', fontWeight: FontWeight.w700);
+  static TextStyle gessRegular =
+      const TextStyle(fontFamily: 'DINNext', fontWeight: FontWeight.w400);
+  static TextStyle gessMedium =
+      const TextStyle(fontFamily: 'DINNext', fontWeight: FontWeight.w500);
+  static TextStyle gessSemiBold =
+      const TextStyle(fontFamily: 'DINNext', fontWeight: FontWeight.w600);
+  static TextStyle gessBold =
+      const TextStyle(fontFamily: 'DINNext', fontWeight: FontWeight.w700);
+  static TextStyle aristaRegular =
+      const TextStyle(fontFamily: 'DINNext', fontWeight: FontWeight.w400);
+  static TextStyle aristaMedium =
+      const TextStyle(fontFamily: 'DINNext', fontWeight: FontWeight.w500);
+  static TextStyle aristaSemiBold =
+      const TextStyle(fontFamily: 'DINNext', fontWeight: FontWeight.w600);
+  static TextStyle aristaBold =
+      const TextStyle(fontFamily: 'DINNext', fontWeight: FontWeight.w700);
 }
 
 class ShadowStyles {
@@ -66,8 +74,10 @@ class InputDecorations {
       filled: true,
       hintText: hint,
       fillColor: fillColor,
-      contentPadding: const EdgeInsets.symmetric(horizontal: AppSize.s16, vertical: AppSize.s16),
-      hintStyle: TextStylesManager.gessRegular.s16.ellipsis.setColor(LightThemeColors.textHint),
+      contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSize.s16, vertical: AppSize.s16),
+      hintStyle: TextStylesManager.gessRegular.s16.ellipsis
+          .setColor(LightThemeColors.textHint),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppSize.inputBorderRadius),
         borderSide: BorderSide.none,
@@ -88,8 +98,10 @@ class InputDecorations {
         borderRadius: BorderRadius.circular(AppSize.inputBorderRadius),
         borderSide: BorderSide.none,
       ),
-      prefixIconConstraints: smallSuffixIcon ? const BoxConstraints(maxWidth: .15) : null,
-      suffixIconConstraints: smallSuffixIcon ? const BoxConstraints(maxWidth: .15) : null,
+      prefixIconConstraints:
+          smallSuffixIcon ? const BoxConstraints(maxWidth: .15) : null,
+      suffixIconConstraints:
+          smallSuffixIcon ? const BoxConstraints(maxWidth: .15) : null,
       prefixIcon: prefixIcon,
       suffixIcon: isPassword
           ? obscuredValue
@@ -118,8 +130,10 @@ class InputDecorations {
       filled: true,
       hintText: hint,
       fillColor: LightThemeColors.background,
-      contentPadding: const EdgeInsets.symmetric(horizontal: AppSize.s16, vertical: AppSize.s16),
-      hintStyle: TextStylesManager.gessRegular.s16.ellipsis.setColor(LightThemeColors.textHint),
+      contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSize.s16, vertical: AppSize.s16),
+      hintStyle: TextStylesManager.gessRegular.s16.ellipsis
+          .setColor(LightThemeColors.textHint),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppSize.inputBorderRadius),
         borderSide: BorderSide(color: LightThemeColors.inputFieldBorder),
@@ -140,8 +154,10 @@ class InputDecorations {
         borderRadius: BorderRadius.circular(AppSize.inputBorderRadius),
         borderSide: const BorderSide(color: LightThemeColors.error),
       ),
-      prefixIconConstraints: smallSuffixIcon ? const BoxConstraints(maxWidth: .15) : null,
-      suffixIconConstraints: smallSuffixIcon ? const BoxConstraints(maxWidth: .15) : null,
+      prefixIconConstraints:
+          smallSuffixIcon ? const BoxConstraints(maxWidth: .15) : null,
+      suffixIconConstraints:
+          smallSuffixIcon ? const BoxConstraints(maxWidth: .15) : null,
       prefixIcon: prefixIcon,
       suffixIcon: isPassword
           ? obscuredValue
@@ -171,15 +187,24 @@ class InputDecorations {
       filled: true,
       hintText: hint,
       fillColor: fillColor,
-      contentPadding: const EdgeInsets.symmetric(horizontal: AppSize.s16, vertical: AppSize.s16),
-      hintStyle: TextStylesManager.gessRegular.s16.ellipsis.setColor(LightThemeColors.textHint),
-      border: UnderlineInputBorder(borderSide: BorderSide(color: LightThemeColors.inputFieldBorder)),
-      focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: LightThemeColors.primary)),
-      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: LightThemeColors.inputFieldBorder)),
-      errorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: LightThemeColors.error)),
-      focusedErrorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: LightThemeColors.error)),
-      prefixIconConstraints: smallSuffixIcon ? const BoxConstraints(maxWidth: .15) : null,
-      suffixIconConstraints: smallSuffixIcon ? const BoxConstraints(maxWidth: .15) : null,
+      contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSize.s16, vertical: AppSize.s16),
+      hintStyle: TextStylesManager.gessRegular.s16.ellipsis
+          .setColor(LightThemeColors.textHint),
+      border: UnderlineInputBorder(
+          borderSide: BorderSide(color: LightThemeColors.inputFieldBorder)),
+      focusedBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: LightThemeColors.primary)),
+      enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: LightThemeColors.inputFieldBorder)),
+      errorBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: LightThemeColors.error)),
+      focusedErrorBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: LightThemeColors.error)),
+      prefixIconConstraints:
+          smallSuffixIcon ? const BoxConstraints(maxWidth: .15) : null,
+      suffixIconConstraints:
+          smallSuffixIcon ? const BoxConstraints(maxWidth: .15) : null,
       prefixIcon: prefixIcon,
       suffixIcon: isPassword
           ? obscuredValue

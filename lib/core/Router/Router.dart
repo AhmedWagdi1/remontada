@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:remontada/features/layout/presentation/screens/layout_screen.dart';
 
 import '../../features/auth/presentation/screens/forget_password/forget_password_screen.dart';
 import '../../features/auth/presentation/screens/login/login_screen.dart';
@@ -8,6 +9,7 @@ import '../../features/auth/presentation/screens/reset_password/reset_password_s
 import '../../features/auth/presentation/screens/sign_up/sign_up_screen.dart';
 import '../../features/splash/presentation/screens/on_boarding/on_boarding_screen.dart';
 import '../../features/splash/presentation/screens/splash/splash.dart';
+
 class Routes {
   static const String splashScreen = "/splashScreen";
   static const String OnboardingScreen = "/OnboardingScreen";
@@ -17,8 +19,7 @@ class Routes {
   static const String OtpScreen = "/OtpScreen";
   static const String LayoutScreen = "/LayoutScreen";
   static const String ResetPasswordScreen = "/ResetPasswordScreen";
-
-  } 
+}
 
 class RouteGenerator {
   static String currentRoute = "";
@@ -26,7 +27,7 @@ class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings routeSettings) {
     currentRoute = routeSettings.name.toString();
     switch (routeSettings.name) {
-         case Routes.splashScreen:
+      case Routes.splashScreen:
         return CupertinoPageRoute(
             settings: routeSettings,
             builder: (_) {
@@ -38,13 +39,13 @@ class RouteGenerator {
             builder: (_) {
               return const OnboardingScreen();
             });
-         case Routes.LoginScreen:
+      case Routes.LoginScreen:
         return CupertinoPageRoute(
             settings: routeSettings,
             builder: (_) {
               return const LoginScreen();
             });
-       case Routes.ResetPasswordScreen:
+      case Routes.ResetPasswordScreen:
         return CupertinoPageRoute(
             settings: routeSettings,
             builder: (_) {
@@ -64,17 +65,24 @@ class RouteGenerator {
                 init: (routeSettings.arguments as OtpArguments).init,
               );
             });
-        case Routes.forget_passScreen:
+      case Routes.forget_passScreen:
         return CupertinoPageRoute(
             settings: routeSettings,
             builder: (_) {
               return const ForgetPasswordScreen();
             });
-           case Routes.RegisterScreen:
+      case Routes.RegisterScreen:
         return CupertinoPageRoute(
             settings: routeSettings,
             builder: (_) {
               return const SignUpScreen();
+            });
+
+      case Routes.LayoutScreen:
+        return CupertinoPageRoute(
+            settings: routeSettings,
+            builder: (_) {
+              return LayoutScreen();
             });
       // case Routes.SplashScreen:
       //   return CupertinoPageRoute(
@@ -82,7 +90,7 @@ class RouteGenerator {
       //       builder: (_) {
       //         return const SplashScreen();
       //       });
-  
+
       default:
         return unDefinedRoute();
     }
@@ -91,14 +99,10 @@ class RouteGenerator {
   static Route<dynamic> getNestedRoute(RouteSettings routeSettings) {
     currentRoute = routeSettings.name.toString();
     switch (routeSettings.name) {
-
-     
-
       default:
         return unDefinedRoute();
     }
   }
-
 
   static Route<dynamic> unDefinedRoute() {
     return CupertinoPageRoute(
@@ -109,7 +113,9 @@ class RouteGenerator {
               body: const Center(child: Text("مسار غير موجود")),
             ));
   }
-}class OtpArguments {
+}
+
+class OtpArguments {
   final String sendTo;
   final bool? init;
   final dynamic Function(String) onSubmit;

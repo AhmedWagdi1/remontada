@@ -17,14 +17,16 @@ class AppResponsiveWrapper extends StatelessWidget {
         ],
         child: Builder(builder: (context) {
           return ResponsiveScaledBox(
-              width: ResponsiveValue<double>(context,  defaultValue: 450, conditionalValues: [
-                Condition.equals(name: MOBILE, value: 450),
-                Condition.equals(name: TABLET, value: 600),
-                Condition.equals(name: DESKTOP, value: 1200),
-                Condition.equals(name: "4k", value: 2300),
-                // There are no conditions for width over 1200
-                // because the `maxWidth` is set to 1200 via the MaxWidthBox.
-              ]).value,
+              width: ResponsiveValue<double>(context,
+                  defaultValue: 450,
+                  conditionalValues: [
+                    Condition.equals(name: MOBILE, value: 450),
+                    Condition.equals(name: TABLET, value: 600),
+                    Condition.equals(name: DESKTOP, value: 1200),
+                    Condition.equals(name: "4k", value: 2300),
+                    // There are no conditions for width over 1200
+                    // because the `maxWidth` is set to 1200 via the MaxWidthBox.
+                  ]).value,
               child: child!);
         }));
   }
