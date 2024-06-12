@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:remontada/features/layout/presentation/screens/layout_screen.dart';
 import 'package:remontada/features/matchdetails/presentaion/screens/matchDetails_screen.dart';
 import 'package:remontada/features/player_details/presentation/screens/player_details.dart';
+import 'package:remontada/features/profile/presentation/screens/edit_profile.screen.dart';
 
 import '../../features/auth/presentation/screens/forget_password/forget_password_screen.dart';
 import '../../features/auth/presentation/screens/login/login_screen.dart';
 import '../../features/auth/presentation/screens/otp/otp_screen.dart';
 import '../../features/auth/presentation/screens/reset_password/reset_password_screen.dart';
 import '../../features/auth/presentation/screens/sign_up/sign_up_screen.dart';
+import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/splash/presentation/screens/on_boarding/on_boarding_screen.dart';
 import '../../features/splash/presentation/screens/splash/splash.dart';
 
@@ -23,6 +25,8 @@ class Routes {
   static const String ResetPasswordScreen = "/ResetPasswordScreen";
   static const String matchDetails = "/matchDetails";
   static const String playerDetails = "/playerdetails";
+  static const String profileDetails = "/profiledetails";
+  static const String editProfile = "/editProfile";
 }
 
 class RouteGenerator {
@@ -103,6 +107,18 @@ class RouteGenerator {
             settings: routeSettings,
             builder: (_) {
               return PlayerDetails();
+            });
+      case Routes.profileDetails:
+        return CupertinoPageRoute(
+            settings: routeSettings,
+            builder: (_) {
+              return ProfileScreen();
+            });
+      case Routes.editProfile:
+        return CupertinoPageRoute(
+            settings: routeSettings,
+            builder: (_) {
+              return EditProfileScreen();
             });
       // case Routes.SplashScreen:
       //   return CupertinoPageRoute(

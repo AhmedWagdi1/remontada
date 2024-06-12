@@ -14,7 +14,7 @@ class PlayerDetailsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(right: 37.53.w, top: 17.h, bottom: 17.h),
+      padding: EdgeInsets.only(right: 17.53.w, top: 17.h, bottom: 17.h),
       decoration: BoxDecoration(
         color: context.primaryColor.withOpacity(0.09),
         borderRadius: BorderRadius.circular(

@@ -19,6 +19,7 @@ class LightThemeColors {
 
 //
   // Background Color
+  static const Color switchBackground = Color(0xffD8D8D8);
   static const Color containerBackgrond = Color(0xffFFFFFF);
   static const Color scaffoldBackground = Color(0xffFFFFFF);
   static const Color bottomSheetBackground = Colors.white;

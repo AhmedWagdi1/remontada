@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:remontada/features/more/presentation/screens/more_screen.dart';
 import 'package:remontada/features/my_matches/presentation/screens/mymatches_screen.dart';
 import 'package:remontada/features/notifications/presentation/screens/notification_Screen.dart';
 
@@ -39,7 +40,7 @@ class _LayoutScreenState extends State<LayoutScreen>
                 HomeScreen(),
                 MyMatchesScreen(),
                 NotificationScreen(),
-                Container(),
+                MoreScreen(),
               ],
             ),
             bottomNavigationBar: CustomBottomNavBar(
