@@ -12,7 +12,8 @@ import 'package:remontada/shared/widgets/customAppbar.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 
 class MatchDetailsScreen extends StatefulWidget {
-  const MatchDetailsScreen({super.key});
+  const MatchDetailsScreen({super.key, this.mymatch = false});
+  final bool? mymatch;
 
   @override
   State<MatchDetailsScreen> createState() => _MatchDetailsScreenState();
@@ -149,12 +150,31 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
               ),
               28.ph,
               ButtonWidget(
+                buttonColor: LightThemeColors.secondbuttonBackground,
                 onTap: () => showConfirmationSheet(context),
                 height: 65,
                 width: 342,
                 fontweight: FontWeight.bold,
                 radius: 33,
                 textColor: context.background,
+                child: widget.mymatch!
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            color: context.background,
+                            "location".svg(),
+                          ),
+                          9.pw,
+                          CustomText(
+                            "إعتذار عن المشاركة",
+                            fontSize: 16,
+                            weight: FontWeight.bold,
+                            color: context.background,
+                          ),
+                        ],
+                      )
+                    : null,
                 title: "إشترك الان",
               ),
               26.ph,

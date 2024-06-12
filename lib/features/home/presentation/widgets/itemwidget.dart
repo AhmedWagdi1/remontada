@@ -10,8 +10,11 @@ import 'package:remontada/shared/widgets/customtext.dart';
 import '../../../../core/Router/Router.dart';
 
 class ItemWidget extends StatelessWidget {
-  const ItemWidget({super.key});
-
+  const ItemWidget({
+    super.key,
+    this.ismymatch = false,
+  });
+  final bool? ismymatch;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -44,7 +47,7 @@ class ItemWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              flex: 7,
+              flex: 8,
               child: Column(
                 children: [
                   Row(
@@ -136,7 +139,7 @@ class ItemWidget extends StatelessWidget {
             ),
             31.pw,
             Expanded(
-              flex: 5,
+              flex: 6,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -148,31 +151,32 @@ class ItemWidget extends StatelessWidget {
                     height: 30.h,
                     buttonColor: LightThemeColors.surface,
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SvgPicture.asset(
-                          width: 12.54,
-                          height: 12.54,
+                          width: 14.54,
+                          height: 14.54,
                           "wallet".svg("icons"),
                           color: context.background,
                         ),
                         2.87.pw,
                         CustomText(
                           "المشتركين",
-                          fontSize: 9.sp,
+                          fontSize: 12.sp,
                           weight: FontWeight.w400,
                           color: LightThemeColors.background,
                         ),
                         2.87.pw,
                         CustomText(
                           "20 / ",
-                          fontSize: 9.sp,
+                          fontSize: 12.sp,
                           weight: FontWeight.w400,
                           color: LightThemeColors.background,
                         ),
                         CustomText(
                           "13",
-                          fontSize: 9.sp,
+                          fontSize: 12.sp,
                           weight: FontWeight.w400,
                           color: LightThemeColors.black,
                         ),
@@ -188,10 +192,8 @@ class ItemWidget extends StatelessWidget {
                   IconButton(
                     padding: EdgeInsets.zero,
                     onPressed: () {
-                      Navigator.pushNamed(
-                        context,
-                        Routes.matchDetails,
-                      );
+                      Navigator.pushNamed(context, Routes.matchDetails,
+                          arguments: ismymatch);
                     },
                     icon: SvgPicture.asset(
                       width: 45.94,
@@ -199,8 +201,6 @@ class ItemWidget extends StatelessWidget {
                       "forowrdButton".svg("icons"),
                     ),
                   ),
-
-                  14.27.ph,
                 ],
               ),
             )

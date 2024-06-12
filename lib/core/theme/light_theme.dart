@@ -26,7 +26,8 @@ class LightThemeColors {
   static const Color background = Colors.white;
 
   static const Color buttonBackground = primary;
-  static const Color secondbuttonBackground = Color(0xffE8E8E8);
+
+  static const Color secondbuttonBackground = Color(0xffE2114A);
   static const Color textFieldBackground = primary;
   static const Color appBarBackground = background;
   static const Color bottomNavigationBarBackground = primary;
@@ -94,7 +95,7 @@ class LightThemeColors {
     Color(0xFF131313)
   ];
   // shadow
-  static const Color containerShadow = Color(0xff00000017);
+  static const Color containerShadow = Color(0xff00000021);
   static const Color shadow = Color(0xff00000029);
   static const Color shadowVariant = Color(0x0AFFFFFF);
   static Color shadowBottomSheet = Colors.black.withOpacity(0.5);

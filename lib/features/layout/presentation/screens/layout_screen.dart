@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:remontada/features/my_matches/presentation/screens/mymatches_screen.dart';
 
 import '../../../home/presentation/screens/home_screen.dart';
 import '../../cubit/layout_cubit.dart';
@@ -35,7 +36,7 @@ class _LayoutScreenState extends State<LayoutScreen>
               physics: const NeverScrollableScrollPhysics(),
               children: [
                 HomeScreen(),
-                Container(color: Colors.red),
+                MyMatchesScreen(),
                 Container(),
                 Container(),
               ],

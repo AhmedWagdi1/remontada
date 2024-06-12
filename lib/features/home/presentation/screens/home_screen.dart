@@ -172,7 +172,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   Column(
                     children: List.generate(
                       4,
-                      (index) => ItemWidget(),
+                      (index) => ItemWidget(
+                        ismymatch: false,
+                      ),
                     ),
                   ),
                   140.ph,

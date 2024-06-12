@@ -29,10 +29,10 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              spreadRadius: -5,
+              spreadRadius: -4,
               offset: Offset(0, 0),
-              blurRadius: 60,
-              color: LightThemeColors.black.withOpacity(.1),
+              blurRadius: 30,
+              color: LightThemeColors.black.withOpacity(.15),
             ),
           ],
           borderRadius: BorderRadius.only(

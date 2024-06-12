@@ -93,7 +93,9 @@ class RouteGenerator {
         return CupertinoPageRoute(
             settings: routeSettings,
             builder: (_) {
-              return MatchDetailsScreen();
+              return MatchDetailsScreen(
+                mymatch: routeSettings.arguments as bool,
+              );
             });
 
       case Routes.playerDetails:
