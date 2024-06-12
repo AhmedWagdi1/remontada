@@ -27,7 +27,7 @@ class LightThemeColors {
 
   static const Color buttonBackground = primary;
 
-  static const Color secondbuttonBackground = Color(0xffE2114A);
+  static const Color secondbuttonBackground = red;
   static const Color textFieldBackground = primary;
   static const Color appBarBackground = background;
   static const Color bottomNavigationBarBackground = primary;
@@ -35,6 +35,7 @@ class LightThemeColors {
   static const secondaryText = Color(0xFF737373);
 
   // Surface Colors
+  static const Color red = Color(0xffE2114A);
   static const Color black = Color(0xff091F31);
   static const Color surface = Color(0xFFFCA21A);
   static Color surfaceSecondary = const Color(0xFF091F31);

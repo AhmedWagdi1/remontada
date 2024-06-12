@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:remontada/features/my_matches/presentation/screens/mymatches_screen.dart';
+import 'package:remontada/features/notifications/presentation/screens/notification_Screen.dart';
 
 import '../../../home/presentation/screens/home_screen.dart';
 import '../../cubit/layout_cubit.dart';
@@ -37,7 +38,7 @@ class _LayoutScreenState extends State<LayoutScreen>
               children: [
                 HomeScreen(),
                 MyMatchesScreen(),
-                Container(),
+                NotificationScreen(),
                 Container(),
               ],
             ),
