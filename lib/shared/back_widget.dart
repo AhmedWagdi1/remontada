@@ -25,7 +25,7 @@ class BackWidget extends StatelessWidget {
         }
       },
       icon: Transform.scale(
-        scale: 1.1,
+        scale: 1,
         child: SvgPicture.asset(
           height: 24,
           width: 24,

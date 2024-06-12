@@ -1,0 +1,7 @@
+<svg id="vuesax_linear_location" data-name="vuesax/linear/location" xmlns="http://www.w3.org/2000/svg" width="21.271" height="21.271" viewBox="0 0 21.271 21.271">
+  <g id="location">
+    <path id="Vector" d="M5.531,2.765A2.765,2.765,0,1,1,2.765,0,2.765,2.765,0,0,1,5.531,2.765Z" transform="translate(7.87 6.373)" fill="none" stroke="#727272" stroke-width="1"/>
+    <path id="Vector-2" data-name="Vector" d="M.215,5.752c1.746-7.675,13.117-7.667,14.855.009,1.019,4.5-1.781,8.314-4.237,10.671a4.6,4.6,0,0,1-6.39,0C2,14.075-.8,10.255.215,5.752Z" transform="translate(2.993 1.773)" fill="none" stroke="#727272" stroke-width="1"/>
+    <path id="Vector-3" data-name="Vector" d="M0,0H21.271V21.271H0Z" transform="translate(21.271 21.271) rotate(180)" fill="none" opacity="0"/>
+  </g>
+</svg>

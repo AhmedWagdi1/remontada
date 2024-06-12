@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/Router/Router.dart';
 import 'package:remontada/core/theme/light_theme.dart';
@@ -56,26 +57,25 @@ class _LoginScreenState extends State<LoginScreen> {
             //     weight: FontWeight.w700,
             //   ),
             // ),
-            body: SingleChildScrollView(
-              child: Form(
-                key: formKey,
-                child: Stack(
-                  alignment: Alignment.topCenter,
-                  children: [
-                    Container(
-                      height: 811,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage(
-                            "Splash".png("images"),
-                          ),
-                        ),
+            body: Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                Container(
+                  height: 811.h,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.fill,
+                      image: AssetImage(
+                        "Splash".png("images"),
                       ),
                     ),
-
-                    Column(
+                  ),
+                ),
+                SingleChildScrollView(
+                  child: Form(
+                    key: formKey,
+                    child: Column(
                       children: [
                         101.ph,
                         SvgPicture.asset(
@@ -87,16 +87,16 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: double.infinity,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(69),
+                              topLeft: Radius.circular(69.r),
                               topRight: Radius.circular(
-                                69,
+                                69.r,
                               ),
                             ),
                             color: LightThemeColors.primaryContainer,
                           ),
                           child: Padding(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 18,
+                              horizontal: 18.w,
                             ),
                             child: Column(
                               children: [
@@ -104,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 CustomText(
                                   weight: FontWeight.bold,
                                   // fontFamily: "DINNext",
-                                  fontSize: 24,
+                                  fontSize: 24.sp,
                                   "تسجيل الدخول",
                                   color: LightThemeColors.textPrimary,
                                 ),
@@ -112,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 CustomText(
                                   weight: FontWeight.bold,
                                   // fontFamily: "DINNext",
-                                  fontSize: 16,
+                                  fontSize: 16.sp,
                                   "قم بكتابة بيانات حسابك لتسجيل الدخول",
                                   color: LightThemeColors.secondaryText,
                                 ),
@@ -120,10 +120,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 TextFormFieldWidget(
                                   contentPadding:
                                       EdgeInsetsDirectional.symmetric(
-                                    vertical: 22,
+                                    vertical: 22.w,
                                   ),
-                                  hintSize: 16,
-                                  borderRadius: 33,
+                                  hintSize: 16.sp,
+                                  borderRadius: 33.r,
                                   hintText: "            رقم الجوال",
                                   hintColor: LightThemeColors.textPrimary,
                                   activeBorderColor:
@@ -137,12 +137,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                       Routes.LayoutScreen,
                                     );
                                   },
-                                  height: 65,
-                                  radius: 33,
+                                  height: 65.h,
+                                  radius: 33.r,
                                   gradient: LightThemeColors.buttonColor,
                                   child: CustomText(
                                     "الدخول",
-                                    fontSize: 18,
+                                    fontSize: 18.sp,
                                     color: context.colorScheme.onPrimary,
                                   ),
                                 ),
@@ -157,10 +157,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   child: CustomText(
                                     "ليس لديك حساب؟",
                                     color: LightThemeColors.secondaryText,
-                                    fontSize: 16,
+                                    fontSize: 16.sp,
                                     weight: FontWeight.w600,
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),
@@ -331,18 +331,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     // ),
                     // // signupBtn(context),
                     // 20.ph,
-
-                    Positioned(
-                      bottom: 0,
-                      child: Transform.scale(
-                        scale: 1.2,
-                        child: SvgPicture.asset(
-                          "login_bottom".svg("images"),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
+              ],
+            ),
+            bottomNavigationBar: Transform.scale(
+              scale: 1.2,
+              child: SvgPicture.asset(
+                "login_bottom".svg("images"),
               ),
             ),
           );

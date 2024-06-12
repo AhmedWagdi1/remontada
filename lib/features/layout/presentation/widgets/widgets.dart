@@ -25,13 +25,22 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     return ClipPath(
       clipper: CustomContainer(),
       child: Container(
-        height: 129.29,
+        height: 129.29.h,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(33),
-              topRight: Radius.circular(33),
+          boxShadow: [
+            BoxShadow(
+              spreadRadius: -5,
+              offset: Offset(0, 0),
+              blurRadius: 60,
+              color: LightThemeColors.black.withOpacity(.1),
             ),
-            color: context.background),
+          ],
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(33),
+            topRight: Radius.circular(33),
+          ),
+          color: context.scaffoldBackgroundColor,
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -148,7 +157,7 @@ class CustomContainer extends CustomClipper<Path> {
     path.moveTo(0, size.height);
     path.lineTo(size.width, size.height); // بدء الانحناء من 75% من الارتفاع
     path.lineTo(size.width, 0);
-    path.lineTo(0, size.height * .2);
+    path.lineTo(0, size.height * .15);
     path.close();
     return path;
   }

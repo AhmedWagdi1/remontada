@@ -10,8 +10,8 @@ import '../../../../../core/extensions/all_extensions.dart';
 import '../../../../../core/services/alerts.dart';
 import '../../../../../core/utils/extentions.dart';
 import '../../../../../core/utils/utils.dart';
-import '../../../../../shared/back_widget.dart';
 import '../../../../../shared/widgets/button_widget.dart';
+import '../../../../../shared/widgets/customAppbar.dart';
 
 class OtpScreen extends StatefulWidget {
   final String sendTo;
@@ -75,19 +75,8 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        leadingWidth: 80,
-        // toolbarHeight: 80,
-        leading: BackWidget(),
-        title: CustomText(
-          'كود التحقق',
-          fontSize: 24,
-          color: context.primaryColor,
-          weight: FontWeight.w700,
-        ),
+      appBar: CustomAppbar(
+        title: "كود التحقق",
       ),
       body: SingleChildScrollView(
         child: Padding(

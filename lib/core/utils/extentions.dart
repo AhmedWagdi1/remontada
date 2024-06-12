@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'utils.dart';
 
@@ -42,10 +43,10 @@ extension ContextExtensions on BuildContext {
 
 extension EmptyPadding on num {
   SizedBox get ph => SizedBox(
-        height: this.toDouble(),
+        height: this.toDouble().h,
       );
   SizedBox get pw => SizedBox(
-        width: this.toDouble(),
+        width: this.toDouble().w,
       );
 }
 

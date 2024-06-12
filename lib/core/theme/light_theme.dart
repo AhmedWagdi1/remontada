@@ -19,11 +19,14 @@ class LightThemeColors {
 
 //
   // Background Color
+  static const Color containerBackgrond = Color(0xffFFFFFF);
   static const Color scaffoldBackground = Color(0xffFFFFFF);
   static const Color bottomSheetBackground = Colors.white;
   static const Color dialogBackground = Colors.white;
   static const Color background = Colors.white;
+
   static const Color buttonBackground = primary;
+  static const Color secondbuttonBackground = Color(0xffE8E8E8);
   static const Color textFieldBackground = primary;
   static const Color appBarBackground = background;
   static const Color bottomNavigationBarBackground = primary;
@@ -31,6 +34,7 @@ class LightThemeColors {
   static const secondaryText = Color(0xFF737373);
 
   // Surface Colors
+  static const Color black = Color(0xff091F31);
   static const Color surface = Color(0xFFFCA21A);
   static Color surfaceSecondary = const Color(0xFF091F31);
   static Color surfaceSuccess = const Color(0xFF32E444).withOpacity(0.35);
@@ -42,6 +46,8 @@ class LightThemeColors {
   static const Color textPrimary = Color(0xFF275072);
   static const Color textSecondary = Color(0xFF8A8C95);
   static const Color textHint = Color(0xFF8A8C95);
+  static const Color secondhint = Color(0xFF7B8FA0);
+  static const Color pricecolor = Color(0xff27902B);
   // Text Colors
   static const _primaryValue = 0xFF275072;
   static MaterialColor primaryText = MaterialColor(
@@ -70,18 +76,15 @@ class LightThemeColors {
   static Color selectedIcon = primary;
 
   // button Colors
-  static const Gradient buttonColor = LinearGradient(
-      begin: Alignment.bottomRight,
-      end: Alignment.topLeft,
-      colors: [
-        primary,
-        secondary,
-      ]);
+  static const Gradient buttonColor = LinearGradient(colors: [
+    primary,
+    secondary,
+  ]);
 
   // Icons Colors
 
   // border Colors
-  static const Color border = Color(0xFF5D694345);
+  static const Color border = Color(0xFFE9E9E9);
   static Color inputFieldBorder = Color(0xFF5D694345);
   static const Color borderVariant = Color(0x26A7A7A7);
 
@@ -91,7 +94,8 @@ class LightThemeColors {
     Color(0xFF131313)
   ];
   // shadow
-  static const Color shadow = Color(0x07FFFFFF);
+  static const Color containerShadow = Color(0xff00000017);
+  static const Color shadow = Color(0xff00000029);
   static const Color shadowVariant = Color(0x0AFFFFFF);
   static Color shadowBottomSheet = Colors.black.withOpacity(0.5);
 
@@ -136,7 +140,7 @@ class LightTheme {
       //* Color Scheme
       colorScheme: const ColorScheme(
         brightness: Brightness.light,
-        primary: Color(0xff275072),
+        primary: LightThemeColors.primary,
         onPrimary: Color(0xFFFFFFFF),
         primaryContainer: Color(0xFFFFFFFF),
         onPrimaryContainer: Color(0xFF410002),

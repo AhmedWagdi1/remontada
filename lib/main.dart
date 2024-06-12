@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:remontada/core/utils/responsive_framework_widget.dart';
 
 import 'core/Router/Router.dart';
 import 'core/general/general_cubit.dart';
@@ -76,9 +75,7 @@ class MyApp extends StatelessWidget {
                           ? SystemUiOverlayStyle.dark
                           : SystemUiOverlayStyle.light,
                     );
-                    return AppResponsiveWrapper(
-                      child: child,
-                    );
+                    return child;
                   },
                   onGenerateRoute: RouteGenerator.getRoute,
                   // themeMode: cubit.isLightMode ? ThemeMode.light : ThemeMode.dark,

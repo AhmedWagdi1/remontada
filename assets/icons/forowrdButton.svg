@@ -1,0 +1,8 @@
+<svg id="vuesax_linear_arrow-left" data-name="vuesax/linear/arrow-left" xmlns="http://www.w3.org/2000/svg" width="36.943" height="36.943" viewBox="0 0 36.943 36.943">
+  <g id="arrow-left" transform="translate(0 0)">
+    <path id="Vector" d="M30.786,15.393A15.393,15.393,0,1,1,15.393,0,15.393,15.393,0,0,1,30.786,15.393Z" transform="translate(3.079 3.079)" fill="none" stroke="#3f4653" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" opacity="0.15"/>
+    <path id="Vector-2" data-name="Vector" d="M9.236,0H0" transform="translate(14.623 18.472)" fill="none" stroke="#737373" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Vector-3" data-name="Vector" d="M4.618,0,0,4.618,4.618,9.236" transform="translate(13.084 13.854)" fill="none" stroke="#737373" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Vector-4" data-name="Vector" d="M36.943,36.943H0V0H36.943Z" fill="none" opacity="0"/>
+  </g>
+</svg>

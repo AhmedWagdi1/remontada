@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:remontada/features/layout/presentation/screens/layout_screen.dart';
+import 'package:remontada/features/matchdetails/presentaion/screens/matchDetails_screen.dart';
+import 'package:remontada/features/player_details/presentation/screens/player_details.dart';
 
 import '../../features/auth/presentation/screens/forget_password/forget_password_screen.dart';
 import '../../features/auth/presentation/screens/login/login_screen.dart';
@@ -19,6 +21,8 @@ class Routes {
   static const String OtpScreen = "/OtpScreen";
   static const String LayoutScreen = "/LayoutScreen";
   static const String ResetPasswordScreen = "/ResetPasswordScreen";
+  static const String matchDetails = "/matchDetails";
+  static const String playerDetails = "/playerdetails";
 }
 
 class RouteGenerator {
@@ -83,6 +87,20 @@ class RouteGenerator {
             settings: routeSettings,
             builder: (_) {
               return LayoutScreen();
+            });
+
+      case Routes.matchDetails:
+        return CupertinoPageRoute(
+            settings: routeSettings,
+            builder: (_) {
+              return MatchDetailsScreen();
+            });
+
+      case Routes.playerDetails:
+        return CupertinoPageRoute(
+            settings: routeSettings,
+            builder: (_) {
+              return PlayerDetails();
             });
       // case Routes.SplashScreen:
       //   return CupertinoPageRoute(
