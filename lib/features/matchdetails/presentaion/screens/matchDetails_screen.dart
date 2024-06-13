@@ -150,7 +150,9 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
               ),
               28.ph,
               ButtonWidget(
-                buttonColor: LightThemeColors.secondbuttonBackground,
+                buttonColor: widget.mymatch!
+                    ? LightThemeColors.warningButton
+                    : context.primaryColor,
                 onTap: () => showConfirmationSheet(context),
                 height: 65,
                 width: 342,

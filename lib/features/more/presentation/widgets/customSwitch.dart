@@ -57,7 +57,7 @@ class _CustomSwitchState extends State<CustomSwitch>
               ),
               Container(
                 width: 45,
-                height: 16.07,
+                height: 14.07,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(24.0),
                   color: _circleAnimation!.value == Alignment.centerLeft
@@ -82,8 +82,8 @@ class _CustomSwitchState extends State<CustomSwitch>
                           ? Alignment.centerLeft
                           : Alignment.centerRight),
                   child: Container(
-                    width: 16.07,
-                    height: 16.07,
+                    width: 18.07,
+                    height: 18.07,
                     decoration: BoxDecoration(
                       border: Border.all(
                         width: 3,

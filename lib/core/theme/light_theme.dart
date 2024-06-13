@@ -28,12 +28,15 @@ class LightThemeColors {
 
   static const Color buttonBackground = primary;
 
-  static const Color secondbuttonBackground = red;
+  static const Color secondbuttonBackground = Color(0xffE8E8E8);
+
+  static const Color warningButton = red;
   static const Color textFieldBackground = primary;
   static const Color appBarBackground = background;
   static const Color bottomNavigationBarBackground = primary;
   static Color barrierBackground = background.withOpacity(0.53);
   static const secondaryText = Color(0xFF737373);
+  static const Color lighttext = Color(0xff858585);
 
   // Surface Colors
   static const Color red = Color(0xffE2114A);

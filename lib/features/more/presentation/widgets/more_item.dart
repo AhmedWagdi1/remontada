@@ -6,7 +6,10 @@ import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/features/more/presentation/widgets/customSwitch.dart';
+import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
+
+import '../../../../core/services/alerts.dart';
 
 class MoreItem extends StatefulWidget {
   const MoreItem({
@@ -34,6 +37,18 @@ class _MoreItemState extends State<MoreItem> {
           Navigator.pushNamed(
             context,
             Routes.profileDetails,
+          );
+        } else if (widget.title == "إرسال طلب عضوية كابتن ( مشرف )") {
+          sendCaptainrequestDialogue(context);
+        } else if (widget.title == "عن التطبيق") {
+          Navigator.pushNamed(
+            context,
+            Routes.aboutscreen,
+          );
+        } else if (widget.title == "سياسة الخصوصية والإستخدام") {
+          Navigator.pushNamed(
+            context,
+            Routes.privacypolicyScreen,
           );
         }
       },
@@ -105,4 +120,58 @@ class _MoreItemState extends State<MoreItem> {
       ),
     );
   }
+}
+
+sendCaptainrequestDialogue(BuildContext context) {
+  Alerts.bottomSheet(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(114.r),
+        topRight: Radius.circular(36.r),
+      ),
+    ),
+    context,
+    child: Container(
+      padding: EdgeInsets.only(
+        right: 15.w,
+        left: 15.w,
+        top: 50.h,
+        bottom: 28.h,
+      ),
+      decoration: BoxDecoration(
+        color: context.background,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SvgPicture.asset(
+            width: 50.w,
+            height: 50.h,
+            "cleander_button".svg(),
+          ),
+          11.ph,
+          CustomText(
+            fontSize: 16.sp,
+            "إرسال طلب عضوية كابتن ( مشرف )",
+            color: LightThemeColors.primary,
+            weight: FontWeight.w800,
+          ),
+          CustomText(
+            fontSize: 14.sp,
+            "قم بفلترة ظهور المباريات حسب تاريخ المباراة",
+            color: LightThemeColors.secondaryText,
+            weight: FontWeight.w500,
+          ),
+          32.ph,
+          ButtonWidget(
+            fontSize: 16.sp,
+            fontweight: FontWeight.bold,
+            height: 65.h,
+            radius: 33.r,
+            title: "إرسال الطلب",
+          ),
+        ],
+      ),
+    ),
+  );
 }
