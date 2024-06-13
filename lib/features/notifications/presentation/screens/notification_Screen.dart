@@ -23,6 +23,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          70.ph,
+          CustomText(
+            "الاشعارات",
+            fontSize: 26.sp,
+            weight: FontWeight.w800,
+            color: context.primaryColor,
+          ),
+          5.ph,
           CustomText(
             fontSize: 14,
             weight: FontWeight.w500,
@@ -64,6 +72,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            70.ph,
+            CustomText(
+              "الاشعارات",
+              fontSize: 26.sp,
+              weight: FontWeight.w800,
+              color: context.primaryColor,
+            ),
+            5.ph,
             CustomText(
               fontSize: 14,
               weight: FontWeight.w500,
@@ -86,15 +102,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: SizedBox(),
-        title: CustomText(
-          "الاشعارات",
-          fontSize: 26.sp,
-          weight: FontWeight.w800,
-          color: context.primaryColor,
-        ),
-      ),
+      // appBar: AppBar(
+      //   leading: SizedBox(),
+      //   title: CustomText(
+      //     "الاشعارات",
+      //     fontSize: 26.sp,
+      //     weight: FontWeight.w800,
+      //     color: context.primaryColor,
+      //   ),
+      // ),
       body: thereData ? getnotifyBody() : getnonotifyBody(),
     );
   }

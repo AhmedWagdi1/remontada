@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../shared/widgets/text_widget.dart';
+import 'package:remontada/core/theme/light_theme.dart';
+
 import '../../core/extensions/all_extensions.dart';
+import '../../shared/widgets/text_widget.dart';
 
 class ButtonWidget extends StatelessWidget {
   final String title;
@@ -41,14 +43,14 @@ class ButtonWidget extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        gradient: gradient,
+        gradient: buttonColor == null ? LightThemeColors.buttonColor : gradient,
         borderRadius: BorderRadius.circular(radius),
       ),
       child: ElevatedButton(
         onPressed: onTap,
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(
-              buttonColor ?? context.secondaryColor),
+              buttonColor ?? Colors.transparent),
           overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
           shadowColor: MaterialStateProperty.all<Color>(Colors.white),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(

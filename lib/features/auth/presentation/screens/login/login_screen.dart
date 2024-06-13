@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
               alignment: Alignment.topCenter,
               children: [
                 Container(
-                  height: 811.h,
+                  // height: 811.h,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     image: DecorationImage(
@@ -83,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         33.1.ph,
                         Container(
-                          height: 582,
+                          height: 460.h,
                           width: double.infinity,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.only(

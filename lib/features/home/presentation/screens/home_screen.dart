@@ -7,6 +7,7 @@ import 'package:remontada/core/services/alerts.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/features/home/presentation/widgets/bottomsheet_item.dart';
+import 'package:remontada/features/home/presentation/widgets/custom_dots.dart';
 import 'package:remontada/features/home/presentation/widgets/itemwidget.dart';
 import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
@@ -21,6 +22,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int index = 0;
   List dates = [
     "اليوم",
     "الثلاثاء 11-08-2024",
@@ -57,68 +59,72 @@ class _HomeScreenState extends State<HomeScreen> {
                   54.84.ph,
                   SvgPicture.asset(
                     "logo".svg("icons"),
-                    width: 90,
-                    height: 60,
+                    width: 100.w,
+                    height: 70.h,
                     color: context.primaryColor,
                   ),
                   5.ph,
                   CustomText(
                     "مرحبا بك",
                     color: LightThemeColors.secondaryText,
-                    fontSize: 14,
+                    fontSize: 16.sp,
                     weight: FontWeight.w500,
                   ),
                   5.ph,
                   CustomText(
                     "اسم اللاعب",
                     color: LightThemeColors.surfaceSecondary,
-                    fontSize: 16,
+                    fontSize: 18.sp,
                     weight: FontWeight.w800,
                   ),
                   18.ph,
-                  CarouselSlider(
-                    items: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(18),
-                        child: NetworkImagesWidgets(
-                            width: 400.w,
-                            fit: BoxFit.fill,
-                            "https://i.pinimg.com/originals/2f/6b/3a/2f6b3a4313981bad86ee1c9a9b79e399.jpg"),
-                      ),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(18),
-                        child: NetworkImagesWidgets(
-                            width: 400.w,
-                            fit: BoxFit.fill,
-                            "https://i.pinimg.com/originals/b4/95/ba/b495bacd09c44beaf1f1189d25ad51f9.jpg"),
-                      ),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(18),
-                        child: NetworkImagesWidgets(
-                            width: 400.w,
-                            fit: BoxFit.fill,
-                            "https://i.pinimg.com/originals/ae/5b/28/ae5b28d056c0f745a24ff67a16be4292.jpg"),
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      CarouselSlider(
+                        items: List.generate(
+                          3,
+                          (index) => ClipRRect(
+                            borderRadius: BorderRadius.circular(18),
+                            child: NetworkImagesWidgets(
+                              images[index],
+                              width: 400.w,
+                              fit: BoxFit.fill,
+                              // images[index],
+                            ),
+                          ),
+                        ),
+                        options: CarouselOptions(
+                          onPageChanged: (index, reason) {
+                            this.index = index;
+                            setState(() {});
+                          },
+                          enlargeCenterPage: true,
+                          enlargeStrategy: CenterPageEnlargeStrategy.zoom,
+                          autoPlayAnimationDuration: Duration(
+                            seconds: 1,
+                          ),
+                          autoPlay: true,
+                          height: 127,
+                          viewportFraction: 1,
+                        ),
+                      ).paddingHorizontal(5),
+                      Positioned(
+                        bottom: 10,
+                        child: CustomSliderDots(
+                          length: images.length,
+                          indexItem: index,
+                        ),
                       ),
                     ],
-                    options: CarouselOptions(
-                      // aspectRatio: 16 / 10,
-                      enlargeCenterPage: true,
-                      enlargeStrategy: CenterPageEnlargeStrategy.zoom,
-                      autoPlayAnimationDuration: Duration(
-                        seconds: 1,
-                      ),
-                      autoPlay: true,
-                      height: 127,
-                      viewportFraction: 1,
-                    ),
-                  ).paddingHorizontal(5),
+                  ),
                   18.ph,
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        flex: 6,
+                        flex: 7,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -131,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             3.ph,
                             CustomText(
                               "قم بالإنضمام إلى المباراة المناسبة لك الآن",
-                              fontSize: 12.sp,
+                              fontSize: 13.sp,
                               weight: FontWeight.w500,
                               color: LightThemeColors.secondaryText,
                             ),
@@ -200,7 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: EdgeInsets.only(
           right: 5.w,
           left: 5.w,
-          top: 50.h,
+          top: 20.h,
           bottom: 24.h,
         ),
         decoration: BoxDecoration(),
@@ -319,7 +325,7 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: EdgeInsets.only(
           right: 5.w,
           left: 5.w,
-          top: 50.h,
+          top: 20.h,
           bottom: 24.h,
         ),
         decoration: BoxDecoration(),
@@ -427,3 +433,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
+List images = [
+  "https://i.pinimg.com/originals/ae/5b/28/ae5b28d056c0f745a24ff67a16be4292.jpg",
+  "https://i.pinimg.com/originals/b4/95/ba/b495bacd09c44beaf1f1189d25ad51f9.jpg",
+  "https://i.pinimg.com/originals/2f/6b/3a/2f6b3a4313981bad86ee1c9a9b79e399.jpg",
+];

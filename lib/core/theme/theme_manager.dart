@@ -41,8 +41,7 @@ class AppThemeManager {
       backgroundColor: MaterialStateProperty.resolveWith<Color>(
         (Set<MaterialState> states) {
           if (states.contains(MaterialState.pressed)) {
-            return buttonColorPressed ??
-                LightThemeColors.secondary.withOpacity(.8);
+            return buttonColorPressed ?? LightThemeColors.secondary;
           }
           return buttonColor;
         },

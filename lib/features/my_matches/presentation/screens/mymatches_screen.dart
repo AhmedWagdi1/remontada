@@ -23,6 +23,14 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          70.ph,
+          CustomText(
+            "مبارياتي",
+            fontSize: 26.sp,
+            weight: FontWeight.w800,
+            color: context.primaryColor,
+          ),
+          5.ph,
           CustomText(
             fontSize: 14,
             weight: FontWeight.w500,
@@ -64,6 +72,14 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            70.ph,
+            CustomText(
+              "مبارياتي",
+              fontSize: 26.sp,
+              weight: FontWeight.w800,
+              color: context.primaryColor,
+            ),
+            5.ph,
             CustomText(
               fontSize: 14,
               weight: FontWeight.w500,
@@ -88,15 +104,16 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: SizedBox(),
-        title: CustomText(
-          "مبارياتي",
-          fontSize: 26.sp,
-          weight: FontWeight.w800,
-          color: context.primaryColor,
-        ),
-      ),
+      // appBar:
+      // AppBar(
+      //   leading: SizedBox(),
+      //   title: CustomText(
+      //     "مبارياتي",
+      //     fontSize: 26.sp,
+      //     weight: FontWeight.w800,
+      //     color: context.primaryColor,
+      //   ),
+      // ),
       body: thereData ? getMatchesBody() : getnoMatchesBody(),
     );
   }

@@ -31,7 +31,7 @@ class MoreScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  80.ph,
+                  70.ph,
                   CustomText(
                     "المزيد",
                     fontSize: 26.sp,

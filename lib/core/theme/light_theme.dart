@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:remontada/core/theme/theme_manager.dart';
 
 import '../resources/text_style_manager.dart';
 import '../utils/utils.dart';
-import 'theme_manager.dart';
 
 class LightThemeColors {
   const LightThemeColors._();

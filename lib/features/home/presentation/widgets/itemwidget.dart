@@ -146,7 +146,7 @@ class ItemWidget extends StatelessWidget {
                 children: [
                   9.ph,
                   ButtonWidget(
-                    radius: 11.r,
+                    radius: 15.r,
                     width: 145.w,
                     height: 30.h,
                     buttonColor: LightThemeColors.surface,

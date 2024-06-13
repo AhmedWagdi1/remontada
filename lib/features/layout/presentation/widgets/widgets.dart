@@ -22,36 +22,47 @@ class CustomBottomNavBar extends StatefulWidget {
 class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   @override
   Widget build(BuildContext context) {
-    return ClipPath(
-      clipper: CustomContainer(),
-      child: Container(
-        height: 129.29.h,
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              spreadRadius: -4,
-              offset: Offset(0, 0),
-              blurRadius: 30,
-              color: LightThemeColors.black.withOpacity(.15),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        boxShadow: [
+          BoxShadow(
+            spreadRadius: -10,
+            offset: Offset(0, 0),
+            blurRadius: 60,
+            color: LightThemeColors.containerShadow.withOpacity(.13),
+          )
+        ],
+      ),
+      child: ClipPath(
+        clipper: CustomContainer(),
+        child: Container(
+          height: 140.29.h,
+          decoration: BoxDecoration(
+            // boxShadow: [
+            //   BoxShadow(
+            //     // spreadRadius: -4,
+
+            //   ),
+            // ],
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(33),
+              topRight: Radius.circular(33),
             ),
-          ],
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(33),
-            topRight: Radius.circular(33),
+            color: context.scaffoldBackgroundColor,
           ),
-          color: context.scaffoldBackgroundColor,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            navBarItem(Assets.icons.workspace, "الرئيسية", 0,
-                Assets.icons.workspaceOn),
-            navBarItem(Assets.icons.req, "مبارياتي", 1, Assets.icons.reqOn),
-            navBarItem(Assets.icons.notification, "الاشعارات", 2,
-                Assets.icons.notificationOn),
-            navBarItem(
-                Assets.icons.settings, "المزيد", 3, Assets.icons.settingsOn),
-          ],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              navBarItem(Assets.icons.workspace, "الرئيسية", 0,
+                  Assets.icons.workspaceOn),
+              navBarItem(Assets.icons.req, "مبارياتي", 1, Assets.icons.reqOn),
+              navBarItem(Assets.icons.notification, "الاشعارات", 2,
+                  Assets.icons.notificationOn),
+              navBarItem(
+                  Assets.icons.settings, "المزيد", 3, Assets.icons.settingsOn),
+            ],
+          ),
         ),
       ),
     );
@@ -157,7 +168,11 @@ class CustomContainer extends CustomClipper<Path> {
     path.moveTo(0, size.height);
     path.lineTo(size.width, size.height); // بدء الانحناء من 75% من الارتفاع
     path.lineTo(size.width, 0);
-    path.lineTo(0, size.height * .15);
+    path.lineTo(0, size.height * .2);
+    path.arcToPoint(
+      Offset(0, size.height * .2),
+      radius: Radius.circular(33),
+    );
     path.close();
     return path;
   }
