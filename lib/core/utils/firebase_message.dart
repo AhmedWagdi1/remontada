@@ -1,7 +1,6 @@
 // import 'package:firebase_messaging/firebase_messaging.dart';
 // import 'package:ovata/core/utiles/utiles.dart';
 
-
 // class FBMessging {
 //   static Future<void> firebaseMessagingBackgroundHandler(
 //       RemoteMessage message) async {
@@ -56,3 +55,5 @@
 //     });
 //   }
 // }
+
+class LocalNotification {}

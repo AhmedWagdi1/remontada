@@ -74,10 +74,10 @@ class AppSize {
   static double screenPadding = 16.0.w;
 
   static const double mainRadius = 10.0;
-  static const double inputBorderRadius = 10.0;
-  static const double buttonRadius = 50.0;
+  static const double inputBorderRadius = 33.0;
+  static const double buttonRadius = 33.0;
 
-  static const double buttonHeight = 56.0;
+  static const double buttonHeight = 65.0;
 
   static const double iconSize = 24.0;
 

@@ -31,7 +31,7 @@ class MatchDetailswidget extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            spreadRadius: -1,
+            spreadRadius: 0,
             color: LightThemeColors.black.withOpacity(.1),
             offset: Offset(0, 0),
             blurRadius: 30,
@@ -52,21 +52,26 @@ class MatchDetailswidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomText(
+                style: TextStyle(
+                  color: LightThemeColors.black,
+                ).s12.light,
                 title ?? "ملعب المبارات",
-                fontSize: 12.sp,
-                weight: FontWeight.w400,
-                color: LightThemeColors.black,
+                // fontSize: 12.sp,
+                // weight: FontWeight.w400,
               ),
               Container(
-                width: 140,
+                width: title == "لوكيشن الملعب" ? 130.w : 200.w,
                 child: CustomText(
-                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    overflow: TextOverflow.ellipsis,
+                    color: icon == "wallet"
+                        ? LightThemeColors.pricecolor
+                        : LightThemeColors.black,
+                  ).s14.regular,
+
                   subtitle ?? "ملاعب نادي القصيم الرياضي",
-                  fontSize: icon == "location" ? 13.sp : 14.sp,
-                  weight: FontWeight.w600,
-                  color: icon == "wallet"
-                      ? LightThemeColors.pricecolor
-                      : LightThemeColors.black,
+                  // fontSize: icon == "location" ? 13.sp : 14.sp,
+                  // weight: FontWeight.w600,
                 ),
               ),
             ],
@@ -86,10 +91,12 @@ class MatchDetailswidget extends StatelessWidget {
                   ),
                   child: Center(
                     child: CustomText(
-                      color: context.primaryColor,
                       "عرض اللوكيشن على الخريطة",
-                      fontSize: 10,
-                      weight: FontWeight.w500,
+                      style: TextStyle(
+                        color: context.primaryColor,
+                      ).s10.regular,
+                      // fontSize: 10,
+                      // weight: FontWeight.w500,
                     ),
                   ),
                 ),

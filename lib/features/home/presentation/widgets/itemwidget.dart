@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
+import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/shared/widgets/button_widget.dart';
@@ -38,7 +39,7 @@ class ItemWidget extends StatelessWidget {
               spreadRadius: -4,
               offset: Offset(0, 0),
               blurRadius: 30,
-              color: LightThemeColors.black.withOpacity(.15),
+              color: LightThemeColors.black.withOpacity(.13),
             ),
           ],
         ),
@@ -56,17 +57,20 @@ class ItemWidget extends StatelessWidget {
                       SvgPicture.asset(
                         width: 16.82.h,
                         height: 16.82.w,
-                        "clender".svg("icons"),
+                        Assets.icons.arena,
                       ),
                       6.36.pw,
                       Container(
                         width: 142,
                         child: CustomText(
-                          overflow: TextOverflow.ellipsis,
-                          color: context.primaryColor,
-                          weight: FontWeight.w600,
+                          style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            color: LightThemeColors.black,
+                          ).s16.bold,
+                          // color: context.primaryColor,
+                          // weight: FontWeight.w600,
                           "ملاعب نادي القصيم الرياضي",
-                          fontSize: 16.sp,
+                          // fontSize: 16.sp,
                         ),
                       )
                     ],
@@ -83,11 +87,15 @@ class ItemWidget extends StatelessWidget {
                       6.36.pw,
                       Container(
                         child: CustomText(
-                          overflow: TextOverflow.ellipsis,
-                          color: LightThemeColors.secondaryText,
-                          weight: FontWeight.w400,
+                          style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            color: LightThemeColors.black,
+                          ).s13.medium,
+                          // overflow: TextOverflow.ellipsis,
+
+                          // weight: FontWeight.w400,
                           "الأربعاء 12-08-2024",
-                          fontSize: 14.sp,
+                          // fontSize: 14.sp,
                         ),
                       )
                     ],
@@ -104,11 +112,15 @@ class ItemWidget extends StatelessWidget {
                       6.36.pw,
                       Container(
                         child: CustomText(
-                          overflow: TextOverflow.ellipsis,
-                          color: LightThemeColors.secondaryText,
-                          weight: FontWeight.w400,
+                          style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            color: LightThemeColors.black,
+                          ).s13.medium,
+                          // overflow: TextOverflow.ellipsis,
+                          // color: LightThemeColors.secondaryText,
+                          // weight: FontWeight.w400,
                           "09:30 مساء",
-                          fontSize: 14.sp,
+                          // fontSize: 14.sp,
                         ),
                       )
                     ],
@@ -125,11 +137,13 @@ class ItemWidget extends StatelessWidget {
                       6.36.pw,
                       Container(
                         child: CustomText(
-                          overflow: TextOverflow.ellipsis,
-                          color: LightThemeColors.pricecolor,
-                          weight: FontWeight.w600,
+                          style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            color: LightThemeColors.pricecolor,
+                          ).s13.bold,
+                          // weight: FontWeight.w600,
                           "35 ر.س",
-                          fontSize: 14.sp,
+                          // fontSize: 14.sp,
                         ),
                       )
                     ],
@@ -157,28 +171,37 @@ class ItemWidget extends StatelessWidget {
                         SvgPicture.asset(
                           width: 14.54,
                           height: 14.54,
-                          "wallet".svg("icons"),
+                          Assets.icons.tshirt,
                           color: context.background,
                         ),
                         2.87.pw,
                         CustomText(
+                          style: TextStyle(
+                            color: LightThemeColors.background,
+                          ).s12.regular,
                           "المشتركين",
-                          fontSize: 12.sp,
-                          weight: FontWeight.w400,
-                          color: LightThemeColors.background,
+                          // fontSize: 12.sp,
+                          // weight: FontWeight.w400,
+                          // color: LightThemeColors.background,
                         ),
                         2.87.pw,
                         CustomText(
                           "20 / ",
                           fontSize: 12.sp,
-                          weight: FontWeight.w400,
-                          color: LightThemeColors.background,
+                          // weight: FontWeight.w400,
+
+                          style: TextStyle(
+                            color: LightThemeColors.background,
+                          ).s12.medium,
                         ),
                         CustomText(
                           "13",
-                          fontSize: 12.sp,
-                          weight: FontWeight.w400,
-                          color: LightThemeColors.black,
+                          // fontSize: 12.sp,
+                          // weight: FontWeight.w400,
+                          // color: LightThemeColors.black,
+                          style: TextStyle(
+                            color: LightThemeColors.black,
+                          ).s12.medium,
                         ),
                       ],
                     ),

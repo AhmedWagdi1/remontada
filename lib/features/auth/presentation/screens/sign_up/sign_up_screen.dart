@@ -3,14 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/Router/Router.dart';
+import 'package:remontada/core/extensions/all_extensions.dart';
+import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/shared/widgets/button_widget.dart';
-import 'package:remontada/shared/widgets/customAppbar.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/shared/widgets/dropdown.dart';
 import 'package:remontada/shared/widgets/edit_text_widget.dart';
 
 import '../../../../../core/utils/extentions.dart';
+import '../../../../../shared/back_widget.dart';
 import '../../../cubit/auth_cubit.dart';
 import '../../../cubit/auth_states.dart';
 
@@ -31,8 +33,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   void dispose() {
+    name.dispose();
+    email.dispose();
     phone.dispose();
     password.dispose();
+    confirmPassword.dispose();
     super.dispose();
   }
 
@@ -45,7 +50,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         builder: (context, state) {
           final cubit = AuthCubit.get(context);
           return Scaffold(
-            appBar: CustomAppbar(title: "انضم لريمونتادا الان"),
+            // appBar: CustomAppbar(title: "انضم لريمونتادا الان"),
             // appBar: AppBar(
             //   centerTitle: true,
             //   elevation: 0,
@@ -66,35 +71,73 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: Form(
                 key: formKey,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 18),
+                  padding: EdgeInsets.symmetric(horizontal: 18.w),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // 80.h.ph,
+                      80.ph,
+                      Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            // height: 40.h,
+                          ),
+                          Positioned(
+                            // top: 0,
+                            child: CustomText(
+                              "انضم لريمونتادا الان",
+                              style: TextStyle(
+                                color: context.primaryColor,
+                              ).s24.heavy,
+                              // fontSize: 26,
+                              // weight: FontWeight.bold,
+                              // color: context.colorScheme.primary,
+                            ),
+                          ),
+                          Positioned(
+                            right: 0,
+                            // bottom: 0,
+                            child: BackWidget(),
+                          ),
+                        ],
+                      ),
+                      // ListTile(
+                      //   titleAlignment: ListTileTitleAlignment.center,
+                      //   contentPadding: EdgeInsets.zero,
+                      //   leading: BackWidget(),
+                      //   title:
+                      // ),
                       // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.start,
+                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       //   children: [
                       //     BackWidget(),
-                      //     // 61.pw,
-                      //     // CustomText(
-                      //     //   "انضم لريمونتادا الان",
-                      //     //   fontSize: 26,
-                      //     //   weight: FontWeight.bold,
-                      //     //   color: context.colorScheme.primary,
-                      //     // ),
+                      //     CustomText(
+                      //       "انضم لريمونتادا الان",
+                      //       style: TextStyle(
+                      //         color: context.primaryColor,
+                      //       ).s24.heavy,
+                      //       // fontSize: 26,
+                      //       // weight: FontWeight.bold,
+                      //       // color: context.colorScheme.primary,
+                      //     ),
+                      //     41.pw,
                       //   ],
                       // ),
-                      // 10.ph,
+                      10.ph,
                       CustomText(
-                        weight: FontWeight.w600,
-                        // fontFamily: "DINNext",
-                        fontSize: 16,
+                        style: TextStyle(
+                          color: LightThemeColors.secondaryText,
+                        ).s16.regular,
+                        // weight: FontWeight.w600,
+                        // // fontFamily: "DINNext",
+                        // fontSize: 16,
                         "قم بتسجيل حسابك وانضم لريمونتادا الان",
-                        color: LightThemeColors.secondaryText,
                       ),
                       30.h.ph,
                       TextFormFieldWidget(
-                        hintSize: 16.sp,
+                        prefixIcon: Assets.icons.name,
+                        hintSize: 16,
                         borderRadius: 33,
                         hintText: "ادخل الاسم",
                         hintColor: LightThemeColors.textPrimary,
@@ -102,7 +145,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       10.h.ph,
                       TextFormFieldWidget(
-                        hintSize: 16.sp,
+                        prefixIcon: Assets.icons.calling,
+                        hintSize: 16,
                         borderRadius: 33,
                         hintText: "رقم الجوال",
                         hintColor: LightThemeColors.textPrimary,
@@ -110,7 +154,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       10.h.ph,
                       TextFormFieldWidget(
-                        hintSize: 16.sp,
+                        prefixIcon: Assets.icons.email,
+                        hintSize: 16,
                         borderRadius: 33,
                         hintText: "البريد الالكتروني",
                         hintColor: LightThemeColors.textPrimary,
@@ -118,8 +163,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       10.h.ph,
                       DropDownItem<String>(
-                        hintColor: context.colorScheme.primary,
-                        hint: "      اختر المدينة",
+                        prefixIcon: Assets.icons.fieldLocation,
+                        hintColor: context.primaryColor,
+                        hint: "اختر المدينة",
                         radius: 33,
                         options: [
                           "item1",
@@ -131,8 +177,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       10.h.ph,
                       DropDownItem<String>(
-                        hintColor: context.colorScheme.primary,
-                        hint: "      اختر موقعك المفضل بالملعب",
+                        prefixIcon: Assets.icons.playLocation,
+                        hintColor: context.primaryColor,
+                        hint: "اختر موقعك المفضل بالملعب",
                         radius: 33,
                         options: [
                           "item1",
@@ -155,21 +202,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           );
                         },
-                        height: 65,
+                        // height: 65,
                         child: CustomText(
+                          style: TextStyle(
+                            color: context.background,
+                          ).s16.bold,
                           "تاكيد التسجيل",
-                          fontSize: 16,
-                          weight: FontWeight.w600,
-                          color: context.colorScheme.background,
+                          // fontSize: 16,
+                          // weight: FontWeight.w600,
                         ),
                         radius: 33,
                       ),
                       32.ph,
                       CustomText(
+                        style: TextStyle(
+                          color: LightThemeColors.secondaryText,
+                        ).s16.regular,
                         "لديك حساب بالفعل؟",
-                        color: LightThemeColors.secondaryText,
-                        fontSize: 16,
-                        weight: FontWeight.w600,
+
+                        // fontSize: 16,
+                        // weight: FontWeight.w600,
                       ),
                       5.ph,
                       Container(
@@ -183,13 +235,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             );
                           },
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               CustomText(
+                                style: TextStyle(
+                                  color: LightThemeColors.textPrimary,
+                                ).s16.medium,
                                 "تسجيل الدخول",
-                                color: LightThemeColors.textPrimary,
-                                fontSize: 16,
-                                weight: FontWeight.w600,
+                                // fontSize: 16,
+                                // weight: FontWeight.w600,
+                              ),
+                              8.43.pw,
+                              SvgPicture.asset(
+                                width: 17.59.w,
+                                height: 15.65.h,
+                                Assets.icons.signArrow,
                               ),
                               // 16.19.pw,
                             ],
@@ -417,11 +478,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
             ),
-            bottomNavigationBar: Transform.scale(
-              scale: 1.2,
-              child: SvgPicture.asset(
-                "login_bottom".svg("images"),
-              ),
+            bottomNavigationBar: SvgPicture.asset(
+              height: 113.h,
+              width: double.infinity,
+              "login_bottom".svg("images"),
             ),
           );
         },

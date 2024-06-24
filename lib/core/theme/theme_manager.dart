@@ -33,9 +33,19 @@ class AppThemeManager {
     return ButtonStyle(
       textStyle: MaterialStateProperty.all<TextStyle>(
           TextStylesManager.gessMedium.copyWith(fontSize: FontSize.s16)),
-      shape: MaterialStateProperty.all<StadiumBorder>(const StadiumBorder()),
+      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(
+            10.0,
+          ),
+        ),
+      ),
       minimumSize: MaterialStateProperty.all<Size>(
-          const Size(double.infinity, AppSize.buttonHeight)),
+        const Size(
+          double.infinity,
+          AppSize.buttonHeight,
+        ),
+      ),
       elevation: MaterialStateProperty.all(0),
       padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.zero),
       backgroundColor: MaterialStateProperty.resolveWith<Color>(

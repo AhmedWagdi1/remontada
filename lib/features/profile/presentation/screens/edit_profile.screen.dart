@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
+import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
+import 'package:remontada/shared/back_widget.dart';
 import 'package:remontada/shared/widgets/button_widget.dart';
-import 'package:remontada/shared/widgets/customAppbar.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/shared/widgets/dropdown.dart';
 import 'package:remontada/shared/widgets/edit_text_widget.dart';
@@ -22,9 +22,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbar(
-        title: "تعديل بياناتي",
-      ),
+      // appBar: CustomAppbar(
+      //   title: "تعديل بياناتي",
+      // ),
       body: SingleChildScrollView(
         child: Form(
           key: formkey,
@@ -33,11 +33,41 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                80.ph,
+                Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      // height: 40.h,
+                    ),
+                    Positioned(
+                      // top: 0,
+                      child: CustomText(
+                        "تعديل بياناتي",
+                        style: TextStyle(
+                          color: context.primaryColor,
+                        ).s24.heavy,
+                        // fontSize: 26,
+                        // weight: FontWeight.bold,
+                        // color: context.colorScheme.primary,
+                      ),
+                    ),
+                    Positioned(
+                      right: 0,
+                      // bottom: 0,
+                      child: BackWidget(),
+                    ),
+                  ],
+                ),
+                5.ph,
                 CustomText(
+                  style: TextStyle(
+                    color: LightThemeColors.secondaryText,
+                  ).s14.medium,
                   "يمكنك تعديل بياناتك الشخصية",
-                  fontSize: 14,
-                  weight: FontWeight.w500,
-                  color: LightThemeColors.secondaryText,
+                  // fontSize: 14,
+                  // weight: FontWeight.w500,
                 ),
                 21.ph,
                 Container(
@@ -48,11 +78,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       BoxShadow(
                         offset: Offset.zero,
                         blurRadius: 30,
-                        color: LightThemeColors.black.withOpacity(.2),
+                        color: LightThemeColors.black.withOpacity(.15),
                       ),
                     ],
-                    color: LightThemeColors.primary,
+                    color: context.background,
                     shape: BoxShape.circle,
+                  ),
+                  child: Assets.images.profile_image.image(
+                    fit: BoxFit.contain,
                   ),
                 ),
                 18.ph,
@@ -63,54 +96,64 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     borderRadius: BorderRadius.circular(33.r),
                     color: context.primaryColor.withOpacity(.07),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {},
-                        child: SvgPicture.asset(
-                          "wallet".svg(),
+                  child: Center(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Assets.icons.photo_camera.toSvg(
+                          width: 17,
+                          height: 15.44,
                           color: context.primaryColor,
                         ),
-                      ),
-                      9.12.pw,
-                      CustomText(
-                        "تغيير الصورة الشخصية",
-                        fontSize: 14,
-                        weight: FontWeight.w500,
-                        color: context.primaryColor,
-                      )
-                    ],
+                        5.pw,
+                        CustomText(
+                          "تغيير الصورة الشخصية",
+                          style: TextStyle(
+                            color: context.primaryColor,
+                          ).s14.medium,
+                          // fontSize: 14,
+                          // weight: FontWeight.w500,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                ).onTap(() {},
+                    splashColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    borderRadius: BorderRadius.circular(33)),
                 21.ph,
                 TextFormFieldWidget(
-                  hintSize: 16.sp,
+                  prefixIcon: Assets.icons.name,
+                  hintSize: 16,
                   borderRadius: 33,
                   hintText: "ادخل الاسم",
                   hintColor: LightThemeColors.textPrimary,
                   activeBorderColor: LightThemeColors.inputFieldBorder,
                 ),
-                10.ph,
+                10.h.ph,
                 TextFormFieldWidget(
-                  hintSize: 16.sp,
+                  prefixIcon: Assets.icons.calling,
+                  hintSize: 16,
                   borderRadius: 33,
                   hintText: "رقم الجوال",
                   hintColor: LightThemeColors.textPrimary,
                   activeBorderColor: LightThemeColors.inputFieldBorder,
                 ),
-                10.ph,
+                10.h.ph,
                 TextFormFieldWidget(
-                  hintSize: 16.sp,
+                  prefixIcon: Assets.icons.email,
+                  hintSize: 16,
                   borderRadius: 33,
                   hintText: "البريد الالكتروني",
                   hintColor: LightThemeColors.textPrimary,
                   activeBorderColor: LightThemeColors.inputFieldBorder,
                 ),
-                10.ph,
+                10.h.ph,
                 DropDownItem<String>(
+                  prefixIcon: Assets.icons.fieldLocation,
                   hintColor: context.primaryColor,
-                  hint: "      اختر المدينة",
+                  hint: "اختر المدينة",
                   radius: 33,
                   options: [
                     "item1",
@@ -120,10 +163,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ],
                   onChanged: (val) {},
                 ),
-                10.ph,
+                10.h.ph,
                 DropDownItem<String>(
+                  prefixIcon: Assets.icons.playLocation,
                   hintColor: context.primaryColor,
-                  hint: "      اختر موقعك المفضل بالملعب",
+                  hint: "اختر موقعك المفضل بالملعب",
                   radius: 33,
                   options: [
                     "item1",
@@ -145,6 +189,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                   radius: 33,
                 ),
+                35.ph,
               ],
             ),
           ),

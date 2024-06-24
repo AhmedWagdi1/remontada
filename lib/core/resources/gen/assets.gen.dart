@@ -8,6 +8,7 @@
 // ignore_for_file: directives_ordering,unnecessary_import,implicit_dynamic_list_literal,deprecated_member_use
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
 class $AssetsFontsGen {
@@ -42,154 +43,241 @@ class $AssetsIconsGen {
   /// File path: assets/icons/accept.svg
   String get accept => 'assets/icons/accept.svg';
 
-  /// File path: assets/icons/active_workspace_color.svg
-  String get activeWorkspaceColor => 'assets/icons/active_workspace_color.svg';
+  /// File path: assets/icons/Assets.icons.photo_camera,.svg
+  String get photo_camera => 'assets/icons/photo-camera.svg';
 
-  /// File path: assets/icons/back.svg
-  String get back => 'assets/icons/back.svg';
+  /// File path: assets/icons/calling.svg
+  String get calling => 'assets/icons/calling.svg';
 
-  /// File path: assets/icons/comment.png
-  AssetGenImage get comment => const AssetGenImage('assets/icons/comment.png');
+  /// File path: assets/icons/otp_image.svg
+  String get otp => 'assets/icons/otp_image.svg';
 
-  /// File path: assets/icons/delete.svg
-  String get delete => 'assets/icons/delete.svg';
+  /// File path: assets/icons/sign_arrow.svg
+  String get signArrow => 'assets/icons/sign_arrow.svg';
+
+  /// File path: assets/icons/football-player.svg
+  String get name => 'assets/icons/football-player.svg';
+
+  /// File path: assets/icons/field_location.svg
+  String get fieldLocation => 'assets/icons/field_location.svg';
+
+  /// File path: assets/icons/play_location.svg
+  String get playLocation => 'assets/icons/play_location.svg';
+
+  /// File path: assets/icons/drop_arrow.svg
+  String get dropArrow => 'assets/icons/drop_arrow.svg';
+
+  /// File path: assets/icons/active_home.svg
+  String get active_home => 'assets/icons/active_home.svg';
+
+  /// File path: assets/icons/home.svg
+  String get home => 'assets/icons/home.svg';
+
+  /// File path: assets/icons/myMatches_active.svg
+  String get myMatches_active => 'assets/icons/myMatches_active.svg';
+
+  /// File path: aassets/icons/myMatches.svg
+  String get myMatches => 'assets/icons/myMatches.svg';
+
+  /// File path: assets/icons/more.svg
+  String get more => 'assets/icons/more.svg';
+
+  /// File path: assets/icons/active_notify.svg
+  String get active_notify => 'assets/icons/active_notify.svg';
+
+  /// File path: ssets/icons/active_more.svg
+  String get active_more => 'assets/icons/active_more.svg';
+
+  /// File path: assets/icons/notify.svg
+  String get notify => 'assets/icons/notify.svg';
+
+  /// File path: ssets/icons/arena.svg
+  String get arena => 'assets/icons/arena.svg';
+
+  /// File path: assets/icons/t-shirt.svg
+  String get tshirt => 'assets/icons/t-shirt.svg';
+
+  /// File path: assets/icons/flag.svg
+  String get flag => 'assets/icons/flag.svg';
+
+  /// File path: assets/icons/logo_notify.svg
+  String get notifyActiveLogo => 'assets/icons/logo_notify.svg';
+
+  /// File path: assets/icons/notify_seen.svg
+  String get notifyLogo => 'assets/icons/notify_seen.svg';
+
+  /// File path: assets/icons/top_stack.svg
+  String get topStack => 'assets/icons/topStack.svg';
+
+  /// File path: assets/icons/whistle.svg
+  String get whistle => 'assets/icons/whistle.svg';
+
+  /// File path: assets/icons/information.svg
+  String get information => 'assets/icons/information.svg';
+
+  /// File path: assets/icons/share.svg
+  String get share => 'assets/icons/share.svg';
+
+  /// File path: assets/icons/policy_privacy.svg
+  String get policy_privacy => 'assets/icons/policy_privacy.svg';
+
+  /// File path: assets/icons/log-out.svg
+  String get log_out => 'assets/icons/log-out.svg';
 
   /// File path: assets/icons/email.svg
   String get email => 'assets/icons/email.svg';
 
-  /// File path: assets/icons/email_settings.svg
-  String get emailSettings => 'assets/icons/email_settings.svg';
-
-  /// File path: assets/icons/eye.svg
-  String get eye => 'assets/icons/eye.svg';
-
-  /// File path: assets/icons/eye_hidden.svg
-  String get eyeHidden => 'assets/icons/eye_hidden.svg';
-
-  /// File path: assets/icons/gallery.svg
-  String get gallery => 'assets/icons/gallery.svg';
-
-  /// File path: assets/icons/instal_small_icon.svg
-  String get instalSmallIcon => 'assets/icons/instal_small_icon.svg';
-
-  /// File path: assets/icons/lang.svg
-  String get lang => 'assets/icons/lang.svg';
-
-  /// File path: assets/icons/lang_purple.svg
-  String get langPurple => 'assets/icons/lang_purple.svg';
-
-  /// File path: assets/icons/lock.svg
-  String get lock => 'assets/icons/lock.svg';
-
-  /// File path: assets/icons/lock2.svg
-  String get lock2 => 'assets/icons/lock2.svg';
-
-  /// File path: assets/icons/lock_settings.svg
-  String get lockSettings => 'assets/icons/lock_settings.svg';
-
   /// File path: assets/icons/logo.svg
   String get logo => 'assets/icons/logo.svg';
 
-  /// File path: assets/icons/logo_wide.svg
-  String get logoWide => 'assets/icons/logo_wide.svg';
+  /// File path: assets/icons/dialoge_whistle.svg
+  String get dialoge_whistle => 'assets/icons/dialoge_whistle.svg';
 
-  /// File path: assets/icons/logout.svg
-  String get logout => 'assets/icons/logout.svg';
+  // /// File path: assets/icons/all.svg
+  // String get all => 'assets/icons/all.svg';
 
-  /// File path: assets/icons/notification.svg
-  String get notification => 'assets/icons/notification.svg';
+  /// File path: assets/icons/active_workspace_color.svg
+  // String get activeWorkspaceColor => 'assets/icons/active_workspace_color.svg';
 
-  /// File path: assets/icons/notification_on.svg
-  String get notificationOn => 'assets/icons/notification_on.svg';
+  // /// File path: assets/icons/back.svg
+  // String get back => 'assets/icons/back.svg';
 
-  /// File path: assets/icons/pass_otp.svg
-  String get passOtp => 'assets/icons/pass_otp.svg';
+  // /// File path: assets/icons/comment.png
+  // AssetGenImage get comment => const AssetGenImage('assets/icons/comment.png');
 
-  /// File path: assets/icons/profile.svg
-  String get profile => 'assets/icons/profile.svg';
+  // /// File path: assets/icons/delete.svg
+  // String get delete => 'assets/icons/delete.svg';
 
-  /// File path: assets/icons/profile_purple.svg
-  String get profilePurple => 'assets/icons/profile_purple.svg';
+  // /// File path: assets/icons/email_settings.svg
+  // String get emailSettings => 'assets/icons/email_settings.svg';
 
-  /// File path: assets/icons/req.svg
-  String get req => 'assets/icons/req.svg';
+  // /// File path: assets/icons/eye.svg
+  // String get eye => 'assets/icons/eye.svg';
 
-  /// File path: assets/icons/req_on.svg
-  String get reqOn => 'assets/icons/req_on.svg';
+  // /// File path: assets/icons/eye_hidden.svg
+  // String get eyeHidden => 'assets/icons/eye_hidden.svg';
 
-  /// File path: assets/icons/review.svg
-  String get review => 'assets/icons/review.svg';
+  // /// File path: assets/icons/gallery.svg
+  // String get gallery => 'assets/icons/gallery.svg';
 
-  /// File path: assets/icons/settings.svg
-  String get settings => 'assets/icons/settings.svg';
+  // /// File path: assets/icons/instal_small_icon.svg
+  // String get instalSmallIcon => 'assets/icons/instal_small_icon.svg';
 
-  /// File path: assets/icons/settings_back.svg
-  String get settingsBack => 'assets/icons/settings_back.svg';
+  // /// File path: assets/icons/lang.svg
+  // String get lang => 'assets/icons/lang.svg';
 
-  /// File path: assets/icons/settings_on.svg
-  String get settingsOn => 'assets/icons/settings_on.svg';
+  // /// File path: assets/icons/lang_purple.svg
+  // String get langPurple => 'assets/icons/lang_purple.svg';
 
-  /// File path: assets/icons/support.svg
-  String get support => 'assets/icons/support.svg';
+  // /// File path: assets/icons/lock.svg
+  // String get lock => 'assets/icons/lock.svg';
 
-  /// File path: assets/icons/support_purple.svg
-  String get supportPurple => 'assets/icons/support_purple.svg';
+  // /// File path: assets/icons/lock2.svg
+  // String get lock2 => 'assets/icons/lock2.svg';
 
-  /// File path: assets/icons/upload.svg
-  String get upload => 'assets/icons/upload.svg';
+  // /// File path: assets/icons/lock_settings.svg
+  // String get lockSettings => 'assets/icons/lock_settings.svg';
 
-  /// File path: assets/icons/user.svg
-  String get user => 'assets/icons/user.svg';
+  // /// File path: assets/icons/logo_wide.svg
+  // String get logoWide => 'assets/icons/logo_wide.svg';
 
-  /// File path: assets/icons/verified.svg
-  String get verified => 'assets/icons/verified.svg';
+  // /// File path: assets/icons/logout.svg
+  // String get logout => 'assets/icons/logout.svg';
 
-  /// File path: assets/icons/workspace.svg
-  String get workspace => 'assets/icons/workspace.svg';
+  // /// File path: assets/icons/notification.svg
+  // String get notification => 'assets/icons/notification.svg';
 
-  /// File path: assets/icons/workspace_on.svg
-  String get workspaceOn => 'assets/icons/workspace_on.svg';
+  // /// File path: assets/icons/notification_on.svg
+  // String get notificationOn => 'assets/icons/notification_on.svg';
+
+  // /// File path: assets/icons/pass_otp.svg
+  // String get passOtp => 'assets/icons/pass_otp.svg';
+
+  // /// File path: assets/icons/profile.svg
+  // String get profile => 'assets/icons/profile.svg';
+
+  // /// File path: assets/icons/profile_purple.svg
+  // String get profilePurple => 'assets/icons/profile_purple.svg';
+
+  // /// File path: assets/icons/req.svg
+  // String get req => 'assets/icons/req.svg';
+
+  // /// File path: assets/icons/req_on.svg
+  // String get reqOn => 'assets/icons/req_on.svg';
+
+  // /// File path: assets/icons/review.svg
+  // String get review => 'assets/icons/review.svg';
+
+  // /// File path: assets/icons/settings.svg
+  // String get settings => 'assets/icons/settings.svg';
+
+  // /// File path: assets/icons/settings_back.svg
+  // String get settingsBack => 'assets/icons/settings_back.svg';
+
+  // /// File path: assets/icons/settings_on.svg
+  // String get settingsOn => 'assets/icons/settings_on.svg';
+
+  // /// File path: assets/icons/support.svg
+  // String get support => 'assets/icons/support.svg';
+
+  // /// File path: assets/icons/support_purple.svg
+  // String get supportPurple => 'assets/icons/support_purple.svg';
+
+  // /// File path: assets/icons/upload.svg
+  // String get upload => 'assets/icons/upload.svg';
+
+  // /// File path: assets/icons/user.svg
+  // String get user => 'assets/icons/user.svg';
+
+  // /// File path: assets/icons/verified.svg
+  // String get verified => 'assets/icons/verified.svg';
+
+  // /// File path: assets/icons/workspace.svg
+  // String get workspace => 'assets/icons/workspace.svg';
+
+  // /// File path: assets/icons/workspace_on.svg
+  // String get workspaceOn => 'assets/icons/workspace_on.svg';
 
   /// List of all assets
-  List<dynamic> get values => [
-        accept,
-        activeWorkspaceColor,
-        back,
-        comment,
-        delete,
-        email,
-        emailSettings,
-        eye,
-        eyeHidden,
-        gallery,
-        instalSmallIcon,
-        lang,
-        langPurple,
-        lock,
-        lock2,
-        lockSettings,
-        logo,
-        logoWide,
-        logout,
-        notification,
-        notificationOn,
-        passOtp,
-        profile,
-        profilePurple,
-        req,
-        reqOn,
-        review,
-        settings,
-        settingsBack,
-        settingsOn,
-        support,
-        supportPurple,
-        upload,
-        user,
-        verified,
-        workspace,
-        workspaceOn
-      ];
+  // List<dynamic> get values => [
+  //       accept,
+  //       activeWorkspaceColor,
+  //       back,
+  //       comment,
+  //       delete,
+  //       email,
+  //       emailSettings,
+  //       eye,
+  //       eyeHidden,
+  //       gallery,
+  //       instalSmallIcon,
+  //       lang,
+  //       langPurple,
+  //       lock,
+  //       lock2,
+  //       lockSettings,
+  //       logo,
+  //       logoWide,
+  //       logout,
+  //       notification,
+  //       notificationOn,
+  //       passOtp,
+  //       profile,
+  //       profilePurple,
+  //       req,
+  //       reqOn,
+  //       review,
+  //       settings,
+  //       settingsBack,
+  //       settingsOn,
+  //       support,
+  //       supportPurple,
+  //       upload,
+  //       user,
+  //       verified,
+  //       workspace,
+  //       workspaceOn
+  //     ];
 }
 
 class $AssetsImagesGen {
@@ -197,6 +285,18 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/avatar.png
   AssetGenImage get avatar => const AssetGenImage('assets/images/avatar.png');
+
+  /// File path: assets/images/profile_image.png
+  AssetGenImage get profile_image =>
+      const AssetGenImage('assets/images/profile_image.png');
+
+  /// File path: assets/images/topStack.png
+  AssetGenImage get topStack =>
+      const AssetGenImage('assets/images/topStack.png');
+
+  /// File path: assets/images/about_stack.png
+  AssetGenImage get aboutSstack =>
+      const AssetGenImage('assets/images/about_stack.png');
 
   /// File path: assets/images/onboarding1.png
   AssetGenImage get onboarding1 =>
@@ -298,8 +398,8 @@ class AssetGenImage {
       semanticLabel: semanticLabel,
       excludeFromSemantics: excludeFromSemantics,
       scale: scale,
-      width: width,
-      height: height,
+      width: width?.w,
+      height: height?.h,
       color: color,
       opacity: opacity,
       colorBlendMode: colorBlendMode,

@@ -95,6 +95,10 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
       ),
       decoration: widget.inputDecoration ??
           InputDecoration(
+            // prefixIconConstraints: BoxConstraints(),
+            // constraints: BoxConstraints(
+            //   maxHeight: 65.h,
+            // ),
             contentPadding: widget.contentPadding ??
                 EdgeInsets.symmetric(
                   vertical: 22.h,
@@ -102,8 +106,15 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
                 ),
             // filled: true,
             fillColor: context.formFieldColor,
-            prefixIcon:
-                widget.prefixIcon?.toSvg(color: context.bodySmall?.color),
+            prefixIcon: Padding(
+              padding: EdgeInsets.only(
+                right: 35.w,
+                left: 9.76.w,
+              ),
+              child: widget.prefixIcon?.toSvg(
+                color: context.primaryColor,
+              ),
+            ),
             prefix: widget.prefixWidget,
             suffix: widget.suffixWidget,
             suffixIcon: widget.suffixIcon ??
@@ -127,7 +138,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
             errorBorder: borderType(),
             hintStyle: TextStyle(
               color: widget.hintColor,
-              fontSize: widget.hintSize ?? 14,
+              fontSize: widget.hintSize?.sp ?? 14.sp,
               fontWeight: FontWeight.w400,
             ),
             hintText: widget.hintText,
@@ -144,7 +155,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
     return OutlineInputBorder(
       borderSide: BorderSide(color: widget.activeBorderColor, width: 1),
       borderRadius: BorderRadius.all(
-        Radius.circular(widget.borderRadius),
+        Radius.circular(widget.borderRadius.r),
       ),
     );
   }

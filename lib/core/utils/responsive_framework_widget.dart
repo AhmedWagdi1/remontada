@@ -20,7 +20,7 @@ class AppResponsiveWrapper extends StatelessWidget {
               width: ResponsiveValue<double>(context,
                   defaultValue: 450,
                   conditionalValues: [
-                    Condition.equals(name: MOBILE, value: 450),
+                    Condition.equals(name: MOBILE, value: 400),
                     Condition.equals(name: TABLET, value: 600),
                     Condition.equals(name: DESKTOP, value: 1200),
                     Condition.equals(name: "4k", value: 2300),

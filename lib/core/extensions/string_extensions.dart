@@ -27,10 +27,16 @@ extension StringExtension on String? {
   bool get isNull => this == null;
 
   /// Returns true if given String is null or isEmpty
-  bool get isEmptyOrNull => this == null || (this != null && this!.isEmpty) || (this != null && this! == 'null');
+  bool get isEmptyOrNull =>
+      this == null ||
+      (this != null && this!.isEmpty) ||
+      (this != null && this! == 'null');
 
   /// validate password
-  bool get isValidPassword => this == null || (this != null && this!.length < 8) || (this != null && this! == 'null');
+  bool get isValidPassword =>
+      this == null ||
+      (this != null && this!.length < 8) ||
+      (this != null && this! == 'null');
 
   // Check null string, return given value if null
   String validate({String value = ''}) {
@@ -41,12 +47,18 @@ extension StringExtension on String? {
     }
   }
 
-  SizedBox toSvg({double? height, double? width, ColorFilter? colorFilter, Color? color, BoxFit fit = BoxFit.contain}) {
+  SizedBox toSvg(
+      {double? height,
+      double? width,
+      ColorFilter? colorFilter,
+      Color? color,
+      BoxFit fit = BoxFit.contain}) {
     if (color != null) colorFilter = ColorFilter.mode(color, BlendMode.srcIn);
     return SizedBox(
-      height: height ?? 24,
-      width: width ?? 24,
-      child: SvgPicture.asset(validate(), fit: fit, colorFilter: colorFilter).center(),
+      height: height?.h ?? 24,
+      width: width?.w ?? 24,
+      child: SvgPicture.asset(validate(), fit: fit, colorFilter: colorFilter)
+          .center(),
     );
   }
 
@@ -142,7 +154,8 @@ class Patterns {
 
   static String money = r'^\d{0,8}(\.\d{1,4})?$';
 
-  static String email = r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
+  static String email =
+      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
 
   static String image = r'.(jpeg|jpg|gif|png|bmp)$';
 

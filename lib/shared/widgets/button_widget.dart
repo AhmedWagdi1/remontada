@@ -23,7 +23,7 @@ class ButtonWidget extends StatelessWidget {
     this.gradient,
     this.title = "OK",
     this.width = double.infinity,
-    this.height = 60.0,
+    this.height = 65.0,
     this.onTap,
     this.fontFamily,
     this.child,
@@ -40,11 +40,11 @@ class ButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: width,
-      height: height,
+      width: width.w,
+      height: height.h,
       decoration: BoxDecoration(
         gradient: buttonColor == null ? LightThemeColors.buttonColor : gradient,
-        borderRadius: BorderRadius.circular(radius),
+        borderRadius: BorderRadius.circular(radius.r),
       ),
       child: ElevatedButton(
         onPressed: onTap,

@@ -23,7 +23,8 @@ Future<void> main() async {
   // Utils.getToken();
   await Utils.dataManager.initHive();
 
-  runApp(EasyLocalization(
+  runApp(
+    EasyLocalization(
       startLocale: const Locale('ar', 'EG'),
       supportedLocales: const [
         Locale('ar', 'EG'),
@@ -31,7 +32,9 @@ Future<void> main() async {
       ],
       saveLocale: true,
       path: 'assets/translations',
-      child: const MyApp()));
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

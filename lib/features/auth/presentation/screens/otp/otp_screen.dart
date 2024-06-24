@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pinput/pinput.dart';
+import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
+import 'package:remontada/shared/back_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 
 import '../../../../../core/extensions/all_extensions.dart';
@@ -11,7 +13,6 @@ import '../../../../../core/services/alerts.dart';
 import '../../../../../core/utils/extentions.dart';
 import '../../../../../core/utils/utils.dart';
 import '../../../../../shared/widgets/button_widget.dart';
-import '../../../../../shared/widgets/customAppbar.dart';
 
 class OtpScreen extends StatefulWidget {
   final String sendTo;
@@ -75,9 +76,9 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbar(
-        title: "كود التحقق",
-      ),
+      // appBar: CustomAppbar(
+      //   title: "كود التحقق",
+      // ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -86,16 +87,46 @@ class _OtpScreenState extends State<OtpScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  80.ph,
+                  Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        // height: 40.h,
+                      ),
+                      Positioned(
+                        // top: 0,
+                        child: CustomText(
+                          "كود التحقق",
+                          style: TextStyle(
+                            color: context.primaryColor,
+                          ).s24.heavy,
+                          // fontSize: 26,
+                          // weight: FontWeight.bold,
+                          // color: context.colorScheme.primary,
+                        ),
+                      ),
+                      Positioned(
+                        right: 0,
+                        // bottom: 0,
+                        child: BackWidget(),
+                      ),
+                    ],
+                  ),
                   5.ph,
                   Container(
                     width: 244,
                     height: 42,
                     child: CustomText(
+                      style: TextStyle(
+                        color: LightThemeColors.secondaryText,
+                      ).s14.regular,
                       align: TextAlign.center,
                       "قم بكتابة كود التحقق المكون من 6 ارقام الذي تم ارساله اليك عبر الجوال",
-                      fontSize: 14,
-                      color: LightThemeColors.secondaryText,
-                      weight: FontWeight.w500,
+                      // fontSize: 14,
+                      // c
+                      // weight: FontWeight.w500,
                     ),
                   ),
                   24.ph,
@@ -108,14 +139,17 @@ class _OtpScreenState extends State<OtpScreen> {
                     ),
                     child: CustomText(
                       "+966 562609805",
-                      color: LightThemeColors.primary,
-                      fontSize: 14,
-                      weight: FontWeight.w500,
+
+                      style: TextStyle(
+                        color: LightThemeColors.primary,
+                      ).s14.regular,
+                      // fontSize: 14,
+                      // weight: FontWeight.w500,
                     ),
                   ),
                   40.ph,
                   SvgPicture.asset(
-                    "otp".svg("icons"),
+                    Assets.icons.otp,
                     width: 212,
                     height: 212,
                   ),
@@ -220,17 +254,21 @@ class _OtpScreenState extends State<OtpScreen> {
                   CustomText(
                     "لم يتم إستلام كود التحقق ؟",
                     fontSize: 16,
-                    weight: FontWeight.w600,
-                    color: LightThemeColors.secondaryText,
+                    style: TextStyle(
+                      color: LightThemeColors.secondaryText,
+                    ).s14.regular,
+                    // weight: FontWeight.w600,
                   ),
                   5.ph,
                   remainigTime.isEmpty
                       ? GestureDetector(
                           child: CustomText(
-                            fontSize: 16,
+                            style: TextStyle(
+                              color: context.primaryColor,
+                            ).s14.medium,
+                            // fontSize: 16,
                             "أرسل الكود مرة أخرى",
-                            color: context.primaryColor,
-                            weight: FontWeight.w600,
+                            // weight: FontWeight.w600,
                           ),
                           onTap: remainigTime.isEmpty
                               ? () async {

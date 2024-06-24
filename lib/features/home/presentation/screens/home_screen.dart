@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
+import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/services/alerts.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
@@ -46,6 +47,21 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Stack(
         alignment: Alignment.topCenter,
         children: [
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 0,
+            child: Transform.scale(
+              scale: 1,
+              child: Container(
+                // width: 375.w,
+                // height: 290.h,
+                child: Assets.images.aboutSstack.image(
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+          ),
           Container(
             padding: EdgeInsets.symmetric(
               horizontal: 8.w,
@@ -58,24 +74,29 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   54.84.ph,
                   SvgPicture.asset(
-                    "logo".svg("icons"),
+                    Assets.icons.logo,
                     width: 100.w,
                     height: 70.h,
                     color: context.primaryColor,
                   ),
                   5.ph,
                   CustomText(
+                    style: TextStyle(
+                      color: LightThemeColors.secondaryText,
+                    ).s16.regular,
                     "مرحبا بك",
-                    color: LightThemeColors.secondaryText,
-                    fontSize: 16.sp,
-                    weight: FontWeight.w500,
+
+                    // fontSize: 16.sp,
+                    // weight: FontWeight.w500,
                   ),
                   5.ph,
                   CustomText(
+                    style: TextStyle(
+                      color: LightThemeColors.surfaceSecondary,
+                    ).s18.heavy,
                     "اسم اللاعب",
-                    color: LightThemeColors.surfaceSecondary,
-                    fontSize: 18.sp,
-                    weight: FontWeight.w800,
+                    // fontSize: 18.sp,
+                    // weight: FontWeight.w800,
                   ),
                   18.ph,
                   Stack(
@@ -129,17 +150,21 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CustomText(
+                              style: TextStyle(
+                                color: context.primaryColor,
+                              ).s16.heavy,
                               "المباريات المتاحة",
-                              fontSize: 16.sp,
-                              weight: FontWeight.w800,
-                              color: context.primaryColor,
+                              // fontSize: 16.sp,
+                              // weight: FontWeight.w800,
                             ),
                             3.ph,
                             CustomText(
+                              style: TextStyle(
+                                color: LightThemeColors.secondaryText,
+                              ).s12.regular,
                               "قم بالإنضمام إلى المباراة المناسبة لك الآن",
-                              fontSize: 13.sp,
-                              weight: FontWeight.w500,
-                              color: LightThemeColors.secondaryText,
+                              // fontSize: 13.sp,
+                              // weight: FontWeight.w500,
                             ),
                           ],
                         ),
@@ -149,24 +174,30 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            IconButton(
-                              onPressed: () {
-                                showPlaygroungBottomSheet(context);
-                              },
-                              icon: SvgPicture.asset(
-                                width: 40.w,
-                                height: 40.h,
-                                "playground_button".svg("icons"),
+                            Expanded(
+                              flex: 1,
+                              child: IconButton(
+                                onPressed: () {
+                                  showPlaygroungBottomSheet(context);
+                                },
+                                icon: SvgPicture.asset(
+                                  width: 40.w,
+                                  height: 40.h,
+                                  "playground_button".svg("icons"),
+                                ),
                               ),
                             ),
-                            IconButton(
-                              onPressed: () {
-                                showClendersheet(context);
-                              },
-                              icon: SvgPicture.asset(
-                                width: 40.w,
-                                height: 40.h,
-                                "cleander_button".svg("icons"),
+                            Expanded(
+                              flex: 1,
+                              child: IconButton(
+                                onPressed: () {
+                                  showClendersheet(context);
+                                },
+                                icon: SvgPicture.asset(
+                                  width: 40.w,
+                                  height: 40.h,
+                                  "cleander_button".svg("icons"),
+                                ),
                               ),
                             )
                           ],

@@ -3,8 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/Router/Router.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
+import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
+import 'package:remontada/core/utils/launcher.dart';
 import 'package:remontada/features/more/presentation/widgets/customSwitch.dart';
 import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
@@ -27,7 +29,6 @@ class MoreItem extends StatefulWidget {
 }
 
 class _MoreItemState extends State<MoreItem> {
-  bool switched = false;
   pressedItem() {
     if (widget.title == "الملف الشخصي") {
       Navigator.pushNamed(
@@ -86,33 +87,37 @@ class _MoreItemState extends State<MoreItem> {
             children: [
               Row(
                 children: [
-                  SvgPicture.asset(
-                    (widget.icon ?? "location").svg(),
-                    width: 25.w,
-                    height: 25.h,
+                  widget.icon.toSvg(
                     color: widget.title == "تسجيل الخروج"
                         ? LightThemeColors.red
-                        : LightThemeColors.black,
+                        : context.primaryColor,
+                    width: 21.w,
+                    height: 21.h,
                   ),
+                  // SvgPicture.asset(
+                  //   widget.icon ?? "location",
+                  //   width: 25.w,
+                  //   height: 25.h,
+                  //   color: widget.title == "تسجيل الخروج"
+                  //       ? LightThemeColors.red
+                  //       : LightThemeColors.black,
+                  // ),
                   15.pw,
                   CustomText(
+                    style: TextStyle(
+                      color: widget.title == "تسجيل الخروج"
+                          ? LightThemeColors.red
+                          : LightThemeColors.black,
+                    ).s14.bold,
                     widget.title ?? "الملف الشخصي",
-                    color: widget.title == "تسجيل الخروج"
-                        ? LightThemeColors.red
-                        : LightThemeColors.black,
-                    fontSize: 14,
-                    weight: FontWeight.w600,
+
+                    // fontSize: 14,
+                    // weight: FontWeight.w600,
                   ),
                 ],
               ),
               widget.title == "التحكم بالإشعارات"
-                  ? CustomSwitch(
-                      value: switched,
-                      onChanged: (val) {
-                        switched = val;
-                        setState(() {});
-                      },
-                    )
+                  ? CustomSwitchItem()
                   : IconButton(
                       onPressed: () {
                         pressedItem();
@@ -125,6 +130,30 @@ class _MoreItemState extends State<MoreItem> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class CustomSwitchItem extends StatefulWidget {
+  const CustomSwitchItem({super.key});
+
+  @override
+  State<CustomSwitchItem> createState() => _CustomSwitchItemState();
+}
+
+class _CustomSwitchItemState extends State<CustomSwitchItem> {
+  bool switched = false;
+  @override
+  Widget build(BuildContext context) {
+    return CustomSwitch(
+      value: switched,
+      onChanged: (val) {
+        switched = val;
+
+        LauncherHelper.openNotificationsettings();
+
+        setState(() {});
+      },
     );
   }
 }
@@ -142,7 +171,7 @@ sendCaptainrequestDialogue(BuildContext context) {
       padding: EdgeInsets.only(
         right: 15.w,
         left: 15.w,
-        top: 50.h,
+        top: 25.h,
         bottom: 28.h,
       ),
       decoration: BoxDecoration(
@@ -152,10 +181,16 @@ sendCaptainrequestDialogue(BuildContext context) {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SvgPicture.asset(
-            width: 50.w,
-            height: 50.h,
-            "cleander_button".svg(),
+            Assets.icons.dialoge_whistle,
+            // width: 80.w,
+            // height: 80.h,
           ),
+
+          // SvgPicture.asset(
+          //   width: 50.w,
+          //   height: 50.h,
+          //   "cleander_button".svg(),
+          // ),
           11.ph,
           CustomText(
             fontSize: 16.sp,
@@ -205,11 +240,9 @@ showlogoutsheet(BuildContext context) {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SvgPicture.asset(
-            color: LightThemeColors.red,
-            width: 50.w,
-            height: 50.h,
-            "cleander_button".svg(),
+          Assets.icons.log_out.toSvg(
+            width: 32.68,
+            height: 32.68,
           ),
           11.ph,
           CustomText(

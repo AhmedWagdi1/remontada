@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
+import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/features/player_details/presentation/widgets/item_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 
-import '../../../../shared/widgets/customAppbar.dart';
+import '../../../../shared/back_widget.dart';
 
 class PlayerDetails extends StatefulWidget {
   const PlayerDetails({super.key});
@@ -20,9 +21,9 @@ class _PlayerDetailsState extends State<PlayerDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbar(
-        title: "تفاصيل اللاعب",
-      ),
+      // appBar: CustomAppbar(
+      //   title: "تفاصيل اللاعب",
+      // ),
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -34,11 +35,41 @@ class _PlayerDetailsState extends State<PlayerDetails> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  80.ph,
+                  Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        // height: 40.h,
+                      ),
+                      Positioned(
+                        // top: 0,
+                        child: CustomText(
+                          "تفاصيل اللاعب",
+                          style: TextStyle(
+                            color: context.primaryColor,
+                          ).s24.heavy,
+                          // fontSize: 26,
+                          // weight: FontWeight.bold,
+                          // color: context.colorScheme.primary,
+                        ),
+                      ),
+                      Positioned(
+                        right: 0,
+                        // bottom: 0,
+                        child: BackWidget(),
+                      ),
+                    ],
+                  ),
+                  5.ph,
                   CustomText(
+                    style: TextStyle(
+                      color: LightThemeColors.secondaryText,
+                    ).s14.medium,
                     "تفاصيل اللاعب المشارك بالمباراة",
-                    fontSize: 14.sp,
-                    weight: FontWeight.w500,
-                    color: LightThemeColors.secondaryText,
+                    // fontSize: 14.sp,
+                    // weight: FontWeight.w500,
                   ),
                   28.ph,
                   Container(
@@ -46,15 +77,16 @@ class _PlayerDetailsState extends State<PlayerDetails> {
                     height: 80,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: context.primaryColor,
+                      color: context.background,
                       boxShadow: [
                         BoxShadow(
                           offset: Offset(0, 0),
-                          color: Colors.black.withOpacity(.1),
+                          color: Colors.black.withOpacity(.15),
                           blurRadius: 30,
                         ),
                       ],
                     ),
+                    child: Assets.images.profile_image.image(fit: BoxFit.cover),
                   ),
                   13.ph,
                   CustomText(
@@ -67,7 +99,9 @@ class _PlayerDetailsState extends State<PlayerDetails> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SvgPicture.asset(
-                          color: context.primaryColor, "wallet".svg()),
+                        color: context.primaryColor,
+                        Assets.icons.playLocation,
+                      ),
                       5.27.pw,
                       CustomText(
                         "مهاجم",
@@ -104,6 +138,9 @@ class _PlayerDetailsState extends State<PlayerDetails> {
   }
 }
 
-List<String> icons = ["location", "location"];
+List<String> icons = [
+  Assets.icons.calling,
+  Assets.icons.fieldLocation,
+];
 List<String> titles = ["رقم الجوال", "المدينة"];
 List<String> subtitles = ["+9665505024", "الرياض"];

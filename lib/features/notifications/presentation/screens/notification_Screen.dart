@@ -74,17 +74,21 @@ class _NotificationScreenState extends State<NotificationScreen> {
           children: [
             70.ph,
             CustomText(
+              style: TextStyle(
+                color: context.primaryColor,
+              ).s26.heavy,
               "الاشعارات",
-              fontSize: 26.sp,
-              weight: FontWeight.w800,
-              color: context.primaryColor,
+              // fontSize: 26.sp,
+              // weight: FontWeight.w800,
             ),
             5.ph,
             CustomText(
-              fontSize: 14,
-              weight: FontWeight.w500,
+              style: TextStyle(
+                color: LightThemeColors.secondaryText,
+              ).s14.regular,
+              // fontSize: 14,
+              // weight: FontWeight.w500,
               "جميع الاشعارات الخاصة بك",
-              color: LightThemeColors.secondaryText,
             ),
             27.ph,
             Column(

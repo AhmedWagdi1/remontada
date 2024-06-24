@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
@@ -29,17 +29,23 @@ class PlayerDetailsWidget extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SvgPicture.asset(
-                  (icon ?? "location").svg(),
+                icon.toSvg(
                   width: 20.7.w,
                   height: 20.7.h,
+                  color: context.primaryColor,
                 ),
+                // SvgPicture.asset(
+                //   (icon ?? "location").svg(),
+                //
+                // ),
                 8.24.pw,
                 CustomText(
+                  style: TextStyle(
+                    color: LightThemeColors.secondhint,
+                  ).s14.regular,
                   title ?? "رقم الجوال",
-                  fontSize: 14,
-                  weight: FontWeight.w400,
-                  color: LightThemeColors.secondhint,
+                  // fontSize: 14,
+                  // weight: FontWeight.w400,
                 ),
               ],
             ),
@@ -47,10 +53,12 @@ class PlayerDetailsWidget extends StatelessWidget {
           Expanded(
             flex: 7,
             child: CustomText(
+              style: TextStyle(
+                color: context.primaryColor,
+              ).s16.regular,
               subtitle ?? "+9665505024",
-              fontSize: 16,
-              weight: FontWeight.w500,
-              color: context.primaryColor,
+              // fontSize: 16,
+              // weight: FontWeight.w500,
             ),
           ),
         ],

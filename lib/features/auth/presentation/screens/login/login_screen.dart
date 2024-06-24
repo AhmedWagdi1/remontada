@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/Router/Router.dart';
+import 'package:remontada/core/extensions/all_extensions.dart';
+import 'package:remontada/core/resources/font_manager.dart';
+import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
@@ -79,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         101.ph,
                         SvgPicture.asset(
-                          "logo".svg("icons"),
+                          Assets.icons.logo,
                         ),
                         33.1.ph,
                         Container(
@@ -102,32 +105,44 @@ class _LoginScreenState extends State<LoginScreen> {
                               children: [
                                 66.ph,
                                 CustomText(
-                                  weight: FontWeight.bold,
+                                  // weight: FontWeight.bold,
                                   // fontFamily: "DINNext",
-                                  fontSize: 24.sp,
+                                  style: TextStyle(
+                                    color: LightThemeColors.textPrimary,
+                                  ).s24.heavy,
+                                  // fontSize: 24.sp,
                                   "تسجيل الدخول",
-                                  color: LightThemeColors.textPrimary,
                                 ),
                                 4.ph,
                                 CustomText(
-                                  weight: FontWeight.bold,
+                                  // weight: FontWeight.bold,
                                   // fontFamily: "DINNext",
-                                  fontSize: 16.sp,
+                                  // fontSize: 16.sp,
+                                  style: TextStyle(
+                                    color: LightThemeColors.secondaryText,
+                                  ).s16.regular,
                                   "قم بكتابة بيانات حسابك لتسجيل الدخول",
-                                  color: LightThemeColors.secondaryText,
                                 ),
                                 35.ph,
                                 TextFormFieldWidget(
-                                  contentPadding:
-                                      EdgeInsetsDirectional.symmetric(
-                                    vertical: 22.w,
-                                  ),
-                                  hintSize: 16.sp,
-                                  borderRadius: 33.r,
-                                  hintText: "            رقم الجوال",
+                                  prefixIcon: Assets.icons.calling,
+
+                                  hintSize: FontSize.s16,
+                                  borderRadius: 33,
+                                  hintText: "رقم الجوال",
                                   hintColor: LightThemeColors.textPrimary,
                                   activeBorderColor:
                                       LightThemeColors.inputFieldBorder,
+                                  // contentPadding:
+                                  //     EdgeInsetsDirectional.symmetric(
+                                  //   vertical: 22.w,
+                                  // ),
+                                  // hintSize: FontSize.s16,
+                                  // borderRadius: 33.r,
+                                  // hintText: "    رقم الجوال",
+                                  // hintColor: LightThemeColors.textPrimary,
+                                  // activeBorderColor:
+                                  //     LightThemeColors.inputFieldBorder,
                                 ),
                                 26.ph,
                                 ButtonWidget(
@@ -137,13 +152,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                       Routes.LayoutScreen,
                                     );
                                   },
-                                  height: 65.h,
-                                  radius: 33.r,
-                                  gradient: LightThemeColors.buttonColor,
+                                  height: 65,
+                                  radius: 33,
+                                  // gradient: LightThemeColors.buttonColor,
                                   child: CustomText(
                                     "الدخول",
-                                    fontSize: 18.sp,
-                                    color: context.colorScheme.onPrimary,
+                                    style: TextStyle(
+                                      color: context.scaffoldBackgroundColor,
+                                    ).s18.bold,
+                                    // fontSize: 18.sp,
                                   ),
                                 ),
                                 40.ph,
@@ -156,9 +173,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                   },
                                   child: CustomText(
                                     "ليس لديك حساب؟",
-                                    color: LightThemeColors.secondaryText,
-                                    fontSize: 16.sp,
-                                    weight: FontWeight.w600,
+                                    style: TextStyle(
+                                      color: LightThemeColors.secondaryText,
+                                    ).s16.regular,
+
+                                    // fontSize: 16.sp,
+                                    // weight: FontWeight.w600,
                                   ),
                                 ),
                               ],

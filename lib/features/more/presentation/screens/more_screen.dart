@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:remontada/core/extensions/context_extensions.dart';
+import 'package:remontada/core/extensions/all_extensions.dart';
+import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/features/more/presentation/widgets/more_item.dart';
@@ -24,6 +25,23 @@ class MoreScreen extends StatelessWidget {
       body: Stack(
         alignment: Alignment.center,
         children: [
+          // Container(
+          //   width: 500,
+          //   height: 1000,
+          // ),
+          Positioned(
+            top: 0,
+            child: Transform.scale(
+              scale: 1.15,
+              child: Container(
+                width: 375.w,
+                height: 108.h,
+                child: Assets.images.topStack.image(
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+          ),
           SingleChildScrollView(
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 18.w),
@@ -33,23 +51,28 @@ class MoreScreen extends StatelessWidget {
                 children: [
                   70.ph,
                   CustomText(
+                    style: TextStyle(
+                      color: context.primaryColor,
+                    ).s26.heavy,
                     "المزيد",
-                    fontSize: 26.sp,
-                    weight: FontWeight.w800,
-                    color: context.primaryColor,
+                    // fontSize: 26.sp,
+                    // weight: FontWeight.w800,
                   ),
                   5.ph,
                   CustomText(
+                    style: TextStyle(
+                      color: LightThemeColors.secondaryText,
+                    ).s16.regular,
                     "مزيد من التحكم والتفاصيل",
-                    fontSize: 16.sp,
-                    weight: FontWeight.w500,
-                    color: LightThemeColors.secondaryText,
+                    // fontSize: 16.sp,
+                    // weight: FontWeight.w500,
                   ),
                   26.ph,
                   Column(
                     children: List.generate(
                       titles.length,
                       (index) => MoreItem(
+                        icon: icons[index],
                         title: titles[index],
                       ),
                     ),
@@ -73,4 +96,15 @@ List titles = [
   "مشاركة التطبيق",
   "سياسة الخصوصية والإستخدام",
   "تسجيل الخروج",
+];
+
+List icons = [
+  Assets.icons.name,
+  Assets.icons.whistle,
+  Assets.icons.notify,
+  Assets.icons.calling,
+  Assets.icons.information,
+  Assets.icons.share,
+  Assets.icons.policy_privacy,
+  Assets.icons.log_out
 ];

@@ -37,7 +37,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
       child: ClipPath(
         clipper: CustomContainer(),
         child: Container(
-          height: 140.29.h,
+          height: 129.39.h,
           decoration: BoxDecoration(
             // boxShadow: [
             //   BoxShadow(
@@ -52,15 +52,33 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
             color: context.scaffoldBackgroundColor,
           ),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              navBarItem(Assets.icons.workspace, "الرئيسية", 0,
-                  Assets.icons.workspaceOn),
-              navBarItem(Assets.icons.req, "مبارياتي", 1, Assets.icons.reqOn),
-              navBarItem(Assets.icons.notification, "الاشعارات", 2,
-                  Assets.icons.notificationOn),
               navBarItem(
-                  Assets.icons.settings, "المزيد", 3, Assets.icons.settingsOn),
+                Assets.icons.home,
+                "الرئيسية",
+                0,
+                Assets.icons.active_home,
+              ),
+              navBarItem(
+                Assets.icons.myMatches,
+                "مبارياتي",
+                1,
+                Assets.icons.myMatches_active,
+              ),
+              navBarItem(
+                Assets.icons.notify,
+                "الاشعارات",
+                2,
+                Assets.icons.active_notify,
+              ),
+              navBarItem(
+                Assets.icons.more,
+                "المزيد",
+                3,
+                Assets.icons.active_more,
+              ),
             ],
           ),
         ),
@@ -88,33 +106,34 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                       children: [
                         SvgPicture.asset(
                           pathActive,
-                          width: 27.w,
-                          height: 27.h,
+                          width: 25.w,
+                          height: 25.h,
                         ),
                         6.ph,
                         Text(
                           title,
                           style: context.bodySmall?.copyWith(
                             color: context.primaryColor,
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-
+                        10.5.ph,
                         Container(
-                          width: 31,
+                          width: 35.w,
                           padding: EdgeInsets.only(
-                            top: 10.5,
+                            top: 10.5.h,
                           ),
                           decoration: BoxDecoration(
                             border: Border(
                               bottom: BorderSide(
-                                width: 4,
+                                width: 4.w,
                                 color: LightThemeColors.primary,
                               ),
                             ),
                           ),
-                        )
+                        ),
+                        // 25.ph,
                         // Divider(
                         //   indent: 15,
                         //   height: 10.5,
@@ -135,17 +154,18 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                           path,
                           width: 25.w,
                           height: 25.h,
-                          color: context.tertiaryColor,
+                          // color: context.tertiaryColor,
                         ),
                         6.ph,
                         Text(
                           title,
                           style: context.bodySmall?.copyWith(
                             color: LightThemeColors.textSecondary,
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w600,
                           ),
-                        )
+                        ),
+                        25.ph,
                         // TextWidget(
                         //
                         //

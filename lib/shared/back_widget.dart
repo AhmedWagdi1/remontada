@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:remontada/core/utils/utils.dart';
 
 class BackWidget extends StatelessWidget {
   BackWidget({
@@ -16,19 +18,19 @@ class BackWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: () {
+    return GestureDetector(
+      onTap: () {
         if (onBack != null) {
           onBack?.call();
         } else {
           Navigator.pop(context);
         }
       },
-      icon: Transform.scale(
-        scale: 1,
+      child: Transform.flip(
+        flipX: Utils.lang == Locale("ar").languageCode,
         child: SvgPicture.asset(
-          height: 24,
-          width: 24,
+          height: 26.h,
+          width: 26.w,
           "assets/icons/back_arrow.svg",
         ),
       ),

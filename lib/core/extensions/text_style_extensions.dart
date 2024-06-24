@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import '../resources/font_manager.dart';
 
 extension TextStyleEx on TextStyle {
+  TextStyle get heavy => copyWith(fontWeight: FontWeight.w900);
+
+  TextStyle get extrabold => copyWith(fontWeight: FontWeight.w800);
+
   TextStyle get bold => copyWith(fontWeight: FontWeight.bold);
 
   TextStyle get semiBold => copyWith(fontWeight: FontWeight.w600);
@@ -26,6 +30,7 @@ extension TextStyleEx on TextStyle {
   TextStyle get s12 => copyWith(fontSize: FontSize.s12);
 
   TextStyle get s14 => copyWith(fontSize: FontSize.s14);
+  TextStyle get s13 => copyWith(fontSize: FontSize.s13);
 
   TextStyle get s16 => copyWith(fontSize: FontSize.s16);
 
@@ -36,6 +41,7 @@ extension TextStyleEx on TextStyle {
   TextStyle get s22 => copyWith(fontSize: FontSize.s22);
 
   TextStyle get s24 => copyWith(fontSize: FontSize.s24);
+  TextStyle get s26 => copyWith(fontSize: FontSize.s26);
 
   TextStyle get underline => copyWith(decoration: TextDecoration.underline);
 
@@ -57,19 +63,23 @@ extension TextStyleEx on TextStyle {
 
   TextStyle setFontStyle(FontStyle style) => copyWith(fontStyle: style);
 
-  TextStyle setDecoration(TextDecoration decoration) => copyWith(decoration: decoration);
+  TextStyle setDecoration(TextDecoration decoration) =>
+      copyWith(decoration: decoration);
 
   TextStyle setDecorationColor(Color color) => copyWith(decorationColor: color);
 
-  TextStyle setDecorationStyle(TextDecorationStyle style) => copyWith(decorationStyle: style);
+  TextStyle setDecorationStyle(TextDecorationStyle style) =>
+      copyWith(decorationStyle: style);
 
   TextStyle setWordSpacing(double value) => copyWith(wordSpacing: value);
 
   TextStyle setShadows(List<Shadow> shadows) => copyWith(shadows: shadows);
 
-  TextStyle setForeground(Color color) => copyWith(foreground: Paint()..color = color);
+  TextStyle setForeground(Color color) =>
+      copyWith(foreground: Paint()..color = color);
 
-  TextStyle setBackground(Color color) => copyWith(background: Paint()..color = color);
+  TextStyle setBackground(Color color) =>
+      copyWith(background: Paint()..color = color);
 
   TextStyle setFontFamily(String? family) => copyWith(fontFamily: family);
 

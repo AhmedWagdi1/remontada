@@ -7,9 +7,11 @@ import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/features/matchdetails/presentaion/widgets/item_bottomshet.dart';
 import 'package:remontada/features/matchdetails/presentaion/widgets/item_widget.dart';
+import 'package:remontada/shared/back_widget.dart';
 import 'package:remontada/shared/widgets/button_widget.dart';
-import 'package:remontada/shared/widgets/customAppbar.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
+
+import '../../../../core/resources/gen/assets.gen.dart';
 
 class MatchDetailsScreen extends StatefulWidget {
   const MatchDetailsScreen({super.key, this.mymatch = false});
@@ -23,19 +25,49 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbar(
-        title: "تفاصيل المباراة",
-      ),
+      // appBar: CustomAppbar(
+      //   title: "تفاصيل المباراة",
+      // ),
       body: SingleChildScrollView(
         child: Container(
           width: double.infinity,
           child: Column(
             children: [
+              80.ph,
+              Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    // height: 40.h,
+                  ),
+                  Positioned(
+                    // top: 0,
+                    child: CustomText(
+                      "تفاصيل المباراة",
+                      style: TextStyle(
+                        color: context.primaryColor,
+                      ).s24.heavy,
+                      // fontSize: 26,
+                      // weight: FontWeight.bold,
+                      // color: context.colorScheme.primary,
+                    ),
+                  ),
+                  Positioned(
+                    right: 0,
+                    // bottom: 0,
+                    child: BackWidget(),
+                  ),
+                ],
+              ),
+              5.ph,
               CustomText(
+                style: TextStyle(
+                  color: LightThemeColors.secondaryText,
+                ).s14.regular,
                 "عرض لجميع تفاصيل المباراة",
-                fontSize: 14.sp,
-                weight: FontWeight.w500,
-                color: LightThemeColors.secondaryText,
+                // fontSize: 14.sp,
+                // weight: FontWeight.w500,
               ),
               31.ph,
               Column(
@@ -68,7 +100,7 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                           SvgPicture.asset(
                             width: 20.54,
                             height: 20.54,
-                            "wallet".svg("icons"),
+                            Assets.icons.tshirt,
                             color: context.background,
                           ),
                           5.87.pw,
@@ -165,7 +197,7 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                         children: [
                           SvgPicture.asset(
                             color: context.background,
-                            "location".svg(),
+                            Assets.icons.flag,
                           ),
                           9.pw,
                           CustomText(
@@ -203,8 +235,8 @@ showPlayersheet(BuildContext context) {
     child: Container(
       height: 623.h,
       padding: EdgeInsets.only(
-        right: 15.w,
-        left: 15.w,
+        right: 18.w,
+        left: 18.w,
         top: 50.h,
         // bottom: 24.h,
       ),
@@ -221,25 +253,33 @@ showPlayersheet(BuildContext context) {
                 child: Row(
                   children: [
                     SvgPicture.asset(
+                      color: context.primaryColor,
                       width: 40.w,
                       height: 40.h,
-                      "cleander_button".svg(),
+                      Assets.icons.tshirt,
                     ),
                     14.36.pw,
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomText(
-                          fontSize: 17.sp,
+                          style: TextStyle(
+                            color: LightThemeColors.primary,
+                          ).s18.extrabold,
+                          // fontSize: 17.sp,
                           "قائمة المشتركين",
-                          color: LightThemeColors.primary,
-                          weight: FontWeight.w800,
+
+                          // weight: FontWeight.w800,
                         ),
+                        4.ph,
                         CustomText(
-                          fontSize: 14.sp,
+                          style: TextStyle(
+                            color: LightThemeColors.secondaryText,
+                          ).s14.regular,
+                          // fontSize: 14.sp,
                           "قائمة اللاعبين المشتركيين بالمباراة",
-                          color: LightThemeColors.secondaryText,
-                          weight: FontWeight.w500,
+                          //
+                          // weight: FontWeight.w500,
                         ),
                       ],
                     ),
@@ -249,8 +289,8 @@ showPlayersheet(BuildContext context) {
               Expanded(
                 flex: 1,
                 child: Container(
-                  width: 79,
-                  height: 46,
+                  width: 79.w,
+                  height: 46.h,
                   decoration: BoxDecoration(
                     color: LightThemeColors.surface,
                     borderRadius: BorderRadius.circular(25),
@@ -337,7 +377,7 @@ showConfirmationSheet(BuildContext context) {
 }
 
 List icons = [
-  "clender",
+  "arena",
   "location",
   "clender",
   "clock",

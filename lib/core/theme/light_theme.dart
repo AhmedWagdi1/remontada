@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:remontada/core/theme/theme_manager.dart';
 
 import '../resources/text_style_manager.dart';
@@ -45,6 +46,7 @@ class LightThemeColors {
   static Color surfaceSecondary = const Color(0xFF091F31);
   static Color surfaceSuccess = const Color(0xFF32E444).withOpacity(0.35);
   static Color surfaceError = LightThemeColors.error.withOpacity(0.35);
+  static const Color subtitleNotify = Color(0xff6B6B6B);
 
   // Text Colors
   // static const Color primaryText = Colors.white;
@@ -54,6 +56,8 @@ class LightThemeColors {
   static const Color textHint = Color(0xFF8A8C95);
   static const Color secondhint = Color(0xFF7B8FA0);
   static const Color pricecolor = Color(0xff27902B);
+  static const Color notifytextSeen = Color(0xff747474);
+
   // Text Colors
   static const _primaryValue = 0xFF275072;
   static MaterialColor primaryText = MaterialColor(
@@ -314,6 +318,7 @@ class LightTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: AppThemeManager.elevatedButtonStyleTheme(
           buttonColor: LightThemeColors.primary,
+          buttonColorPressed: LightThemeColors.primary,
           textColor: LightThemeColors.onPrimary,
         ),
       ),
@@ -326,10 +331,14 @@ class LightTheme {
         thickness: 1,
         color: LightThemeColors.inputFieldBorder,
       ),
-
       expansionTileTheme: ExpansionTileThemeData(
         iconColor: LightThemeColors.primaryText,
         textColor: LightThemeColors.primaryText,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        constraints: BoxConstraints(
+          maxHeight: 65.h,
+        ),
       ),
 
       //* Input Decoration Theme

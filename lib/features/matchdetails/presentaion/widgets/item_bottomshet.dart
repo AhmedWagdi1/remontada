@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/Router/Router.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
+import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 
@@ -43,24 +44,49 @@ class PlayerBottomSheet extends StatelessWidget {
                           height: 44,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
+                            color: Colors.transparent,
+                          ),
+                          child: Assets.images.profile_image.image(
+                            fit: BoxFit.contain,
                           ),
                         ),
+                        13.pw,
                         Expanded(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               CustomText(
+                                style: TextStyle(
+                                  color: LightThemeColors.black,
+                                ).s14.bold,
                                 "محمد نواف",
-                                fontSize: 14.sp,
-                                weight: FontWeight.w600,
-                                color: LightThemeColors.black,
+                                // fontSize: 14.sp,
+                                // weight: FontWeight.w600,
                               ),
-                              CustomText(
-                                "مهاجم",
-                                fontSize: 12.sp,
-                                color: context.primaryColor,
-                                weight: FontWeight.w500,
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  // Assets.icons.playLocation.toSvg(
+                                  //   width: 9,
+                                  //   height: 9,
+                                  // ),
+                                  SvgPicture.asset(
+                                    Assets.icons.playLocation,
+                                    width: 11.w,
+                                    height: 11.h,
+                                  ),
+                                  4.pw,
+                                  CustomText(
+                                    style: TextStyle(
+                                      color: context.primaryColor,
+                                    ).s12.regular,
+                                    "مهاجم",
+                                    // fontSize: 12.sp,
+
+                                    // weight: FontWeight.w500,
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -81,6 +107,8 @@ class PlayerBottomSheet extends StatelessWidget {
                   );
                 },
                 icon: SvgPicture.asset(
+                  width: 36.w,
+                  height: 36.h,
                   "forowrdButton".svg(),
                 ),
               ),
