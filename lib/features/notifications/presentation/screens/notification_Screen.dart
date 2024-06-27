@@ -1,11 +1,13 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
+import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/features/notifications/presentation/widgets/widgets.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
+
+import '../../../../core/app_strings/locale_keys.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -19,38 +21,42 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget getnonotifyBody() {
     return Container(
       width: double.infinity,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-          70.ph,
-          CustomText(
-            "الاشعارات",
-            fontSize: 26.sp,
-            weight: FontWeight.w800,
-            color: context.primaryColor,
-          ),
-          5.ph,
-          CustomText(
-            fontSize: 14,
-            weight: FontWeight.w500,
-            "جميع الاشعارات الخاصة بك",
-            color: LightThemeColors.secondaryText,
-          ),
           Column(
             children: [
-              SvgPicture.asset(""),
+              70.ph,
+              CustomText(
+                LocaleKeys.notifications.tr(),
+                fontSize: 26,
+                weight: FontWeight.w800,
+                color: context.primaryColor,
+              ),
+              5.ph,
+              CustomText(
+                fontSize: 16,
+                weight: FontWeight.w500,
+                LocaleKeys.notifications_sub.tr(),
+                color: LightThemeColors.secondaryText,
+              ),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Assets.images.bell.image(),
               20.ph,
               CustomText(
-                "لا توجد اشعارات",
-                fontSize: 14,
+                LocaleKeys.no_notify.tr(),
+                fontSize: 16,
                 weight: FontWeight.w500,
                 color: LightThemeColors.secondaryText,
               ),
               4.ph,
               CustomText(
-                "لا توجد لديك اشعارات بالوقت الحالي",
-                fontSize: 14,
+                LocaleKeys.having_nonotify.tr(),
+                fontSize: 16,
                 weight: FontWeight.w500,
                 color: LightThemeColors.secondaryText,
               ),
@@ -66,7 +72,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.symmetric(
-          horizontal: 8.w,
+          horizontal: 8,
         ),
         width: double.infinity,
         child: Column(
@@ -77,7 +83,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               style: TextStyle(
                 color: context.primaryColor,
               ).s26.heavy,
-              "الاشعارات",
+              LocaleKeys.notifications.tr(),
               // fontSize: 26.sp,
               // weight: FontWeight.w800,
             ),
@@ -85,10 +91,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
             CustomText(
               style: TextStyle(
                 color: LightThemeColors.secondaryText,
-              ).s14.regular,
+              ).s16.medium,
               // fontSize: 14,
               // weight: FontWeight.w500,
-              "جميع الاشعارات الخاصة بك",
+              LocaleKeys.notifications_sub.tr(),
             ),
             27.ph,
             Column(
@@ -96,7 +102,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 3,
                 (index) => NotifyItem(),
               ),
-            )
+            ),
+            SizedBox(
+              height: 129.29,
+            ),
           ],
         ),
       ),

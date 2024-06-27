@@ -1,7 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/Router/Router.dart';
+import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
@@ -48,10 +49,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Positioned(
                         // top: 0,
                         child: CustomText(
-                          "الملف الشخصي",
+                          LocaleKeys.profile.tr(),
                           style: TextStyle(
                             color: context.primaryColor,
-                          ).s24.heavy,
+                          ).s26.heavy,
                           // fontSize: 26,
                           // weight: FontWeight.bold,
                           // color: context.colorScheme.primary,
@@ -66,15 +67,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   5.ph,
                   CustomText(
-                    "عرض تفاصيل الملف الشخصي",
-                    fontSize: 14.sp,
+                    "showing_profile_details".tr(),
+                    fontSize: 16,
                     weight: FontWeight.w500,
                     color: LightThemeColors.secondaryText,
                   ),
                   28.ph,
                   Container(
-                    width: 90.w,
-                    height: 90.h,
+                    width: 90,
+                    height: 90,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: context.background,
@@ -133,8 +134,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       context,
                       Routes.editProfile,
                     ),
-                    height: 65.h,
-                    radius: 33.r,
+                    height: 65,
+                    radius: 33,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -144,7 +145,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         5.5.pw,
                         CustomText(
-                          "تعديل بياناتي",
+                          "edit_button".tr(),
                           fontSize: 16,
                           weight: FontWeight.bold,
                           color: context.background,
@@ -158,9 +159,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: Transform.scale(
-        scale: 1.2.dm,
+      bottomNavigationBar: Container(
+        color: context.background,
+        // height: 100.h,
+        width: double.infinity,
         child: SvgPicture.asset(
+          fit: BoxFit.cover,
           "login_bottom".svg("images"),
         ),
       ),
@@ -173,5 +177,9 @@ List<String> icons = [
   Assets.icons.email,
   Assets.icons.fieldLocation,
 ];
-List<String> titles = ["رقم الجوال", "البريد الإلكتروني", "المدينة"];
+List<String> titles = [
+  LocaleKeys.auth_hint_phone.tr(),
+  LocaleKeys.auth_hint_email.tr(),
+  LocaleKeys.city.tr()
+];
 List<String> subtitles = ["+9665505024", "Mnwaf52@gmail.com", "الرياض"];

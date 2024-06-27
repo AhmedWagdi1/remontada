@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/Router/Router.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
@@ -19,16 +18,16 @@ class PlayerBottomSheet extends StatelessWidget {
         padding: EdgeInsets.only(
             // bottom: 9.h,
             ),
-        height: 60.h,
-        width: 355.w,
+        height: 60,
+        width: 355,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(25.r),
+          borderRadius: BorderRadius.circular(25),
           color: context.primaryColor.withOpacity(
             .09,
           ),
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
@@ -59,7 +58,7 @@ class PlayerBottomSheet extends StatelessWidget {
                               CustomText(
                                 style: TextStyle(
                                   color: LightThemeColors.black,
-                                ).s14.bold,
+                                ).s16.bold,
                                 "محمد نواف",
                                 // fontSize: 14.sp,
                                 // weight: FontWeight.w600,
@@ -73,14 +72,14 @@ class PlayerBottomSheet extends StatelessWidget {
                                   // ),
                                   SvgPicture.asset(
                                     Assets.icons.playLocation,
-                                    width: 11.w,
-                                    height: 11.h,
+                                    width: 14,
+                                    height: 14,
                                   ),
                                   4.pw,
                                   CustomText(
                                     style: TextStyle(
                                       color: context.primaryColor,
-                                    ).s12.regular,
+                                    ).s14.regular,
                                     "مهاجم",
                                     // fontSize: 12.sp,
 
@@ -107,8 +106,8 @@ class PlayerBottomSheet extends StatelessWidget {
                   );
                 },
                 icon: SvgPicture.asset(
-                  width: 36.w,
-                  height: 36.h,
+                  width: 38,
+                  height: 38,
                   "forowrdButton".svg(),
                 ),
               ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/theme/light_theme.dart';
@@ -17,23 +16,23 @@ class NotifyItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 10.h, right: 5.w, left: 5.w),
+      padding: EdgeInsets.only(bottom: 10, right: 5, left: 5),
       child: Container(
         padding: EdgeInsets.only(
-          right: 26.w,
-          left: 16.w,
-          top: 20.h,
-          bottom: 20.h,
+          right: 26,
+          left: 20,
+          top: 25,
+          bottom: 25,
         ),
         decoration: BoxDecoration(
           color: context.background,
           borderRadius: BorderRadius.circular(13),
           boxShadow: [
             BoxShadow(
-              spreadRadius: -5,
+              // spreadRadius: -5,
               offset: Offset.zero,
               blurRadius: 30,
-              color: LightThemeColors.black.withOpacity(.1),
+              color: LightThemeColors.black.withOpacity(.13),
             ),
           ],
         ),
@@ -45,8 +44,8 @@ class NotifyItem extends StatelessWidget {
                 isSeen!
                     ? SvgPicture.asset(
                         // color: LightThemeColors.,
-                        width: 44.w,
-                        height: 40.h,
+                        width: 44,
+                        height: 40,
                         // "location".svg(),
                         Assets.icons.notifyLogo,
                       )
@@ -54,17 +53,17 @@ class NotifyItem extends StatelessWidget {
                         children: [
                           SvgPicture.asset(
                             color: context.primaryColor,
-                            width: 44.w,
-                            height: 40.h,
+                            width: 44,
+                            height: 40,
                             // "location".svg(),
                             Assets.icons.notifyActiveLogo,
                           ),
                           Positioned(
                             top: 0,
-                            right: 10.w,
+                            right: 10,
                             child: Container(
-                              width: 10.w,
-                              height: 10.h,
+                              width: 10,
+                              height: 10,
                               decoration: BoxDecoration(
                                 color: Colors.red,
                                 shape: BoxShape.circle,
@@ -85,7 +84,7 @@ class NotifyItem extends StatelessWidget {
                           color: isSeen!
                               ? LightThemeColors.notifytextSeen
                               : context.primaryColor,
-                        ).s16.medium,
+                        ).s18.medium,
                         // fontSize: 14.sp,
                         // weight: FontWeight.w600,
                       ),
@@ -121,9 +120,9 @@ class NotifyItem extends StatelessWidget {
                 ),
               ],
             ),
-            16.ph,
+            12.79.ph,
             Container(
-              width: 300,
+              // width: 300,
               height: 40,
               child: CustomText(
                 "هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي",
@@ -132,7 +131,7 @@ class NotifyItem extends StatelessWidget {
                   color: isSeen!
                       ? LightThemeColors.subtitleNotify
                       : LightThemeColors.black,
-                ).s13.light,
+                ).s14.light,
 
                 // fontSize: 13.sp,
                 // weight: FontWeight.w400,

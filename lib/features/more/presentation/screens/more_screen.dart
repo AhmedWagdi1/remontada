@@ -1,5 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
@@ -31,20 +32,19 @@ class MoreScreen extends StatelessWidget {
           // ),
           Positioned(
             top: 0,
-            child: Transform.scale(
-              scale: 1.15,
-              child: Container(
-                width: 375.w,
-                height: 108.h,
-                child: Assets.images.topStack.image(
-                  fit: BoxFit.contain,
-                ),
+            right: 0,
+            left: 0,
+            child: Container(
+              width: double.infinity,
+              height: 108,
+              child: Assets.images.topStack.image(
+                fit: BoxFit.fill,
               ),
             ),
           ),
           SingleChildScrollView(
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 18.w),
+              padding: EdgeInsets.symmetric(horizontal: 18),
               width: double.infinity,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -54,7 +54,7 @@ class MoreScreen extends StatelessWidget {
                     style: TextStyle(
                       color: context.primaryColor,
                     ).s26.heavy,
-                    "المزيد",
+                    LocaleKeys.more_nav.tr(),
                     // fontSize: 26.sp,
                     // weight: FontWeight.w800,
                   ),
@@ -63,7 +63,7 @@ class MoreScreen extends StatelessWidget {
                     style: TextStyle(
                       color: LightThemeColors.secondaryText,
                     ).s16.regular,
-                    "مزيد من التحكم والتفاصيل",
+                    LocaleKeys.more_subtitle.tr(),
                     // fontSize: 16.sp,
                     // weight: FontWeight.w500,
                   ),
@@ -77,6 +77,9 @@ class MoreScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  SizedBox(
+                    height: 129.29,
+                  ),
                 ],
               ),
             ),
@@ -88,14 +91,14 @@ class MoreScreen extends StatelessWidget {
 }
 
 List titles = [
-  "الملف الشخصي",
-  "إرسال طلب عضوية كابتن ( مشرف )",
-  "التحكم بالإشعارات",
-  "اتصل بنا",
-  "عن التطبيق",
-  "مشاركة التطبيق",
-  "سياسة الخصوصية والإستخدام",
-  "تسجيل الخروج",
+  LocaleKeys.profile.tr(),
+  LocaleKeys.captain_request.tr(),
+  LocaleKeys.notification.tr(),
+  LocaleKeys.contact_us.tr(),
+  LocaleKeys.about.tr(),
+  LocaleKeys.share.tr(),
+  LocaleKeys.privacy_policy.tr(),
+  LocaleKeys.logout.tr(),
 ];
 
 List icons = [

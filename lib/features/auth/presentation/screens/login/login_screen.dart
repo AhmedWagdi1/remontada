@@ -1,16 +1,16 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/Router/Router.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
-import 'package:remontada/core/resources/font_manager.dart';
 import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/shared/widgets/edit_text_widget.dart';
 
+import '../../../../../core/app_strings/locale_keys.dart';
 import '../../../../../core/utils/extentions.dart';
 import '../../../cubit/auth_cubit.dart';
 import '../../../cubit/auth_states.dart';
@@ -44,62 +44,69 @@ class _LoginScreenState extends State<LoginScreen> {
         builder: (context, state) {
           final cubit = AuthCubit.get(context);
           return Scaffold(
-            // appBar: AppBar(
-            //   centerTitle: true,
-            //   elevation: 0,
-            //   backgroundColor: Colors.transparent,
-            //   leadingWidth: 80,
-            //   // toolbarHeight: 80,
-            //   leading: BackWidget(
-            //     size: 20,
-            //   ),
-            //   title: CustomText(
-            //     'تسجيل الدخول',
-            //     fontSize: 18,
-            //     color: context.primaryColor,
-            //     weight: FontWeight.w700,
-            //   ),
-            // ),
-            body: Stack(
-              alignment: Alignment.topCenter,
-              children: [
-                Container(
-                  // height: 811.h,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.fill,
-                      image: AssetImage(
-                        "Splash".png("images"),
-                      ),
+              // appBar: AppBar(
+              //   centerTitle: true,
+              //   elevation: 0,
+              //   backgroundColor: Colors.transparent,
+              //   leadingWidth: 80,
+              //   // toolbarHeight: 80,
+              //   leading: BackWidget(
+              //     size: 20,
+              //   ),
+              //   title: CustomText(
+              //     'تسجيل الدخول',
+              //     fontSize: 18,
+              //     color: context.primaryColor,
+              //     weight: FontWeight.w700,
+              //   ),
+              // ),
+              body: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              Container(
+                // height: 811.h,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    fit: BoxFit.fill,
+                    image: AssetImage(
+                      "Splash".png("images"),
                     ),
                   ),
                 ),
-                SingleChildScrollView(
+              ),
+              Positioned(
+                // top: 10,
+                right: 0,
+                left: 0,
+                bottom: 100,
+                child: SingleChildScrollView(
                   child: Form(
                     key: formKey,
                     child: Column(
                       children: [
                         101.ph,
                         SvgPicture.asset(
+                          width: 118,
+                          height: 97.81,
                           Assets.icons.logo,
                         ),
                         33.1.ph,
                         Container(
-                          height: 460.h,
+                          // height: 510.h,
                           width: double.infinity,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(69.r),
+                              topLeft: Radius.circular(69),
                               topRight: Radius.circular(
-                                69.r,
+                                69,
                               ),
                             ),
                             color: LightThemeColors.primaryContainer,
                           ),
                           child: Padding(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 18.w,
+                              horizontal: 18,
                             ),
                             child: Column(
                               children: [
@@ -111,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     color: LightThemeColors.textPrimary,
                                   ).s24.heavy,
                                   // fontSize: 24.sp,
-                                  "تسجيل الدخول",
+                                  LocaleKeys.auth_login.tr(),
                                 ),
                                 4.ph,
                                 CustomText(
@@ -120,16 +127,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                   // fontSize: 16.sp,
                                   style: TextStyle(
                                     color: LightThemeColors.secondaryText,
-                                  ).s16.regular,
-                                  "قم بكتابة بيانات حسابك لتسجيل الدخول",
+                                  ).s16.medium,
+                                  LocaleKeys.auth_description_login.tr(),
                                 ),
                                 35.ph,
                                 TextFormFieldWidget(
                                   prefixIcon: Assets.icons.calling,
 
-                                  hintSize: FontSize.s16,
+                                  // hintSize: FontSize.s14,
                                   borderRadius: 33,
-                                  hintText: "رقم الجوال",
+                                  hintText: LocaleKeys.auth_hint_phone.tr(),
                                   hintColor: LightThemeColors.textPrimary,
                                   activeBorderColor:
                                       LightThemeColors.inputFieldBorder,
@@ -156,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   radius: 33,
                                   // gradient: LightThemeColors.buttonColor,
                                   child: CustomText(
-                                    "الدخول",
+                                    LocaleKeys.auth_enter.tr(),
                                     style: TextStyle(
                                       color: context.scaffoldBackgroundColor,
                                     ).s18.bold,
@@ -172,15 +179,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                     );
                                   },
                                   child: CustomText(
-                                    "ليس لديك حساب؟",
+                                    LocaleKeys.auth_havnot_account.tr(),
                                     style: TextStyle(
                                       color: LightThemeColors.secondaryText,
-                                    ).s16.regular,
+                                    ).s16.medium,
 
                                     // fontSize: 16.sp,
                                     // weight: FontWeight.w600,
                                   ),
                                 ),
+                                100.ph,
                               ],
                             ),
                           ),
@@ -353,15 +361,24 @@ class _LoginScreenState extends State<LoginScreen> {
                     // 20.ph,
                   ),
                 ),
-              ],
-            ),
-            bottomNavigationBar: Transform.scale(
-              scale: 1.2,
-              child: SvgPicture.asset(
-                "login_bottom".svg("images"),
               ),
-            ),
-          );
+              Positioned(
+                right: 0,
+                left: 0,
+                // width: double.infinity,
+                bottom: 0,
+                child: Container(
+                  color: context.background,
+                  height: 104,
+                  width: double.infinity,
+                  child: SvgPicture.asset(
+                    fit: BoxFit.fill,
+                    "login_bottom".svg("images"),
+                  ),
+                ),
+              )
+            ],
+          ));
         },
       ),
     );

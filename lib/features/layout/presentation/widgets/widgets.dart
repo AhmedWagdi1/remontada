@@ -1,7 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 
 import '../../../../core/extensions/all_extensions.dart';
@@ -27,7 +28,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         color: Colors.transparent,
         boxShadow: [
           BoxShadow(
-            spreadRadius: -10,
+            // spreadRadius: -10,
             offset: Offset(0, 0),
             blurRadius: 60,
             color: LightThemeColors.containerShadow.withOpacity(.13),
@@ -37,7 +38,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
       child: ClipPath(
         clipper: CustomContainer(),
         child: Container(
-          height: 129.39.h,
+          height: 129.39,
           decoration: BoxDecoration(
             // boxShadow: [
             //   BoxShadow(
@@ -57,25 +58,25 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
             children: [
               navBarItem(
                 Assets.icons.home,
-                "الرئيسية",
+                LocaleKeys.home_nav.tr(),
                 0,
                 Assets.icons.active_home,
               ),
               navBarItem(
                 Assets.icons.myMatches,
-                "مبارياتي",
+                LocaleKeys.my_matches_nav.tr(),
                 1,
                 Assets.icons.myMatches_active,
               ),
               navBarItem(
                 Assets.icons.notify,
-                "الاشعارات",
+                LocaleKeys.notifications_nav.tr(),
                 2,
                 Assets.icons.active_notify,
               ),
               navBarItem(
                 Assets.icons.more,
-                "المزيد",
+                LocaleKeys.more_nav.tr(),
                 3,
                 Assets.icons.active_more,
               ),
@@ -106,28 +107,28 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                       children: [
                         SvgPicture.asset(
                           pathActive,
-                          width: 25.w,
-                          height: 25.h,
+                          width: 22,
+                          height: 22,
                         ),
                         6.ph,
                         Text(
                           title,
                           style: context.bodySmall?.copyWith(
                             color: context.primaryColor,
-                            fontSize: 14.sp,
+                            fontSize: 14,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        10.5.ph,
+                        3.5.ph,
                         Container(
-                          width: 35.w,
+                          width: 35,
                           padding: EdgeInsets.only(
-                            top: 10.5.h,
+                            top: 10.5,
                           ),
                           decoration: BoxDecoration(
                             border: Border(
                               bottom: BorderSide(
-                                width: 4.w,
+                                width: 4,
                                 color: LightThemeColors.primary,
                               ),
                             ),
@@ -152,8 +153,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                       children: [
                         SvgPicture.asset(
                           path,
-                          width: 25.w,
-                          height: 25.h,
+                          width: 22,
+                          height: 22,
                           // color: context.tertiaryColor,
                         ),
                         6.ph,
@@ -161,11 +162,11 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                           title,
                           style: context.bodySmall?.copyWith(
                             color: LightThemeColors.textSecondary,
-                            fontSize: 14.sp,
+                            fontSize: 14,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        25.ph,
+                        15.ph,
                         // TextWidget(
                         //
                         //

@@ -1,5 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
@@ -44,7 +45,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     Positioned(
                       // top: 0,
                       child: CustomText(
-                        "تعديل بياناتي",
+                        LocaleKeys.edit_button.tr(),
                         style: TextStyle(
                           color: context.primaryColor,
                         ).s24.heavy,
@@ -64,8 +65,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 CustomText(
                   style: TextStyle(
                     color: LightThemeColors.secondaryText,
-                  ).s14.medium,
-                  "يمكنك تعديل بياناتك الشخصية",
+                  ).s16.medium,
+                  LocaleKeys.edit_sub.tr(),
                   // fontSize: 14,
                   // weight: FontWeight.w500,
                 ),
@@ -90,10 +91,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 18.ph,
                 Container(
-                  width: 202.w,
-                  height: 36.h,
+                  width: 202,
+                  height: 36,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(33.r),
+                    borderRadius: BorderRadius.circular(33),
                     color: context.primaryColor.withOpacity(.07),
                   ),
                   child: Center(
@@ -108,10 +109,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         5.pw,
                         CustomText(
-                          "تغيير الصورة الشخصية",
+                          LocaleKeys.edit_profile_photo.tr(),
                           style: TextStyle(
                             color: context.primaryColor,
-                          ).s14.medium,
+                          ).s16.medium,
                           // fontSize: 14,
                           // weight: FontWeight.w500,
                         ),
@@ -127,33 +128,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   prefixIcon: Assets.icons.name,
                   hintSize: 16,
                   borderRadius: 33,
-                  hintText: "ادخل الاسم",
+                  hintText: LocaleKeys.auth_hint_name.tr(),
                   hintColor: LightThemeColors.textPrimary,
                   activeBorderColor: LightThemeColors.inputFieldBorder,
                 ),
-                10.h.ph,
+                10.ph,
                 TextFormFieldWidget(
                   prefixIcon: Assets.icons.calling,
                   hintSize: 16,
                   borderRadius: 33,
-                  hintText: "رقم الجوال",
+                  hintText: LocaleKeys.auth_hint_phone.tr(),
                   hintColor: LightThemeColors.textPrimary,
                   activeBorderColor: LightThemeColors.inputFieldBorder,
                 ),
-                10.h.ph,
+                10.ph,
                 TextFormFieldWidget(
                   prefixIcon: Assets.icons.email,
                   hintSize: 16,
                   borderRadius: 33,
-                  hintText: "البريد الالكتروني",
+                  hintText: LocaleKeys.auth_hint_email.tr(),
                   hintColor: LightThemeColors.textPrimary,
                   activeBorderColor: LightThemeColors.inputFieldBorder,
                 ),
-                10.h.ph,
+                10.ph,
                 DropDownItem<String>(
                   prefixIcon: Assets.icons.fieldLocation,
                   hintColor: context.primaryColor,
-                  hint: "اختر المدينة",
+                  hint: LocaleKeys.auth_hint_choose_city.tr(),
                   radius: 33,
                   options: [
                     "item1",
@@ -163,11 +164,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ],
                   onChanged: (val) {},
                 ),
-                10.h.ph,
+                10.ph,
                 DropDownItem<String>(
                   prefixIcon: Assets.icons.playLocation,
                   hintColor: context.primaryColor,
-                  hint: "اختر موقعك المفضل بالملعب",
+                  hint: LocaleKeys.auth_hint_choose_choose_playlocation.tr(),
                   radius: 33,
                   options: [
                     "item1",
@@ -182,9 +183,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   onTap: () {},
                   height: 65,
                   child: CustomText(
-                    "حفظ التعديلات",
+                    LocaleKeys.save_changes.tr(),
                     fontSize: 16,
-                    weight: FontWeight.w800,
+                    weight: FontWeight.bold,
                     color: context.background,
                   ),
                   radius: 33,

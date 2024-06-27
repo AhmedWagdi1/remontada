@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
@@ -14,7 +14,8 @@ class PlayerDetailsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(right: 17.53.w, top: 17.h, bottom: 17.h),
+      // height: 54,
+      padding: EdgeInsets.only(right: 37.53, top: 17, bottom: 17),
       decoration: BoxDecoration(
         color: context.primaryColor.withOpacity(0.09),
         borderRadius: BorderRadius.circular(
@@ -29,16 +30,13 @@ class PlayerDetailsWidget extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                icon.toSvg(
-                  width: 20.7.w,
-                  height: 20.7.h,
+                SvgPicture.asset(
+                  icon ?? "",
+                  height: 18.47,
+                  width: 18.47,
                   color: context.primaryColor,
                 ),
-                // SvgPicture.asset(
-                //   (icon ?? "location").svg(),
-                //
-                // ),
-                8.24.pw,
+                10.pw,
                 CustomText(
                   style: TextStyle(
                     color: LightThemeColors.secondhint,

@@ -1,11 +1,13 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/features/home/presentation/widgets/itemwidget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
+
+import '../../../../core/resources/gen/assets.gen.dart';
 
 class MyMatchesScreen extends StatefulWidget {
   const MyMatchesScreen({super.key});
@@ -19,38 +21,46 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
   Widget getnoMatchesBody() {
     return Container(
       width: double.infinity,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      child: Stack(
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        alignment: Alignment.center,
         children: [
-          70.ph,
-          CustomText(
-            "مبارياتي",
-            fontSize: 26.sp,
-            weight: FontWeight.w800,
-            color: context.primaryColor,
-          ),
-          5.ph,
-          CustomText(
-            fontSize: 14,
-            weight: FontWeight.w500,
-            "تفاصيل مبارياتي المشترك فيها",
-            color: LightThemeColors.secondaryText,
-          ),
           Column(
             children: [
-              SvgPicture.asset(""),
+              70.ph,
+              CustomText(
+                LocaleKeys.my_matches.tr(),
+                fontSize: 28,
+                weight: FontWeight.w800,
+                color: context.primaryColor,
+              ),
+              5.ph,
+              CustomText(
+                fontSize: 16,
+                weight: FontWeight.w500,
+                LocaleKeys.my_matches_subtitles.tr(),
+                color: LightThemeColors.secondaryText,
+              ),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Assets.images.no_matches.image(
+                width: 124.0,
+                height: 90,
+              ),
               20.ph,
               CustomText(
-                "لا توجد مباريات",
-                fontSize: 14,
+                LocaleKeys.no_matches.tr(),
+                fontSize: 16,
                 weight: FontWeight.w500,
                 color: LightThemeColors.secondaryText,
               ),
               4.ph,
               CustomText(
-                "لم تقم بالمشاركة بأي مباراة",
-                fontSize: 14,
+                LocaleKeys.havnot_matches.tr(),
+                fontSize: 16,
                 weight: FontWeight.w500,
                 color: LightThemeColors.secondaryText,
               ),
@@ -66,7 +76,7 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.symmetric(
-          horizontal: 8.w,
+          horizontal: 8,
         ),
         width: double.infinity,
         child: Column(
@@ -74,8 +84,8 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
           children: [
             70.ph,
             CustomText(
-              "مبارياتي",
-              fontSize: 26.sp,
+              LocaleKeys.my_matches.tr(),
+              fontSize: 26,
               weight: FontWeight.w800,
               color: context.primaryColor,
             ),
@@ -83,7 +93,7 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
             CustomText(
               fontSize: 14,
               weight: FontWeight.w500,
-              "تفاصيل مبارياتي المشترك فيها",
+              LocaleKeys.my_matches_subtitles.tr(),
               color: LightThemeColors.secondaryText,
             ),
             30.ph,
@@ -94,6 +104,9 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
                   ismymatch: true,
                 ),
               ),
+            ),
+            SizedBox(
+              height: 129.29,
             )
           ],
         ),

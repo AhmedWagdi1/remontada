@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
@@ -13,6 +13,7 @@ class DropDownItem<T> extends StatefulWidget {
     Key? key,
     required this.options,
     required this.onChanged,
+    this.contentPadding,
     this.inistialValue,
     this.title,
     this.validator,
@@ -27,6 +28,7 @@ class DropDownItem<T> extends StatefulWidget {
   List<T> options;
   final String? prefixIcon;
   final T? inistialValue;
+  final EdgeInsets? contentPadding;
   final String Function(T)? itemAsString;
   final String? hint;
   final String? Function(T?)? validator;
@@ -56,56 +58,100 @@ class _DropDownItemState<T> extends State<DropDownItem<T>> {
   Widget build(BuildContext context) {
     return Container(
       // padding: EdgeInsets.symmetric(vertical: 22.h, horizontal: 40.3.w),
-      height: 65.h,
-      color: widget.color ?? Colors.white,
+      // height: 65.h,
+      decoration: BoxDecoration(
+        color: widget.color ?? Colors.white,
+        borderRadius: BorderRadius.circular(
+          33,
+        ),
+      ),
+
       child: DropdownButtonFormField<T>(
+
+          // padding: EdgeInsets.symmetric(
+          //   vertical: 22.h,
+          //   horizontal: 40.3.w,
+          // ),
+          // menuMaxHeight: 65.h,
           icon: SizedBox.shrink(),
-          itemHeight: 50,
+          itemHeight: 65,
           validator: widget.validator,
-          hint: CustomText(
-            // weight: FontWeight.w500,
-            widget.hint ?? '',
-            fontSize: 14.sp,
-            color: widget.hintColor ?? Colors.grey,
-            fontFamily: 'DINNext',
-          ),
+          // hint: CustomText(
+          //   // align: TextAlign.center,
+          //   // weight: FontWeight.w500,
+          //   widget.hint ?? '',
+
+          // ),
           decoration: InputDecoration(
-            suffixIcon: Padding(
-              padding: EdgeInsets.only(
-                left: 35.w,
-                right: 9.76.w,
-              ),
-              child: widget.suffixIcon?.toSvg(
-                    color: LightThemeColors.inputFieldBorder,
-                  ) ??
-                  Assets.icons.dropArrow.toSvg(
-                      // color: LightThemeColors.inputFieldBorder,
-                      ),
+            hintStyle: TextStyle(
+              fontSize: 14,
+              color: widget.hintColor ?? Colors.grey,
+              fontFamily: 'DINNext',
             ),
+            hintText: widget.hint,
+            contentPadding: widget.contentPadding ??
+                EdgeInsets.symmetric(
+                  vertical: 22,
+                  horizontal: 40.3,
+                ),
+            constraints: BoxConstraints(
+              maxHeight: 65,
+              // minHeight: 65.h,
+            ),
+            suffixIcon: Padding(
+                padding: EdgeInsets.only(
+                  left: 35,
+                  right: 9.76,
+                ),
+                child: widget.suffixIcon?.toSvg(
+                      width: 21.88,
+                      height: 21.88,
+                      color: LightThemeColors.inputFieldBorder,
+                    ) ??
+                    SvgPicture.asset(
+                      Assets.icons.dropArrow,
+                      height: 21.88,
+                      width: 21.88,
+                    )
+                // Assets.icons.dropArrow.toSvg(
+                //   fit: BoxFit.contain,
+                //   width: 21.88.w,
+                //   height: 21.88.h,
+                //   // color: LightThemeColors.inputFieldBorder,
+                // ),
+                ),
             prefixIcon: Padding(
               padding: EdgeInsets.only(
-                right: 35.w,
-                left: 9.76.w,
+                right: 35,
+                left: 9.76,
               ),
-              child: widget.prefixIcon?.toSvg(
+              child: SvgPicture.asset(
+                width: 21.6,
+                height: 21.6,
+                widget.prefixIcon ?? "",
                 color: context.primaryColor,
               ),
+              //  widget.prefixIcon?.toSvg(
+              //   width: 21.6,
+              //   height: 21.6,
+
+              // ),
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(
-                10.r,
+                10,
               ),
               borderSide: getborderside(),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(
-                widget.radius?.r ?? 10.r,
+                widget.radius ?? 10,
               ),
               borderSide: getborderside(),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(
-                widget.radius?.r ?? 10.r,
+                widget.radius ?? 10,
               ),
               borderSide: getborderside(),
             ),
@@ -115,8 +161,10 @@ class _DropDownItemState<T> extends State<DropDownItem<T>> {
               .map((e) => DropdownMenuItem(
                     value: e,
                     child: CustomText(
+                      style: TextStyle(
+                        color: Colors.black,
+                      ).s14,
                       widget.itemAsString?.call(e) ?? e.toString(),
-                      color: Colors.black,
                     ),
                   ))
               .toList(),

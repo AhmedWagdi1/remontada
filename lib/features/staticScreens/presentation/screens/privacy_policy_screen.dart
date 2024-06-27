@@ -1,5 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/features/staticScreens/presentation/widgets/widgets.dart';
@@ -15,7 +16,7 @@ class PrivacyScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: 18.w,
+            horizontal: 18,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -36,8 +37,8 @@ class PrivacyScreen extends StatelessWidget {
                         color: context.primaryColor,
                         weight: FontWeight.w800,
                         align: TextAlign.center,
-                        "سياسة الخصوصية والاستخدام",
-                        fontSize: 19.sp,
+                        LocaleKeys.privacy_policy.tr(),
+                        fontSize: 19,
                       ),
                     ),
                   ),

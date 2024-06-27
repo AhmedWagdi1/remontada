@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pinput/pinput.dart';
+import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/shared/back_widget.dart';
@@ -57,7 +60,7 @@ class _OtpScreenState extends State<OtpScreen> {
             '${target.difference(now).inMinutes}:${target.difference(now).inSeconds.remainder(60)}';
         setState(() {});
       } else {
-        remainigTime = '';
+        remainigTime = '0:0';
         timer!.cancel();
       }
     });
@@ -98,7 +101,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       Positioned(
                         // top: 0,
                         child: CustomText(
-                          "كود التحقق",
+                          LocaleKeys.auth_otp.tr(),
                           style: TextStyle(
                             color: context.primaryColor,
                           ).s24.heavy,
@@ -119,108 +122,116 @@ class _OtpScreenState extends State<OtpScreen> {
                     width: 244,
                     height: 42,
                     child: CustomText(
-                      style: TextStyle(
-                        color: LightThemeColors.secondaryText,
-                      ).s14.regular,
-                      align: TextAlign.center,
-                      "قم بكتابة كود التحقق المكون من 6 ارقام الذي تم ارساله اليك عبر الجوال",
-                      // fontSize: 14,
-                      // c
-                      // weight: FontWeight.w500,
-                    ),
+                        style: TextStyle(
+                          color: LightThemeColors.secondaryText,
+                        ).s14.medium,
+                        align: TextAlign.center,
+                        LocaleKeys.auth_description_verification
+                            .tr() // fontSize: 14,
+                        // c
+                        // weight: FontWeight.w500,
+                        ),
                   ),
-                  24.ph,
+                  13.ph,
                   Container(
-                    height: 34,
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 22),
+                    width: 150,
+                    height: 40,
+                    padding: EdgeInsets.symmetric(
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       color: LightThemeColors.primary.withOpacity(.09),
                       borderRadius: BorderRadius.circular(17),
                     ),
-                    child: CustomText(
-                      "+966 562609805",
-
-                      style: TextStyle(
-                        color: LightThemeColors.primary,
-                      ).s14.regular,
-                      // fontSize: 14,
-                      // weight: FontWeight.w500,
+                    child: Center(
+                      child: CustomText(
+                        "+966 562609805",
+                        style: TextStyle(
+                          color: LightThemeColors.primary,
+                        ).s14.bold,
+                        // fontSize: 14,
+                        // weight: FontWeight.w500,
+                      ),
                     ),
                   ),
                   40.ph,
                   SvgPicture.asset(
                     Assets.icons.otp,
-                    width: 212,
-                    height: 212,
+                    width: 263.96,
+                    height: 270.59,
                   ),
+                  36.11.ph,
                   Padding(
                     padding: const EdgeInsets.all(16),
-                    child: Directionality(
-                      textDirection: TextDirection.ltr,
-                      child: Pinput(
-                        // androidSmsAutofillMethod:
-                        //     AndroidSmsAutofillMethod.smsUserConsentApi,
-                        // smsCodeMatcher: PinputConstants.defaultSmsCodeMatcher,
-                        length: 6,
-                        autofocus: false,
-                        // errorText: otpError,
-                        // onClipboardFound: (s) {},
-                        controller: otpController,
-                        defaultPinTheme: PinTheme(
+                    // child: Directionality(
+                    //   textDirection: TextDirection.ltr,
+                    // textDirection: TextDirection.LTR,
+                    child: Pinput(
+                      // androidSmsAutofillMethod:
+                      //     AndroidSmsAutofillMethod.smsUserConsentApi,
+                      // smsCodeMatcher: PinputConstants.defaultSmsCodeMatcher,
+                      length: 6,
+                      autofocus: false,
+                      // errorText: otpError,
+                      // onClipboardFound: (s) {},
+                      controller: otpController,
+                      defaultPinTheme: PinTheme(
+                        // padding: EdgeInsets.only(
+                        //   right: 11.w,
+                        // ),
+                        textStyle: TextStyle(
+                          fontSize: 27,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        width: 48,
+                        height: 65,
+                        decoration: BoxDecoration(
+                          color: LightThemeColors.surface,
+                          borderRadius: BorderRadius.circular(33.0),
+                          // border: Border.all(
+                          //   color: Colors.black,
+                          //   width: 1.0,
+                          // ),
+                          //shape: BoxShape.circle,
+                        ),
+                      ),
+                      followingPinTheme: PinTheme(
                           textStyle: TextStyle(
                             fontSize: 27,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: context.primaryColor,
                           ),
                           width: 48,
                           height: 65,
                           decoration: BoxDecoration(
-                            color: LightThemeColors.surface,
-                            borderRadius: BorderRadius.circular(33.0),
+                            border: Border.all(
+                              width: 1,
+                              color: LightThemeColors.border,
+                            ),
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(33.0.r),
                             // border: Border.all(
                             //   color: Colors.black,
                             //   width: 1.0,
                             // ),
                             //shape: BoxShape.circle,
-                          ),
-                        ),
-                        followingPinTheme: PinTheme(
-                            textStyle: TextStyle(
-                              fontSize: 27,
-                              fontWeight: FontWeight.bold,
-                              color: context.primaryColor,
-                            ),
-                            width: 48,
-                            height: 65,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 1,
-                                color: LightThemeColors.border,
-                              ),
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(33.0),
-                              // border: Border.all(
-                              //   color: Colors.black,
-                              //   width: 1.0,
-                              // ),
-                              //shape: BoxShape.circle,
-                            )),
-                        pinAnimationType: PinAnimationType.scale,
-                        validator: Utils.valid.defaultValidation,
-                        onCompleted: (pin) async {
+                          )),
+                      pinAnimationType: PinAnimationType.scale,
+                      validator: Utils.valid.defaultValidation,
+                      onCompleted: (pin) async {
+                        activeBut = true;
+                        await widget.onSubmit(pin);
+                      },
+                      onChanged: (value) {
+                        if (value.length == 6) {
                           activeBut = true;
-                          await widget.onSubmit(pin);
-                        },
-                        onChanged: (value) {
-                          if (value.length == 6) {
-                            activeBut = true;
-                            setState(() {});
-                          } else {
-                            activeBut = false;
-                            setState(() {});
-                          }
-                        },
-                      ),
+                          setState(() {});
+                        } else {
+                          activeBut = false;
+                          setState(() {});
+                        }
+                      },
                     ),
                   ),
                   30.ph,
@@ -228,12 +239,17 @@ class _OtpScreenState extends State<OtpScreen> {
                     fontSize: 16,
                     height: 65,
                     radius: 33,
-                    title: 'تحقق',
+                    child: CustomText(
+                      LocaleKeys.auth_check.tr(),
+                      fontSize: 16,
+                      weight: FontWeight.bold,
+                      color: activeBut ? Colors.white : context.primaryColor,
+                    ),
                     withBorder: true,
                     buttonColor: activeBut
                         ? context.primaryColor
                         : context.primaryColor.withOpacity(.1),
-                    textColor: activeBut ? Colors.white : context.primaryColor,
+                    // textColor:,
                     borderColor:
                         activeBut ? context.primaryColor : Colors.transparent,
                     width: double.infinity,
@@ -252,8 +268,8 @@ class _OtpScreenState extends State<OtpScreen> {
                   ),
                   33.ph,
                   CustomText(
-                    "لم يتم إستلام كود التحقق ؟",
-                    fontSize: 16,
+                    LocaleKeys.auth_send_otp.tr(),
+                    // fontSize: 16,
                     style: TextStyle(
                       color: LightThemeColors.secondaryText,
                     ).s14.regular,
@@ -267,7 +283,7 @@ class _OtpScreenState extends State<OtpScreen> {
                               color: context.primaryColor,
                             ).s14.medium,
                             // fontSize: 16,
-                            "أرسل الكود مرة أخرى",
+                            LocaleKeys.auth_send_otp_again.tr(),
                             // weight: FontWeight.w600,
                           ),
                           onTap: remainigTime.isEmpty
@@ -281,9 +297,11 @@ class _OtpScreenState extends State<OtpScreen> {
                               : null)
                       : Center(
                           child: CustomText(
-                            color: context.primaryColor,
-                            weight: FontWeight.w600,
-                            fontSize: 16,
+                            style: TextStyle(
+                              color: context.primaryColor,
+                            ).s16.medium,
+                            // weight: FontWeight.w600,
+                            // fontSize: 16,
                             '$remainigTime ',
                           ),
                         ),

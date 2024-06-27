@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 
 import '../../core/extensions/all_extensions.dart';
@@ -40,11 +39,15 @@ class ButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: width.w,
-      height: height.h,
+      // padding: EdgeInsets.symmetric(
+      //   // horizontal: 10,
+      //   vertical: 6,
+      // ),
+      width: width,
+      height: height,
       decoration: BoxDecoration(
         gradient: buttonColor == null ? LightThemeColors.buttonColor : gradient,
-        borderRadius: BorderRadius.circular(radius.r),
+        borderRadius: BorderRadius.circular(radius),
       ),
       child: ElevatedButton(
         onPressed: onTap,
@@ -65,7 +68,7 @@ class ButtonWidget extends StatelessWidget {
         child: child ??
             title.text(
               fontWeight: fontweight ?? FontWeight.w400,
-              fontSize: fontSize ?? 16.sp,
+              fontSize: fontSize ?? 16,
               fontFamily: fontFamily,
               color: textColor ?? Colors.white,
             ),

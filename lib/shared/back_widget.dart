@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/utils/utils.dart';
 
@@ -29,8 +28,8 @@ class BackWidget extends StatelessWidget {
       child: Transform.flip(
         flipX: Utils.lang == Locale("ar").languageCode,
         child: SvgPicture.asset(
-          height: 26.h,
-          width: 26.w,
+          height: 26,
+          width: 26,
           "assets/icons/back_arrow.svg",
         ),
       ),

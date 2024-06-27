@@ -1,6 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/services/alerts.dart';
 import 'package:remontada/core/theme/light_theme.dart';
@@ -44,7 +45,7 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                   Positioned(
                     // top: 0,
                     child: CustomText(
-                      "تفاصيل المباراة",
+                      LocaleKeys.match_details.tr(),
                       style: TextStyle(
                         color: context.primaryColor,
                       ).s24.heavy,
@@ -65,7 +66,7 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                 style: TextStyle(
                   color: LightThemeColors.secondaryText,
                 ).s14.regular,
-                "عرض لجميع تفاصيل المباراة",
+                LocaleKeys.match_details_subtitle.tr(),
                 // fontSize: 14.sp,
                 // weight: FontWeight.w500,
               ),
@@ -83,13 +84,13 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
               24.ph,
               Container(
                 padding: EdgeInsets.symmetric(
-                  horizontal: 18.w,
+                  horizontal: 18,
                 ),
-                width: 342.w,
-                height: 60.h,
+                // width: 350,
+                height: 60,
                 decoration: BoxDecoration(
                   color: LightThemeColors.surface,
-                  borderRadius: BorderRadius.circular(25.r),
+                  borderRadius: BorderRadius.circular(25),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -105,21 +106,21 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                           ),
                           5.87.pw,
                           CustomText(
-                            "المشتركين",
-                            fontSize: 14.sp,
+                            LocaleKeys.subscribers.tr(),
+                            fontSize: 14,
                             weight: FontWeight.w400,
                             color: LightThemeColors.background,
                           ),
                           2.87.pw,
                           CustomText(
                             "20 / ",
-                            fontSize: 14.sp,
+                            fontSize: 14,
                             weight: FontWeight.w400,
                             color: LightThemeColors.background,
                           ),
                           CustomText(
                             "13",
-                            fontSize: 14.sp,
+                            fontSize: 14,
                             weight: FontWeight.w400,
                             color: LightThemeColors.black,
                           ),
@@ -131,19 +132,19 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                         onTap: () {
                           showPlayersheet(context);
                         },
-                        radius: 15.r,
-                        height: 35.h,
-                        width: 148.w,
+                        radius: 15,
+                        height: 35,
+                        width: 150,
                         buttonColor: context.background,
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             CustomText(
-                              "عرض تفاصيل المشتركين",
+                              LocaleKeys.subscribers_details.tr(),
                               color: context.primaryColor,
                               weight: FontWeight.w500,
-                              fontSize: 13.sp,
+                              fontSize: 14,
                             ),
                             3.pw,
                             Icon(
@@ -162,22 +163,26 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
               Align(
                 alignment: AlignmentDirectional.topStart,
                 child: CustomText(
-                  "تفاصيل المباراة",
-                  fontSize: 15,
+                  LocaleKeys.match_details.tr(),
+                  fontSize: 16,
                   weight: FontWeight.w600,
                   color: context.primaryColor,
                 ),
               ),
               7.ph,
-              Container(
-                width: 342.w,
-                height: 45.h,
-                child: CustomText(
-                  overflow: TextOverflow.clip,
-                  "هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي",
-                  fontSize: 13.sp,
-                  weight: FontWeight.w400,
-                  color: LightThemeColors.secondaryText,
+              Align(
+                alignment: AlignmentDirectional.topStart,
+                child: Container(
+                  // width: 342,
+                  height: 45,
+                  child: CustomText(
+                    // align: TextAlign.start,
+                    overflow: TextOverflow.clip,
+                    "هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي",
+                    fontSize: 14,
+                    weight: FontWeight.w400,
+                    color: LightThemeColors.secondaryText,
+                  ),
                 ),
               ),
               28.ph,
@@ -187,7 +192,7 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                     : context.primaryColor,
                 onTap: () => showConfirmationSheet(context),
                 height: 65,
-                width: 342,
+                // width: 342,
                 fontweight: FontWeight.bold,
                 radius: 33,
                 textColor: context.background,
@@ -201,21 +206,26 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                           ),
                           9.pw,
                           CustomText(
-                            "إعتذار عن المشاركة",
+                            LocaleKeys.apology_take_part.tr(),
                             fontSize: 16,
                             weight: FontWeight.bold,
                             color: context.background,
                           ),
                         ],
                       )
-                    : null,
-                title: "إشترك الان",
+                    : CustomText(
+                        LocaleKeys.confirmation_button.tr(),
+                        fontSize: 19,
+                        weight: FontWeight.bold,
+                        color: context.background,
+                      ),
+                // title: ,
               ),
               26.ph,
             ],
           ),
         ).paddingHorizontal(
-          18.w,
+          18,
         ),
       ),
     );
@@ -233,11 +243,11 @@ showPlayersheet(BuildContext context) {
     ),
     context,
     child: Container(
-      height: 623.h,
+      height: 623,
       padding: EdgeInsets.only(
-        right: 18.w,
-        left: 18.w,
-        top: 50.h,
+        right: 18,
+        left: 18,
+        top: 50,
         // bottom: 24.h,
       ),
       decoration: BoxDecoration(),
@@ -254,8 +264,8 @@ showPlayersheet(BuildContext context) {
                   children: [
                     SvgPicture.asset(
                       color: context.primaryColor,
-                      width: 40.w,
-                      height: 40.h,
+                      width: 40,
+                      height: 40,
                       Assets.icons.tshirt,
                     ),
                     14.36.pw,
@@ -267,7 +277,7 @@ showPlayersheet(BuildContext context) {
                             color: LightThemeColors.primary,
                           ).s18.extrabold,
                           // fontSize: 17.sp,
-                          "قائمة المشتركين",
+                          LocaleKeys.subscribers_list.tr(),
 
                           // weight: FontWeight.w800,
                         ),
@@ -277,7 +287,7 @@ showPlayersheet(BuildContext context) {
                             color: LightThemeColors.secondaryText,
                           ).s14.regular,
                           // fontSize: 14.sp,
-                          "قائمة اللاعبين المشتركيين بالمباراة",
+                          LocaleKeys.subscribers_list_sub.tr(),
                           //
                           // weight: FontWeight.w500,
                         ),
@@ -289,8 +299,8 @@ showPlayersheet(BuildContext context) {
               Expanded(
                 flex: 1,
                 child: Container(
-                  width: 79.w,
-                  height: 46.h,
+                  width: 79,
+                  height: 46,
                   decoration: BoxDecoration(
                     color: LightThemeColors.surface,
                     borderRadius: BorderRadius.circular(25),
@@ -300,13 +310,13 @@ showPlayersheet(BuildContext context) {
                     children: [
                       CustomText(
                         "20 / ",
-                        fontSize: 14.sp,
+                        fontSize: 14,
                         weight: FontWeight.w400,
                         color: LightThemeColors.background,
                       ),
                       CustomText(
                         "13",
-                        fontSize: 14.sp,
+                        fontSize: 14,
                         weight: FontWeight.w400,
                         color: LightThemeColors.black,
                       ),
@@ -341,7 +351,7 @@ showConfirmationSheet(BuildContext context) {
       ),
     ),
     child: Container(
-      padding: EdgeInsets.symmetric(horizontal: 18.w),
+      padding: EdgeInsets.symmetric(horizontal: 18),
       // width: ,
 
       child: Column(
@@ -349,25 +359,31 @@ showConfirmationSheet(BuildContext context) {
         children: [
           40.ph,
           CustomText(
-            "تاكيد الاشتراك",
+            LocaleKeys.subscribe_confirmation.tr(),
             fontSize: 16,
             color: context.primaryColor,
             weight: FontWeight.w700,
           ),
           3.ph,
           CustomText(
-            "هل أنت متأكد من الإشتراك والإنضمام إلى هذه المباراة ؟",
+            LocaleKeys.subscribe_confirmation_desciption.tr(),
             fontSize: 14,
             color: LightThemeColors.textSecondary,
             weight: FontWeight.w500,
           ),
           35.ph,
           ButtonWidget(
-            height: 65.h,
+            height: 65,
             radius: 33,
-            title: "تاكيد",
-            fontSize: 16,
-            fontweight: FontWeight.bold,
+            child: CustomText(
+              LocaleKeys.confirm.tr(),
+              fontSize: 18,
+              weight: FontWeight.bold,
+              color: context.background,
+            ),
+            // title: "تاكيد",
+            // // fontSize: 16,
+            // // fontweight: FontWeight.bold,
           ),
           26.ph,
         ],
@@ -385,12 +401,12 @@ List icons = [
   "wallet",
 ];
 List titles = [
-  "ملعب المباراة",
-  "لوكيشن الملعب",
-  "تاريخ المباراة",
-  "توقيت المباراة",
-  "مدة المباراة",
-  "القطة",
+  LocaleKeys.arena.tr(),
+  LocaleKeys.location.tr(),
+  LocaleKeys.match_date.tr(),
+  LocaleKeys.match_time.tr(),
+  LocaleKeys.match_long.tr(),
+  LocaleKeys.price.tr(),
 ];
 List subtitles = [
   "ملاعب نادي القصيم الرياضي",

@@ -1,6 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
@@ -55,8 +56,8 @@ class AboutScreen extends StatelessWidget {
                           color: context.primaryColor,
                           weight: FontWeight.w800,
                           align: TextAlign.center,
-                          "عن التطبيق",
-                          fontSize: 24.sp,
+                          LocaleKeys.about.tr(),
+                          fontSize: 26,
                         ),
                       ),
                     ),
@@ -73,9 +74,9 @@ class AboutScreen extends StatelessWidget {
                 ),
                 5.ph,
                 CustomText(
-                  "نسخة 1.0.0",
+                  LocaleKeys.version.tr(),
                   color: LightThemeColors.surface,
-                  fontSize: 14.sp,
+                  fontSize: 15,
                   weight: FontWeight.w600,
                 ),
                 15.ph,

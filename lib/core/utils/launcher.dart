@@ -1,16 +1,18 @@
-import 'package:url_launcher/url_launcher.dart';
-// import 'package:whatsapp/whatsapp.dart';
+import 'package:android_intent_plus/android_intent.dart'; // import 'package:whatsapp/whatsapp.dart';
 
 class LauncherHelper {
-  static openNotificationsettings() async {
-    // URL intent for Android settings
-    const String url = 'app-settings';
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url));
-    } else {
-      throw 'Could not launch $url';
-    }
+  static void openAppSettings() {
+    // Construct the URL to open app settings on both Android and iOS
+
+    const intent = AndroidIntent(
+      action: 'android.settings.APP_NOTIFICATION_SETTINGS',
+      arguments: <String, dynamic>{
+        'android.provider.extra.APP_PACKAGE': "com.example.remontada"
+      },
+    );
+    intent.launch();
   }
+}
   // static openUrl(String url, {LaunchMode mode = LaunchMode.platformDefault}) {
   //   final urlParse = Uri.parse(url);
   //   launchUrl(urlParse);
@@ -40,4 +42,4 @@ class LauncherHelper {
   //     throw 'Could not open the map.';
   //   }
   // }
-}
+

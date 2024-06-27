@@ -1,7 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/Router/Router.dart';
+import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
@@ -42,7 +43,7 @@ class _MoreItemState extends State<MoreItem> {
         context,
         Routes.aboutscreen,
       );
-    } else if (widget.title == "سياسة الخصوصية والإستخدام") {
+    } else if (widget.title == "سياسة الخصوصية والاستخدام") {
       Navigator.pushNamed(
         context,
         Routes.privacypolicyScreen,
@@ -60,15 +61,15 @@ class _MoreItemState extends State<MoreItem> {
       },
       child: Padding(
         padding: EdgeInsets.only(
-          bottom: 10.h,
+          bottom: 10,
         ),
         child: Container(
           padding: EdgeInsets.symmetric(
-            horizontal: 21.w,
+            horizontal: 21,
             // vertical: 10.h,
           ),
           // width: 341.w,
-          height: 54.h,
+          height: 54,
           decoration: BoxDecoration(
             color: context.background,
             borderRadius: BorderRadius.circular(13),
@@ -91,8 +92,8 @@ class _MoreItemState extends State<MoreItem> {
                     color: widget.title == "تسجيل الخروج"
                         ? LightThemeColors.red
                         : context.primaryColor,
-                    width: 21.w,
-                    height: 21.h,
+                    width: 21,
+                    height: 21,
                   ),
                   // SvgPicture.asset(
                   //   widget.icon ?? "location",
@@ -116,7 +117,7 @@ class _MoreItemState extends State<MoreItem> {
                   ),
                 ],
               ),
-              widget.title == "التحكم بالإشعارات"
+              widget.title == "التحكم بالاشعارات"
                   ? CustomSwitchItem()
                   : IconButton(
                       onPressed: () {
@@ -150,7 +151,7 @@ class _CustomSwitchItemState extends State<CustomSwitchItem> {
       onChanged: (val) {
         switched = val;
 
-        LauncherHelper.openNotificationsettings();
+        LauncherHelper.openAppSettings();
 
         setState(() {});
       },
@@ -162,17 +163,17 @@ sendCaptainrequestDialogue(BuildContext context) {
   Alerts.bottomSheet(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(114.r),
-        topRight: Radius.circular(36.r),
+        topLeft: Radius.circular(114),
+        topRight: Radius.circular(36),
       ),
     ),
     context,
     child: Container(
       padding: EdgeInsets.only(
-        right: 15.w,
-        left: 15.w,
-        top: 25.h,
-        bottom: 28.h,
+        right: 15,
+        left: 15,
+        top: 25,
+        bottom: 28,
       ),
       decoration: BoxDecoration(
         color: context.background,
@@ -193,24 +194,27 @@ sendCaptainrequestDialogue(BuildContext context) {
           // ),
           11.ph,
           CustomText(
-            fontSize: 16.sp,
-            "إرسال طلب عضوية كابتن ( مشرف )",
+            fontSize: 16,
+            LocaleKeys.captain_request.tr(),
             color: LightThemeColors.primary,
             weight: FontWeight.w800,
           ),
           CustomText(
-            fontSize: 14.sp,
-            "قم بفلترة ظهور المباريات حسب تاريخ المباراة",
+            fontSize: 14,
+            LocaleKeys.wanting_captain_request.tr(),
             color: LightThemeColors.secondaryText,
             weight: FontWeight.w500,
           ),
           32.ph,
           ButtonWidget(
-            fontSize: 16.sp,
-            fontweight: FontWeight.bold,
-            height: 65.h,
-            radius: 33.r,
-            title: "إرسال الطلب",
+            height: 65,
+            radius: 33,
+            child: CustomText(
+              LocaleKeys.send_request.tr(),
+              fontSize: 16,
+              weight: FontWeight.bold,
+              color: context.background,
+            ),
           ),
         ],
       ),
@@ -222,17 +226,17 @@ showlogoutsheet(BuildContext context) {
   Alerts.bottomSheet(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(114.r),
-        topRight: Radius.circular(36.r),
+        topLeft: Radius.circular(114),
+        topRight: Radius.circular(36),
       ),
     ),
     context,
     child: Container(
       padding: EdgeInsets.only(
-        right: 15.w,
-        left: 15.w,
-        top: 50.h,
-        bottom: 28.h,
+        right: 15,
+        left: 15,
+        top: 50,
+        bottom: 28,
       ),
       decoration: BoxDecoration(
         color: context.background,
@@ -246,25 +250,28 @@ showlogoutsheet(BuildContext context) {
           ),
           11.ph,
           CustomText(
-            fontSize: 16.sp,
-            "تسجيل الخروج",
+            fontSize: 16,
+            LocaleKeys.logout.tr(),
             color: LightThemeColors.primary,
             weight: FontWeight.w800,
           ),
           CustomText(
-            fontSize: 14.sp,
-            "هل تريد تسجيل الخروج من حسابك ؟",
+            fontSize: 14,
+            LocaleKeys.wanting_logout.tr(),
             color: LightThemeColors.secondaryText,
             weight: FontWeight.w500,
           ),
           32.ph,
           ButtonWidget(
             buttonColor: LightThemeColors.warningButton,
-            fontSize: 16.sp,
-            fontweight: FontWeight.bold,
-            height: 65.h,
-            radius: 33.r,
-            title: "تسجيل الخروج",
+            height: 65,
+            radius: 33,
+            child: CustomText(
+              LocaleKeys.logout.tr(),
+              fontSize: 16,
+              weight: FontWeight.bold,
+              color: context.background,
+            ),
             onTap: () {},
           ),
         ],

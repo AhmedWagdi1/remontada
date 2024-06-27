@@ -1,6 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
@@ -46,10 +47,10 @@ class _PlayerDetailsState extends State<PlayerDetails> {
                       Positioned(
                         // top: 0,
                         child: CustomText(
-                          "تفاصيل اللاعب",
+                          LocaleKeys.player_details.tr(),
                           style: TextStyle(
                             color: context.primaryColor,
-                          ).s24.heavy,
+                          ).s26.heavy,
                           // fontSize: 26,
                           // weight: FontWeight.bold,
                           // color: context.colorScheme.primary,
@@ -66,8 +67,8 @@ class _PlayerDetailsState extends State<PlayerDetails> {
                   CustomText(
                     style: TextStyle(
                       color: LightThemeColors.secondaryText,
-                    ).s14.medium,
-                    "تفاصيل اللاعب المشارك بالمباراة",
+                    ).s16.medium,
+                    LocaleKeys.player_details_sub.tr(),
                     // fontSize: 14.sp,
                     // weight: FontWeight.w500,
                   ),
@@ -128,9 +129,12 @@ class _PlayerDetailsState extends State<PlayerDetails> {
           ),
         ],
       ),
-      bottomNavigationBar: Transform.scale(
-        scale: 1.2.dm,
+      bottomNavigationBar: Container(
+        color: context.background,
+        height: 104,
+        width: double.infinity,
         child: SvgPicture.asset(
+          fit: BoxFit.fill,
           "login_bottom".svg("images"),
         ),
       ),
@@ -142,5 +146,5 @@ List<String> icons = [
   Assets.icons.calling,
   Assets.icons.fieldLocation,
 ];
-List<String> titles = ["رقم الجوال", "المدينة"];
+List<String> titles = [LocaleKeys.auth_hint_phone.tr(), LocaleKeys.city.tr()];
 List<String> subtitles = ["+9665505024", "الرياض"];

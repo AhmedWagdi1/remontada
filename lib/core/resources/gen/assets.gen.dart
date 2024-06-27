@@ -117,6 +117,7 @@ class $AssetsIconsGen {
 
   /// File path: assets/icons/share.svg
   String get share => 'assets/icons/share.svg';
+  String get bottomStack => 'assets/images/login_bottom.svg';
 
   /// File path: assets/icons/policy_privacy.svg
   String get policy_privacy => 'assets/icons/policy_privacy.svg';
@@ -285,10 +286,13 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/avatar.png
   AssetGenImage get avatar => const AssetGenImage('assets/images/avatar.png');
+  AssetGenImage get bell => const AssetGenImage('assets/images/bell.png');
 
   /// File path: assets/images/profile_image.png
   AssetGenImage get profile_image =>
       const AssetGenImage('assets/images/profile_image.png');
+  AssetGenImage get no_matches =>
+      const AssetGenImage('assets/images/no_matches.png');
 
   /// File path: assets/images/topStack.png
   AssetGenImage get topStack =>

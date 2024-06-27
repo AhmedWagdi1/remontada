@@ -55,8 +55,8 @@ extension StringExtension on String? {
       BoxFit fit = BoxFit.contain}) {
     if (color != null) colorFilter = ColorFilter.mode(color, BlendMode.srcIn);
     return SizedBox(
-      height: height?.h ?? 24,
-      width: width?.w ?? 24,
+      height: height ?? 24,
+      width: width ?? 24,
       child: SvgPicture.asset(validate(), fit: fit, colorFilter: colorFilter)
           .center(),
     );

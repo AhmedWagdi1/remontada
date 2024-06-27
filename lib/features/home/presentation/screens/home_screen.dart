@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -13,6 +14,7 @@ import 'package:remontada/features/home/presentation/widgets/itemwidget.dart';
 import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 
+import '../../../../core/app_strings/locale_keys.dart';
 import '../../../../shared/widgets/network_image.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -55,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
               scale: 1,
               child: Container(
                 // width: 375.w,
-                // height: 290.h,
+                // height: 290,
                 child: Assets.images.aboutSstack.image(
                   fit: BoxFit.contain,
                 ),
@@ -64,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Container(
             padding: EdgeInsets.symmetric(
-              horizontal: 8.w,
+              horizontal: 8,
             ),
             width: double.infinity,
             child: SingleChildScrollView(
@@ -75,8 +77,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   54.84.ph,
                   SvgPicture.asset(
                     Assets.icons.logo,
-                    width: 100.w,
-                    height: 70.h,
+                    width: 100,
+                    height: 70,
                     color: context.primaryColor,
                   ),
                   5.ph,
@@ -84,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(
                       color: LightThemeColors.secondaryText,
                     ).s16.regular,
-                    "مرحبا بك",
+                    LocaleKeys.hello.tr(),
 
                     // fontSize: 16.sp,
                     // weight: FontWeight.w500,
@@ -108,6 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           (index) => ClipRRect(
                             borderRadius: BorderRadius.circular(18),
                             child: NetworkImagesWidgets(
+                              // height: 150.h,
                               images[index],
                               width: 400.w,
                               fit: BoxFit.fill,
@@ -126,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             seconds: 1,
                           ),
                           autoPlay: true,
-                          height: 127,
+                          height: 170,
                           viewportFraction: 1,
                         ),
                       ).paddingHorizontal(5),
@@ -153,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: TextStyle(
                                 color: context.primaryColor,
                               ).s16.heavy,
-                              "المباريات المتاحة",
+                              LocaleKeys.available_matches.tr(),
                               // fontSize: 16.sp,
                               // weight: FontWeight.w800,
                             ),
@@ -161,8 +164,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             CustomText(
                               style: TextStyle(
                                 color: LightThemeColors.secondaryText,
-                              ).s12.regular,
-                              "قم بالإنضمام إلى المباراة المناسبة لك الآن",
+                              ).s14.regular,
+                              LocaleKeys.home_describtion.tr(),
                               // fontSize: 13.sp,
                               // weight: FontWeight.w500,
                             ),
@@ -170,19 +173,20 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Expanded(
-                        flex: 3,
+                        flex: 2,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
                               flex: 1,
                               child: IconButton(
+                                // padding: EdgeInsets.zero,
                                 onPressed: () {
                                   showPlaygroungBottomSheet(context);
                                 },
                                 icon: SvgPicture.asset(
-                                  width: 40.w,
-                                  height: 40.h,
+                                  width: 40,
+                                  height: 40,
                                   "playground_button".svg("icons"),
                                 ),
                               ),
@@ -190,12 +194,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             Expanded(
                               flex: 1,
                               child: IconButton(
+                                // padding: EdgeInsets.zero,
                                 onPressed: () {
                                   showClendersheet(context);
                                 },
                                 icon: SvgPicture.asset(
-                                  width: 40.w,
-                                  height: 40.h,
+                                  width: 40,
+                                  height: 40,
                                   "cleander_button".svg("icons"),
                                 ),
                               ),
@@ -235,10 +240,10 @@ class _HomeScreenState extends State<HomeScreen> {
       context,
       child: Container(
         padding: EdgeInsets.only(
-          right: 5.w,
-          left: 5.w,
-          top: 20.h,
-          bottom: 24.h,
+          right: 5,
+          left: 5,
+          top: 20,
+          bottom: 24,
         ),
         decoration: BoxDecoration(),
         child: Column(
@@ -249,8 +254,8 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SvgPicture.asset(
-                  width: 40.w,
-                  height: 40.h,
+                  width: 40,
+                  height: 40,
                   "playground_button".svg(),
                 ),
                 14.36.pw,
@@ -258,14 +263,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomText(
-                      fontSize: 17.sp,
-                      "فلترة المباريات حسب الملعب",
+                      // style: TextStyle().s16.heavy,
+                      fontSize: 17,
+                      LocaleKeys.match_filter_playground.tr(),
                       color: LightThemeColors.primary,
                       weight: FontWeight.w800,
                     ),
                     CustomText(
-                      fontSize: 14.sp,
-                      "قم بفلترة ظهور المباريات حسب الملاعب",
+                      fontSize: 14,
+                      LocaleKeys.match_filter_playground_description.tr(),
                       color: LightThemeColors.secondaryText,
                       weight: FontWeight.w500,
                     ),
@@ -302,11 +308,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 Expanded(
                   flex: 3,
                   child: ButtonWidget(
-                    height: 65.h,
+                    height: 65,
                     radius: 33,
-                    title: "تأكيد الفلترة",
-                    fontSize: 16,
-                    fontweight: FontWeight.bold,
+                    child: CustomText(
+                      LocaleKeys.confirmation_button.tr(),
+                      fontSize: 16,
+                      weight: FontWeight.bold,
+                      color: context.background,
+                    ),
                   ),
                 ),
                 10.pw,
@@ -314,20 +323,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   flex: 2,
                   child: ButtonWidget(
                     buttonColor: LightThemeColors.secondbuttonBackground,
-                    height: 65.h,
-                    radius: 33.r,
+                    height: 65,
+                    radius: 33,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
                           color: LightThemeColors.textSecondary,
-                          size: 14.83.w,
+                          size: 14.83,
                           Icons.refresh,
                         ),
                         6.pw,
                         CustomText(
                           color: LightThemeColors.textSecondary,
-                          "استعادة",
+                          LocaleKeys.refresh_button.tr(),
                           fontSize: 14,
                           weight: FontWeight.w500,
                         )
@@ -353,11 +362,12 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       context,
       child: Container(
+        // width: double.infinity,
         padding: EdgeInsets.only(
-          right: 5.w,
-          left: 5.w,
-          top: 20.h,
-          bottom: 24.h,
+          right: 5,
+          left: 5,
+          top: 20,
+          bottom: 24,
         ),
         decoration: BoxDecoration(),
         child: Column(
@@ -368,8 +378,8 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SvgPicture.asset(
-                  width: 40.w,
-                  height: 40.h,
+                  width: 40,
+                  height: 40,
                   "cleander_button".svg(),
                 ),
                 14.36.pw,
@@ -377,14 +387,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomText(
-                      fontSize: 17.sp,
-                      "فلترة المباريات حسب التاريخ",
+                      fontSize: 17,
+                      LocaleKeys.match_filter_clender.tr(),
                       color: LightThemeColors.primary,
                       weight: FontWeight.w800,
                     ),
                     CustomText(
-                      fontSize: 14.sp,
-                      "قم بفلترة ظهور المباريات حسب تاريخ المباراة",
+                      fontSize: 14,
+                      LocaleKeys.match_filter_playground_description.tr(),
                       color: LightThemeColors.secondaryText,
                       weight: FontWeight.w500,
                     ),
@@ -423,11 +433,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 Expanded(
                   flex: 3,
                   child: ButtonWidget(
-                    height: 65.h,
+                    height: 65,
                     radius: 33,
-                    title: "تأكيد الفلترة",
-                    fontSize: 16,
-                    fontweight: FontWeight.bold,
+                    child: CustomText(
+                      LocaleKeys.confirmation_button.tr(),
+                      fontSize: 16,
+                      weight: FontWeight.bold,
+                      color: context.background,
+                    ),
                   ),
                 ),
                 10.pw,
@@ -435,20 +448,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   flex: 2,
                   child: ButtonWidget(
                     buttonColor: LightThemeColors.secondbuttonBackground,
-                    height: 65.h,
-                    radius: 33.r,
+                    height: 65,
+                    radius: 33,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
                           color: LightThemeColors.textSecondary,
-                          size: 14.83.w,
+                          size: 14.83,
                           Icons.refresh,
                         ),
                         6.pw,
                         CustomText(
                           color: LightThemeColors.textSecondary,
-                          "استعادة",
+                          LocaleKeys.refresh_button.tr(),
                           fontSize: 14,
                           weight: FontWeight.w500,
                         )

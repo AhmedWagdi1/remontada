@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/theme/light_theme.dart';
@@ -27,11 +26,11 @@ class _BottomSheetItemState extends State<BottomSheetItem> {
       },
       child: Container(
         padding: EdgeInsets.symmetric(
-          vertical: 5.h,
-          horizontal: 5.w,
+          vertical: 5,
+          horizontal: 5,
         ),
-        width: 182.w,
-        height: 42.h,
+        width: double.infinity,
+        height: 42,
         decoration: BoxDecoration(
           color: isActive ? LightThemeColors.surface : context.background,
           borderRadius: BorderRadius.circular(16),
@@ -48,12 +47,12 @@ class _BottomSheetItemState extends State<BottomSheetItem> {
             CustomText(
               weight: FontWeight.w400,
               widget.title ?? "",
-              fontSize: 12.sp,
+              fontSize: 12,
               color: isActive ? context.background : LightThemeColors.black,
             ),
           ],
         ),
-      ).paddingBottom(5.5.h),
+      ).paddingBottom(5.5),
     );
   }
 }

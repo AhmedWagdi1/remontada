@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../core/extensions/all_extensions.dart';
 
@@ -90,7 +90,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
       textAlign: widget.textalign,
       textDirection: widget.textdirection,
       style: context.bodySmall?.copyWith(
-        fontSize: 14.sp,
+        fontSize: 14,
         fontWeight: FontWeight.w500,
       ),
       decoration: widget.inputDecoration ??
@@ -101,19 +101,27 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
             // ),
             contentPadding: widget.contentPadding ??
                 EdgeInsets.symmetric(
-                  vertical: 22.h,
-                  horizontal: 40.3.w,
+                  vertical: 22,
+                  horizontal: 40.3,
                 ),
             // filled: true,
             fillColor: context.formFieldColor,
             prefixIcon: Padding(
               padding: EdgeInsets.only(
-                right: 35.w,
-                left: 9.76.w,
+                right: 35,
+                left: 9.76,
               ),
-              child: widget.prefixIcon?.toSvg(
+              child: SvgPicture.asset(
+                width: 18.6,
+                height: 18.6,
+                widget.prefixIcon ?? "",
                 color: context.primaryColor,
               ),
+              //  widget.prefixIcon?.toSvg(
+              //   width: 21.6,
+              //   height: 21.6,
+
+              // ),
             ),
             prefix: widget.prefixWidget,
             suffix: widget.suffixWidget,
@@ -138,7 +146,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
             errorBorder: borderType(),
             hintStyle: TextStyle(
               color: widget.hintColor,
-              fontSize: widget.hintSize?.sp ?? 14.sp,
+              fontSize: widget.hintSize ?? 14,
               fontWeight: FontWeight.w400,
             ),
             hintText: widget.hintText,
@@ -155,7 +163,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
     return OutlineInputBorder(
       borderSide: BorderSide(color: widget.activeBorderColor, width: 1),
       borderRadius: BorderRadius.all(
-        Radius.circular(widget.borderRadius.r),
+        Radius.circular(widget.borderRadius),
       ),
     );
   }
