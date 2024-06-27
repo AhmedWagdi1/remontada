@@ -60,7 +60,7 @@ class _CustomSwitchState extends State<CustomSwitch>
                 height: 14.07,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(24.0),
-                  color: _circleAnimation!.value == Alignment.centerLeft
+                  color: widget.value == true
                       ? LightThemeColors.surface
                       : LightThemeColors.switchBackground,
                 ),
