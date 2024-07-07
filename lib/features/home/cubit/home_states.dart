@@ -12,3 +12,12 @@ class HomeDataLoaded extends HomeState {
 }
 
 class HomeDataFailed extends HomeState {}
+
+class PlayGroundLoading extends HomeState {}
+
+class PlayGroundLoaded extends HomeState {
+  final playGrounds playgrounds;
+  PlayGroundLoaded(this.playgrounds);
+}
+
+class PlayGroundFailed extends HomeState {}

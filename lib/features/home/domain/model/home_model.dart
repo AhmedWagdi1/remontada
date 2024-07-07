@@ -83,3 +83,75 @@ class HomeModel {
   factory HomeModel.fromJson(String source) =>
       HomeModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }
+
+class PlayGroundModel {
+  int? id;
+  String? name;
+  bool? isActive;
+  PlayGroundLocationModel? location;
+  PlayGroundModel({
+    this.isActive = false,
+    this.id,
+    this.name,
+    this.location,
+  });
+
+  factory PlayGroundModel.fromMap(Map<String, dynamic> map) {
+    return PlayGroundModel(
+      id: map["id"] != null ? map['id'] as int : null,
+      name: map['name'] != null ? map['name'] as String : null,
+      location: map['location'] != null
+          ? PlayGroundLocationModel.fromMap(
+              map['location'],
+            )
+          : null,
+    );
+  }
+
+  factory PlayGroundModel.fromJson(String source) =>
+      PlayGroundModel.fromMap(json.decode(source) as Map<String, dynamic>);
+}
+
+class PlayGroundLocationModel {
+  String? lat;
+  String? lng;
+  String? location;
+  PlayGroundLocationModel({
+    this.lat,
+    this.lng,
+    this.location,
+  });
+
+  factory PlayGroundLocationModel.fromMap(Map<String, dynamic> map) {
+    return PlayGroundLocationModel(
+      lat: map['lat'] != null ? map['lat'] as String : null,
+      lng: map['lng'] != null ? map['lng'] as String : null,
+      location: map['location'] != null ? map['location'] as String : null,
+    );
+  }
+
+  factory PlayGroundLocationModel.fromJson(String source) =>
+      PlayGroundLocationModel.fromMap(
+          json.decode(source) as Map<String, dynamic>);
+}
+
+class playGrounds {
+  List<PlayGroundModel>? playgrounds;
+  playGrounds({
+    this.playgrounds,
+  });
+
+  playGrounds.fromMap(Map<String, dynamic> map) {
+    if (map["playgrounds"] != null) {
+      playgrounds = <PlayGroundModel>[];
+      (map["playgrounds"] as List).forEach(
+        (e) => playgrounds?.add(
+          PlayGroundModel.fromMap(e),
+        ),
+      );
+    }
+  }
+
+  factory playGrounds.fromJson(String source) =>
+      playGrounds.fromMap(json.decode(source) as Map<String, dynamic>);
+}
