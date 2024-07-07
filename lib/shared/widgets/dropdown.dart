@@ -60,7 +60,7 @@ class _DropDownItemState<T> extends State<DropDownItem<T>> {
       // padding: EdgeInsets.symmetric(vertical: 22.h, horizontal: 40.3.w),
       // height: 65.h,
       decoration: BoxDecoration(
-        color: widget.color ?? Colors.white,
+        color: widget.color ?? context.background,
         borderRadius: BorderRadius.circular(
           33,
         ),

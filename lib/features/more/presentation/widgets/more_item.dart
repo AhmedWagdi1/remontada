@@ -22,12 +22,12 @@ class MoreItem extends StatefulWidget {
     super.key,
     this.icon,
     this.title,
-    this.ontap,
+    this.logOut,
     this.notificationActive,
   });
   final String? icon;
   final String? title;
-  final VoidCallback? ontap;
+  final VoidCallback? logOut;
   final bool? notificationActive;
 
   @override
@@ -54,7 +54,7 @@ class _MoreItemState extends State<MoreItem> {
         Routes.privacypolicyScreen,
       );
     } else if (widget.title == "تسجيل الخروج") {
-      showlogoutsheet(context);
+      showlogoutsheet(context, widget.logOut ?? () {});
     }
   }
 
@@ -274,7 +274,7 @@ sendCaptainrequestDialogue(BuildContext context) {
   );
 }
 
-showlogoutsheet(BuildContext context) {
+showlogoutsheet(BuildContext context, VoidCallback logOut) {
   Alerts.bottomSheet(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
@@ -324,7 +324,7 @@ showlogoutsheet(BuildContext context) {
               weight: FontWeight.bold,
               color: context.background,
             ),
-            onTap: () {},
+            onTap: logOut,
           ),
         ],
       ),

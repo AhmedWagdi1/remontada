@@ -53,7 +53,11 @@ class ButtonWidget extends StatelessWidget {
         onPressed: onTap,
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(
-              buttonColor ?? Colors.transparent),
+            buttonColor ??
+                Colors.transparent.withOpacity(
+                  0,
+                ),
+          ),
           overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
           shadowColor: MaterialStateProperty.all<Color>(Colors.white),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(

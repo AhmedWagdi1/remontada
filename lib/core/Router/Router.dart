@@ -6,10 +6,8 @@ import 'package:remontada/features/player_details/presentation/screens/player_de
 import 'package:remontada/features/profile/presentation/screens/edit_profile.screen.dart';
 import 'package:remontada/features/staticScreens/presentation/screens/privacy_policy_screen.dart';
 
-import '../../features/auth/presentation/screens/forget_password/forget_password_screen.dart';
 import '../../features/auth/presentation/screens/login/login_screen.dart';
 import '../../features/auth/presentation/screens/otp/otp_screen.dart';
-import '../../features/auth/presentation/screens/reset_password/reset_password_screen.dart';
 import '../../features/auth/presentation/screens/sign_up/sign_up_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/splash/presentation/screens/on_boarding/on_boarding_screen.dart';
@@ -57,15 +55,15 @@ class RouteGenerator {
             builder: (_) {
               return const LoginScreen();
             });
-      case Routes.ResetPasswordScreen:
-        return CupertinoPageRoute(
-            settings: routeSettings,
-            builder: (_) {
-              return ResetPasswordScreen(
-                code: (routeSettings.arguments as NewPasswordArgs).code,
-                email: (routeSettings.arguments as NewPasswordArgs).email,
-              );
-            });
+      // case Routes.ResetPasswordScreen:
+      //   return CupertinoPageRoute(
+      //       settings: routeSettings,
+      //       builder: (_) {
+      //         return ResetPasswordScreen(
+      //           code: (routeSettings.arguments as NewPasswordArgs).code,
+      //           email: (routeSettings.arguments as NewPasswordArgs).email,
+      //         );
+      //       });
       case Routes.OtpScreen:
         return CupertinoPageRoute(
             settings: routeSettings,
@@ -77,12 +75,12 @@ class RouteGenerator {
                 init: (routeSettings.arguments as OtpArguments).init,
               );
             });
-      case Routes.forget_passScreen:
-        return CupertinoPageRoute(
-            settings: routeSettings,
-            builder: (_) {
-              return const ForgetPasswordScreen();
-            });
+      // case Routes.forget_passScreen:
+      //   return CupertinoPageRoute(
+      //       settings: routeSettings,
+      //       builder: (_) {
+      //         return const ForgetPasswordScreen();
+      //       });
       case Routes.RegisterScreen:
         return CupertinoPageRoute(
             settings: routeSettings,

@@ -1,11 +1,15 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
+import 'package:remontada/features/notifications/cubit/notifications_cubit.dart';
+import 'package:remontada/features/notifications/cubit/notifications_states.dart';
 import 'package:remontada/features/notifications/presentation/widgets/widgets.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
+import 'package:remontada/shared/widgets/loadinganderror.dart';
 
 import '../../../../core/app_strings/locale_keys.dart';
 
@@ -17,7 +21,7 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
-  bool thereData = true;
+  bool thereData = false;
   Widget getnonotifyBody() {
     return Container(
       width: double.infinity,
@@ -114,17 +118,30 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // appBar: AppBar(
-      //   leading: SizedBox(),
-      //   title: CustomText(
-      //     "الاشعارات",
-      //     fontSize: 26.sp,
-      //     weight: FontWeight.w800,
-      //     color: context.primaryColor,
-      //   ),
-      // ),
-      body: thereData ? getnotifyBody() : getnonotifyBody(),
+    return BlocProvider(
+      create: (context) => NotifyCubit()..getnotificationsData(),
+      child: BlocConsumer<NotifyCubit, NotificationsState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          final cubit = NotifyCubit.get(context);
+          return Scaffold(
+            // appBar: AppBar(
+            //   leading: SizedBox(),
+            //   title: CustomText(
+            //     "الاشعارات",
+            //     fontSize: 26.sp,
+            //     weight: FontWeight.w800,
+            //     color: context.primaryColor,
+            //   ),
+            // ),
+            body: LoadingAndError(
+              isLoading: state is NotificationsLoading,
+              isError: state is NotificationsFailed,
+              child: thereData ? getnotifyBody() : getnonotifyBody(),
+            ),
+          );
+        },
+      ),
     );
   }
 }

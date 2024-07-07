@@ -95,13 +95,20 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
       ),
       decoration: widget.inputDecoration ??
           InputDecoration(
+            // isDense: true,
+
+            constraints: BoxConstraints(
+                // maxHeight: 95,
+                // minHeight: 45,
+                ),
+            // helperText: "",
             // prefixIconConstraints: BoxConstraints(),
             // constraints: BoxConstraints(
             //   maxHeight: 65.h,
             // ),
             contentPadding: widget.contentPadding ??
                 EdgeInsets.symmetric(
-                  vertical: 22,
+                  vertical: 18,
                   horizontal: 40.3,
                 ),
             // filled: true,
@@ -138,7 +145,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
                         ),
                       )
                     : null),
-            errorText: widget.errorText,
+            // errorText: widget.errorText,
             // helperText: "",
             border: borderType(),
             focusedBorder: borderType(),

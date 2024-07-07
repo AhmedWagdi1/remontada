@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 // import '../../modules/auth/domain/model/auth_model.dart';
@@ -65,7 +64,7 @@ class DataManager {
 
   deleteUserData() async {
     // final userData = await Hive.openBox('dataUser');
-
+    userData = await Hive.openBox(USER);
     return userData.delete(USER);
   }
 

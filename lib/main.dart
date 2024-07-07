@@ -86,7 +86,7 @@ class MyApp extends StatelessWidget {
                   onGenerateRoute: RouteGenerator.getRoute,
                   // themeMode: cubit.isLightMode ? ThemeMode.light : ThemeMode.dark,
                   // theme: cubit.isLightMode ? LightTheme.getTheme() : DarkTheme.getTheme(),
-                  themeMode: ThemeMode.system,
+                  themeMode: ThemeMode.light,
                   theme: LightTheme.getTheme(),
                   darkTheme: DarkTheme.getTheme(),
                   initialRoute: Routes.splashScreen,

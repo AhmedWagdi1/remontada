@@ -1,34 +1,32 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
 import 'dart:math';
+
+import 'package:flutter/material.dart';
+import 'package:remontada/features/auth/domain/model/auth_model.dart';
+
 import '../data_source/hive_helper.dart';
 import 'Locator.dart';
 import 'validations.dart';
 
 class Utils {
-
   static String token = '';
   static String lang = '';
   static String FCMToken = '';
   static String userType = "";
+  static User user = User();
   // static UserModel userModel = UserModel();
   static GlobalKey<NavigatorState> navigatorKey() =>
       locator<GlobalKey<NavigatorState>>();
   static GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
-  
   static Validation get valid => locator<Validation>();
   static DataManager get dataManager => locator<DataManager>();
- 
 
- 
   static saveUserInHive(Map<String, dynamic> response) async {
-    // userModel = UserModel.fromJson(response);
-    // token = userModel.token ?? '';
-    // await Utils.dataManager.saveUser(Map<String, dynamic>.from(response));
+    user = User.fromMap(response);
+    token = user.token ?? '';
+    await Utils.dataManager.saveUser(Map<String, dynamic>.from(response));
   }
-
-
 
   static void rebuildAllChildren(BuildContext context) {
     void rebuild(Element el) {
@@ -38,7 +36,8 @@ class Utils {
 
     (context as Element).visitChildren(rebuild);
   }
-    static void fixRtlLastChar(TextEditingController? controller) {
+
+  static void fixRtlLastChar(TextEditingController? controller) {
     if (controller != null) {
       if (controller.selection ==
           TextSelection.fromPosition(
@@ -48,7 +47,8 @@ class Utils {
       }
     }
   }
-    static genrateBarcode() {
+
+  static genrateBarcode() {
     return (Random().nextInt(99999999) + 10000000).toString();
   }
 

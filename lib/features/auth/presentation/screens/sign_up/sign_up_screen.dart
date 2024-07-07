@@ -7,13 +7,19 @@ import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
+import 'package:remontada/core/utils/Locator.dart';
+import 'package:remontada/core/utils/utils.dart';
+import 'package:remontada/features/auth/domain/model/auth_model.dart';
+import 'package:remontada/features/auth/domain/repository/auth_repository.dart';
+import 'package:remontada/features/auth/domain/request/auth_request.dart';
 import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
-import 'package:remontada/shared/widgets/dropdown.dart';
 import 'package:remontada/shared/widgets/edit_text_widget.dart';
 
+import '../../../../../core/services/alerts.dart';
 import '../../../../../core/utils/extentions.dart';
 import '../../../../../shared/back_widget.dart';
+import '../../../../../shared/widgets/autocomplate.dart';
 import '../../../cubit/auth_cubit.dart';
 import '../../../cubit/auth_states.dart';
 
@@ -28,17 +34,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController name = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController phone = TextEditingController();
-  TextEditingController password = TextEditingController();
-  TextEditingController confirmPassword = TextEditingController();
+  int? location_id;
+  int? area_id;
   final formKey = GlobalKey<FormState>();
-
+  AuthRequest register = AuthRequest();
+  List<Locations>? locations;
+  List<Areas>? areas;
   @override
   void dispose() {
     name.dispose();
     email.dispose();
     phone.dispose();
-    password.dispose();
-    confirmPassword.dispose();
     super.dispose();
   }
 
@@ -140,6 +146,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           30.ph,
                           TextFormFieldWidget(
+                            onSaved: (value) => register.name = value,
+                            controller: name,
+                            validator: Utils.valid.defaultValidation,
                             prefixIcon: Assets.icons.name,
                             hintSize: 16,
                             borderRadius: 33,
@@ -148,8 +157,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             activeBorderColor:
                                 LightThemeColors.inputFieldBorder,
                           ),
+
                           10.ph,
+                          // if (!(formKey.currentState?.validate() ?? false))
+                          //   20.ph,
                           TextFormFieldWidget(
+                            onSaved: (value) => register.phone = value,
+                            controller: phone,
+                            validator: Utils.valid.phoneValidation,
                             prefixIcon: Assets.icons.calling,
                             hintSize: 16,
                             borderRadius: 33,
@@ -160,6 +175,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           10.ph,
                           TextFormFieldWidget(
+                            onSaved: (value) => register.email = value,
+                            controller: email,
+                            validator: Utils.valid.emailValidation,
                             prefixIcon: Assets.icons.email,
                             hintSize: 16,
                             borderRadius: 33,
@@ -169,47 +187,104 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 LightThemeColors.inputFieldBorder,
                           ),
                           10.ph,
-                          DropDownItem<String>(
-                            prefixIcon: Assets.icons.fieldLocation,
-                            hintColor: context.primaryColor,
+                          CustomAutoCompleteTextField<Location>(
+                            validator: Utils.valid.defaultValidation,
+
+                            prefixIcon: Padding(
+                              padding: const EdgeInsets.only(
+                                right: 35,
+                                left: 9.76,
+                              ),
+                              child:
+                                  SvgPicture.asset(Assets.icons.fieldLocation),
+                            ),
+                            // c: context.primaryColor,
                             hint: LocaleKeys.auth_hint_choose_city.tr(),
-                            radius: 33,
-                            options: [
-                              "item1",
-                              "item2",
-                              "item3",
-                              "item4",
-                            ],
-                            onChanged: (val) {},
+                            function: (p0) async {
+                              return (await locator<AuthRepository>()
+                                          .getArreasRequest())
+                                      ?.areas ??
+                                  [];
+                            },
+                            itemAsString: (p0) => p0.name ?? "item",
+                            localData: true,
+                            showLabel: false,
+                            showSufix: true,
+                            // radius: 33,
+                            // options: List.generate(cubit.getlocations()., (index) => null),
+                            onChanged: (val) {
+                              register.area_id = val.id;
+                            },
                           ),
                           10.ph,
-                          DropDownItem<String>(
-                            prefixIcon: Assets.icons.playLocation,
-                            hintColor: context.primaryColor,
+                          CustomAutoCompleteTextField<Location>(
+                            validator: Utils.valid.defaultValidation,
+
+                            prefixIcon: Padding(
+                              padding: const EdgeInsets.only(
+                                right: 35,
+                                left: 9.76,
+                              ),
+                              child:
+                                  SvgPicture.asset(Assets.icons.playLocation),
+                            ),
+                            // c: context.primaryColor,
                             hint: LocaleKeys
                                 .auth_hint_choose_choose_playlocation
                                 .tr(),
-                            radius: 33,
-                            options: [
-                              "item1",
-                              "item2",
-                              "item3",
-                              "item4",
-                            ],
-                            onChanged: (val) {},
+                            function: (p0) async {
+                              return (await locator<AuthRepository>()
+                                          .getlocationRequest())
+                                      ?.locations ??
+                                  [];
+                            },
+                            itemAsString: (p0) => p0.name ?? "",
+                            localData: true,
+                            showLabel: false,
+                            showSufix: true,
+                            // radius: 33,
+                            // options: List.generate(cubit.getlocations()., (index) => null),
+                            onChanged: (val) {
+                              register.location_id = val.id;
+                            },
                           ),
+
                           21.ph,
                           ButtonWidget(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                Routes.OtpScreen,
-                                arguments: OtpArguments(
-                                  sendTo: "",
-                                  onSubmit: (val) {},
-                                  onReSend: () {},
-                                ),
-                              );
+                            // height: 80,
+                            onTap: () async {
+                              if (formKey.currentState!.validate()) {
+                                formKey.currentState!.save();
+                                cubit.signUp(registerRequestModel: register);
+                                if (state is RegisterSuccessState) {
+                                  Navigator.pushNamed(
+                                    context,
+                                    Routes.OtpScreen,
+                                    arguments: OtpArguments(
+                                      sendTo: register.phone ?? "",
+                                      onSubmit: (value) async {
+                                        register.code = value;
+                                        final res = await cubit.sendCode(
+                                            phone: register.phone ?? "",
+                                            code: register.code ?? "");
+                                        if (res == true) {
+                                          Alerts.snack(
+                                              text: "",
+                                              state: SnackState.success);
+                                          Navigator.pushNamedAndRemoveUntil(
+                                              context,
+                                              Routes.LayoutScreen,
+                                              (route) => false);
+                                        }
+                                      },
+                                      onReSend: () async {
+                                        await cubit
+                                            .resendCode(register.phone ?? "");
+                                      },
+                                    ),
+                                  );
+                                }
+                              }
                             },
                             // height: 65,
                             child: CustomText(
@@ -504,6 +579,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 // )
               ],
             ),
+
             bottomNavigationBar: Container(
               color: context.background,
               height: 104,

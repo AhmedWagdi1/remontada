@@ -51,7 +51,7 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   void startTimer() {
-    target = DateTime.now().add(const Duration(minutes: 2));
+    target = DateTime.now().add(const Duration(seconds: 2));
     now = DateTime.now();
     timer = Timer.periodic(const Duration(seconds: 1), (s) {
       if (now.isBefore(target)) {
@@ -60,9 +60,10 @@ class _OtpScreenState extends State<OtpScreen> {
             '${target.difference(now).inMinutes}:${target.difference(now).inSeconds.remainder(60)}';
         setState(() {});
       } else {
-        remainigTime = '0:0';
+        remainigTime = '';
         timer!.cancel();
       }
+      setState(() {});
     });
   }
 
@@ -145,7 +146,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     ),
                     child: Center(
                       child: CustomText(
-                        "+966 562609805",
+                        widget.sendTo,
                         style: TextStyle(
                           color: LightThemeColors.primary,
                         ).s14.bold,
@@ -170,7 +171,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       // androidSmsAutofillMethod:
                       //     AndroidSmsAutofillMethod.smsUserConsentApi,
                       // smsCodeMatcher: PinputConstants.defaultSmsCodeMatcher,
-                      length: 6,
+                      length: 5,
                       autofocus: false,
                       // errorText: otpError,
                       // onClipboardFound: (s) {},
@@ -257,7 +258,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     onTap: () async {
                       // Navigator.pushNamed(context, Routes.layout);
                       if (formKey.currentState!.validate()) {
-                        if (otpController.text.length < 4) {
+                        if (otpController.text.length < 5) {
                           Alerts.snack(
                               text: "الكود غير صحيح", state: SnackState.failed);
                         } else {

@@ -10,12 +10,15 @@ import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 
 import '../../../../core/Router/Router.dart';
+import '../../domain/model/home_model.dart';
 
 class ItemWidget extends StatelessWidget {
   const ItemWidget({
     super.key,
     this.ismymatch = false,
+    this.matchModel,
   });
+  final MatchModel? matchModel;
   final bool? ismymatch;
   @override
   Widget build(BuildContext context) {
@@ -33,7 +36,7 @@ class ItemWidget extends StatelessWidget {
           left: 15.82,
         ),
         decoration: BoxDecoration(
-          color: LightThemeColors.containerBackgrond,
+          color: context.background,
           borderRadius: BorderRadius.circular(13),
           boxShadow: [
             BoxShadow(
@@ -72,7 +75,7 @@ class ItemWidget extends StatelessWidget {
                             ).s16.bold,
                             // color: context.primaryColor,
                             // weight: FontWeight.w600,
-                            "ملاعب نادي القصيم الرياضي",
+                            matchModel?.playGround ?? "",
                             // fontSize: 16.sp,
                           ),
                         )
@@ -97,7 +100,7 @@ class ItemWidget extends StatelessWidget {
                             // overflow: TextOverflow.ellipsis,
 
                             // weight: FontWeight.w400,
-                            "الأربعاء 12-08-2024",
+                            matchModel?.date ?? "",
                             // fontSize: 14.sp,
                           ),
                         )
@@ -122,7 +125,7 @@ class ItemWidget extends StatelessWidget {
                             // overflow: TextOverflow.ellipsis,
                             // color: LightThemeColors.secondaryText,
                             // weight: FontWeight.w400,
-                            "09:30 مساء",
+                            matchModel?.start ?? "",
                             // fontSize: 14.sp,
                           ),
                         )
@@ -145,7 +148,7 @@ class ItemWidget extends StatelessWidget {
                               color: LightThemeColors.pricecolor,
                             ).s14.bold,
                             // weight: FontWeight.w600,
-                            "35 ${LocaleKeys.rs.tr()}",
+                            matchModel?.price ?? " ${LocaleKeys.rs.tr()}",
                             // fontSize: 14.sp,
                           ),
                         )
@@ -164,7 +167,7 @@ class ItemWidget extends StatelessWidget {
                     // 9.ph,
                     ButtonWidget(
                       radius: 14,
-                      width: 180,
+                      width: 186,
                       height: 28,
                       buttonColor: LightThemeColors.surface,
                       child: Row(
@@ -189,7 +192,7 @@ class ItemWidget extends StatelessWidget {
                           ),
                           2.87.pw,
                           CustomText(
-                            "20 / ",
+                            matchModel?.subscribers ?? "20 / ",
                             // fontSize: 13,
                             // weight: FontWeight.w400,
 
@@ -197,15 +200,15 @@ class ItemWidget extends StatelessWidget {
                               color: LightThemeColors.background,
                             ).s13.medium,
                           ),
-                          CustomText(
-                            "13",
-                            // fontSize: 12.sp,
-                            // weight: FontWeight.w400,
-                            // color: LightThemeColors.black,
-                            style: TextStyle(
-                              color: LightThemeColors.black,
-                            ).s14.medium,
-                          ),
+                          // CustomText(
+                          //   "13",
+                          //   // fontSize: 12.sp,
+                          //   // weight: FontWeight.w400,
+                          //   // color: LightThemeColors.black,
+                          //   style: TextStyle(
+                          //     color: LightThemeColors.black,
+                          //   ).s14.medium,
+                          // ),
                         ],
                       ),
                     ),

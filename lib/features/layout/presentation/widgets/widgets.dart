@@ -38,7 +38,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
       child: ClipPath(
         clipper: CustomContainer(),
         child: Container(
-          height: 129.39,
+          height: 110.39,
           decoration: BoxDecoration(
             // boxShadow: [
             //   BoxShadow(

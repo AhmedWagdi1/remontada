@@ -24,7 +24,7 @@ class AppResponsiveWrapper extends StatelessWidget {
               conditionalValues: [
                 Condition.equals(name: MOBILE, value: 420),
                 Condition.equals(name: TABLET, value: 650),
-                Condition.equals(name: DESKTOP, value: 1200),
+                Condition.equals(name: DESKTOP, value: 1600),
                 Condition.equals(name: "4k", value: 2300),
                 // There are no conditions for width over 1200
                 // because the `maxWidth` is set to 1200 via the MaxWidthBox.

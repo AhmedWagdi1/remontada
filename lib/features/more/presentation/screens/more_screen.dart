@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:remontada/core/Router/Router.dart';
 import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/resources/gen/assets.gen.dart';
@@ -81,6 +82,13 @@ class MoreScreen extends StatelessWidget {
                           children: List.generate(
                             titles.length,
                             (index) => MoreItem(
+                              logOut: () async {
+                                final res = await cubit.logOut();
+                                if (res == true) {
+                                  Navigator.pushNamedAndRemoveUntil(context,
+                                      Routes.LoginScreen, (route) => false);
+                                }
+                              },
                               icon: icons[index],
                               title: titles[index],
                             ),

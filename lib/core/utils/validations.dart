@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+
 import '../app_strings/locale_keys.dart';
 
 class Validation {
@@ -17,21 +18,19 @@ class Validation {
     return null;
   }
 
-  static String? phoneValidation(String? value) {
+  String? phoneValidation(String? value) {
     // String p =r'(^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$)';
     String p = r'^5[0-9]{8}$';
 
-    RegExp regExp = RegExp(p);
+    // RegExp regExp = RegExp(p);
     if (value!.trim().isEmpty) {
       return (LocaleKeys.valid_requiredPhone.tr());
-    } else if (!regExp.hasMatch(value.trim())) {
-      return (LocaleKeys.valid_phoneDoseNotMatch.tr());
     } else {
       return null;
     }
   }
 
-  static RegExp emailReg = RegExp(
+  RegExp emailReg = RegExp(
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
 
   String? emailValidation(

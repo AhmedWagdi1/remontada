@@ -1,3 +1,7 @@
+import 'dart:developer';
+
+import 'package:remontada/features/auth/domain/model/auth_model.dart';
+
 import '../../../../core/data_source/dio_helper.dart';
 import '../../../../core/services/alerts.dart';
 import '../request/auth_request.dart';
@@ -7,9 +11,44 @@ class AuthRepository {
   final DioService dioService;
   AuthRepository(this.dioService);
 
+  Future<Areas?> getArreasRequest() async {
+    final response = await dioService.getData(
+      url: AuthEndPoints.area,
+    );
+    log("failed", name: "1");
+    if (response.isError == false) {
+      log("success", name: "2");
+      final Map<String, dynamic> res =
+          response.response?.data["data"] as Map<String, dynamic>;
+      return Areas.fromMap(response.response?.data["data"]);
+    } else {
+      log("failed", name: "3");
+      return null;
+    }
+  }
+
+  Future<Locations?> getlocationRequest() async {
+    final ApiResponse response = await dioService.getData(
+      url: AuthEndPoints.location,
+    );
+    log("failed", name: "1");
+    if (response.isError == false) {
+      log("success", name: "2");
+      final Map<String, dynamic> res =
+          response.response?.data["data"] as Map<String, dynamic>;
+      return Locations.fromMap(response.response?.data["data"]);
+    } else {
+      log("failed", name: "3");
+      return null;
+    }
+  }
+
   loginRequest(AuthRequest user) async {
     final response = await dioService.postData(
-        url: AuthEndPoints.login, body: user.login(), loading: true);
+        isForm: true,
+        url: AuthEndPoints.login,
+        body: user.login(),
+        loading: true);
     if (response.isError == false) {
       return response.response?.data['data'];
     } else {
@@ -27,9 +66,9 @@ class AuthRepository {
     }
   }
 
-  resendCodeRequest(String email) async {
+  resendCodeRequest(String phone) async {
     final response = await dioService.postData(
-        url: AuthEndPoints.resendCode, body: {'email': email}, isForm: true);
+        url: AuthEndPoints.resendCode, body: {'mobile': phone}, isForm: true);
     if (response.isError == false) {
       // Alerts.snack(text: response.response?.data['message'], state: 1);
       return response.response?.data['data'];
@@ -38,10 +77,19 @@ class AuthRepository {
     }
   }
 
-  sendCodeRequest({required String email, required String code}) async {
+  sendCodeRequest({
+    required String phone,
+    required String code,
+  }) async {
     final response = await dioService.postData(
         url: AuthEndPoints.sendCode,
-        body: {'email': email, 'code': code},
+        body: {
+          'mobile': phone,
+          'code': code,
+          "device_token": "aasdfdasds34234",
+          "device_type": "android",
+          "uuid": "00000000-0000-0000-0000-000000000000",
+        },
         loading: true,
         isForm: true);
     if (response.isError == false) {

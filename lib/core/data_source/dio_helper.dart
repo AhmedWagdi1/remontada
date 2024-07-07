@@ -1,15 +1,30 @@
 import 'dart:async';
 import 'dart:developer';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
-import '../Router/Router.dart';
-import '../services/alerts.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../../shared/widgets/myLoading.dart';
-import '../config/config.dart';
+import '../Router/Router.dart';
+import '../services/alerts.dart';
 import '../utils/utils.dart';
+
+class CustomInterceptor extends Interceptor {
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    // Check if the status code is 302
+    if (response.statusCode == 302) {
+      // You can modify the response or handle the redirection here
+      // For example, changing the status code to 200 to treat it as success
+      response.statusCode = 200;
+      // log("${response.statusCode}");
+      print("Redirected response: ${response.data}");
+    }
+    // Continue with the modified response
+    super.onResponse(response, handler);
+  }
+}
 
 class DioService {
   Dio _mydio = Dio();
@@ -17,6 +32,7 @@ class DioService {
   DioService([String baseUrl = "", BaseOptions? options]) {
     _mydio = Dio(
       BaseOptions(
+          validateStatus: (status) => status! < 400,
           headers: {
             "Accept": "application/json",
             'Content-Type': "application/x-www-form-urlencoded",
@@ -24,6 +40,7 @@ class DioService {
           baseUrl: baseUrl,
           contentType: "application/x-www-form-urlencoded",
           receiveDataWhenStatusError: true,
+          followRedirects: false,
           connectTimeout: const Duration(milliseconds: 30000),
           receiveTimeout: const Duration(milliseconds: 30000),
           sendTimeout: const Duration(milliseconds: 30000)),
@@ -35,6 +52,8 @@ class DioService {
         error: true,
         compact: true,
         maxWidth: 90));
+    _mydio.interceptors.add(CustomInterceptor());
+    ;
   }
 
   Future<ApiResponse> postData({
@@ -98,7 +117,7 @@ class DioService {
     Map<String, dynamic>? query,
     bool loading = false,
   }) async {
-    _mydio.options.headers["Authorization"] = 'Bearer ${Utils.token}';
+    _mydio.options.headers["Authorization"] = 'Bearer ${Utils.user.token}';
 
     try {
       if (loading) {
@@ -153,9 +172,11 @@ class DioService {
     } else if (DioExceptionType.badResponse == e.type) {
       log('case 2');
       log('Server reachable. Error in resposne');
-      Alerts.snack(
-          text: e.response?.data["message"] ?? "لا يمكن الوصول للسيرفير",
-          state: SnackState.failed);
+      log("${e.response!.statusCode}");
+      checkForSuccess(e.response!);
+      // Alerts.snack(
+      //     text: e.response?.data["message"] ?? "لا يمكن الوصول للسيرفير",
+      //     state: SnackState.failed);
 
       log("hello im errroe");
       if (e.response?.data["message"]?.contains("Unauthenticated") ?? false) {
@@ -194,10 +215,11 @@ class DioService {
   }
 
   ApiResponse checkForSuccess(Response response) {
-    if ((response.data["status"]) == "Success") {
+    if ((response.data["status"]) == true) {
+      // Alerts.snack(text: response.data["message"], state: SnackState.success);
       return ApiResponse(isError: false, response: response);
     } else {
-      Alerts.snack(text: response.data["error"], state: SnackState.failed);
+      Alerts.snack(text: response.data["message"], state: SnackState.failed);
       return ApiResponse(isError: true, response: response);
     }
   }
