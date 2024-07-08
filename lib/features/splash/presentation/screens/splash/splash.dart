@@ -2,7 +2,6 @@ import 'package:animated_widgets_flutter/widgets/opacity_animated.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:remontada/core/Router/Router.dart';
 
 import '../../../../../core/utils/extentions.dart';
 import '../../../cubit/splash_cubit.dart';
@@ -33,6 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
           body: BlocConsumer<SplashCubit, SplashStates>(
             listener: (context, state) {},
             builder: (context, state) {
+              final cubit = SplashCubit.get(context);
               return Container(
                 height: double.infinity,
                 width: double.infinity,
@@ -53,7 +53,11 @@ class _SplashScreenState extends State<SplashScreen> {
                       duration: const Duration(milliseconds: 3000),
                       enabled: true,
                       animationFinished: (finished) async {
-                        Navigator.pushNamed(context, Routes.LoginScreen);
+                        final route = await cubit.checkLogin();
+                        Navigator.pushNamed(
+                          context,
+                          route,
+                        );
                         // Navigator.pushNamedAndRemoveUntil(
                         //     context, await cubit.checkLogin(), (route) => false);
                       },

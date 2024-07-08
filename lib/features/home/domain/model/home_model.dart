@@ -8,14 +8,15 @@ class MatchModel {
   String? date;
   String? start;
   String? price;
-  MatchModel({
-    this.id,
-    this.playGround,
-    this.subscribers,
-    this.date,
-    this.start,
-    this.price,
-  });
+  String? details;
+  MatchModel(
+      {this.id,
+      this.playGround,
+      this.subscribers,
+      this.date,
+      this.start,
+      this.price,
+      this.details});
 
   factory MatchModel.fromMap(Map<String, dynamic> map) {
     return MatchModel(
@@ -28,6 +29,7 @@ class MatchModel {
       date: map['date'] != null ? map['date'] as String : null,
       start: map['start_time'] != null ? map['start_time'] as String : null,
       price: map['amount'] != null ? map['amount'] as String : null,
+      details: map['details'] != null ? map['details'] as String : null,
     );
   }
 
@@ -154,4 +156,92 @@ class playGrounds {
 
   factory playGrounds.fromJson(String source) =>
       playGrounds.fromMap(json.decode(source) as Map<String, dynamic>);
+}
+
+class Day {
+  String? text;
+  String? date;
+  Day({
+    this.text,
+    this.date,
+  });
+
+  factory Day.fromMap(Map<String, dynamic> map) {
+    return Day(
+      text: map['date_text'] != null ? map['date_text'] as String : null,
+      date: map['date'] != null ? map['date'] as String : null,
+    );
+  }
+
+  factory Day.fromJson(String source) =>
+      Day.fromMap(json.decode(source) as Map<String, dynamic>);
+}
+
+class Days {
+  List<Day>? days;
+  Days({
+    this.days,
+  });
+
+  Days.fromMap(Map<String, dynamic> map) {
+    if (map["days"] != null) {
+      days = <Day>[];
+      (map["days"] as List).forEach((e) {
+        days?.add(Day.fromMap(e));
+      });
+    }
+  }
+
+  factory Days.fromJson(String source) =>
+      Days.fromMap(json.decode(source) as Map<String, dynamic>);
+}
+
+class Subscriber {
+  int? id;
+  String? image;
+  String? name;
+  String? location;
+  String? phone;
+  String? city;
+  Subscriber({
+    this.id,
+    this.image,
+    this.name,
+    this.location,
+    this.phone,
+    this.city,
+  });
+
+  factory Subscriber.fromMap(Map<String, dynamic> map) {
+    return Subscriber(
+      id: map['id'] != null ? map['id'] as int : null,
+      image: map['image'] != null ? map['image'] as String : null,
+      name: map['name'] != null ? map['name'] as String : null,
+      location: map['location'] != null ? map['location'] as String : null,
+      phone: map['phone'] != null ? map['phone'] as String : null,
+      city: map['city'] != null ? map['city'] as String : null,
+    );
+  }
+
+  factory Subscriber.fromJson(String source) =>
+      Subscriber.fromMap(json.decode(source) as Map<String, dynamic>);
+}
+
+class SubScribersModel {
+  List<Subscriber>? subscribers;
+  SubScribersModel({
+    this.subscribers,
+  });
+
+  SubScribersModel.fromMap(Map<String, dynamic> map) {
+    if (map["subscribers"] != null) {
+      subscribers = <Subscriber>[];
+      (map["subscribers"] as List).forEach((s) {
+        subscribers?.add(Subscriber.fromMap(s));
+      });
+    }
+  }
+
+  factory SubScribersModel.fromJson(String source) =>
+      SubScribersModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

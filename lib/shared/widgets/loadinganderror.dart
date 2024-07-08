@@ -5,12 +5,19 @@ import 'button_widget.dart';
 import 'customtext.dart';
 
 class LoadingAndError extends StatelessWidget {
-  const LoadingAndError({Key? key, required this.isError, required this.isLoading, this.function, required this.child})
-      : super(key: key);
+  const LoadingAndError({
+    Key? key,
+    required this.isError,
+    required this.isLoading,
+    this.function,
+    required this.child,
+    this.errorChild,
+  }) : super(key: key);
   final bool isError;
   final bool isLoading;
   final Widget child;
   final Function? function;
+  final Widget? errorChild;
   @override
   Widget build(BuildContext context) {
     return Builder(builder: (

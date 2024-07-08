@@ -50,7 +50,7 @@ class DataManager {
     try {
       final user = (Map<String, dynamic>.from(userData.get(USER)));
 
-      Utils.token = user['token'];
+      Utils.token = user['access_token'];
       log(Utils.token);
 
       // Utils.userModel = UserModel.fromJson(Map<String, dynamic>.from(user));

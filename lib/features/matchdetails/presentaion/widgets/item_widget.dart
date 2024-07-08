@@ -6,15 +6,11 @@ import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 
 class MatchDetailswidget extends StatelessWidget {
-  const MatchDetailswidget({
-    super.key,
-    this.icon,
-    this.subtitle,
-    this.title,
-  });
+  const MatchDetailswidget({super.key, this.icon, this.title, this.subtitle});
+
+  final String? icon;
   final String? title;
   final String? subtitle;
-  final String? icon;
   @override
   Widget build(BuildContext context) {
     return Container(

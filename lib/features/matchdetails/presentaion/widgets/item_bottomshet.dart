@@ -4,12 +4,15 @@ import 'package:remontada/core/Router/Router.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/utils/extentions.dart';
+import 'package:remontada/features/home/domain/model/home_model.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
+import 'package:remontada/shared/widgets/network_image.dart';
 
 import '../../../../core/theme/light_theme.dart';
 
 class PlayerBottomSheet extends StatelessWidget {
-  const PlayerBottomSheet({super.key});
+  const PlayerBottomSheet({super.key, this.subscriber});
+  final Subscriber? subscriber;
 
   @override
   Widget build(BuildContext context) {
@@ -38,17 +41,24 @@ class PlayerBottomSheet extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Container(
-                          width: 44,
-                          height: 44,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.transparent,
-                          ),
-                          child: Assets.images.profile_image.image(
-                            fit: BoxFit.contain,
-                          ),
-                        ),
+                        subscriber?.image != null
+                            ? NetworkImagesWidgets(
+                                subscriber?.image ?? "",
+                                width: 52,
+                                height: 52,
+                                fit: BoxFit.contain,
+                              )
+                            : Container(
+                                width: 44,
+                                height: 44,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.transparent,
+                                ),
+                                child: Assets.images.profile_image.image(
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
                         13.pw,
                         Expanded(
                           child: Column(
@@ -59,7 +69,7 @@ class PlayerBottomSheet extends StatelessWidget {
                                 style: TextStyle(
                                   color: LightThemeColors.black,
                                 ).s16.bold,
-                                "محمد نواف",
+                                subscriber?.name ?? "",
                                 // fontSize: 14.sp,
                                 // weight: FontWeight.w600,
                               ),
@@ -80,7 +90,7 @@ class PlayerBottomSheet extends StatelessWidget {
                                     style: TextStyle(
                                       color: context.primaryColor,
                                     ).s14.regular,
-                                    "مهاجم",
+                                    subscriber?.location ?? "",
                                     // fontSize: 12.sp,
 
                                     // weight: FontWeight.w500,

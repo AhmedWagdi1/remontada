@@ -221,8 +221,14 @@ class ItemWidget extends StatelessWidget {
                     IconButton(
                       padding: EdgeInsets.zero,
                       onPressed: () {
-                        Navigator.pushNamed(context, Routes.matchDetails,
-                            arguments: ismymatch);
+                        Navigator.pushNamed(
+                          context,
+                          Routes.matchDetails,
+                          arguments: MatchDetailsArgs(
+                            id: matchModel?.id ?? 1,
+                            isMymatch: ismymatch,
+                          ),
+                        );
                       },
                       icon: SvgPicture.asset(
                         width: 45.94,

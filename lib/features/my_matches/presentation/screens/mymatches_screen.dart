@@ -1,11 +1,16 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/features/home/presentation/widgets/itemwidget.dart';
+import 'package:remontada/features/my_matches/cubit/myMatches_cubit.dart';
+import 'package:remontada/features/my_matches/cubit/myMatches_states.dart';
+import 'package:remontada/features/my_matches/domain/model/myMatches_Model.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
+import 'package:remontada/shared/widgets/loadinganderror.dart';
 
 import '../../../../core/resources/gen/assets.gen.dart';
 
@@ -17,6 +22,7 @@ class MyMatchesScreen extends StatefulWidget {
 }
 
 class _MyMatchesScreenState extends State<MyMatchesScreen> {
+  MyMatches myMatches = MyMatches();
   bool thereData = true;
   Widget getnoMatchesBody() {
     return Container(
@@ -72,7 +78,7 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
     );
   }
 
-  getMatchesBody() {
+  getMatchesBody(MyMatches myMatches) {
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.symmetric(
@@ -99,8 +105,9 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
             30.ph,
             Column(
               children: List.generate(
-                2,
+                myMatches.matches?.length ?? 0,
                 (index) => ItemWidget(
+                  matchModel: myMatches.matches?[index],
                   ismymatch: true,
                 ),
               ),
@@ -127,7 +134,22 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
       //     color: context.primaryColor,
       //   ),
       // ),
-      body: thereData ? getMatchesBody() : getnoMatchesBody(),
+      body: BlocProvider(
+          create: (context) => MyMatchesCubit()..getMymatches(),
+          child: BlocConsumer<MyMatchesCubit, MyMatchesState>(
+            listener: (context, state) {
+              if (state is MyMatchesLoaded) myMatches = state.mymatches;
+            },
+            builder: (context, state) {
+              return LoadingAndError(
+                isLoading: state is MyMatchesLoading,
+                isError: state is MyMatchesFailed,
+                child: myMatches.matches?.isNotEmpty ?? false
+                    ? getMatchesBody(myMatches)
+                    : getnoMatchesBody(),
+              );
+            },
+          )),
     );
   }
 }

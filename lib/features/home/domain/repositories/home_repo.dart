@@ -33,4 +33,14 @@ class HomeRepo {
       return null;
     }
   }
+
+  getclander() async {
+    final ApiResponse response =
+        await dioService.getData(url: HomeEndPoints.schedules);
+    if (response.isError == false) {
+      return response.response?.data["data"];
+    } else {
+      return null;
+    }
+  }
 }

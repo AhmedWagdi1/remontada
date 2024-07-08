@@ -86,10 +86,13 @@ class _BottomSheetItemState extends State<BottomSheetItem> {
                 itemBuilder: (context, i) {
                   return GestureDetector(
                     onTap: () {
-                      id = widget.playground?.playgrounds?[i].id ?? 0;
-
                       widget.playground?.playgrounds?[i].isActive =
                           !(widget.playground?.playgrounds?[i].isActive)!;
+
+                      if (widget.playground?.playgrounds?[i].isActive == true) {
+                        id = widget.playground?.playgrounds?[i].id ?? 0;
+                      }
+
                       setState(() {});
                     },
                     child: Container(

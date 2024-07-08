@@ -14,6 +14,7 @@ class Utils {
   static String FCMToken = '';
   static String userType = "";
   static User user = User();
+  static bool fromNotification = false;
   // static UserModel userModel = UserModel();
   static GlobalKey<NavigatorState> navigatorKey() =>
       locator<GlobalKey<NavigatorState>>();

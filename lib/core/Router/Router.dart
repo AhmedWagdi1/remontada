@@ -10,7 +10,6 @@ import '../../features/auth/presentation/screens/login/login_screen.dart';
 import '../../features/auth/presentation/screens/otp/otp_screen.dart';
 import '../../features/auth/presentation/screens/sign_up/sign_up_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
-import '../../features/splash/presentation/screens/on_boarding/on_boarding_screen.dart';
 import '../../features/splash/presentation/screens/splash/splash.dart';
 import '../../features/staticScreens/presentation/screens/about_screen.dart';
 
@@ -43,12 +42,12 @@ class RouteGenerator {
             builder: (_) {
               return const SplashScreen();
             });
-      case Routes.OnboardingScreen:
-        return CupertinoPageRoute(
-            settings: routeSettings,
-            builder: (_) {
-              return const OnboardingScreen();
-            });
+      // case Routes.OnboardingScreen:
+      //   return CupertinoPageRoute(
+      //       settings: routeSettings,
+      //       builder: (_) {
+      //         return const OnboardingScreen();
+      //       });
       case Routes.LoginScreen:
         return CupertinoPageRoute(
             settings: routeSettings,
@@ -100,7 +99,9 @@ class RouteGenerator {
             settings: routeSettings,
             builder: (_) {
               return MatchDetailsScreen(
-                mymatch: routeSettings.arguments as bool,
+                mymatch:
+                    (routeSettings.arguments as MatchDetailsArgs).isMymatch,
+                id: (routeSettings.arguments as MatchDetailsArgs).id,
               );
             });
 
@@ -183,4 +184,14 @@ class NewPasswordArgs {
   final String code;
   final String email;
   const NewPasswordArgs({required this.code, required this.email});
+}
+
+class MatchDetailsArgs {
+  bool? isMymatch;
+  int? id;
+
+  MatchDetailsArgs({
+    this.id,
+    this.isMymatch,
+  });
 }

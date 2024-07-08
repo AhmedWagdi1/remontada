@@ -141,6 +141,10 @@
     "complain_desc": "وصف المشكلة أو السؤال",
     "submit": "إرسال"
   },
+  "SubscribeNow": "إشترك الآن",
+  "Subscribedone": "تم تأكيد إشتراكك",
+  "Subscribedone_des": "تم تأكيد إشتراكك وإنضمامك إلى المباراة بنجاح",
+
 
   "navBar": {
   "home": "الرئيسية",

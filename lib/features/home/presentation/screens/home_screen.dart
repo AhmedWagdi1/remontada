@@ -32,23 +32,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   HomeModel homeModel = HomeModel();
   playGrounds playground = playGrounds();
+  Days _days = Days();
   int index = 0;
-  List dates = [
-    "اليوم",
-    "الثلاثاء 11-08-2024",
-    "الثلاثاء 11-08-2024",
-    "الثلاثاء 11-08-2024",
-    "الثلاثاء 11-08-2024",
-    "الثلاثاء 11-08-2024"
-  ];
-  List dates2 = [
-    "غدا",
-    "الثلاثاء 11-08-2024",
-    "الثلاثاء 11-08-2024",
-    "الثلاثاء 11-08-2024",
-    "الثلاثاء 11-08-2024",
-    "الثلاثاء 11-08-2024"
-  ];
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -207,15 +193,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: IconButton(
                                         // padding: EdgeInsets.zero,
                                         onPressed: () async {
-                                          await cubit.getplayground();
-                                          if (state is PlayGroundLoaded)
-                                            playground = state.playgrounds;
+                                          final playgrounds =
+                                              await cubit.getplayground();
+                                          if (playgrounds != null)
+                                            playground = playgrounds;
                                           showPlaygroungBottomSheet(
                                             context,
                                             playground,
                                             state,
-                                            () async =>
-                                                await cubit.getplayground(),
+                                            () async {
+                                              await cubit.getplayground();
+                                              // setState(() {});
+                                            },
                                             (value) async =>
                                                 await cubit.getHomeData(
                                               playground: value,
@@ -233,7 +222,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                       flex: 1,
                                       child: IconButton(
                                         // padding: EdgeInsets.zero,
-                                        onPressed: () {
+                                        onPressed: () async {
+                                          final days = await cubit.getclander();
+                                          if (days != null) _days = days;
                                           showClendersheet(context);
                                         },
                                         icon: SvgPicture.asset(
@@ -347,30 +338,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             42.ph,
-            Row(
-              children: [
-                Expanded(
-                    child: Column(
-                  children: List.generate(
-                    dates2.length,
-                    (index) => BottomSheetItem(
-                        // title: dates2[index],
-                        ),
-                  ),
-                )),
-                10.pw,
-                Expanded(
-                  child: Column(
-                    children: List.generate(
-                      dates.length,
-                      (index) => BottomSheetItem(
-                          // title: dates[index],
-                          ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
             28.ph,
             Row(
               children: [

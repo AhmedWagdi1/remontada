@@ -35,12 +35,22 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   getplayground() async {
-    emit(PlayGroundLoading());
     final response = await homeRepo.getPlaygrounds();
     if (response != null) {
       playGrounds playgrounds = playGrounds.fromMap(response);
-      emit(PlayGroundLoaded(playgrounds));
-      return true;
+
+      return playgrounds;
+    } else {
+      return null;
+    }
+  }
+
+  getclander() async {
+    final res = await homeRepo.getclander();
+    if (res != null) {
+      Days days = Days.fromMap(res);
+
+      return days;
     } else {
       emit(PlayGroundFailed());
       return null;
