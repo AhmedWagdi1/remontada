@@ -81,6 +81,7 @@ class _BottomSheetItemState extends State<BottomSheetItem> {
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   childAspectRatio: 5 / 1,
                   crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
                   crossAxisCount: 2,
                 ),
                 itemBuilder: (context, i) {

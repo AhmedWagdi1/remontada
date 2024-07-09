@@ -161,9 +161,11 @@ class playGrounds {
 class Day {
   String? text;
   String? date;
+  bool? isActive;
   Day({
     this.text,
     this.date,
+    this.isActive = false,
   });
 
   factory Day.fromMap(Map<String, dynamic> map) {
@@ -179,6 +181,7 @@ class Day {
 
 class Days {
   List<Day>? days;
+
   Days({
     this.days,
   });
