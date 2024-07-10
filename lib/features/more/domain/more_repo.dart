@@ -18,4 +18,26 @@ class MoreRepo {
       return true;
     }
   }
+
+  getAboutpage() async {
+    final response = await dioService.getData(
+      url: MoreEndPoints.about,
+    );
+    if (response.isError == false) {
+      return response.response?.data["data"];
+    } else {
+      return null;
+    }
+  }
+
+  getPolicy() async {
+    final response = await dioService.getData(
+      url: MoreEndPoints.policy,
+    );
+    if (response.isError == false) {
+      return response.response?.data["data"];
+    } else {
+      return null;
+    }
+  }
 }

@@ -16,6 +16,7 @@ import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 
 import '../../../../core/services/alerts.dart';
+import '../../domain/model/model.dart';
 
 class MoreItem extends StatefulWidget {
   const MoreItem({
@@ -24,7 +25,9 @@ class MoreItem extends StatefulWidget {
     this.title,
     this.logOut,
     this.notificationActive,
+    this.cubit,
   });
+  final MoreCubit? cubit;
   final String? icon;
   final String? title;
   final VoidCallback? logOut;
@@ -35,7 +38,8 @@ class MoreItem extends StatefulWidget {
 }
 
 class _MoreItemState extends State<MoreItem> {
-  pressedItem() {
+  Pages? _page;
+  pressedItem() async {
     if (widget.title == "الملف الشخصي") {
       Navigator.pushNamed(
         context,
@@ -44,15 +48,14 @@ class _MoreItemState extends State<MoreItem> {
     } else if (widget.title == "إرسال طلب عضوية كابتن ( مشرف )") {
       sendCaptainrequestDialogue(context);
     } else if (widget.title == "عن التطبيق") {
-      Navigator.pushNamed(
-        context,
-        Routes.aboutscreen,
-      );
+      final page = await widget.cubit?.getAbout();
+      if (page != null) _page = page;
+      Navigator.pushNamed(context, Routes.aboutscreen, arguments: _page);
     } else if (widget.title == "سياسة الخصوصية والاستخدام") {
-      Navigator.pushNamed(
-        context,
-        Routes.privacypolicyScreen,
-      );
+      final page = await widget.cubit?.getpolicy();
+      if (page != null) _page = page;
+      Navigator.pushNamed(context, Routes.privacypolicyScreen,
+          arguments: _page);
     } else if (widget.title == "تسجيل الخروج") {
       showlogoutsheet(context, widget.logOut ?? () {});
     }

@@ -1,16 +1,22 @@
 import 'package:remontada/core/data_source/dio_helper.dart';
-import 'package:remontada/features/notifications/domain/end_points.dart';
+
+import 'model/notify_model.dart';
 
 class NotifyRepo {
   DioService dioService;
   NotifyRepo(this.dioService);
 
-  getNotifications() async {
-    final ApiResponse response = await dioService.getData(
-      url: NotifyEndpoints.notifications,
+  Future<PaginationNotificationModel?> getNotificationRequest({
+    required int page,
+  }) async {
+    final response = await dioService.getData(
+      url: "/notifications",
+      query: {
+        'page': page,
+      },
     );
     if (response.isError == false) {
-      return response.response?.data["data"];
+      return PaginationNotificationModel.fromJson(response.response?.data);
     } else {
       return null;
     }

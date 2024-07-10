@@ -3,13 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/utils/extentions.dart';
-import 'package:remontada/features/staticScreens/presentation/widgets/widgets.dart';
+import 'package:remontada/features/more/domain/model/model.dart';
 import 'package:remontada/shared/back_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 
-class PrivacyScreen extends StatelessWidget {
-  const PrivacyScreen({super.key});
+import '../../../../core/theme/light_theme.dart';
 
+class PrivacyScreen extends StatelessWidget {
+  const PrivacyScreen({
+    super.key,
+    this.page,
+  });
+  final Pages? page;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,10 +55,23 @@ class PrivacyScreen extends StatelessWidget {
               ),
               44.ph,
               Column(
-                children: List.generate(
-                  6,
-                  (index) => PrivacyWidget(),
-                ),
+                children: [
+                  Container(
+                    height: 85,
+                    child: CustomText(
+                      align: TextAlign.center,
+                      page?.content != ""
+                          ? page?.content ?? ""
+                          : "هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي",
+                      overflow: TextOverflow.clip,
+                      fontSize: 14,
+                      color: LightThemeColors.black,
+                      weight: FontWeight.w400,
+                    ),
+                  ).paddingBottom(
+                    19,
+                  )
+                ],
               )
             ],
           ),

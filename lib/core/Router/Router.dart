@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:remontada/features/auth/domain/model/auth_model.dart';
 import 'package:remontada/features/layout/presentation/screens/layout_screen.dart';
 import 'package:remontada/features/matchdetails/presentaion/screens/matchDetails_screen.dart';
 import 'package:remontada/features/player_details/presentation/screens/player_details.dart';
@@ -9,6 +10,8 @@ import 'package:remontada/features/staticScreens/presentation/screens/privacy_po
 import '../../features/auth/presentation/screens/login/login_screen.dart';
 import '../../features/auth/presentation/screens/otp/otp_screen.dart';
 import '../../features/auth/presentation/screens/sign_up/sign_up_screen.dart';
+import '../../features/more/domain/model/model.dart';
+import '../../features/profile/domain/edit_request.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/splash/presentation/screens/splash/splash.dart';
 import '../../features/staticScreens/presentation/screens/about_screen.dart';
@@ -109,7 +112,9 @@ class RouteGenerator {
         return CupertinoPageRoute(
             settings: routeSettings,
             builder: (_) {
-              return PlayerDetails();
+              return PlayerDetails(
+                id: routeSettings.arguments as String,
+              );
             });
       case Routes.profileDetails:
         return CupertinoPageRoute(
@@ -121,19 +126,26 @@ class RouteGenerator {
         return CupertinoPageRoute(
             settings: routeSettings,
             builder: (_) {
-              return EditProfileScreen();
+              return EditProfileScreen(
+                user: (routeSettings.arguments as EditScreenArgs).user,
+                edit: (routeSettings.arguments as EditScreenArgs).edit,
+              );
             });
       case Routes.privacypolicyScreen:
         return CupertinoPageRoute(
             settings: routeSettings,
             builder: (_) {
-              return PrivacyScreen();
+              return PrivacyScreen(
+                page: routeSettings.arguments as Pages,
+              );
             });
       case Routes.aboutscreen:
         return CupertinoPageRoute(
             settings: routeSettings,
             builder: (_) {
-              return AboutScreen();
+              return AboutScreen(
+                page: routeSettings.arguments as Pages,
+              );
             });
       // case Routes.SplashScreen:
       //   return CupertinoPageRoute(
@@ -194,4 +206,11 @@ class MatchDetailsArgs {
     this.id,
     this.isMymatch,
   });
+}
+
+class EditScreenArgs {
+  User? user;
+  Function(EditRequest edit)? edit;
+
+  EditScreenArgs({this.edit, this.user});
 }

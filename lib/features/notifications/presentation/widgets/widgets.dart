@@ -6,13 +6,16 @@ import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 
 import '../../../../core/resources/gen/assets.gen.dart';
+import '../../domain/model/notify_model.dart';
 
 class NotifyItem extends StatelessWidget {
   const NotifyItem({
     super.key,
     this.isSeen = false,
+    this.notificationModel,
   });
   final bool? isSeen;
+  final NotificationModel? notificationModel;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -79,7 +82,7 @@ class NotifyItem extends StatelessWidget {
                   children: [
                     Container(
                       child: CustomText(
-                        "ملاعب نادي القصيم الرياضي",
+                        notificationModel?.data?.title ?? "",
                         style: TextStyle(
                           color: isSeen!
                               ? LightThemeColors.notifytextSeen
@@ -99,7 +102,7 @@ class NotifyItem extends StatelessWidget {
                         ),
                         4.pw,
                         CustomText(
-                          "الأربعاء 12-08-2024",
+                          notificationModel?.createdAt ?? "",
                           style: TextStyle(
                             color: LightThemeColors.black,
                           ).s12.light,
@@ -107,13 +110,13 @@ class NotifyItem extends StatelessWidget {
                           // fontSize: 12.sp,
                           // weight: FontWeight.w400,
                         ),
-                        4.pw,
-                        CustomText(
-                          "09:30 مساء",
-                          style: TextStyle(
-                            color: LightThemeColors.black,
-                          ).s12.light,
-                        ),
+                        // 4.pw,
+                        // CustomText(
+                        //   "09:30 مساء",
+                        //   style: TextStyle(
+                        //     color: LightThemeColors.black,
+                        //   ).s12.light,
+                        // ),
                       ],
                     ),
                   ],
@@ -125,7 +128,7 @@ class NotifyItem extends StatelessWidget {
               // width: 300,
               height: 40,
               child: CustomText(
-                "هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي",
+                notificationModel?.data?.message ?? '',
                 style: TextStyle(
                   overflow: TextOverflow.clip,
                   color: isSeen!

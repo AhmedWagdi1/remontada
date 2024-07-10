@@ -82,6 +82,7 @@ class MoreScreen extends StatelessWidget {
                           children: List.generate(
                             titles.length,
                             (index) => MoreItem(
+                              cubit: cubit,
                               logOut: () async {
                                 final res = await cubit.logOut();
                                 if (res == true) {

@@ -356,40 +356,42 @@ import 'package:remontada/core/theme/light_theme.dart';
 import 'customtext.dart';
 
 class CustomAutoCompleteTextField<T> extends StatefulWidget {
-  const CustomAutoCompleteTextField(
-      {Key? key,
-      this.initialValue,
-      this.lable,
-      this.showClearIcon = false,
-      this.showSufix = false,
-      this.showLabel = false,
-      this.showRequiredStar = false,
-      this.keepSuggestionAftertSelect = false,
-      this.removeSelectedItem = false,
-      required this.onChanged,
-      this.onClear,
-      required this.function,
-      this.itemAsString,
-      this.flex = 1,
-      this.hideOnLoading = false,
-      this.controller,
-      this.enabled = true,
-      this.hint,
-      this.validator,
-      this.padding,
-      this.border,
-      this.itemBuilder,
-      this.direction = AxisDirection.down,
-      this.showAboveField = false,
-      this.emptyWidget,
-      this.readonly = true,
-      this.colors = const Color.fromARGB(255, 255, 255, 255),
-      this.prefixIcon,
-      this.refreshOnTap = true,
-      this.searchInApi = true,
-      this.localData = false,
-      this.contentPadding})
-      : super(key: key);
+  const CustomAutoCompleteTextField({
+    Key? key,
+    this.initialValue,
+    this.lable,
+    this.showClearIcon = false,
+    this.showSufix = false,
+    this.showLabel = false,
+    this.showRequiredStar = false,
+    this.keepSuggestionAftertSelect = false,
+    this.removeSelectedItem = false,
+    required this.onChanged,
+    this.onClear,
+    required this.function,
+    this.itemAsString,
+    this.flex = 1,
+    this.hideOnLoading = false,
+    this.controller,
+    this.enabled = true,
+    this.hint,
+    this.validator,
+    this.padding,
+    this.border,
+    this.itemBuilder,
+    this.direction = AxisDirection.down,
+    this.showAboveField = false,
+    this.emptyWidget,
+    this.readonly = true,
+    this.colors = const Color.fromARGB(255, 255, 255, 255),
+    this.prefixIcon,
+    this.refreshOnTap = true,
+    this.searchInApi = true,
+    this.localData = false,
+    this.contentPadding,
+    this.onSaved,
+  }) : super(key: key);
+  final void Function(String?)? onSaved;
   final Function(T) onChanged;
   final bool showSufix;
   final Widget? prefixIcon;
@@ -533,6 +535,10 @@ class _CutomAutoCompleteTextFeildState<T>
                                 }
                               },
                               child: TextFormField(
+                                  style: TextStyle(
+                                    color: LightThemeColors.textSecondary,
+                                    fontWeight: FontWeight.w400,
+                                  ),
                                   key: _key,
                                   readOnly: widget.readonly,
                                   decoration: InputDecoration(
@@ -540,6 +546,7 @@ class _CutomAutoCompleteTextFeildState<T>
                                       vertical: 18,
                                     ),
                                     constraints: BoxConstraints(),
+
                                     hintText: widget.hint,
                                     filled:
                                         widget.enabled == true ? false : true,
@@ -563,7 +570,8 @@ class _CutomAutoCompleteTextFeildState<T>
                                     //       ),
                                     //     ),
                                     hintStyle: TextStyle(
-                                        color: LightThemeColors.primary),
+                                      color: LightThemeColors.textHint,
+                                    ),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(
                                         33,
@@ -634,6 +642,21 @@ class _CutomAutoCompleteTextFeildState<T>
                                       rebuildOverlay();
                                     }
                                   },
+                                  // onSaved:(s){
+                                  //    if (widget.searchInApi) {
+                                  //     updateSuggestions(s ?? "");
+                                  //   } else {
+                                  //     searchedSuggestions = suggestions
+                                  //         .where((element) =>
+                                  //             widget.itemAsString
+                                  //                 ?.call(element)
+                                  //                 .toLowerCase()
+                                  //                 .contains(s?.toLowerCase() ?? "") ??
+                                  //             true)
+                                  //         .toList();
+                                  //     rebuildOverlay();
+                                  //   }
+                                  // },
                                   onTap: () {
                                     openOverlay();
                                     updateSuggestions(controller.text,

@@ -400,7 +400,7 @@ showPlayersheet(BuildContext context, {SubScribersModel? subscribers}) {
                         color: LightThemeColors.background,
                       ),
                       CustomText(
-                        "13",
+                        "${subscribers?.subscribers?.length ?? 0}",
                         fontSize: 14,
                         weight: FontWeight.w400,
                         color: LightThemeColors.black,

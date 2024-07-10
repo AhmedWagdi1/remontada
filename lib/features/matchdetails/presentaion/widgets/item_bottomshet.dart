@@ -113,6 +113,7 @@ class PlayerBottomSheet extends StatelessWidget {
                   Navigator.pushNamed(
                     context,
                     Routes.playerDetails,
+                    arguments: subscriber?.id.toString(),
                   );
                 },
                 icon: SvgPicture.asset(

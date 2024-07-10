@@ -5,10 +5,14 @@ class User {
   UserModel? user;
   String? token;
   String? type;
+  bool? mobileChanged;
+  int? code;
   User({
     this.user,
     this.token,
     this.type,
+    this.mobileChanged,
+    this.code,
   });
 
   factory User.fromMap(Map<String, dynamic> map) {
@@ -16,6 +20,9 @@ class User {
       user: map["user"] != null ? UserModel.fromJson(map["user"]) : null,
       token: map['access_token'] != null ? map['access_token'] : null,
       type: map['type'] != null ? map['type'] as String : null,
+      mobileChanged:
+          map['mobile_changed'] != null ? map['mobile_changed'] as bool : null,
+      code: map['code'] != null ? map['code'] as int : null,
     );
   }
 
@@ -35,6 +42,10 @@ class UserModel {
   bool? active;
   String? type;
   String? coaching;
+  String? location;
+  int? locationId;
+  String? city;
+  int? cityId;
 
   String? fcm_token;
 
@@ -51,6 +62,10 @@ class UserModel {
     this.notify,
     this.phone,
     this.fcm_token,
+    this.city,
+    this.cityId,
+    this.location,
+    this.locationId,
   });
 
   UserModel.fromJson(Map<String, dynamic> json) {
@@ -64,6 +79,10 @@ class UserModel {
     notify = json["notify"];
     banned = json["banned"];
     active = json["active"];
+    location = json["location"];
+    locationId = json["location_id"];
+    city = json["area"];
+    cityId = json["area_id"];
 
     coaching = json["coaching"];
   }

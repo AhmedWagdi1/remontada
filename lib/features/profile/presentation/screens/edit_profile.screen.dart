@@ -1,25 +1,60 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/resources/gen/assets.gen.dart';
+import 'package:remontada/core/services/alerts.dart';
+import 'package:remontada/core/services/media/alert_of_media.dart';
+import 'package:remontada/core/services/media/my_media.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
+import 'package:remontada/features/auth/domain/model/auth_model.dart';
+import 'package:remontada/features/profile/domain/edit_request.dart';
 import 'package:remontada/shared/back_widget.dart';
 import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
-import 'package:remontada/shared/widgets/dropdown.dart';
-import 'package:remontada/shared/widgets/edit_text_widget.dart';
+
+import '../../../../core/Router/Router.dart';
+import '../../../../core/utils/Locator.dart';
+import '../../../../core/utils/utils.dart';
+import '../../../../shared/widgets/autocomplate.dart';
+import '../../../../shared/widgets/edit_text_widget.dart';
+import '../../../auth/domain/repository/auth_repository.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({super.key});
-
+  const EditProfileScreen({
+    super.key,
+    this.user,
+    this.edit,
+  });
+  final User? user;
+  final Function(EditRequest edit)? edit;
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
+  TextEditingController name = TextEditingController();
+  TextEditingController phone = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController city = TextEditingController();
+  TextEditingController location = TextEditingController();
+  File? image;
+  EditRequest edit = EditRequest();
+  @override
+  void initState() {
+    name.text = widget.user?.user?.name ?? "";
+    phone.text = widget.user?.user?.phone ?? "";
+    email.text = widget.user?.user?.email ?? "";
+    city.text = widget.user?.user?.city ?? "";
+    location.text = widget.user?.user?.location ?? "";
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,6 +110,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   width: 96,
                   height: 96,
                   decoration: BoxDecoration(
+                    // image: DecorationImage(
+                    //   fit: BoxFit.cover,
+                    //   image: FileImage(
+                    //     image ?? File(""),
+                    //   ),
+                    // ),
                     boxShadow: [
                       BoxShadow(
                         offset: Offset.zero,
@@ -85,9 +126,34 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     color: context.background,
                     shape: BoxShape.circle,
                   ),
-                  child: Assets.images.profile_image.image(
-                    fit: BoxFit.contain,
-                  ),
+                  child: image != null
+                      ? Container(
+                          width: 96,
+                          height: 96,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: FileImage(image!),
+                            ),
+                          ),
+                        )
+                      : widget.user?.user?.image == ""
+                          ? Assets.images.profile_image.image(
+                              fit: BoxFit.contain,
+                            )
+                          : Container(
+                              width: 96,
+                              height: 96,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(
+                                      widget.user?.user?.image ?? ""),
+                                ),
+                              ),
+                            ),
                 ),
                 18.ph,
                 Container(
@@ -119,12 +185,35 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ],
                     ),
                   ),
-                ).onTap(() {},
+                ).onTap(() {
+                  Alerts.bottomSheet(
+                    context,
+                    child: AlertOfMedia(
+                      cameraTap: () async {
+                        image = await MyMedia.pickImageFromCamera();
+                        edit.image = image;
+                        Navigator.pop(context);
+                        setState(() {});
+                      },
+                      galleryTap: () async {
+                        image = await MyMedia.pickImageFromGallery();
+                        edit.image = image;
+                        Navigator.pop(context);
+                        setState(() {});
+                      },
+                    ),
+                  );
+                },
                     splashColor: Colors.transparent,
                     hoverColor: Colors.transparent,
                     borderRadius: BorderRadius.circular(33)),
                 21.ph,
                 TextFormFieldWidget(
+                  onSaved: (value) {
+                    edit.name = value;
+                  }, //register.name = value,
+                  controller: name,
+                  validator: Utils.valid.defaultValidation,
                   prefixIcon: Assets.icons.name,
                   hintSize: 16,
                   borderRadius: 33,
@@ -132,8 +221,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   hintColor: LightThemeColors.textPrimary,
                   activeBorderColor: LightThemeColors.inputFieldBorder,
                 ),
+
                 10.ph,
+                // if (!(formKey.currentState?.validate() ?? false))
+                //   20.ph,
                 TextFormFieldWidget(
+                  onSaved: (value) {
+                    edit.phone = value;
+                  }, //register.phone = value,
+                  controller: phone,
+                  validator: Utils.valid.phoneValidation,
                   prefixIcon: Assets.icons.calling,
                   hintSize: 16,
                   borderRadius: 33,
@@ -143,6 +240,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 10.ph,
                 TextFormFieldWidget(
+                  onSaved: (value) {
+                    edit.email = value;
+                  }, // register.email = value,
+                  controller: email,
+                  validator: Utils.valid.emailValidation,
                   prefixIcon: Assets.icons.email,
                   hintSize: 16,
                   borderRadius: 33,
@@ -151,36 +253,88 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   activeBorderColor: LightThemeColors.inputFieldBorder,
                 ),
                 10.ph,
-                DropDownItem<String>(
-                  prefixIcon: Assets.icons.fieldLocation,
-                  hintColor: context.primaryColor,
+                CustomAutoCompleteTextField<Location>(
+                  colors: LightThemeColors.textSecondary,
+                  controller: city,
+                  validator: Utils.valid.defaultValidation,
+
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.only(
+                      right: 35,
+                      left: 9.76,
+                    ),
+                    child: SvgPicture.asset(Assets.icons.fieldLocation),
+                  ),
+                  // c: context.primaryColor,
                   hint: LocaleKeys.auth_hint_choose_city.tr(),
-                  radius: 33,
-                  options: [
-                    "item1",
-                    "item2",
-                    "item3",
-                    "item4",
-                  ],
-                  onChanged: (val) {},
+                  function: (p0) async {
+                    return (await locator<AuthRepository>().getArreasRequest())
+                            ?.areas ??
+                        [];
+                  },
+                  // onSaved: (p0) => ,
+                  itemAsString: (p0) => p0.name ?? "item",
+                  localData: true,
+                  showLabel: false,
+                  showSufix: true,
+                  // radius: 33,
+                  // options: List.generate(cubit.getlocations()., (index) => null),
+                  onChanged: (val) {
+                    edit.areaId = val.id;
+                  },
                 ),
                 10.ph,
-                DropDownItem<String>(
-                  prefixIcon: Assets.icons.playLocation,
-                  hintColor: context.primaryColor,
+                CustomAutoCompleteTextField<Location>(
+                  controller: location,
+                  validator: Utils.valid.defaultValidation,
+
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.only(
+                      right: 35,
+                      left: 9.76,
+                    ),
+                    child: SvgPicture.asset(Assets.icons.playLocation),
+                  ),
+                  // c: context.primaryColor,
                   hint: LocaleKeys.auth_hint_choose_choose_playlocation.tr(),
-                  radius: 33,
-                  options: [
-                    "item1",
-                    "item2",
-                    "item3",
-                    "item4",
-                  ],
-                  onChanged: (val) {},
+                  function: (p0) async {
+                    return (await locator<AuthRepository>()
+                                .getlocationRequest())
+                            ?.locations ??
+                        [];
+                  },
+                  itemAsString: (p0) => p0.name ?? "",
+                  localData: true,
+                  showLabel: false,
+                  showSufix: true,
+                  // radius: 33,
+                  // options: List.generate(cubit.getlocations()., (index) => null),
+                  onChanged: (val) {
+                    edit.locationId = val.id;
+                  },
                 ),
                 21.ph,
                 ButtonWidget(
-                  onTap: () {},
+                  onTap: () async {
+                    if (formkey.currentState?.validate() ?? false) {
+                      if (image == null) {
+                        Alerts.snack(
+                          text: "يجب عليك اختيار الصورة",
+                          state: SnackState.failed,
+                        );
+                      } else {
+                        formkey.currentState?.save();
+                        final res = widget.edit!(edit);
+                        if (res == true) {
+                          Navigator.pop(context);
+                          Navigator.pushReplacementNamed(
+                            context,
+                            Routes.profileDetails,
+                          );
+                        }
+                      }
+                    }
+                  },
                   height: 65,
                   child: CustomText(
                     LocaleKeys.save_changes.tr(),

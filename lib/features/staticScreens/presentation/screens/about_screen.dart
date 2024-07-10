@@ -5,14 +5,15 @@ import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
-import 'package:remontada/features/staticScreens/presentation/widgets/widgets.dart';
+import 'package:remontada/features/more/domain/model/model.dart';
 import 'package:remontada/shared/back_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 
 import '../../../../core/resources/gen/assets.gen.dart';
 
 class AboutScreen extends StatelessWidget {
-  const AboutScreen({super.key});
+  const AboutScreen({super.key, this.page});
+  final Pages? page;
 
   @override
   Widget build(BuildContext context) {
@@ -80,13 +81,32 @@ class AboutScreen extends StatelessWidget {
                   weight: FontWeight.w600,
                 ),
                 15.ph,
-                Column(
-                  children: List.generate(2, (index) => HeavytextAboutWiget()),
-                ),
-                32.ph,
-                Column(
-                  children: List.generate(1, (index) => LightTextAboutWidget()),
+                Container(
+                  height: 1000,
+                  child: ListView(
+                    children: [
+                      Container(
+                        height: 100,
+                        child: CustomText(
+                            align: TextAlign.center,
+                            overflow: TextOverflow.clip,
+                            color: LightThemeColors.black,
+                            weight: FontWeight.w400,
+                            fontSize: 14,
+                            (page?.content) != ""
+                                ? page?.content ?? ""
+                                : "هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي"),
+                      ).paddingBottom(12)
+                    ],
+                  ),
                 )
+                // Column(
+                //   children: List.generate(2, (index) => HeavytextAboutWiget()),
+                // ),
+                // 32.ph,
+                // Column(
+                //   children: List.generate(1, (index) => LightTextAboutWidget()),
+                // )
               ],
             ),
           ),

@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
@@ -9,9 +10,9 @@ import 'package:remontada/features/notifications/cubit/notifications_cubit.dart'
 import 'package:remontada/features/notifications/cubit/notifications_states.dart';
 import 'package:remontada/features/notifications/presentation/widgets/widgets.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
-import 'package:remontada/shared/widgets/loadinganderror.dart';
 
 import '../../../../core/app_strings/locale_keys.dart';
+import '../../domain/model/notify_model.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -72,54 +73,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
     );
   }
 
-  getnotifyBody() {
-    return SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: 8,
-        ),
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            70.ph,
-            CustomText(
-              style: TextStyle(
-                color: context.primaryColor,
-              ).s26.heavy,
-              LocaleKeys.notifications.tr(),
-              // fontSize: 26.sp,
-              // weight: FontWeight.w800,
-            ),
-            5.ph,
-            CustomText(
-              style: TextStyle(
-                color: LightThemeColors.secondaryText,
-              ).s16.medium,
-              // fontSize: 14,
-              // weight: FontWeight.w500,
-              LocaleKeys.notifications_sub.tr(),
-            ),
-            27.ph,
-            Column(
-              children: List.generate(
-                3,
-                (index) => NotifyItem(),
-              ),
-            ),
-            SizedBox(
-              height: 129.29,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => NotifyCubit()..getnotificationsData(),
+      create: (context) => NotifyCubit()..addPageLisnter(),
       child: BlocConsumer<NotifyCubit, NotificationsState>(
         listener: (context, state) {},
         builder: (context, state) {
@@ -134,10 +91,52 @@ class _NotificationScreenState extends State<NotificationScreen> {
             //     color: context.primaryColor,
             //   ),
             // ),
-            body: LoadingAndError(
-              isLoading: state is NotificationsLoading,
-              isError: state is NotificationsFailed,
-              child: thereData ? getnotifyBody() : getnonotifyBody(),
+            body: Column(
+              children: [
+                70.ph,
+                CustomText(
+                  style: TextStyle(
+                    color: context.primaryColor,
+                  ).s26.heavy,
+                  LocaleKeys.notifications.tr(),
+                  // fontSize: 26.sp,
+                  // weight: FontWeight.w800,
+                ),
+                5.ph,
+                CustomText(
+                  style: TextStyle(
+                    color: LightThemeColors.secondaryText,
+                  ).s16.medium,
+                  // fontSize: 14,
+                  // weight: FontWeight.w500,
+                  LocaleKeys.notifications_sub.tr(),
+                ),
+                27.ph,
+
+                // Column(
+                //   children: List.generate(
+                //     3,
+                //     (index) => NotifyItem(),
+                //   ),
+                // ),
+
+                Expanded(
+                  child: PagedListView(
+                    padding: const EdgeInsets.all(16),
+                    pagingController: cubit.notificationController,
+                    builderDelegate:
+                        PagedChildBuilderDelegate<NotificationModel?>(
+                      noItemsFoundIndicatorBuilder: (context) =>
+                          getnonotifyBody(),
+                      itemBuilder: (context, item, index) =>
+                          NotifyItem(notificationModel: item),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 129.29,
+                ),
+              ],
             ),
           );
         },

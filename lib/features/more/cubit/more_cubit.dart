@@ -5,6 +5,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:remontada/core/data_source/dio_helper.dart';
 import 'package:remontada/core/utils/Locator.dart';
 import 'package:remontada/features/more/cubit/more_states.dart';
+import 'package:remontada/features/more/domain/model/model.dart';
 import 'package:remontada/features/more/domain/more_repo.dart';
 
 import '../../../core/utils/utils.dart';
@@ -34,6 +35,24 @@ class MoreCubit extends Cubit<MoreStates> {
       return true;
     } else {
       emit(LogOutFailed());
+      return null;
+    }
+  }
+
+  getAbout() async {
+    final res = await moreRepo.getAboutpage();
+    if (res != null) {
+      return Pages.fromMap(res["page"]);
+    } else {
+      return null;
+    }
+  }
+
+  getpolicy() async {
+    final res = await moreRepo.getPolicy();
+    if (res != null) {
+      return Pages.fromMap(res["page"]);
+    } else {
       return null;
     }
   }
