@@ -14,4 +14,6 @@ class SplashRepository {
       return null;
     }
   }
+
+  
 }

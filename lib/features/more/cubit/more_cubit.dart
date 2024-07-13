@@ -1,10 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:remontada/core/data_source/dio_helper.dart';
 import 'package:remontada/core/utils/Locator.dart';
 import 'package:remontada/features/more/cubit/more_states.dart';
+import 'package:remontada/features/more/domain/contact_request.dart';
 import 'package:remontada/features/more/domain/model/model.dart';
 import 'package:remontada/features/more/domain/more_repo.dart';
 
@@ -27,11 +26,12 @@ class MoreCubit extends Cubit<MoreStates> {
 
   logOut() async {
     emit(LogOutLoading());
-    log(Utils.lang);
     final response = await moreRepo.logout();
+
     if (response != null) {
-      emit(LogOutSuccess());
       Utils.dataManager.deleteUserData();
+
+      emit(LogOutSuccess());
       return true;
     } else {
       emit(LogOutFailed());
@@ -52,6 +52,28 @@ class MoreCubit extends Cubit<MoreStates> {
     final res = await moreRepo.getPolicy();
     if (res != null) {
       return Pages.fromMap(res["page"]);
+    } else {
+      return null;
+    }
+  }
+
+  requestCoach() async {
+    emit(CoachLoading());
+    final res = await moreRepo.coachRequest();
+
+    if (res != null) {
+      emit(CoachLoadedSuccess());
+      return true;
+    } else {
+      emit(CoachFailed());
+      return null;
+    }
+  }
+
+  contactRequest(ContactRequest request) async {
+    final res = moreRepo.contactUs(request);
+    if (res != null) {
+      return true;
     } else {
       return null;
     }

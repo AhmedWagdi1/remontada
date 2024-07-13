@@ -28,6 +28,7 @@ class MatchDetailsRepo {
   subScribe(int id) async {
     final ApiResponse response = await dioService.postData(
       loading: true,
+      isForm: true,
       url: "${MatchEndpoints.subscribe}",
       body: {"match_id": id},
     );
@@ -40,6 +41,7 @@ class MatchDetailsRepo {
 
   cancel(String id) async {
     final ApiResponse response = await dioService.postData(
+      isForm: true,
       body: {"match_id": id},
       loading: true,
       url: "${MatchEndpoints.cancel}",

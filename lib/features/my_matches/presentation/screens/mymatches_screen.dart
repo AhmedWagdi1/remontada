@@ -79,44 +79,42 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
   }
 
   getMatchesBody(MyMatches myMatches) {
-    return SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: 8,
-        ),
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            70.ph,
-            CustomText(
-              LocaleKeys.my_matches.tr(),
-              fontSize: 26,
-              weight: FontWeight.w800,
-              color: context.primaryColor,
-            ),
-            5.ph,
-            CustomText(
-              fontSize: 14,
-              weight: FontWeight.w500,
-              LocaleKeys.my_matches_subtitles.tr(),
-              color: LightThemeColors.secondaryText,
-            ),
-            30.ph,
-            Column(
-              children: List.generate(
-                myMatches.matches?.length ?? 0,
-                (index) => ItemWidget(
-                  matchModel: myMatches.matches?[index],
-                  ismymatch: true,
-                ),
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: 8,
+      ),
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          70.ph,
+          CustomText(
+            LocaleKeys.my_matches.tr(),
+            fontSize: 26,
+            weight: FontWeight.w800,
+            color: context.primaryColor,
+          ),
+          5.ph,
+          CustomText(
+            fontSize: 14,
+            weight: FontWeight.w500,
+            LocaleKeys.my_matches_subtitles.tr(),
+            color: LightThemeColors.secondaryText,
+          ),
+          30.ph,
+          Expanded(
+            child: ListView.builder(
+              itemCount: myMatches.matches?.length ?? 0,
+              itemBuilder: (context, index) => ItemWidget(
+                matchModel: myMatches.matches?[index],
+                ismymatch: true,
               ),
             ),
-            SizedBox(
-              height: 129.29,
-            )
-          ],
-        ),
+          ),
+          SizedBox(
+            height: 129.29,
+          )
+        ],
       ),
     );
   }

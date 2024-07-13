@@ -5,15 +5,13 @@ class HomeRepo {
   final DioService dioService;
   HomeRepo(this.dioService);
 
-  getHomedata({int? playGround, String? date}) async {
+  getHomedata({List<int>? playgrounds, List<String>? data}) async {
     final ApiResponse response = await dioService.getData(
       url: HomeEndPoints.home,
-      query: playGround != null || date != null
-          ? {
-              "playgrounds[]": playGround ?? '',
-              "date": date ?? '',
-            }
-          : null,
+      query: {
+        "playgrounds[]": playgrounds,
+        "date": data,
+      },
     );
 
     if (response.isError == false) {

@@ -29,9 +29,11 @@ class EditProfileScreen extends StatefulWidget {
     super.key,
     this.user,
     this.edit,
+    this.onSubmit,
   });
   final User? user;
   final Function(EditRequest edit)? edit;
+  final dynamic Function(String)? onSubmit;
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
 }
@@ -45,6 +47,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   TextEditingController location = TextEditingController();
   File? image;
   EditRequest edit = EditRequest();
+  User? user;
+
   @override
   void initState() {
     name.text = widget.user?.user?.name ?? "";
@@ -53,6 +57,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     city.text = widget.user?.user?.city ?? "";
     location.text = widget.user?.user?.location ?? "";
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    name.dispose();
+    phone.dispose();
+    email.dispose();
+    city.dispose();
+    location.dispose();
+    super.dispose();
   }
 
   @override
@@ -317,15 +331,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ButtonWidget(
                   onTap: () async {
                     if (formkey.currentState?.validate() ?? false) {
-                      if (image == null) {
-                        Alerts.snack(
-                          text: "يجب عليك اختيار الصورة",
-                          state: SnackState.failed,
-                        );
-                      } else {
-                        formkey.currentState?.save();
-                        final res = widget.edit!(edit);
-                        if (res == true) {
+                      formkey.currentState?.save();
+                      final res = await widget.edit!(edit);
+                      if (res != null) {
+                        user = res;
+                        if (user?.mobileChanged == true) {
+                          Navigator.pushNamed(
+                            context,
+                            Routes.OtpScreen,
+                            arguments: OtpArguments(
+                              sendTo: "",
+                              onSubmit: widget.onSubmit!,
+                              onReSend: () {},
+                            ),
+                          );
+                        } else {
+                          Alerts.snack(
+                            text: "تم التعديل بنجاح",
+                            state: SnackState.success,
+                          );
                           Navigator.pop(context);
                           Navigator.pushReplacementNamed(
                             context,

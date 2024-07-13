@@ -4,28 +4,36 @@ import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
-import 'package:remontada/features/home/cubit/home_states.dart';
 import 'package:remontada/features/home/domain/model/home_model.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 
 import '../../../../core/app_strings/locale_keys.dart';
 import '../../../../shared/widgets/button_widget.dart';
-import '../../../../shared/widgets/loadinganderror.dart';
 
 class BottomSheetItem extends StatefulWidget {
-  const BottomSheetItem(
-      {super.key, this.playground, this.state, this.refresh, this.onsubmit});
-  final playGrounds? playground;
-  final HomeState? state;
-  final VoidCallback? refresh;
-  final Function(int?)? onsubmit;
+  const BottomSheetItem({
+    super.key,
+    this.playground,
+    this.onsubmit,
+  });
+  final PlayGrounds? playground;
+  final Function(List<int> data)? onsubmit;
 
   @override
   State<BottomSheetItem> createState() => _BottomSheetItemState();
 }
 
 class _BottomSheetItemState extends State<BottomSheetItem> {
-  int? id;
+  List<int> id = [];
+  @override
+  void initState() {
+    super.initState();
+    id = widget.playground!.playgrounds!
+        .where((e) => e.isActive == true)
+        .map((e) => e.id ?? 0)
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -70,79 +78,74 @@ class _BottomSheetItemState extends State<BottomSheetItem> {
             ],
           ),
           42.ph,
-          LoadingAndError(
-            isError: widget.state is PlayGroundLoading,
-            isLoading: widget.state is PlayGroundLoading,
-            child: SizedBox(
-              height: 200,
-              child: GridView.builder(
-                // controller: ,
-                itemCount: widget.playground?.playgrounds?.length ?? 0,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  childAspectRatio: 5 / 1,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  crossAxisCount: 2,
-                ),
-                itemBuilder: (context, i) {
-                  return GestureDetector(
-                    onTap: () {
-                      widget.playground?.playgrounds?[i].isActive =
-                          !(widget.playground?.playgrounds?[i].isActive)!;
+          SizedBox(
+            height: 200,
+            child: GridView.builder(
+              itemCount: widget.playground?.playgrounds?.length ?? 0,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                childAspectRatio: 5 / 1,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                crossAxisCount: 2,
+              ),
+              itemBuilder: (context, i) {
+                return GestureDetector(
+                  onTap: () {
+                    widget.playground?.playgrounds?[i].isActive =
+                        !(widget.playground?.playgrounds?[i].isActive)!;
 
-                      if (widget.playground?.playgrounds?[i].isActive == true) {
-                        id = widget.playground?.playgrounds?[i].id ?? 0;
-                      }
+                    if (widget.playground?.playgrounds?[i].isActive == true) {
+                      id.add(widget.playground?.playgrounds?[i].id ?? 0);
+                    } else {
+                      id.remove(widget.playground?.playgrounds?[i].id ?? 0);
+                    }
 
-                      setState(() {});
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 5,
-                        horizontal: 5,
-                      ),
-                      width: double.infinity,
-                      height: 42,
-                      decoration: BoxDecoration(
+                    setState(() {});
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 5,
+                      horizontal: 5,
+                    ),
+                    width: double.infinity,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: widget.playground?.playgrounds?[i].isActive ?? true
+                          ? LightThemeColors.surface
+                          : context.background,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        width: 1,
                         color:
                             widget.playground?.playgrounds?[i].isActive ?? false
-                                ? LightThemeColors.surface
-                                : context.background,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          width: 1,
+                                ? Colors.transparent
+                                : LightThemeColors.border,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        widget.playground?.playgrounds?[i].isActive ?? false
+                            ? SvgPicture.asset("checked".svg())
+                            : SizedBox(),
+                        widget.playground?.playgrounds?[i].isActive ?? false
+                            ? 5.pw
+                            : SizedBox(),
+                        CustomText(
+                          weight: FontWeight.w400,
+                          widget.playground?.playgrounds?[i].name ?? "",
+                          fontSize: 12,
                           color: widget.playground?.playgrounds?[i].isActive ??
                                   false
-                              ? Colors.transparent
-                              : LightThemeColors.border,
+                              ? context.background
+                              : LightThemeColors.black,
                         ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          widget.playground?.playgrounds?[i].isActive ?? false
-                              ? SvgPicture.asset("checked".svg())
-                              : SizedBox(),
-                          widget.playground?.playgrounds?[i].isActive ?? false
-                              ? 5.pw
-                              : SizedBox(),
-                          CustomText(
-                            weight: FontWeight.w400,
-                            widget.playground?.playgrounds?[i].name ?? "",
-                            fontSize: 12,
-                            color:
-                                widget.playground?.playgrounds?[i].isActive ??
-                                        false
-                                    ? context.background
-                                    : LightThemeColors.black,
-                          ),
-                        ],
-                      ).paddingBottom(5.5),
-                    ),
-                  );
-                },
-              ),
+                      ],
+                    ).paddingBottom(5.5),
+                  ),
+                );
+              },
             ),
           ),
 
@@ -192,7 +195,10 @@ class _BottomSheetItemState extends State<BottomSheetItem> {
               Expanded(
                 flex: 2,
                 child: ButtonWidget(
-                  onTap: widget.refresh,
+                  onTap: () {
+                    widget.onsubmit!([]);
+                    Navigator.pop(context);
+                  },
                   buttonColor: LightThemeColors.secondbuttonBackground,
                   height: 65,
                   radius: 33,

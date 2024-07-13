@@ -34,7 +34,7 @@ class DataManager {
     // await Hive.initFlutter();
     // final userData = await Hive.openBox('dataUser');
     await userData.put(USER, value);
-    userData.close();
+    // userData.close();
   }
 
   getData(String key) async {
@@ -62,10 +62,10 @@ class DataManager {
     }
   }
 
-  deleteUserData() async {
+  Future deleteUserData() async {
     // final userData = await Hive.openBox('dataUser');
-    userData = await Hive.openBox(USER);
-    return userData.delete(USER);
+    // userData = await Hive.openBox(USER);
+    return await userData.delete(USER);
   }
 
   deleteAllData() async {

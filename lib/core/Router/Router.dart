@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:remontada/features/auth/domain/model/auth_model.dart';
 import 'package:remontada/features/layout/presentation/screens/layout_screen.dart';
 import 'package:remontada/features/matchdetails/presentaion/screens/matchDetails_screen.dart';
+import 'package:remontada/features/more/domain/contact_request.dart';
 import 'package:remontada/features/player_details/presentation/screens/player_details.dart';
 import 'package:remontada/features/profile/presentation/screens/edit_profile.screen.dart';
 import 'package:remontada/features/staticScreens/presentation/screens/privacy_policy_screen.dart';
@@ -10,11 +11,13 @@ import 'package:remontada/features/staticScreens/presentation/screens/privacy_po
 import '../../features/auth/presentation/screens/login/login_screen.dart';
 import '../../features/auth/presentation/screens/otp/otp_screen.dart';
 import '../../features/auth/presentation/screens/sign_up/sign_up_screen.dart';
+import '../../features/matchdetails/presentaion/screens/map_screen.dart';
 import '../../features/more/domain/model/model.dart';
 import '../../features/profile/domain/edit_request.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/splash/presentation/screens/splash/splash.dart';
 import '../../features/staticScreens/presentation/screens/about_screen.dart';
+import '../../features/staticScreens/presentation/screens/contact_screen.dart';
 
 class Routes {
   static const String splashScreen = "/splashScreen";
@@ -31,6 +34,8 @@ class Routes {
   static const String editProfile = "/editProfile";
   static const String aboutscreen = "/aboutScreen";
   static const String privacypolicyScreen = "/privacyPolicyScreen";
+  static const String MapScreen = "/MAPsCREEN";
+  static const String contactScreen = "/contactScreen";
 }
 
 class RouteGenerator {
@@ -129,6 +134,7 @@ class RouteGenerator {
               return EditProfileScreen(
                 user: (routeSettings.arguments as EditScreenArgs).user,
                 edit: (routeSettings.arguments as EditScreenArgs).edit,
+                onSubmit: (routeSettings.arguments as EditScreenArgs).onSubmit,
               );
             });
       case Routes.privacypolicyScreen:
@@ -145,6 +151,23 @@ class RouteGenerator {
             builder: (_) {
               return AboutScreen(
                 page: routeSettings.arguments as Pages,
+              );
+            });
+      case Routes.MapScreen:
+        return CupertinoPageRoute(
+            settings: routeSettings,
+            builder: (_) {
+              return CustomMapWidget(
+                lan: (routeSettings.arguments as PositionArgs).lang,
+                lat: (routeSettings.arguments as PositionArgs).lat,
+              );
+            });
+      case Routes.contactScreen:
+        return CupertinoPageRoute(
+            settings: routeSettings,
+            builder: (_) {
+              return ContactScreen(
+                contact: routeSettings.arguments as Function(ContactRequest),
               );
             });
       // case Routes.SplashScreen:
@@ -211,6 +234,18 @@ class MatchDetailsArgs {
 class EditScreenArgs {
   User? user;
   Function(EditRequest edit)? edit;
+  dynamic Function(String)? onSubmit;
 
-  EditScreenArgs({this.edit, this.user});
+  EditScreenArgs({
+    this.edit,
+    this.user,
+    this.onSubmit,
+  });
+}
+
+class PositionArgs {
+  String? lang;
+  String? lat;
+
+  PositionArgs(this.lang, this.lat);
 }

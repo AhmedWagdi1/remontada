@@ -42,11 +42,13 @@ class PlayerBottomSheet extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         subscriber?.image != null
-                            ? NetworkImagesWidgets(
-                                subscriber?.image ?? "",
-                                width: 52,
-                                height: 52,
-                                fit: BoxFit.contain,
+                            ? ClipOval(
+                                child: NetworkImagesWidgets(
+                                  subscriber?.image ?? "",
+                                  width: 52,
+                                  height: 52,
+                                  fit: BoxFit.cover,
+                                ),
                               )
                             : Container(
                                 width: 44,

@@ -65,10 +65,10 @@ class _LoginScreenState extends State<LoginScreen> {
               body: Container(
             color: context.background,
             child: Stack(
-              alignment: Alignment.topCenter,
+              // alignment: Alignment.topCenter,
               children: [
                 Container(
-                  // height: 811.h,
+                  // height: 811,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     image: DecorationImage(
@@ -83,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   // top: 10,
                   right: 0,
                   left: 0,
-                  bottom: 80,
+                  bottom: 100,
                   child: SingleChildScrollView(
                     child: Form(
                       key: formKey,
@@ -97,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           33.1.ph,
                           Container(
-                            // height: 510.h,
+                            height: 510,
                             width: double.infinity,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.only(
@@ -165,6 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         final res = await cubit.login(
                                             loginRequestModel: authRequest);
                                         if (res == true) {
+                                          phone.clear();
                                           Navigator.pushNamed(
                                             context,
                                             Routes.OtpScreen,
@@ -419,7 +420,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       "login_bottom".svg("images"),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ));

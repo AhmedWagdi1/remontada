@@ -58,7 +58,10 @@ class AuthRepository {
 
   registerRequest(AuthRequest user) async {
     final response = await dioService.postData(
-        url: AuthEndPoints.register, body: user.register(), loading: true);
+        isForm: true,
+        url: AuthEndPoints.register,
+        body: user.register(),
+        loading: true);
     if (response.isError == false) {
       return response.response?.data['data'];
     } else {
@@ -68,7 +71,10 @@ class AuthRepository {
 
   resendCodeRequest(String phone) async {
     final response = await dioService.postData(
-        url: AuthEndPoints.resendCode, body: {'mobile': phone}, isForm: true);
+      url: AuthEndPoints.resendCode,
+      body: {'mobile': phone},
+      isForm: true,
+    );
     if (response.isError == false) {
       // Alerts.snack(text: response.response?.data['message'], state: 1);
       return response.response?.data['data'];

@@ -167,6 +167,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               context,
                               Routes.editProfile,
                               arguments: EditScreenArgs(
+                                onSubmit: (val) async {
+                                  final res = await cubit.confirmRequest(val);
+                                  if (res == true) {
+                                    Navigator.pushNamedAndRemoveUntil(
+                                      context,
+                                      Routes.LayoutScreen,
+                                      (route) => false,
+                                    );
+                                  }
+                                },
                                 user: user,
                                 edit: (edit) async {
                                   return await cubit.editprofile(edit);

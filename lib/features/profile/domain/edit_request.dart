@@ -27,7 +27,8 @@ class EditRequest {
       'email': email,
       'area_id': areaId,
       'location_id': locationId,
-      'image': await MultipartFile.fromFile(image?.path ?? ""),
+      if (image != null)
+        'image': await MultipartFile.fromFile(image?.path ?? ""),
     };
   }
 

@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:remontada/core/Router/Router.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 
 class MatchDetailswidget extends StatelessWidget {
-  const MatchDetailswidget({super.key, this.icon, this.title, this.subtitle});
-
+  const MatchDetailswidget({
+    super.key,
+    this.icon,
+    this.title,
+    this.subtitle,
+    this.lan,
+    this.lat,
+  });
+  final String? lat;
+  final String? lan;
   final String? icon;
   final String? title;
   final String? subtitle;
@@ -99,6 +108,12 @@ class MatchDetailswidget extends StatelessWidget {
                       // fontSize: 10,
                       // weight: FontWeight.w500,
                     ),
+                  ),
+                ).onTap(
+                  () => Navigator.pushNamed(
+                    context,
+                    Routes.MapScreen,
+                    arguments: PositionArgs(lan, lat),
                   ),
                 ),
               ],

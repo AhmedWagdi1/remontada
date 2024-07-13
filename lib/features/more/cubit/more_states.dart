@@ -12,3 +12,9 @@ final class LogOutLoading extends MoreStates {}
 final class LogOutSuccess extends MoreStates {}
 
 final class LogOutFailed extends MoreStates {}
+
+final class CoachLoading extends MoreStates {}
+
+final class CoachLoadedSuccess extends MoreStates {}
+
+final class CoachFailed extends MoreStates {}

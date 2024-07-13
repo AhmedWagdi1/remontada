@@ -3,6 +3,7 @@
 abstract class LocaleKeys {
   // start auth
 
+  static const auth_hint_message = 'auth.message';
   static const auth_login = 'auth.login';
   static const auth_description_login = 'auth.description_login';
   static const auth_hint_phone = 'auth.hint_phone';

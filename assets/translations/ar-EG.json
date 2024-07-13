@@ -1,6 +1,9 @@
 {
-  
+  "contactUs"  :"اتصل بنا",
+  "request_sent" : "تم الارسال بنجاح",
+  "request_sent_waiting" : "تم إرسال طلب إنضمامك",
   "auth": {
+    "message" : "ادخل رسالتك هنا",
     "login": "تسجيل الدخول",
     "description_login": "قم بكتابة بيانات حسابك لتسجيل الدخول",
     "hint_phone": "رقم الجوال",

@@ -137,13 +137,13 @@ class PlayGroundLocationModel {
           json.decode(source) as Map<String, dynamic>);
 }
 
-class playGrounds {
+class PlayGrounds {
   List<PlayGroundModel>? playgrounds;
-  playGrounds({
+  PlayGrounds({
     this.playgrounds,
   });
 
-  playGrounds.fromMap(Map<String, dynamic> map) {
+  PlayGrounds.fromMap(Map<String, dynamic> map) {
     if (map["playgrounds"] != null) {
       playgrounds = <PlayGroundModel>[];
       (map["playgrounds"] as List).forEach(
@@ -154,8 +154,8 @@ class playGrounds {
     }
   }
 
-  factory playGrounds.fromJson(String source) =>
-      playGrounds.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory PlayGrounds.fromJson(String source) =>
+      PlayGrounds.fromMap(json.decode(source) as Map<String, dynamic>);
 }
 
 class Day {

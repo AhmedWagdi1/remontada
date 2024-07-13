@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:remontada/features/home/domain/repositories/home_repo.dart';
+import 'package:remontada/features/matchdetails/domain/repositories/match_details_repo.dart';
 
 import '../../core/utils/validations.dart';
 import '../../features/auth/domain/repository/auth_repository.dart';
@@ -24,4 +25,5 @@ Future<void> setupLocator() async {
   locator.registerLazySingleton(() => AuthRepository(locator<DioService>()));
   locator.registerLazySingleton(() => SplashRepository(locator<DioService>()));
   locator.registerLazySingleton(() => HomeRepo(locator<DioService>()));
+  locator.registerLazySingleton(() => MatchDetailsRepo(locator<DioService>()));
 }

@@ -29,6 +29,13 @@ class Utils {
     await Utils.dataManager.saveUser(Map<String, dynamic>.from(response));
   }
 
+  static deleteUserData() async {
+    user = User();
+    token = '';
+    FCMToken = "";
+    Future.wait([dataManager.deleteUserData()]);
+  }
+
   static void rebuildAllChildren(BuildContext context) {
     void rebuild(Element el) {
       el.markNeedsBuild();

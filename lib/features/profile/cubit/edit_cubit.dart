@@ -18,7 +18,7 @@ class EditCubit extends Cubit<EditState> {
     if (res != null) {
       Utils.user = User.fromMap(res);
 
-      return true;
+      return User.fromMap(res);
     } else {
       return null;
     }
@@ -37,6 +37,16 @@ class EditCubit extends Cubit<EditState> {
       return true;
     } else {
       emit(ProfileFailed());
+      return false;
+    }
+  }
+
+  confirmRequest(String code) async {
+    final res = await editRepo.confirmProfile(code);
+    if (res != null) {
+      await Utils.saveUserInHive(res);
+      return true;
+    } else {
       return false;
     }
   }

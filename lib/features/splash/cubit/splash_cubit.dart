@@ -66,10 +66,11 @@ class SplashCubit extends Cubit<SplashStates> {
       // await dynamicLink();
       route = res == true ? Routes.LayoutScreen : Routes.LoginScreen;
       // route = Routes.LayoutScreen;
-      return Utils.fromNotification == true ? null : route;
+      return route;
     } else {
       // await dynamicLink();
       // route = Utils.fromNotification == true ? null : Routes.LoginScreen;
+      route = Routes.LoginScreen;
       return route;
     }
   }

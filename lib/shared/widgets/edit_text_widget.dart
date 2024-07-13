@@ -57,7 +57,7 @@ class TextFormFieldWidget extends StatefulWidget {
     this.backgroundColor = Colors.white,
     this.hintColor = const Color(0xffA1A7AD),
     this.maxLines,
-    this.minLines = 1,
+    this.minLines,
     this.prefixIcon,
     this.suffixIcon,
     this.suffixWidget,

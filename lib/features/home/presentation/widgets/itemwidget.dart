@@ -5,14 +5,17 @@ import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
+import 'package:remontada/core/utils/Locator.dart';
 import 'package:remontada/core/utils/extentions.dart';
+import 'package:remontada/features/matchdetails/domain/repositories/match_details_repo.dart';
+import 'package:remontada/features/matchdetails/presentaion/screens/matchDetails_screen.dart';
 import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 
 import '../../../../core/Router/Router.dart';
 import '../../domain/model/home_model.dart';
 
-class ItemWidget extends StatelessWidget {
+class ItemWidget extends StatefulWidget {
   const ItemWidget({
     super.key,
     this.ismymatch = false,
@@ -20,6 +23,14 @@ class ItemWidget extends StatelessWidget {
   });
   final MatchModel? matchModel;
   final bool? ismymatch;
+
+  @override
+  State<ItemWidget> createState() => _ItemWidgetState();
+}
+
+class _ItemWidgetState extends State<ItemWidget> {
+  SubScribersModel? subscribers;
+  MatchDetailsRepo matchDetailsRepo = locator<MatchDetailsRepo>();
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -75,7 +86,7 @@ class ItemWidget extends StatelessWidget {
                             ).s16.bold,
                             // color: context.primaryColor,
                             // weight: FontWeight.w600,
-                            matchModel?.playGround ?? "",
+                            widget.matchModel?.playGround ?? "",
                             // fontSize: 16.sp,
                           ),
                         )
@@ -100,7 +111,7 @@ class ItemWidget extends StatelessWidget {
                             // overflow: TextOverflow.ellipsis,
 
                             // weight: FontWeight.w400,
-                            matchModel?.date ?? "",
+                            widget.matchModel?.date ?? "",
                             // fontSize: 14.sp,
                           ),
                         )
@@ -125,7 +136,7 @@ class ItemWidget extends StatelessWidget {
                             // overflow: TextOverflow.ellipsis,
                             // color: LightThemeColors.secondaryText,
                             // weight: FontWeight.w400,
-                            matchModel?.start ?? "",
+                            widget.matchModel?.start ?? "",
                             // fontSize: 14.sp,
                           ),
                         )
@@ -148,7 +159,8 @@ class ItemWidget extends StatelessWidget {
                               color: LightThemeColors.pricecolor,
                             ).s14.bold,
                             // weight: FontWeight.w600,
-                            matchModel?.price ?? " ${LocaleKeys.rs.tr()}",
+                            widget.matchModel?.price ??
+                                " ${LocaleKeys.rs.tr()}",
                             // fontSize: 14.sp,
                           ),
                         )
@@ -166,6 +178,16 @@ class ItemWidget extends StatelessWidget {
                   children: [
                     // 9.ph,
                     ButtonWidget(
+                      onTap: () async {
+                        final res = await matchDetailsRepo.getSubscribers(
+                            widget.matchModel?.id.toString() ?? "");
+                        if (res != null)
+                          this.subscribers = SubScribersModel.fromMap(res);
+                        showPlayersheet(
+                          context,
+                          subscribers: this.subscribers,
+                        );
+                      },
                       radius: 14,
                       width: 186,
                       height: 28,
@@ -192,7 +214,7 @@ class ItemWidget extends StatelessWidget {
                           ),
                           2.87.pw,
                           CustomText(
-                            matchModel?.subscribers ?? "20 / ",
+                            widget.matchModel?.subscribers ?? "20 / ",
                             // fontSize: 13,
                             // weight: FontWeight.w400,
 
@@ -225,8 +247,8 @@ class ItemWidget extends StatelessWidget {
                           context,
                           Routes.matchDetails,
                           arguments: MatchDetailsArgs(
-                            id: matchModel?.id ?? 1,
-                            isMymatch: ismymatch,
+                            id: widget.matchModel?.id ?? 1,
+                            isMymatch: widget.ismymatch,
                           ),
                         );
                       },

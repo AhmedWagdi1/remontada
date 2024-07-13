@@ -31,4 +31,19 @@ class EditRepo {
       return null;
     }
   }
+
+  confirmProfile(String code) async {
+    final ApiResponse response = await dioService.postData(
+      isForm: true,
+      loading: true,
+      url: EditEndpoints.confirm_mobile,
+      body: {"code" : code},
+    );
+
+    if (response.isError == false) {
+      return response.response?.data["data"];
+    } else {
+      return null;
+    }
+  }
 }
