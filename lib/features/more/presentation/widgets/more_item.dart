@@ -53,7 +53,7 @@ class _MoreItemState extends State<MoreItem> {
       sendCaptainrequestDialogue(context, () async {
         if (Utils.user.user?.coaching != "pending") {
           final res = await widget.cubit?.requestCoach();
-          if (res == true)
+          if (res != null)
             Alerts.snack(
               text: "request_sent".tr(),
               state: SnackState.success,

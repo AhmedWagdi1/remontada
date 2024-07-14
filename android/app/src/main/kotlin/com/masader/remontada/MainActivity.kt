@@ -1,4 +1,4 @@
-package com.example.remontada
+package com.masader.remontada
 
 import io.flutter.embedding.android.FlutterActivity
 
