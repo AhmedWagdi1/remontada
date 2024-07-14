@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "519296806462",
+    "project_id": "remon-b6ffa",
+    "storage_bucket": "remon-b6ffa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:519296806462:android:cb46f445d5185c75e16b6f",
+        "android_client_info": {
+          "package_name": "com.masader.remontada"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhk-G3yPZQtOwhKnaAk8b6V8FsnoauhLc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
