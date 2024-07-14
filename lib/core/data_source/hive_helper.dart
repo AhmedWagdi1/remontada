@@ -8,13 +8,15 @@ import '../utils/utils.dart';
 class DataManager {
   late BoxCollection collection;
   late Box userData;
+  late Box deviceToken;
 
+  static const devicetoken = "devicetoken";
   static const USER = "USER";
 
   Future initHive() async {
     await Hive.initFlutter();
     userData = await Hive.openBox('dataUser');
-
+    deviceToken = await Hive.openBox("deviceToken");
     // final directory = await getApplicationDocumentsDirectory();
     // collection = await BoxCollection.open(
     //   'dataManager', // Name of your database
@@ -28,6 +30,19 @@ class DataManager {
     final box = await Hive.openBox('data');
     await box.put(key, value);
     box.close();
+  }
+
+  Future saveDeviceToken(String value) async {
+    await deviceToken.put(devicetoken, value);
+    // log("success save");
+  }
+
+  String getDeviceToken() {
+    final String? token = deviceToken.get(devicetoken);
+    // log(token ?? "get");
+    // Utils.deviceToken = token;
+    if (token != null) Utils.deviceToken = token;
+    return token ?? "";
   }
 
   saveUser(Map<String, dynamic> value) async {

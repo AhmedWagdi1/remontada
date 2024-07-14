@@ -26,48 +26,24 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget getnonotifyBody() {
     return Container(
       width: double.infinity,
-      child: Stack(
-        alignment: Alignment.center,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Column(
-            children: [
-              70.ph,
-              CustomText(
-                LocaleKeys.notifications.tr(),
-                fontSize: 26,
-                weight: FontWeight.w800,
-                color: context.primaryColor,
-              ),
-              5.ph,
-              CustomText(
-                fontSize: 16,
-                weight: FontWeight.w500,
-                LocaleKeys.notifications_sub.tr(),
-                color: LightThemeColors.secondaryText,
-              ),
-            ],
+          Assets.images.bell.image(),
+          20.ph,
+          CustomText(
+            LocaleKeys.no_notify.tr(),
+            fontSize: 16,
+            weight: FontWeight.w500,
+            color: LightThemeColors.secondaryText,
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Assets.images.bell.image(),
-              20.ph,
-              CustomText(
-                LocaleKeys.no_notify.tr(),
-                fontSize: 16,
-                weight: FontWeight.w500,
-                color: LightThemeColors.secondaryText,
-              ),
-              4.ph,
-              CustomText(
-                LocaleKeys.having_nonotify.tr(),
-                fontSize: 16,
-                weight: FontWeight.w500,
-                color: LightThemeColors.secondaryText,
-              ),
-            ],
+          4.ph,
+          CustomText(
+            LocaleKeys.having_nonotify.tr(),
+            fontSize: 16,
+            weight: FontWeight.w500,
+            color: LightThemeColors.secondaryText,
           ),
-          1.ph,
         ],
       ),
     );

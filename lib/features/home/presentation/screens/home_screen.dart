@@ -333,25 +333,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  // showClendersheet(
-  //   BuildContext context,
-  //   Days days, {
-  //   Function(List<String>? dates, List<int>? playgroundId)? onsubmit,
-  // }) {
-  //   Alerts.bottomSheet(
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.only(
-  //         topLeft: Radius.circular(114),
-  //         topRight: Radius.circular(36),
-  //       ),
-  //     ),
-  //     context,
-  //     child: ClanderBottomsheet(
-  //       type: SheetType.clander,
-  //       onsubmit: onsubmit,
-  //       days: days,
-  //     ),
-  //   );
-  // }
 }

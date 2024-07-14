@@ -40,16 +40,17 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          MatchDetailsCubit()..getMatchDetails(widget.id.toString()),
+      create: (context) => MatchDetailsCubit()
+        ..getMatchDetails(widget.id.toString())
+        ..getSubscribers(widget.id.toString()),
       child: BlocConsumer<MatchDetailsCubit, MatchDetailsState>(
         listener: (context, state) {
           if (state is MatchDetailsLoaded) matchModel = state.matchDetails;
-          // if (state is MatchDetailsLoaded) matchModel = state.matchDetails;
+          if (state is SubScribersLoaded) subScribersModel = state.subScribers;
         },
         builder: (context, state) {
           final cubit = MatchDetailsCubit.get(context);
-
+          // subScribersModel = cubit.getSubscribers(widget.id.toString());
           return Scaffold(
             // appBar: CustomAppbar(
             //   title: "تفاصيل المباراة",
@@ -110,7 +111,8 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                             icon: "arena",
                           ),
                           MatchDetailswidget(
-                            // lan: matchModel.,
+                            lan: matchModel.lng,
+                            lat: matchModel.lat,
                             title: LocaleKeys.location.tr(),
                             subtitle: matchModel.playGround,
                             icon: "location",
@@ -168,17 +170,19 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                     ),
                                     2.87.pw,
                                     CustomText(
+                                      "${subScribersModel.subscribers?.length}",
+                                      // "13",
+                                      fontSize: 14,
+                                      weight: FontWeight.w400,
+                                      color: LightThemeColors.black,
+                                    ),
+                                    1.pw,
+                                    CustomText(
                                       matchModel.subscribers ?? "",
                                       fontSize: 14,
                                       weight: FontWeight.w400,
                                       color: LightThemeColors.background,
                                     ),
-                                    // CustomText(
-                                    //   "13",
-                                    //   fontSize: 14,
-                                    //   weight: FontWeight.w400,
-                                    //   color: LightThemeColors.black,
-                                    // ),
                                   ],
                                 ),
                               ),

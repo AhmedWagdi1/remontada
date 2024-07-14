@@ -2,12 +2,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/utils/extentions.dart';
+import 'package:remontada/core/utils/utils.dart';
 import 'package:remontada/features/more/domain/contact_request.dart';
 import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/shared/widgets/edit_text_widget.dart';
 
 import '../../../../core/app_strings/locale_keys.dart';
+import '../../../../core/resources/gen/assets.gen.dart';
 import '../../../../core/theme/light_theme.dart';
 import '../../../../shared/back_widget.dart';
 
@@ -68,8 +70,9 @@ class _ContactScreenState extends State<ContactScreen> {
               60.0.ph,
 
               TextFormFieldWidget(
+                validator: Utils.valid.defaultValidation,
                 onSaved: (value) => request.name = value,
-                // prefixIcon: Assets.icons.calling,
+                prefixIcon: Assets.icons.name,
                 // onSaved: (value) =>
                 // authRequest.phone = value,
                 // hintSize: FontSize.s14,
@@ -90,8 +93,9 @@ class _ContactScreenState extends State<ContactScreen> {
               ),
               15.0.ph,
               TextFormFieldWidget(
+                validator: Utils.valid.emailValidation,
                 onSaved: (value) => request.email = value,
-                // prefixIcon: Assets.icons.calling,
+                prefixIcon: Assets.icons.email,
                 // onSaved: (value) =>
                 //     authRequest.phone = value,
                 // hintSize: FontSize.s14,
@@ -112,8 +116,9 @@ class _ContactScreenState extends State<ContactScreen> {
               ),
               15.0.ph,
               TextFormFieldWidget(
+                validator: Utils.valid.phoneValidation,
                 onSaved: (value) => request.phone = value,
-                // prefixIcon: Assets.icons.calling,
+                prefixIcon: Assets.icons.calling,
                 // onSaved: (value) =>
                 //     authRequest.phone = value,
                 // hintSize: FontSize.s14,
@@ -134,8 +139,10 @@ class _ContactScreenState extends State<ContactScreen> {
               ),
               15.ph,
               TextFormFieldWidget(
+                validator: Utils.valid.defaultValidation,
                 onSaved: (value) => request.message = value,
                 maxLines: 10,
+
                 // prefixIcon: Assets.icons.calling,
                 // onSaved: (value) =>
                 //     authRequest.phone = value,

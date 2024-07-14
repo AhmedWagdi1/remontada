@@ -536,7 +536,7 @@ class _CutomAutoCompleteTextFeildState<T>
                               },
                               child: TextFormField(
                                   style: TextStyle(
-                                    color: LightThemeColors.textSecondary,
+                                    color: LightThemeColors.textHint,
                                     fontWeight: FontWeight.w400,
                                   ),
                                   key: _key,
@@ -570,7 +570,7 @@ class _CutomAutoCompleteTextFeildState<T>
                                     //       ),
                                     //     ),
                                     hintStyle: TextStyle(
-                                      color: LightThemeColors.textHint,
+                                      color: LightThemeColors.primary,
                                     ),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(

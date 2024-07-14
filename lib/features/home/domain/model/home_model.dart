@@ -9,14 +9,19 @@ class MatchModel {
   String? start;
   String? price;
   String? details;
-  MatchModel(
-      {this.id,
-      this.playGround,
-      this.subscribers,
-      this.date,
-      this.start,
-      this.price,
-      this.details});
+  String? lat;
+  String? lng;
+  MatchModel({
+    this.id,
+    this.playGround,
+    this.subscribers,
+    this.date,
+    this.start,
+    this.price,
+    this.details,
+    this.lat,
+    this.lng,
+  });
 
   factory MatchModel.fromMap(Map<String, dynamic> map) {
     return MatchModel(
@@ -30,6 +35,8 @@ class MatchModel {
       start: map['start_time'] != null ? map['start_time'] as String : null,
       price: map['amount'] != null ? map['amount'] as String : null,
       details: map['details'] != null ? map['details'] as String : null,
+      lat: map['lat'] != null ? map['lat'] as String : null,
+      lng: map['lng'] != null ? map['lng'] as String : null,
     );
   }
 

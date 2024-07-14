@@ -37,6 +37,7 @@ class MatchDetailsCubit extends Cubit<MatchDetailsState> {
   getSubscribers(String id) async {
     final res = await matchDetailsRepo.getSubscribers(id);
     if (res != null) {
+      emit(SubScribersLoaded(SubScribersModel.fromMap(res)));
       return SubScribersModel.fromMap(res);
     } else {
       return null;

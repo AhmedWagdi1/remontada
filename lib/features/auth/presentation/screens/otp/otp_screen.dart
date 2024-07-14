@@ -51,7 +51,7 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   void startTimer() {
-    target = DateTime.now().add(const Duration(seconds: 2));
+    target = DateTime.now().add(const Duration(minutes: 2));
     now = DateTime.now();
     timer = Timer.periodic(const Duration(seconds: 1), (s) {
       if (now.isBefore(target)) {

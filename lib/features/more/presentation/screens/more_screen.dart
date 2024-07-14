@@ -11,6 +11,7 @@ import 'package:remontada/features/more/cubit/more_cubit.dart';
 import 'package:remontada/features/more/cubit/more_states.dart';
 import 'package:remontada/features/more/presentation/widgets/more_item.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
+import 'package:remontada/shared/widgets/loadinganderror.dart';
 
 class MoreScreen extends StatelessWidget {
   const MoreScreen({super.key});
@@ -33,76 +34,80 @@ class MoreScreen extends StatelessWidget {
             //       color: context.primaryColor,
             //     ),
             //   ),
-            body: Stack(
-              alignment: Alignment.center,
-              children: [
-                // Container(
-                //   width: 500,
-                //   height: 1000,
-                // ),
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  left: 0,
-                  child: Container(
-                    width: double.infinity,
-                    height: 108,
-                    child: Assets.images.topStack.image(
-                      fit: BoxFit.fill,
+            body: LoadingAndError(
+              isLoading: state is CoachLoading,
+              isError: state is CoachFailed,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  // Container(
+                  //   width: 500,
+                  //   height: 1000,
+                  // ),
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    left: 0,
+                    child: Container(
+                      width: double.infinity,
+                      height: 108,
+                      child: Assets.images.topStack.image(
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
-                ),
-                SingleChildScrollView(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 18),
-                    width: double.infinity,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        70.ph,
-                        CustomText(
-                          style: TextStyle(
-                            color: context.primaryColor,
-                          ).s26.heavy,
-                          LocaleKeys.more_nav.tr(),
-                          // fontSize: 26.sp,
-                          // weight: FontWeight.w800,
-                        ),
-                        5.ph,
-                        CustomText(
-                          style: TextStyle(
-                            color: LightThemeColors.secondaryText,
-                          ).s16.regular,
-                          LocaleKeys.more_subtitle.tr(),
-                          // fontSize: 16.sp,
-                          // weight: FontWeight.w500,
-                        ),
-                        26.ph,
-                        Column(
-                          children: List.generate(
-                            titles.length,
-                            (index) => MoreItem(
-                              cubit: cubit,
-                              logOut: () async {
-                                final res = await cubit.logOut();
-                                if (res == true) {
-                                  Navigator.pushNamedAndRemoveUntil(context,
-                                      Routes.LoginScreen, (route) => false);
-                                }
-                              },
-                              icon: icons[index],
-                              title: titles[index],
+                  SingleChildScrollView(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 18),
+                      width: double.infinity,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          70.ph,
+                          CustomText(
+                            style: TextStyle(
+                              color: context.primaryColor,
+                            ).s26.heavy,
+                            LocaleKeys.more_nav.tr(),
+                            // fontSize: 26.sp,
+                            // weight: FontWeight.w800,
+                          ),
+                          5.ph,
+                          CustomText(
+                            style: TextStyle(
+                              color: LightThemeColors.secondaryText,
+                            ).s16.regular,
+                            LocaleKeys.more_subtitle.tr(),
+                            // fontSize: 16.sp,
+                            // weight: FontWeight.w500,
+                          ),
+                          26.ph,
+                          Column(
+                            children: List.generate(
+                              titles.length,
+                              (index) => MoreItem(
+                                cubit: cubit,
+                                logOut: () async {
+                                  final res = await cubit.logOut();
+                                  if (res == true) {
+                                    Navigator.pushNamedAndRemoveUntil(context,
+                                        Routes.LoginScreen, (route) => false);
+                                  }
+                                },
+                                icon: icons[index],
+                                title: titles[index],
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 129.29,
-                        ),
-                      ],
+                          SizedBox(
+                            height: 129.29,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },

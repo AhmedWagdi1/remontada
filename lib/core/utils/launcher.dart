@@ -1,4 +1,6 @@
-import 'package:android_intent_plus/android_intent.dart'; // import 'package:whatsapp/whatsapp.dart';
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:url_launcher/url_launcher.dart';
+ // import 'package:whatsapp/whatsapp.dart';
 
 class LauncherHelper {
   static void openAppSettings() {
@@ -11,6 +13,17 @@ class LauncherHelper {
       },
     );
     intent.launch();
+  }
+   static makeCall(
+    String phoneNumber
+    // String url, {LaunchMode mode = LaunchMode.platformDefault}
+    ) {
+       final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    // final urlParse = Uri.parse(url);
+    launchUrl(launchUri);
   }
 }
   // static openUrl(String url, {LaunchMode mode = LaunchMode.platformDefault}) {

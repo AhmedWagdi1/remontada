@@ -56,6 +56,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     email.text = widget.user?.user?.email ?? "";
     city.text = widget.user?.user?.city ?? "";
     location.text = widget.user?.user?.location ?? "";
+    edit.areaId = widget.user?.user?.cityId ?? 0;
+    edit.locationId = widget.user?.user?.locationId ?? 0;
     super.initState();
   }
 
@@ -64,8 +66,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     name.dispose();
     phone.dispose();
     email.dispose();
-    city.dispose();
-    location.dispose();
+    // city.dispose();
+    // location.dispose();
     super.dispose();
   }
 
@@ -332,6 +334,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   onTap: () async {
                     if (formkey.currentState?.validate() ?? false) {
                       formkey.currentState?.save();
+
                       final res = await widget.edit!(edit);
                       if (res != null) {
                         user = res;

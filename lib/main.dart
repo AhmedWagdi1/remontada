@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:remontada/core/services/device_type.dart';
 import 'package:remontada/core/utils/responsive_framework_widget.dart';
 
 import 'core/Router/Router.dart';
@@ -21,9 +22,13 @@ Future<void> main() async {
   Bloc.observer = MyBlocObserver();
   // dotenv.load();
   await setupLocator();
+
   // Utils.getToken();
   await Utils.dataManager.initHive();
-
+  await Device.getDeviceType();
+  // await Utils.dataManager
+  //     .saveDeviceToken(Utils.deviceToken ?? Uuid().v4().hashCode.toString());
+  // await Utils.saveDeviceToken();
   runApp(
     EasyLocalization(
       startLocale: const Locale('ar', 'EG'),

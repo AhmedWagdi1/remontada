@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:remontada/features/auth/domain/model/auth_model.dart';
+import 'package:uuid/uuid.dart';
 
 import '../data_source/hive_helper.dart';
 import 'Locator.dart';
@@ -13,8 +14,11 @@ class Utils {
   static String lang = '';
   static String FCMToken = '';
   static String userType = "";
+  static String deviceType = "";
+  static String deviceToken = "";
   static User user = User();
   static bool fromNotification = false;
+
   // static UserModel userModel = UserModel();
   static GlobalKey<NavigatorState> navigatorKey() =>
       locator<GlobalKey<NavigatorState>>();
@@ -22,6 +26,20 @@ class Utils {
 
   static Validation get valid => locator<Validation>();
   static DataManager get dataManager => locator<DataManager>();
+
+  static saveDeviceToken() async {
+    deviceToken = dataManager.getDeviceToken() ?? "";
+    // log
+    // print(deviceToken);
+    if (deviceToken == "") {
+      String deviceTtoken = Uuid().v4();
+      await dataManager.saveDeviceToken(deviceTtoken);
+      deviceToken = dataManager.getDeviceToken() ?? "";
+      // print(deviceToken);
+    }
+    deviceToken = dataManager.getDeviceToken() ?? "";
+    // print(deviceToken);
+  }
 
   static saveUserInHive(Map<String, dynamic> response) async {
     user = User.fromMap(response);

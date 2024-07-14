@@ -93,8 +93,11 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
         fontSize: 14,
         fontWeight: FontWeight.w500,
       ),
+      
       decoration: widget.inputDecoration ??
           InputDecoration(
+
+            
             // isDense: true,
 
             constraints: BoxConstraints(

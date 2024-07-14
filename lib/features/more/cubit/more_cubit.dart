@@ -71,7 +71,7 @@ class MoreCubit extends Cubit<MoreStates> {
   }
 
   contactRequest(ContactRequest request) async {
-    final res = moreRepo.contactUs(request);
+    final res = await moreRepo.contactUs(request);
     if (res != null) {
       return true;
     } else {

@@ -15,6 +15,7 @@ import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/shared/widgets/loadinganderror.dart';
 import 'package:remontada/shared/widgets/network_image.dart';
 
+import '../../../../core/Router/Router.dart';
 import '../../../../shared/back_widget.dart';
 
 class PlayerDetails extends StatefulWidget {
@@ -111,8 +112,12 @@ class _PlayerDetailsState extends State<PlayerDetails> {
                             ),
                             child: playerdetails?.image != null &&
                                     playerdetails?.image != ""
-                                ? NetworkImagesWidgets(
-                                    playerdetails?.image ?? "")
+                                ? ClipOval(
+                                    child: NetworkImagesWidgets(
+                                      fit: BoxFit.cover,
+                                      playerdetails?.image ?? "",
+                                    ),
+                                  )
                                 : Assets.images.profile_image
                                     .image(fit: BoxFit.cover),
                           ),
@@ -141,11 +146,19 @@ class _PlayerDetailsState extends State<PlayerDetails> {
                           ),
                           38.ph,
                           PlayerDetailsWidget(
+                            function: () {
+                              // LauncherHelper.makeCall(
+                              //     playerdetails?.phone ?? "");
+                            },
                             icon: Assets.icons.calling,
                             title: LocaleKeys.auth_hint_phone.tr(),
                             subtitle: playerdetails?.phone ?? "",
                           ),
                           PlayerDetailsWidget(
+                            function: () {
+                              Navigator.pushNamed(context, Routes.MapScreen,
+                                  arguments: PositionArgs("", ""));
+                            },
                             icon: Assets.icons.fieldLocation,
                             title: LocaleKeys.city.tr(),
                             subtitle: playerdetails?.city ?? "",
@@ -172,5 +185,3 @@ class _PlayerDetailsState extends State<PlayerDetails> {
     );
   }
 }
-
-List<String> subtitles = ["+9665505024", "الرياض"];

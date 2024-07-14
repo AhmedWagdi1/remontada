@@ -1,5 +1,6 @@
 {
   "contactUs"  :"اتصل بنا",
+  "coaching_failed" : "تم ارسال الطلب بالفعل",
   "request_sent" : "تم الارسال بنجاح",
   "request_sent_waiting" : "تم إرسال طلب إنضمامك",
   "auth": {

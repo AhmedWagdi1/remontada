@@ -7,10 +7,17 @@ import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 
 class PlayerDetailsWidget extends StatelessWidget {
-  const PlayerDetailsWidget({super.key, this.icon, this.subtitle, this.title});
+  const PlayerDetailsWidget({
+    super.key,
+    this.icon,
+    this.subtitle,
+    this.title,
+    this.function,
+  });
   final String? icon;
   final String? title;
   final String? subtitle;
+  final Function? function;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -61,6 +68,6 @@ class PlayerDetailsWidget extends StatelessWidget {
           ),
         ],
       ),
-    ).paddingBottom(13);
+    ).onTap(function).paddingBottom(13);
   }
 }
