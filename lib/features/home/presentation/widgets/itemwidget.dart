@@ -184,6 +184,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                         if (res != null)
                           this.subscribers = SubScribersModel.fromMap(res);
                         showPlayersheet(
+                          matchmodel: widget.matchModel,
                           context,
                           subscribers: this.subscribers,
                         );
@@ -214,23 +215,23 @@ class _ItemWidgetState extends State<ItemWidget> {
                           ),
                           2.87.pw,
                           CustomText(
-                            widget.matchModel?.subscribers ?? "20 / ",
+                            "${widget.matchModel?.constSub ?? ''} / ",
                             // fontSize: 13,
                             // weight: FontWeight.w400,
 
                             style: TextStyle(
                               color: LightThemeColors.background,
-                            ).s13.medium,
+                            ).s13.regular,
                           ),
-                          // CustomText(
-                          //   "13",
-                          //   // fontSize: 12.sp,
-                          //   // weight: FontWeight.w400,
-                          //   // color: LightThemeColors.black,
-                          //   style: TextStyle(
-                          //     color: LightThemeColors.black,
-                          //   ).s14.medium,
-                          // ),
+                          CustomText(
+                            widget.matchModel?.actualSub ?? "",
+                            // fontSize: 12.sp,
+                            // weight: FontWeight.w400,
+                            // color: LightThemeColors.black,
+                            style: TextStyle(
+                              color: LightThemeColors.black,
+                            ).s14.medium,
+                          ),
                         ],
                       ),
                     ),
@@ -248,6 +249,7 @@ class _ItemWidgetState extends State<ItemWidget> {
                           Routes.matchDetails,
                           arguments: MatchDetailsArgs(
                             id: widget.matchModel?.id ?? 1,
+                            flagged: widget.matchModel?.flag,
                             isMymatch: widget.ismymatch,
                           ),
                         );

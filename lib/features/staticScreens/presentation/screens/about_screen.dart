@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/theme/light_theme.dart';
@@ -82,22 +83,33 @@ class AboutScreen extends StatelessWidget {
                 ),
                 15.ph,
                 Container(
-                  height: 1000,
-                  child: ListView(
-                    children: [
-                      Container(
-                        height: 100,
-                        child: CustomText(
-                            align: TextAlign.center,
-                            overflow: TextOverflow.clip,
-                            color: LightThemeColors.black,
-                            weight: FontWeight.w400,
-                            fontSize: 14,
-                            (page?.content) != ""
-                                ? page?.content ?? ""
-                                : "هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي"),
-                      ).paddingBottom(12)
-                    ],
+                  // height: 1000,
+
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        (page?.content) != ""
+                            ? Center(
+                                child: Align(
+                                  // alignment: Alignment.center,
+                                  child: HtmlWidget(
+                                      textStyle: TextStyle(),
+                                      page?.content ?? ""),
+                                ),
+                              )
+                            : Container(
+                                // height: 100,
+                                child: CustomText(
+                                    align: TextAlign.center,
+                                    overflow: TextOverflow.clip,
+                                    color: LightThemeColors.black,
+                                    weight: FontWeight.w400,
+                                    fontSize: 14,
+                                    "هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها.إفتراضي"),
+                              ).paddingBottom(12),
+                        50.ph,
+                      ],
+                    ),
                   ),
                 )
                 // Column(

@@ -17,6 +17,7 @@ import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/shared/widgets/loadinganderror.dart';
 import 'package:remontada/shared/widgets/network_image.dart';
 
+import '../../../../core/Router/Router.dart';
 import '../../../../core/app_strings/locale_keys.dart';
 import '../../../../core/utils/utils.dart';
 import '../widgets/clander_bottomsheet_body.dart';
@@ -106,7 +107,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 borderRadius: BorderRadius.circular(18),
                                 child: GestureDetector(
                                   onTap: () {
-                                    print(homeModel.slider?[index].image);
+                                    Navigator.pushNamed(context, Routes.webPage,
+                                        arguments:
+                                            homeModel.slider?[index].link ??
+                                                "");
                                   },
                                   child: NetworkImagesWidgets(
                                     homeModel.slider?[index].image ?? "",
@@ -213,10 +217,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                         SheetType.playground,
                                         context,
                                         (date, id) async {
-                                          this.dates = date!;
-                                          this.ids = id!;
+                                          this.dates = date ?? [];
+                                          this.ids = id ?? [];
                                           return await cubit.getHomeData(
                                             playgrounds: id,
+                                            data: [],
                                           );
                                         },
                                         this.playground,
@@ -248,9 +253,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                         context,
                                         (dates, id) async {
                                           this.ids = id ?? [];
-                                          this.dates = dates!;
+                                          this.dates = dates ?? [];
                                           await cubit.getHomeData(
                                             data: dates,
+                                            playgrounds: [],
                                           );
                                         },
                                         playground,
@@ -272,12 +278,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       18.ph.SliverBox,
                       SliverList.builder(
                         itemCount: homeModel.match?.length ?? 0,
-                        itemBuilder: (context, index) => ItemWidget(
-                          matchModel: homeModel.match?[index],
-                          ismymatch: false,
-                        ).paddingHorizontal(10),
+                        itemBuilder: (context, index) {
+                          return
+                              // int.parse(homeModel.match?[index].constSub ??
+                              //             "") ==
+                              //         20
+                              //     ?
+                              ItemWidget(
+                            matchModel: homeModel.match?[index],
+                            ismymatch: false,
+                          ).paddingHorizontal(10);
+                          // : SizedBox();
+                        },
                       ),
-                      140.ph.SliverBox,
+                      129.29.ph.SliverBox,
                     ],
                   ),
                 ),

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:remontada/features/auth/domain/model/auth_model.dart';
+import 'package:remontada/features/home/presentation/screens/webview.dart';
 import 'package:remontada/features/layout/presentation/screens/layout_screen.dart';
 import 'package:remontada/features/matchdetails/presentaion/screens/matchDetails_screen.dart';
 import 'package:remontada/features/more/domain/contact_request.dart';
@@ -36,6 +37,7 @@ class Routes {
   static const String privacypolicyScreen = "/privacyPolicyScreen";
   static const String MapScreen = "/MAPsCREEN";
   static const String contactScreen = "/contactScreen";
+  static const String webPage = "/webPage";
 }
 
 class RouteGenerator {
@@ -110,6 +112,7 @@ class RouteGenerator {
                 mymatch:
                     (routeSettings.arguments as MatchDetailsArgs).isMymatch,
                 id: (routeSettings.arguments as MatchDetailsArgs).id,
+                flagged: (routeSettings.arguments as MatchDetailsArgs).flagged,
               );
             });
 
@@ -170,6 +173,14 @@ class RouteGenerator {
                 contact: routeSettings.arguments as Function(ContactRequest),
               );
             });
+      case Routes.webPage:
+        return CupertinoPageRoute(
+            settings: routeSettings,
+            builder: (_) {
+              return WebPage(
+                uri: routeSettings.arguments as String,
+              );
+            });
       // case Routes.SplashScreen:
       //   return CupertinoPageRoute(
       //       settings: routeSettings,
@@ -224,10 +235,12 @@ class NewPasswordArgs {
 class MatchDetailsArgs {
   bool? isMymatch;
   int? id;
+  bool? flagged;
 
   MatchDetailsArgs({
     this.id,
     this.isMymatch,
+    this.flagged,
   });
 }
 

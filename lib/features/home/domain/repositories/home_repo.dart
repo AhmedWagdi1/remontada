@@ -10,7 +10,7 @@ class HomeRepo {
       url: HomeEndPoints.home,
       query: {
         "playgrounds[]": playgrounds,
-        "date": data,
+        "date[]": data,
       },
     );
 

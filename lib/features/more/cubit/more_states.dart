@@ -18,3 +18,9 @@ final class CoachLoading extends MoreStates {}
 final class CoachLoadedSuccess extends MoreStates {}
 
 final class CoachFailed extends MoreStates {}
+
+final class ProfileLoad extends MoreStates {}
+
+final class ProfileSuccess extends MoreStates {}
+
+final class ProfileFailed extends MoreStates {}

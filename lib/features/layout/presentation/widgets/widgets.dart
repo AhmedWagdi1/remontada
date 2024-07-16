@@ -24,6 +24,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.zero,
       decoration: BoxDecoration(
         color: Colors.transparent,
         boxShadow: [
@@ -38,7 +39,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
       child: ClipPath(
         clipper: CustomContainer(),
         child: Container(
-          height: 110.39,
+          height: 115.39,
           decoration: BoxDecoration(
             // boxShadow: [
             //   BoxShadow(
@@ -51,6 +52,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
               topRight: Radius.circular(33),
             ),
             color: context.scaffoldBackgroundColor,
+            // color: Colors.transparent,
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,

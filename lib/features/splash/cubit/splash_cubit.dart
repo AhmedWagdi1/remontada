@@ -61,7 +61,7 @@ class SplashCubit extends Cubit<SplashStates> {
     if (Utils.token.isNotEmpty) {
       final res = await getUserData();
       if (res == null) {
-        await Utils.dataManager.deleteUserData();
+        Utils.dataManager.deleteUserData();
       }
       // await dynamicLink();
       route = res == true ? Routes.LayoutScreen : Routes.LoginScreen;

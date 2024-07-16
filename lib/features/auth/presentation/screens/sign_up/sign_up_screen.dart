@@ -16,6 +16,7 @@ import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/shared/widgets/edit_text_widget.dart';
 
+import '../../../../../core/services/alerts.dart';
 import '../../../../../core/utils/extentions.dart';
 import '../../../../../shared/back_widget.dart';
 import '../../../../../shared/widgets/autocomplate.dart';
@@ -268,9 +269,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                             phone: register.phone ?? "",
                                             code: register.code ?? "");
                                         if (res == true) {
-                                          // Alerts.snack(
-                                          //     text: "",
-                                          //     state: SnackState.success);
+                                          Alerts.snack(
+                                              text: "تم التسجيل بنجاح",
+                                              state: SnackState.success);
                                           Navigator.pushNamedAndRemoveUntil(
                                               context,
                                               Routes.LayoutScreen,

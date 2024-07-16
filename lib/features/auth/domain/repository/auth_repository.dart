@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:remontada/core/config/key.dart';
 import 'package:remontada/core/utils/utils.dart';
 import 'package:remontada/features/auth/domain/model/auth_model.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../../core/data_source/dio_helper.dart';
 import '../request/auth_request.dart';
@@ -85,24 +84,17 @@ class AuthRepository {
     }
   }
 
-  String token = "";
   sendCodeRequest({
     required String phone,
     required String code,
   }) async {
-    Utils.dataManager.getDeviceToken();
-    if (Utils.deviceToken == "") {
-      token = Uuid().v4();
-      await Utils.dataManager.saveDeviceToken(token);
-      // log(Utils.dataManager.getDeviceToken());
-    }
-    Utils.saveDeviceToken();
+   
     final response = await dioService.postData(
         url: AuthEndPoints.sendCode,
         body: {
           'mobile': phone,
           'code': code,
-          "device_token": Utils.deviceToken == "" ? token : Utils.deviceToken,
+          "device_token": Utils.FCMToken,
           "device_type": Utils.deviceType,
           "uuid": ConstKeys.uUid,
         },

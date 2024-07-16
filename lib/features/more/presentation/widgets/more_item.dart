@@ -51,15 +51,14 @@ class _MoreItemState extends State<MoreItem> {
       );
     } else if (widget.title == LocaleKeys.captain_request.tr()) {
       sendCaptainrequestDialogue(context, () async {
-        if (Utils.user.user?.coaching != "pending") {
-          final res = await widget.cubit?.requestCoach();
-          if (res != null)
-            Alerts.snack(
-              text: "request_sent".tr(),
-              state: SnackState.success,
-            );
-        }
-        Alerts.snack(text: "coaching_failed".tr(), state: SnackState.failed);
+        final res = await widget.cubit?.requestCoach();
+        if (res != null)
+          Alerts.snack(
+            text: "request_sent".tr(),
+            state: SnackState.success,
+          );
+
+        // Alerts.snack(text: "coaching_failed".tr(), state: SnackState.failed);
         Navigator.pop(context);
       });
     } else if (widget.title == LocaleKeys.contact_us.tr()) {
@@ -170,9 +169,10 @@ class _MoreItemState extends State<MoreItem> {
                                 // fontSize: 14,
                                 // weight: FontWeight.w600,
                               ),
-                              if (widget.title ==
-                                      LocaleKeys.captain_request.tr() &&
-                                  Utils.user.user?.coaching == "pending")
+                              if ((state is CoachLoadedSuccess ||
+                                      Utils.user.user?.coaching == "pending") &&
+                                  widget.title ==
+                                      LocaleKeys.captain_request.tr())
                                 Row(
                                   children: [
                                     Container(

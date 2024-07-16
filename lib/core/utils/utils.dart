@@ -2,8 +2,8 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:remontada/core/utils/firebase_message.dart';
 import 'package:remontada/features/auth/domain/model/auth_model.dart';
-import 'package:uuid/uuid.dart';
 
 import '../data_source/hive_helper.dart';
 import 'Locator.dart';
@@ -15,7 +15,7 @@ class Utils {
   static String FCMToken = '';
   static String userType = "";
   static String deviceType = "";
-  static String deviceToken = "";
+
   static User user = User();
   static bool fromNotification = false;
 
@@ -27,31 +27,27 @@ class Utils {
   static Validation get valid => locator<Validation>();
   static DataManager get dataManager => locator<DataManager>();
 
-  static saveDeviceToken() async {
-    deviceToken = dataManager.getDeviceToken() ?? "";
-    // log
-    // print(deviceToken);
-    if (deviceToken == "") {
-      String deviceTtoken = Uuid().v4();
-      await dataManager.saveDeviceToken(deviceTtoken);
-      deviceToken = dataManager.getDeviceToken() ?? "";
-      // print(deviceToken);
-    }
-    deviceToken = dataManager.getDeviceToken() ?? "";
-    // print(deviceToken);
-  }
-
   static saveUserInHive(Map<String, dynamic> response) async {
     user = User.fromMap(response);
     token = user.token ?? '';
+    FBMessging.subscripeAllUsers();
+    await user.type == "client"
+        ? FBMessging.subscripeAllclients()
+        : FBMessging.subscripeAllcouches();
     await Utils.dataManager.saveUser(Map<String, dynamic>.from(response));
   }
 
   static deleteUserData() async {
-    user = User();
     token = '';
     FCMToken = "";
-    Future.wait([dataManager.deleteUserData()]);
+    await Future.wait([
+      dataManager.deleteUserData(),
+      FBMessging.subscripeAllUsers(),
+      user.type == "client"
+          ? FBMessging.subscripeAllclients()
+          : FBMessging.subscripeAllcouches()
+    ]);
+    user = User();
   }
 
   static void rebuildAllChildren(BuildContext context) {

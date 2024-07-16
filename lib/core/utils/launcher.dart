@@ -1,6 +1,6 @@
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:url_launcher/url_launcher.dart';
- // import 'package:whatsapp/whatsapp.dart';
+// import 'package:whatsapp/whatsapp.dart';
 
 class LauncherHelper {
   static void openAppSettings() {
@@ -9,16 +9,16 @@ class LauncherHelper {
     const intent = AndroidIntent(
       action: 'android.settings.APP_NOTIFICATION_SETTINGS',
       arguments: <String, dynamic>{
-        'android.provider.extra.APP_PACKAGE': "com.example.remontada"
+        'android.provider.extra.APP_PACKAGE': "com.masader.remontada"
       },
     );
     intent.launch();
   }
-   static makeCall(
-    String phoneNumber
-    // String url, {LaunchMode mode = LaunchMode.platformDefault}
-    ) {
-       final Uri launchUri = Uri(
+
+  static makeCall(String phoneNumber
+      // String url, {LaunchMode mode = LaunchMode.platformDefault}
+      ) {
+    final Uri launchUri = Uri(
       scheme: 'tel',
       path: phoneNumber,
     );

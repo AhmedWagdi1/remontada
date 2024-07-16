@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -167,72 +167,76 @@ class _OtpScreenState extends State<OtpScreen> {
                     // child: Directionality(
                     //   textDirection: TextDirection.ltr,
                     // textDirection: TextDirection.LTR,
-                    child: Pinput(
-                      // androidSmsAutofillMethod:
-                      //     AndroidSmsAutofillMethod.smsUserConsentApi,
-                      // smsCodeMatcher: PinputConstants.defaultSmsCodeMatcher,
-                      length: 5,
-                      autofocus: false,
-                      // errorText: otpError,
-                      // onClipboardFound: (s) {},
-                      controller: otpController,
-                      defaultPinTheme: PinTheme(
-                        // padding: EdgeInsets.only(
-                        //   right: 11.w,
-                        // ),
-                        textStyle: TextStyle(
-                          fontSize: 27,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                        width: 48,
-                        height: 65,
-                        decoration: BoxDecoration(
-                          color: LightThemeColors.surface,
-                          borderRadius: BorderRadius.circular(33.0),
-                          // border: Border.all(
-                          //   color: Colors.black,
-                          //   width: 1.0,
+                    child: Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: Pinput(
+                        // androidSmsAutofillMethod:
+                        //     AndroidSmsAutofillMethod.smsUserConsentApi,
+                        // smsCodeMatcher: PinputConstants.defaultSmsCodeMatcher,
+                        length: 5,
+                        autofocus: false,
+                        // errorText: otpError,
+                        // onClipboardFound: (s) {},
+                        controller: otpController,
+                        defaultPinTheme: PinTheme(
+                          // padding: EdgeInsets.only(
+                          //   right: 11.w,
                           // ),
-                          //shape: BoxShape.circle,
-                        ),
-                      ),
-                      followingPinTheme: PinTheme(
                           textStyle: TextStyle(
                             fontSize: 27,
                             fontWeight: FontWeight.bold,
-                            color: context.primaryColor,
+                            color: Colors.white,
                           ),
                           width: 48,
                           height: 65,
                           decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 1,
-                              color: LightThemeColors.border,
-                            ),
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(33.0.r),
+                            color: LightThemeColors.surface,
+                            borderRadius: BorderRadius.circular(33.0),
                             // border: Border.all(
                             //   color: Colors.black,
                             //   width: 1.0,
                             // ),
                             //shape: BoxShape.circle,
-                          )),
-                      pinAnimationType: PinAnimationType.scale,
-                      validator: Utils.valid.defaultValidation,
-                      onCompleted: (pin) async {
-                        activeBut = true;
-                        await widget.onSubmit(pin);
-                      },
-                      onChanged: (value) {
-                        if (value.length == 6) {
+                          ),
+                        ),
+                        followingPinTheme: PinTheme(
+                            textStyle: TextStyle(
+                              fontSize: 27,
+                              fontWeight: FontWeight.bold,
+                              color: context.primaryColor,
+                            ),
+                            width: 48,
+                            height: 65,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 1,
+                                color: LightThemeColors.border,
+                              ),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(33.0.r),
+                              // border: Border.all(
+                              //   color: Colors.black,
+                              //   width: 1.0,
+                              // ),
+                              //shape: BoxShape.circle,
+                            )),
+                        pinAnimationType: PinAnimationType.scale,
+                        validator: Utils.valid.defaultValidation,
+                        onCompleted: (pin) async {
                           activeBut = true;
-                          setState(() {});
-                        } else {
-                          activeBut = false;
-                          setState(() {});
-                        }
-                      },
+                          await widget.onSubmit(pin);
+                          otpController.clear();
+                        },
+                        onChanged: (value) {
+                          if (value.length == 6) {
+                            activeBut = true;
+                            setState(() {});
+                          } else {
+                            activeBut = false;
+                            setState(() {});
+                          }
+                        },
+                      ),
                     ),
                   ),
                   30.ph,
@@ -260,9 +264,12 @@ class _OtpScreenState extends State<OtpScreen> {
                       if (formKey.currentState!.validate()) {
                         if (otpController.text.length < 5) {
                           Alerts.snack(
-                              text: "الكود غير صحيح", state: SnackState.failed);
+                            text: "الكود غير صحيح",
+                            state: SnackState.failed,
+                          );
                         } else {
                           await widget.onSubmit(otpController.text);
+                          otpController.clear();
                         }
                       }
                     },

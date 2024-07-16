@@ -42,6 +42,17 @@ class NotificationModel {
 
   factory NotificationModel.fromJson(String source) =>
       NotificationModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'id': id,
+      'data': data?.toMap(),
+      'isread': isread,
+      'createdAt': createdAt,
+    };
+  }
+
+  String toJson() => json.encode(toMap());
 }
 
 class NotificationData {

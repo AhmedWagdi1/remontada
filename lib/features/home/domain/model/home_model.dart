@@ -11,6 +11,10 @@ class MatchModel {
   String? details;
   String? lat;
   String? lng;
+  String? constSub;
+  String? actualSub;
+  bool? flag;
+  // bool? validSub;
   MatchModel({
     this.id,
     this.playGround,
@@ -21,10 +25,22 @@ class MatchModel {
     this.details,
     this.lat,
     this.lng,
+    this.constSub,
+    this.actualSub,
+    this.flag,
+    // this.validSub,
   });
 
   factory MatchModel.fromMap(Map<String, dynamic> map) {
     return MatchModel(
+      constSub: map['subscribers_count'] != null
+          ? (map['subscribers_count'] as String).split("/").last
+          : null,
+
+      // validSub:  int.parse(constSub) == 20,
+      actualSub: map['subscribers_count'] != null
+          ? (map['subscribers_count'] as String).split("/").first
+          : null,
       id: map['id'] != null ? map['id'] as int : null,
       playGround:
           map['playground'] != null ? map['playground'] as String : null,
@@ -37,6 +53,7 @@ class MatchModel {
       details: map['details'] != null ? map['details'] as String : null,
       lat: map['lat'] != null ? map['lat'] as String : null,
       lng: map['lng'] != null ? map['lng'] as String : null,
+      flag: map['flagged'] != null ? map['flagged'] as bool : null,
     );
   }
 
@@ -238,6 +255,7 @@ class Subscriber {
 }
 
 class SubScribersModel {
+  bool? isMymatch;
   List<Subscriber>? subscribers;
   SubScribersModel({
     this.subscribers,

@@ -6,12 +6,15 @@ import 'package:remontada/features/more/cubit/more_states.dart';
 import 'package:remontada/features/more/domain/contact_request.dart';
 import 'package:remontada/features/more/domain/model/model.dart';
 import 'package:remontada/features/more/domain/more_repo.dart';
+import 'package:remontada/features/profile/domain/repositories/edit_repositories.dart';
 
 import '../../../core/utils/utils.dart';
+import '../../auth/domain/model/auth_model.dart';
 
 class MoreCubit extends Cubit<MoreStates> {
   MoreCubit() : super(MoreInitial());
   MoreRepo moreRepo = MoreRepo(locator<DioService>());
+  EditRepo editRepo = EditRepo(locator<DioService>());
 
   static MoreCubit get(context) => BlocProvider.of(context);
   Future<bool?> checkNotificationEnabled() async {
@@ -29,13 +32,28 @@ class MoreCubit extends Cubit<MoreStates> {
     final response = await moreRepo.logout();
 
     if (response != null) {
-      Utils.dataManager.deleteUserData();
+      await Utils.dataManager.deleteUserData();
 
       emit(LogOutSuccess());
       return true;
     } else {
       emit(LogOutFailed());
       return null;
+    }
+  }
+
+  getProfile() async {
+    emit(ProfileLoad());
+    final res = await editRepo.getProfile();
+    if (res != null) {
+      Utils.user = User.fromMap(res);
+      emit(
+        ProfileSuccess(),
+      );
+      return true;
+    } else {
+      emit(ProfileFailed());
+      return false;
     }
   }
 

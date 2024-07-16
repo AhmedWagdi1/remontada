@@ -37,14 +37,6 @@ class DataManager {
     // log("success save");
   }
 
-  String getDeviceToken() {
-    final String? token = deviceToken.get(devicetoken);
-    // log(token ?? "get");
-    // Utils.deviceToken = token;
-    if (token != null) Utils.deviceToken = token;
-    return token ?? "";
-  }
-
   saveUser(Map<String, dynamic> value) async {
     // await Hive.initFlutter();
     // final userData = await Hive.openBox('dataUser');

@@ -183,9 +183,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                                                 "");
                                                 if (res == true) {
                                                   Alerts.snack(
-                                                      text: "",
-                                                      state:
-                                                          SnackState.success);
+                                                    text:
+                                                        "تم تسجيل الدخول بنجاح",
+                                                    state: SnackState.success,
+                                                  );
                                                   Navigator
                                                       .pushNamedAndRemoveUntil(
                                                           context,

@@ -28,6 +28,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       width: double.infinity,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Assets.images.bell.image(),
           20.ph,
@@ -68,6 +69,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             //   ),
             // ),
             body: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 70.ph,
                 CustomText(
@@ -109,9 +111,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 129.29,
-                ),
+                // Container(
+                //   color: Colors.transparent,
+                //   height: 129.29,
+                // ),
+                129.29.ph,
               ],
             ),
           );

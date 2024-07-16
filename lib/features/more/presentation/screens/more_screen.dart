@@ -5,6 +5,7 @@ import 'package:remontada/core/Router/Router.dart';
 import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/resources/gen/assets.gen.dart';
+import 'package:remontada/core/services/alerts.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/features/more/cubit/more_cubit.dart';
@@ -19,7 +20,9 @@ class MoreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => MoreCubit()..checkNotificationEnabled(),
+      create: (context) => MoreCubit()
+        ..checkNotificationEnabled()
+        ..getProfile(),
       child: BlocConsumer<MoreCubit, MoreStates>(
         listener: (context, state) {},
         builder: (context, state) {
@@ -35,8 +38,8 @@ class MoreScreen extends StatelessWidget {
             //     ),
             //   ),
             body: LoadingAndError(
-              isLoading: state is CoachLoading,
-              isError: state is CoachFailed,
+              isLoading: state is ProfileLoad || state is CoachLoading,
+              isError: state is ProfileFailed,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -92,6 +95,10 @@ class MoreScreen extends StatelessWidget {
                                   if (res == true) {
                                     Navigator.pushNamedAndRemoveUntil(context,
                                         Routes.LoginScreen, (route) => false);
+                                    Alerts.snack(
+                                      text: "تم تسجيل الخروج بنجاح",
+                                      state: SnackState.success,
+                                    );
                                   }
                                 },
                                 icon: icons[index],

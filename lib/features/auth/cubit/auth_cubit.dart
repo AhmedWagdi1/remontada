@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/data_source/dio_helper.dart';
 import '../../../core/utils/Locator.dart';
+import '../../../core/utils/firebase_message.dart';
 import '../../../core/utils/utils.dart';
 import '../../auth/domain/request/auth_request.dart';
 import '../domain/repository/auth_repository.dart';
@@ -17,6 +18,9 @@ class AuthCubit extends Cubit<AuthStates> {
 
   login({required AuthRequest loginRequestModel}) async {
     emit(LoginLoadingState());
+    if (Utils.FCMToken.isEmpty) {
+      await FBMessging.getToken();
+    }
     final response = await authRepository.loginRequest(loginRequestModel);
 
     if (response != null) {
@@ -35,6 +39,9 @@ class AuthCubit extends Cubit<AuthStates> {
 
   signUp({required AuthRequest registerRequestModel}) async {
     emit(RegisterLoadingState());
+    if (Utils.FCMToken.isEmpty) {
+      await FBMessging.getToken();
+    }
     final response = await authRepository.registerRequest(registerRequestModel);
     if (response != null) {
       emit(RegisterSuccessState());

@@ -25,9 +25,11 @@ class MatchDetailsScreen extends StatefulWidget {
     super.key,
     this.mymatch = false,
     this.id,
+    this.flagged,
   });
   final bool? mymatch;
   final int? id;
+  final bool? flagged;
 
   @override
   State<MatchDetailsScreen> createState() => _MatchDetailsScreenState();
@@ -194,7 +196,9 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                     if (subscribers != null) {
                                       subScribersModel = subscribers;
                                     }
-                                    showPlayersheet(context,
+                                    showPlayersheet(
+                                        matchmodel: matchModel,
+                                        context,
                                         subscribers: subScribersModel);
                                   },
                                   radius: 15,
@@ -251,62 +255,73 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                           ),
                         ),
                         28.ph,
-                        if (cubit.isMymatch != null)
-                          ButtonWidget(
-                            buttonColor: cubit.isMymatch ?? false
-                                ? LightThemeColors.warningButton
-                                : context.primaryColor,
-                            onTap: cubit.isMymatch ?? false
-                                ? () async {
-                                    Navigator.pop(context);
-                                    await cubit.cancel(
-                                      widget.id.toString(),
-                                    );
-                                  }
-                                : () async {
-                                    await showConfirmationSheet(
-                                      context,
-                                      () async {
-                                        final response = await cubit
-                                            .subScribe(widget.id ?? 0);
-                                        if (response == true) {
-                                          Navigator.pop(context);
-                                          showSuccessSheet(context, widget.id);
-                                        }
-                                      },
-                                      // cubit.subScribe(widget.id ?? 0),
-                                    );
-                                  },
-                            height: 65,
-                            // width: 342,
-                            fontweight: FontWeight.bold,
-                            radius: 33,
-                            textColor: context.background,
-                            child: cubit.isMymatch ?? false
-                                ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.asset(
-                                        color: context.background,
-                                        Assets.icons.flag,
-                                      ),
-                                      9.pw,
-                                      CustomText(
-                                        LocaleKeys.apology_take_part.tr(),
-                                        fontSize: 16,
-                                        weight: FontWeight.bold,
-                                        color: context.background,
-                                      ),
-                                    ],
+                        cubit.isMymatch != null
+                            ? (widget.flagged == false)
+                                ? ButtonWidget(
+                                    buttonColor: cubit.isMymatch ?? false
+                                        ? LightThemeColors.warningButton
+                                        : context.primaryColor,
+                                    onTap: cubit.isMymatch ?? false
+                                        ? () async {
+                                            Navigator.pop(context);
+                                            await cubit.cancel(
+                                              widget.id.toString(),
+                                            );
+                                          }
+                                        : () async {
+                                            await showConfirmationSheet(
+                                              context,
+                                              () async {
+                                                final response = await cubit
+                                                    .subScribe(widget.id ?? 0);
+                                                if (response == true) {
+                                                  Navigator.pop(context);
+                                                  showSuccessSheet(
+                                                      context, widget.id);
+                                                }
+                                              },
+                                              // cubit.subScribe(widget.id ?? 0),
+                                            );
+                                          },
+                                    height: 65,
+                                    // width: 342,
+                                    fontweight: FontWeight.bold,
+                                    radius: 33,
+                                    textColor: context.background,
+                                    child: cubit.isMymatch ?? false
+                                        ? Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              SvgPicture.asset(
+                                                color: context.background,
+                                                Assets.icons.flag,
+                                              ),
+                                              9.pw,
+                                              CustomText(
+                                                LocaleKeys.apology_take_part
+                                                    .tr(),
+                                                fontSize: 16,
+                                                weight: FontWeight.bold,
+                                                color: context.background,
+                                              ),
+                                            ],
+                                          )
+                                        : CustomText(
+                                            "SubscribeNow".tr(),
+                                            fontSize: 19,
+                                            weight: FontWeight.bold,
+                                            color: context.background,
+                                          ),
+                                    // title: ,
                                   )
-                                : CustomText(
-                                    "SubscribeNow".tr(),
-                                    fontSize: 19,
-                                    weight: FontWeight.bold,
-                                    color: context.background,
-                                  ),
-                            // title: ,
-                          ),
+                                : SizedBox()
+                            : CircularProgressIndicator(
+                                color: LightThemeColors.primary,
+                              ),
+                        // : CircularProgressIndicator(
+                        //     color: Colors.blue,
+                        //   ),
                         26.ph,
                       ],
                     ),
@@ -323,7 +338,8 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
   }
 }
 
-showPlayersheet(BuildContext context, {SubScribersModel? subscribers}) {
+showPlayersheet(BuildContext context,
+    {SubScribersModel? subscribers, MatchModel? matchmodel}) {
   Alerts.bottomSheet(
     // height: 623.h,
     shape: RoundedRectangleBorder(
@@ -400,7 +416,7 @@ showPlayersheet(BuildContext context, {SubScribersModel? subscribers}) {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       CustomText(
-                        "20 / ",
+                        "${matchmodel?.constSub ?? 0} / ",
                         fontSize: 14,
                         weight: FontWeight.w400,
                         color: LightThemeColors.background,
