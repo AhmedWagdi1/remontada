@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:remontada/features/home/cubit/home_cubit.dart';
 import 'package:remontada/features/more/presentation/screens/more_screen.dart';
 import 'package:remontada/features/my_matches/presentation/screens/mymatches_screen.dart';
 import 'package:remontada/features/notifications/presentation/screens/notification_Screen.dart';
@@ -12,6 +13,7 @@ import '../widgets/widgets.dart';
 class LayoutScreen extends StatefulWidget {
   const LayoutScreen({super.key, this.index});
   final int? index;
+  static void Function()? updateScreen;
 
   @override
   State<LayoutScreen> createState() => _LayoutScreenState();
@@ -20,9 +22,7 @@ class LayoutScreen extends StatefulWidget {
 class _LayoutScreenState extends State<LayoutScreen>
     with SingleTickerProviderStateMixin {
   @override
-  void initState() {
-    super.initState();
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,11 @@ class _LayoutScreenState extends State<LayoutScreen>
               controller: cubit.tabController,
               physics: const NeverScrollableScrollPhysics(),
               children: [
-                HomeScreen(),
+                BlocProvider(
+                  create: (context) =>
+                      HomeCubit()..getHomeData(playgrounds: [], data: []),
+                  child: HomeScreen(),
+                ),
                 MyMatchesScreen(),
                 NotificationScreen(),
                 MoreScreen(),

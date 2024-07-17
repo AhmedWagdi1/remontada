@@ -7,6 +7,7 @@ import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/Locator.dart';
 import 'package:remontada/core/utils/extentions.dart';
+import 'package:remontada/features/home/cubit/home_cubit.dart';
 import 'package:remontada/features/matchdetails/domain/repositories/match_details_repo.dart';
 import 'package:remontada/features/matchdetails/presentaion/screens/matchDetails_screen.dart';
 import 'package:remontada/shared/widgets/button_widget.dart';
@@ -20,9 +21,11 @@ class ItemWidget extends StatefulWidget {
     super.key,
     this.ismymatch = false,
     this.matchModel,
+    this.cubit,
   });
   final MatchModel? matchModel;
   final bool? ismymatch;
+  final HomeCubit? cubit;
 
   @override
   State<ItemWidget> createState() => _ItemWidgetState();
@@ -31,6 +34,14 @@ class ItemWidget extends StatefulWidget {
 class _ItemWidgetState extends State<ItemWidget> {
   SubScribersModel? subscribers;
   MatchDetailsRepo matchDetailsRepo = locator<MatchDetailsRepo>();
+
+  void onreturn() async {
+    await widget.cubit?.getHomeData(
+      playgrounds: [],
+      data: [],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -243,16 +254,18 @@ class _ItemWidgetState extends State<ItemWidget> {
                     50.79.ph,
                     IconButton(
                       padding: EdgeInsets.zero,
-                      onPressed: () {
-                        Navigator.pushNamed(
+                      onPressed: () async {
+                        await Navigator.pushNamed(
                           context,
                           Routes.matchDetails,
                           arguments: MatchDetailsArgs(
+                            
                             id: widget.matchModel?.id ?? 1,
-                            flagged: widget.matchModel?.flag,
                             isMymatch: widget.ismymatch,
                           ),
                         );
+                        await widget.cubit
+                            ?.getHomeData(playgrounds: [], data: []);
                       },
                       icon: SvgPicture.asset(
                         width: 45.94,

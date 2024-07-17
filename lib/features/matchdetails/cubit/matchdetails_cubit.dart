@@ -19,6 +19,7 @@ class MatchDetailsCubit extends Cubit<MatchDetailsState> {
     emit(MatchDetailsLoading());
     final res = await matchDetailsRepo.getMatchDetails(id);
     if (res != null) {
+      await getOwner(id);
       emit(
         MatchDetailsLoaded(
           MatchModel.fromMap(
@@ -26,7 +27,7 @@ class MatchDetailsCubit extends Cubit<MatchDetailsState> {
           ),
         ),
       );
-      await getOwner(id);
+
       return true;
     } else {
       emit(MatchDetailsFailed());
@@ -53,7 +54,7 @@ class MatchDetailsCubit extends Cubit<MatchDetailsState> {
         },
       );
       isMymatch = playersId.contains(Utils.user.user?.id);
-      emit(RefreshState());
+
       return isMymatch;
     }
   }

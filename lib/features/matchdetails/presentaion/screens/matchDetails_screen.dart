@@ -26,10 +26,12 @@ class MatchDetailsScreen extends StatefulWidget {
     this.mymatch = false,
     this.id,
     this.flagged,
+    this.onreturn,
   });
   final bool? mymatch;
   final int? id;
   final bool? flagged;
+  final VoidCallback? onreturn;
 
   @override
   State<MatchDetailsScreen> createState() => _MatchDetailsScreenState();
@@ -38,7 +40,7 @@ class MatchDetailsScreen extends StatefulWidget {
 class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
   MatchModel matchModel = MatchModel();
   SubScribersModel subScribersModel = SubScribersModel();
-  bool matchowner = false;
+  // bool matchowner = false;
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -61,10 +63,16 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
               isLoading: state is MatchDetailsLoading,
               isError: state is MatchDetailsFailed,
               child: RefreshIndicator(
-                onRefresh: () => cubit.getMatchDetails(
-                  widget.id.toString(),
-                ),
+                onRefresh: () async {
+                  await cubit.getMatchDetails(
+                    widget.id.toString(),
+                  );
+                  await cubit.getSubscribers(
+                    widget.id.toString(),
+                  );
+                },
                 child: SingleChildScrollView(
+                  physics: AlwaysScrollableScrollPhysics(),
                   child: Container(
                     width: double.infinity,
                     child: Column(
@@ -255,15 +263,20 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                           ),
                         ),
                         28.ph,
-                        cubit.isMymatch != null
-                            ? (widget.flagged == false)
+                        subScribersModel.isMymatch != null
+                            ? (matchModel.flag == false)
                                 ? ButtonWidget(
-                                    buttonColor: cubit.isMymatch ?? false
-                                        ? LightThemeColors.warningButton
-                                        : context.primaryColor,
-                                    onTap: cubit.isMymatch ?? false
+                                    buttonColor:
+                                        subScribersModel.isMymatch ?? false
+                                            ? LightThemeColors.warningButton
+                                            : context.primaryColor,
+                                    onTap: subScribersModel.isMymatch ?? false
                                         ? () async {
-                                            Navigator.pop(context);
+                                            // widget.onreturn?.call();
+                                            Navigator.pushReplacementNamed(
+                                              context,
+                                              Routes.LayoutScreen,
+                                            );
                                             await cubit.cancel(
                                               widget.id.toString(),
                                             );
@@ -275,7 +288,10 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                                 final response = await cubit
                                                     .subScribe(widget.id ?? 0);
                                                 if (response == true) {
-                                                  Navigator.pop(context);
+                                                  Navigator.pop(
+                                                    context,
+                                                    widget.onreturn,
+                                                  );
                                                   showSuccessSheet(
                                                       context, widget.id);
                                                 }

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import '../../../../core/utils/utils.dart';
+
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class MatchModel {
   int? id;
@@ -256,6 +258,7 @@ class Subscriber {
 
 class SubScribersModel {
   bool? isMymatch;
+
   List<Subscriber>? subscribers;
   SubScribersModel({
     this.subscribers,
@@ -264,6 +267,11 @@ class SubScribersModel {
   SubScribersModel.fromMap(Map<String, dynamic> map) {
     if (map["subscribers"] != null) {
       subscribers = <Subscriber>[];
+      final List ids = [];
+      (map["subscribers"] as List).forEach((element) {
+        element["id"] != null ? ids.add(element["id"]) : null;
+      });
+      isMymatch = ids.contains(Utils.user.user?.id) ? true : false;
       (map["subscribers"] as List).forEach((s) {
         subscribers?.add(Subscriber.fromMap(s));
       });

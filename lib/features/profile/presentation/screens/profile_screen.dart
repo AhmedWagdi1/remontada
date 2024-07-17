@@ -185,10 +185,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SvgPicture.asset(
-                                "wallet".svg(),
-                                color: context.background,
-                              ),
+                              Icon(Icons.edit_outlined),
+                              // SvgPicture.asset(
+                              //   "wallet".svg(),
+                              //   color: context.background,
+                              // ),
                               5.5.pw,
                               CustomText(
                                 "edit_button".tr(),
