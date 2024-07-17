@@ -80,7 +80,7 @@ class MoreCubit extends Cubit<MoreStates> {
     final res = await moreRepo.coachRequest();
 
     if (res != null) {
-      emit(CoachLoadedSuccess());
+      getProfile();
       return true;
     } else {
       emit(CoachFailed());

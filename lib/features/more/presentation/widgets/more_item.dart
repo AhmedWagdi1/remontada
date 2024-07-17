@@ -42,6 +42,7 @@ class MoreItem extends StatefulWidget {
 }
 
 class _MoreItemState extends State<MoreItem> {
+  Widget cochwidget = SizedBox();
   Pages? _page;
   pressedItem(BuildContext context) async {
     if (widget.title == LocaleKeys.profile.tr()) {
