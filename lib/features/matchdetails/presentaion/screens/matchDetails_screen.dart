@@ -134,17 +134,17 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                           ),
                           MatchDetailswidget(
                             title: LocaleKeys.match_time.tr(),
-                            subtitle: matchModel.start,
+                            subtitle: matchModel.start ?? "",
                             icon: "clock",
                           ),
                           MatchDetailswidget(
                             title: LocaleKeys.match_long.tr(),
-                            subtitle: "ساعة ونص",
+                            subtitle: matchModel.duration ?? "",
                             icon: "time",
                           ),
                           MatchDetailswidget(
                             title: LocaleKeys.price.tr(),
-                            subtitle: matchModel.price,
+                            subtitle: matchModel.price ?? "",
                             icon: "wallet",
                           ),
                         ]),

@@ -23,7 +23,21 @@ class ContactScreen extends StatefulWidget {
 
 class _ContactScreenState extends State<ContactScreen> {
   ContactRequest request = ContactRequest();
+  TextEditingController name = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController phone = TextEditingController();
+  TextEditingController message = TextEditingController();
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    name.dispose();
+    email.dispose();
+    phone.dispose();
+    message.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,6 +84,7 @@ class _ContactScreenState extends State<ContactScreen> {
               60.0.ph,
 
               TextFormFieldWidget(
+                controller: name,
                 validator: Utils.valid.defaultValidation,
                 onSaved: (value) => request.name = value,
                 prefixIcon: Assets.icons.name,
@@ -93,6 +108,7 @@ class _ContactScreenState extends State<ContactScreen> {
               ),
               15.0.ph,
               TextFormFieldWidget(
+                controller: email,
                 validator: Utils.valid.emailValidation,
                 onSaved: (value) => request.email = value,
                 prefixIcon: Assets.icons.email,
@@ -116,6 +132,7 @@ class _ContactScreenState extends State<ContactScreen> {
               ),
               15.0.ph,
               TextFormFieldWidget(
+                controller: phone,
                 validator: Utils.valid.phoneValidation,
                 onSaved: (value) => request.phone = value,
                 prefixIcon: Assets.icons.calling,
@@ -139,7 +156,15 @@ class _ContactScreenState extends State<ContactScreen> {
               ),
               15.ph,
               TextFormFieldWidget(
-                validator: Utils.valid.defaultValidation,
+                controller: message,
+                validator: (value) {
+                  if (value!.trim().isEmpty) {
+                    return "هذا الحقل مطلوب";
+                  } else if (value.trim().length <= 10) {
+                    return "يجب ان يكون الرسالة اكثر من 10 حروف";
+                  }
+                  return null;
+                },
                 onSaved: (value) => request.message = value,
                 maxLines: 10,
 
@@ -154,10 +179,14 @@ class _ContactScreenState extends State<ContactScreen> {
               ),
               60.7.ph,
               ButtonWidget(
-                onTap: () {
+                onTap: () async {
                   if (formkey.currentState?.validate() ?? false) {
                     formkey.currentState?.save();
-                    widget.contact!(request);
+                    await widget.contact!(request);
+                    name.clear();
+                    email.clear();
+                    phone.clear();
+                    message.clear();
                   }
                 },
                 height: 65,

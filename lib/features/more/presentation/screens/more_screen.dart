@@ -38,7 +38,7 @@ class MoreScreen extends StatelessWidget {
             //     ),
             //   ),
             body: LoadingAndError(
-              isLoading: state is ProfileLoad || state is CoachLoading,
+              isLoading: (state is ProfileLoad || state is CoachLoading),
               isError: state is ProfileFailed,
               child: Stack(
                 alignment: Alignment.center,

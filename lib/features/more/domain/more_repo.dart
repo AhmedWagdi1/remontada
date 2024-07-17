@@ -59,6 +59,7 @@ class MoreRepo {
 
   contactUs(ContactRequest request) async {
     final ApiResponse response = await dioService.postData(
+      loading: true,
       body: request.toMap(),
       url: MoreEndPoints.contact_us,
       isForm: true,

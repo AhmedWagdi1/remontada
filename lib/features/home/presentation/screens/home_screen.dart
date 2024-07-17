@@ -111,9 +111,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               borderRadius: BorderRadius.circular(18),
                               child: GestureDetector(
                                 onTap: () {
-                                  Navigator.pushNamed(context, Routes.webPage,
-                                      arguments:
-                                          homeModel.slider?[index].link ?? "");
+                                  if (homeModel.slider?[index].link == "")
+                                    Navigator.pushNamed(context, Routes.webPage,
+                                        arguments:
+                                            homeModel.slider?[index].link ??
+                                                "");
                                 },
                                 child: NetworkImagesWidgets(
                                   homeModel.slider?[index].image ?? "",

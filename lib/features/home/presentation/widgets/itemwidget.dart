@@ -10,6 +10,7 @@ import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/features/home/cubit/home_cubit.dart';
 import 'package:remontada/features/matchdetails/domain/repositories/match_details_repo.dart';
 import 'package:remontada/features/matchdetails/presentaion/screens/matchDetails_screen.dart';
+import 'package:remontada/features/my_matches/cubit/myMatches_cubit.dart';
 import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 
@@ -22,10 +23,12 @@ class ItemWidget extends StatefulWidget {
     this.ismymatch = false,
     this.matchModel,
     this.cubit,
+    this.cubitt,
   });
   final MatchModel? matchModel;
   final bool? ismymatch;
   final HomeCubit? cubit;
+  final MyMatchesCubit? cubitt;
 
   @override
   State<ItemWidget> createState() => _ItemWidgetState();
@@ -259,12 +262,12 @@ class _ItemWidgetState extends State<ItemWidget> {
                           context,
                           Routes.matchDetails,
                           arguments: MatchDetailsArgs(
-                            
                             id: widget.matchModel?.id ?? 1,
                             isMymatch: widget.ismymatch,
                           ),
                         );
-                        await widget.cubit
+                    //  widget.ismymatch ?? false ? await widget.cubitt?.getMymatches() :  
+                    await widget.cubit
                             ?.getHomeData(playgrounds: [], data: []);
                       },
                       icon: SvgPicture.asset(
