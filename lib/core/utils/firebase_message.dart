@@ -158,25 +158,27 @@ class FBMessging {
 
     ///If the application has been opened from a terminated state via a [RemoteMessage] (containing a [Notification]), it will be returned, otherwise it will be null.
 
-    messaging.getInitialMessage().then((message) {
-      // print('getInitialMessage');
+    messaging.getInitialMessage().then(
+      (message) {
+        // print('getInitialMessage');
 
-      ///5
-      log('getInitialMessage no 55');
-      log(message.toString());
-      print(message?.data.toString());
-      if (message != null) {
-        NotificationModel notification =
-            NotificationModel.fromMap(message.data);
-        // handleNotification(
-        //   notification,
-        //   appIsopened: false,
-        // );
+        ///5
         log('getInitialMessage no 55');
         log(message.toString());
-        log(message.data.toString());
-      }
-    });
+        print(message?.data.toString());
+        if (message != null) {
+          NotificationModel notification =
+              NotificationModel.fromMap(message.data);
+          // handleNotification(
+          //   notification,
+          //   appIsopened: false,
+          // );
+          log('getInitialMessage no 55');
+          log(message.toString());
+          log(message.data.toString());
+        }
+      },
+    );
     await getToken();
   }
 
