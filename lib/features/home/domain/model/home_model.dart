@@ -15,6 +15,7 @@ class MatchModel {
   String? lng;
   String? constSub;
   String? actualSub;
+  String? duration;
   bool? flag;
   // bool? validSub;
   MatchModel({
@@ -30,6 +31,7 @@ class MatchModel {
     this.constSub,
     this.actualSub,
     this.flag,
+    this.duration,
     // this.validSub,
   });
 
@@ -56,6 +58,9 @@ class MatchModel {
       lat: map['lat'] != null ? map['lat'] as String : null,
       lng: map['lng'] != null ? map['lng'] as String : null,
       flag: map['flagged'] != null ? map['flagged'] as bool : null,
+      duration: map['durations_text'] != null
+          ? map['durations_text'] as String
+          : null,
     );
   }
 

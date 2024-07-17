@@ -106,6 +106,7 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
             child: ListView.builder(
               itemCount: myMatches.matches?.length ?? 0,
               itemBuilder: (context, index) => ItemWidget(
+                
                 matchModel: myMatches.matches?[index],
                 ismymatch: true,
               ),

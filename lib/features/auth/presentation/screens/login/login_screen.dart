@@ -233,6 +233,24 @@ class _LoginScreenState extends State<LoginScreen> {
                                       // weight: FontWeight.w600,
                                     ),
                                   ),
+                                  15.ph,
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        Routes.LayoutScreen,
+                                      );
+                                    },
+                                    child: CustomText(
+                                      "تخطي",
+                                      style: TextStyle(
+                                        color: LightThemeColors.secondaryText,
+                                      ).s16.medium,
+
+                                      // fontSize: 16.sp,
+                                      // weight: FontWeight.w600,
+                                    ),
+                                  ),
                                   100.ph,
                                 ],
                               ),

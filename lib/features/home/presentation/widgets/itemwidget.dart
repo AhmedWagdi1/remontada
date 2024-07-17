@@ -4,12 +4,15 @@ import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/resources/gen/assets.gen.dart';
+import 'package:remontada/core/services/alerts.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/Locator.dart';
 import 'package:remontada/core/utils/extentions.dart';
+import 'package:remontada/core/utils/utils.dart';
 import 'package:remontada/features/home/cubit/home_cubit.dart';
 import 'package:remontada/features/matchdetails/domain/repositories/match_details_repo.dart';
 import 'package:remontada/features/matchdetails/presentaion/screens/matchDetails_screen.dart';
+import 'package:remontada/features/my_matches/cubit/myMatches_cubit.dart';
 import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 
@@ -22,10 +25,12 @@ class ItemWidget extends StatefulWidget {
     this.ismymatch = false,
     this.matchModel,
     this.cubit,
+    this.cubitt,
   });
   final MatchModel? matchModel;
   final bool? ismymatch;
   final HomeCubit? cubit;
+  final MyMatchesCubit? cubitt;
 
   @override
   State<ItemWidget> createState() => _ItemWidgetState();
@@ -194,11 +199,52 @@ class _ItemWidgetState extends State<ItemWidget> {
                             widget.matchModel?.id.toString() ?? "");
                         if (res != null)
                           this.subscribers = SubScribersModel.fromMap(res);
-                        showPlayersheet(
-                          matchmodel: widget.matchModel,
-                          context,
-                          subscribers: this.subscribers,
-                        );
+                        if (Utils.token == "") {
+                          Alerts.bottomSheet(context,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 25),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: ButtonWidget(
+                                        onTap: () => Navigator.pushNamed(
+                                          context,
+                                          Routes.LoginScreen,
+                                        ),
+                                        child: CustomText(
+                                          weight: FontWeight.w600,
+                                          fontSize: 16,
+                                          "تسجيل الدخول",
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    15.pw,
+                                    Expanded(
+                                      child: ButtonWidget(
+                                        onTap: () => Navigator.pushNamed(
+                                          context,
+                                          Routes.RegisterScreen,
+                                        ),
+                                        child: CustomText(
+                                          weight: FontWeight.w600,
+                                          fontSize: 16,
+                                          " انشاء حساب",
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ));
+                        } else {
+                          showPlayersheet(
+                            matchmodel: widget.matchModel,
+                            context,
+                            subscribers: this.subscribers,
+                          );
+                        }
                       },
                       radius: 14,
                       width: 186,
@@ -259,11 +305,11 @@ class _ItemWidgetState extends State<ItemWidget> {
                           context,
                           Routes.matchDetails,
                           arguments: MatchDetailsArgs(
-                            
                             id: widget.matchModel?.id ?? 1,
                             isMymatch: widget.ismymatch,
                           ),
                         );
+                        //  widget.ismymatch ?? false ? await widget.cubitt?.getMymatches() :
                         await widget.cubit
                             ?.getHomeData(playgrounds: [], data: []);
                       },
