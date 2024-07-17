@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -28,15 +25,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -65,4 +56,32 @@ class DefaultFirebaseOptions {
     storageBucket: 'remon-b6ffa.appspot.com',
     iosBundleId: 'com.masader.remontada',
   );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCb5g3nZgkryKsZ38vBJWSs11ygnvgQn-U',
+    appId: '1:519296806462:web:e9af69d2a886a3f6e16b6f',
+    messagingSenderId: '519296806462',
+    projectId: 'remon-b6ffa',
+    authDomain: 'remon-b6ffa.firebaseapp.com',
+    storageBucket: 'remon-b6ffa.appspot.com',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyDblrYdaFFe2rQ4Sa_Y1iJDS_ae2abn9wk',
+    appId: '1:519296806462:ios:877505d14877e5c1e16b6f',
+    messagingSenderId: '519296806462',
+    projectId: 'remon-b6ffa',
+    storageBucket: 'remon-b6ffa.appspot.com',
+    iosBundleId: 'com.example.remontada',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyCb5g3nZgkryKsZ38vBJWSs11ygnvgQn-U',
+    appId: '1:519296806462:web:144c3874da9e3c84e16b6f',
+    messagingSenderId: '519296806462',
+    projectId: 'remon-b6ffa',
+    authDomain: 'remon-b6ffa.firebaseapp.com',
+    storageBucket: 'remon-b6ffa.appspot.com',
+  );
+
 }
