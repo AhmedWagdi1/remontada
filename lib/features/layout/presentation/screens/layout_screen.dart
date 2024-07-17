@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:remontada/core/Router/Router.dart';
+import 'package:remontada/core/extensions/all_extensions.dart';
+import 'package:remontada/core/utils/extentions.dart';
+import 'package:remontada/core/utils/utils.dart';
 import 'package:remontada/features/home/cubit/home_cubit.dart';
 import 'package:remontada/features/more/presentation/screens/more_screen.dart';
 import 'package:remontada/features/my_matches/presentation/screens/mymatches_screen.dart';
 import 'package:remontada/features/notifications/presentation/screens/notification_Screen.dart';
+import 'package:remontada/shared/widgets/button_widget.dart';
+import 'package:remontada/shared/widgets/customtext.dart';
 
+import '../../../../core/resources/gen/assets.gen.dart';
 import '../../../home/presentation/screens/home_screen.dart';
 import '../../cubit/layout_cubit.dart';
 import '../../cubit/layout_states.dart';
@@ -22,8 +30,6 @@ class LayoutScreen extends StatefulWidget {
 class _LayoutScreenState extends State<LayoutScreen>
     with SingleTickerProviderStateMixin {
   @override
- 
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -42,9 +48,162 @@ class _LayoutScreenState extends State<LayoutScreen>
                       HomeCubit()..getHomeData(playgrounds: [], data: []),
                   child: HomeScreen(),
                 ),
-                MyMatchesScreen(),
-                NotificationScreen(),
-                MoreScreen(),
+                Utils.token == ""
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                Assets.icons.logo,
+                                // width: 100,
+                                // height: 70,
+                                color: context.primaryColor,
+                              ),
+                              20.ph,
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: ButtonWidget(
+                                      onTap: () => Navigator.pushNamed(
+                                        context,
+                                        Routes.LoginScreen,
+                                      ),
+                                      child: CustomText(
+                                        weight: FontWeight.w600,
+                                        fontSize: 16,
+                                        "تسجيل الدخول",
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  15.pw,
+                                  Expanded(
+                                    child: ButtonWidget(
+                                      onTap: () => Navigator.pushNamed(
+                                        context,
+                                        Routes.RegisterScreen,
+                                      ),
+                                      child: CustomText(
+                                        weight: FontWeight.w600,
+                                        fontSize: 16,
+                                        " انشاء حساب",
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    : MyMatchesScreen(),
+                Utils.token == ""
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                Assets.icons.logo,
+                                // width: 100,
+                                // height: 70,
+                                color: context.primaryColor,
+                              ),
+                              20.ph,
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: ButtonWidget(
+                                      onTap: () => Navigator.pushNamed(
+                                        context,
+                                        Routes.LoginScreen,
+                                      ),
+                                      child: CustomText(
+                                        weight: FontWeight.w600,
+                                        fontSize: 16,
+                                        "تسجيل الدخول",
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  15.pw,
+                                  Expanded(
+                                    child: ButtonWidget(
+                                      onTap: () => Navigator.pushNamed(
+                                        context,
+                                        Routes.RegisterScreen,
+                                      ),
+                                      child: CustomText(
+                                        weight: FontWeight.w600,
+                                        fontSize: 16,
+                                        " انشاء حساب",
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    : NotificationScreen(),
+                Utils.token == ""
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                Assets.icons.logo,
+                                // width: 100,
+                                // height: 70,
+                                color: context.primaryColor,
+                              ),
+                              20.ph,
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: ButtonWidget(
+                                      onTap: () => Navigator.pushNamed(
+                                        context,
+                                        Routes.LoginScreen,
+                                      ),
+                                      child: CustomText(
+                                        weight: FontWeight.w600,
+                                        fontSize: 16,
+                                        "تسجيل الدخول",
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  15.pw,
+                                  Expanded(
+                                    child: ButtonWidget(
+                                      onTap: () => Navigator.pushNamed(
+                                        context,
+                                        Routes.RegisterScreen,
+                                      ),
+                                      child: CustomText(
+                                        weight: FontWeight.w600,
+                                        fontSize: 16,
+                                        " انشاء حساب",
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    : MoreScreen(),
               ],
             ),
             bottomNavigationBar: CustomBottomNavBar(

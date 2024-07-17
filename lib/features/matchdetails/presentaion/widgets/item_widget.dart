@@ -4,7 +4,11 @@ import 'package:remontada/core/Router/Router.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
+import 'package:remontada/core/utils/utils.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
+
+import '../../../../core/services/alerts.dart';
+import '../../../../shared/widgets/button_widget.dart';
 
 class MatchDetailswidget extends StatelessWidget {
   const MatchDetailswidget({
@@ -109,13 +113,54 @@ class MatchDetailswidget extends StatelessWidget {
                       // weight: FontWeight.w500,
                     ),
                   ),
-                ).onTap(
-                  () => Navigator.pushNamed(
-                    context,
-                    Routes.MapScreen,
-                    arguments: PositionArgs(lan, lat),
-                  ),
-                ),
+                ).onTap(() {
+                  if (Utils.token != "") {
+                    Navigator.pushNamed(
+                      context,
+                      Routes.MapScreen,
+                      arguments: PositionArgs(lan, lat),
+                    );
+                  } else {
+                    Alerts.bottomSheet(context,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 25),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: ButtonWidget(
+                                  onTap: () => Navigator.pushNamed(
+                                    context,
+                                    Routes.LoginScreen,
+                                  ),
+                                  child: CustomText(
+                                    weight: FontWeight.w600,
+                                    fontSize: 16,
+                                    "تسجيل الدخول",
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              15.pw,
+                              Expanded(
+                                child: ButtonWidget(
+                                  onTap: () => Navigator.pushNamed(
+                                    context,
+                                    Routes.RegisterScreen,
+                                  ),
+                                  child: CustomText(
+                                    weight: FontWeight.w600,
+                                    fontSize: 16,
+                                    " انشاء حساب",
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ));
+                  }
+                }),
               ],
             )
         ],

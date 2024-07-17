@@ -8,6 +8,7 @@ import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/services/alerts.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
+import 'package:remontada/core/utils/utils.dart';
 import 'package:remontada/features/home/domain/model/home_model.dart';
 import 'package:remontada/features/matchdetails/cubit/matchdetails_cubit.dart';
 import 'package:remontada/features/matchdetails/cubit/matchdetails_states.dart';
@@ -204,10 +205,54 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                     if (subscribers != null) {
                                       subScribersModel = subscribers;
                                     }
-                                    showPlayersheet(
+                                    if (Utils.token != "") {
+                                      showPlayersheet(
                                         matchmodel: matchModel,
                                         context,
-                                        subscribers: subScribersModel);
+                                        subscribers: subScribersModel,
+                                      );
+                                    } else {
+                                      Alerts.bottomSheet(context,
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 15, vertical: 25),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: ButtonWidget(
+                                                    onTap: () =>
+                                                        Navigator.pushNamed(
+                                                      context,
+                                                      Routes.LoginScreen,
+                                                    ),
+                                                    child: CustomText(
+                                                      weight: FontWeight.w600,
+                                                      fontSize: 16,
+                                                      "تسجيل الدخول",
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                                15.pw,
+                                                Expanded(
+                                                  child: ButtonWidget(
+                                                    onTap: () =>
+                                                        Navigator.pushNamed(
+                                                      context,
+                                                      Routes.RegisterScreen,
+                                                    ),
+                                                    child: CustomText(
+                                                      weight: FontWeight.w600,
+                                                      fontSize: 16,
+                                                      " انشاء حساب",
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ));
+                                    }
                                   },
                                   radius: 15,
                                   height: 35,
@@ -264,7 +309,7 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                         ),
                         28.ph,
                         subScribersModel.isMymatch != null
-                            ? (matchModel.flag == false)
+                            ? (matchModel.flag == false && Utils.token != "")
                                 ? ButtonWidget(
                                     buttonColor:
                                         subScribersModel.isMymatch ?? false
