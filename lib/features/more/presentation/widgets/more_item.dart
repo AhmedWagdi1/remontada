@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -87,7 +89,9 @@ class _MoreItemState extends State<MoreItem> {
     } else if (widget.title == LocaleKeys.share.tr()) {
       final box = context.findRenderObject() as RenderBox?;
       await Share.share(
-        "https://play.google.com/store/apps/details?id=com.remontada",
+        Platform.isIOS
+            ? "https://apps.apple.com/app/remontada-%D8%B1%D9%8A%D9%85%D9%88%D9%86%D8%AA%D8%A7%D8%AF%D8%A7/id6550914902"
+            : "https://play.google.com/store/apps/details?id=com.masader.remontada",
         sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
       );
     }
