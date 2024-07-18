@@ -170,30 +170,78 @@ class _MoreItemState extends State<MoreItem> {
                                 // fontSize: 14,
                                 // weight: FontWeight.w600,
                               ),
-                              if ((state is CoachLoadedSuccess ||
-                                      Utils.user.user?.coaching == "pending") &&
-                                  widget.title ==
-                                      LocaleKeys.captain_request.tr())
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 3.78,
-                                      height: 4.06,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: LightThemeColors.red,
-                                      ),
-                                    ),
-                                    3.pw,
-                                    CustomText(
-                                      "request_sent_waiting".tr(),
-                                      color:
-                                          LightThemeColors.red.withOpacity(.9),
-                                      weight: FontWeight.w500,
-                                      fontSize: FontSize.s12,
-                                    ),
-                                  ],
-                                ),
+                              Utils.user.user?.coaching == "pending" &&
+                                      widget.title ==
+                                          LocaleKeys.captain_request.tr()
+                                  ? Row(
+                                      children: [
+                                        Container(
+                                          width: 3.78,
+                                          height: 4.06,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: LightThemeColors.red,
+                                          ),
+                                        ),
+                                        3.pw,
+                                        CustomText(
+                                          "request_sent_waiting".tr(),
+                                          color: LightThemeColors.red
+                                              .withOpacity(.9),
+                                          weight: FontWeight.w500,
+                                          fontSize: FontSize.s12,
+                                        ),
+                                      ],
+                                    )
+                                  : Utils.user.user?.coaching == "accepted" &&
+                                          widget.title ==
+                                              LocaleKeys.captain_request.tr()
+                                      ? Row(
+                                          children: [
+                                            Container(
+                                              width: 3.78,
+                                              height: 4.06,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: LightThemeColors.red,
+                                              ),
+                                            ),
+                                            3.pw,
+                                            CustomText(
+                                              "لقد اصبحت كابتن",
+                                              color: LightThemeColors.red
+                                                  .withOpacity(.9),
+                                              weight: FontWeight.w500,
+                                              fontSize: FontSize.s12,
+                                            ),
+                                          ],
+                                        )
+                                      : Utils.user.user?.coaching ==
+                                                  "refused" &&
+                                              widget.title ==
+                                                  LocaleKeys.captain_request
+                                                      .tr()
+                                          ? Row(
+                                              children: [
+                                                Container(
+                                                  width: 3.78,
+                                                  height: 4.06,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: LightThemeColors.red,
+                                                  ),
+                                                ),
+                                                3.pw,
+                                                CustomText(
+                                                  "لقد تم رفض طلبك ككابتن",
+                                                  color: LightThemeColors.red
+                                                      .withOpacity(.9),
+                                                  weight: FontWeight.w500,
+                                                  fontSize: FontSize.s12,
+                                                ),
+                                              ],
+                                            )
+                                          : SizedBox()
                             ],
                           ),
                         ],

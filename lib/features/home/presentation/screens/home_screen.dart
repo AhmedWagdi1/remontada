@@ -111,7 +111,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               borderRadius: BorderRadius.circular(18),
                               child: GestureDetector(
                                 onTap: () {
-                                  if (homeModel.slider?[index].link == "")
+                                  if (homeModel.slider?[index].link != "" &&
+                                      homeModel.slider?[index].link != null)
                                     Navigator.pushNamed(context, Routes.webPage,
                                         arguments:
                                             homeModel.slider?[index].link ??
