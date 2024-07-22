@@ -117,7 +117,7 @@ class DioService {
     Map<String, dynamic>? query,
     bool loading = false,
   }) async {
-    _mydio.options.headers["Authorization"] = 'Bearer ${Utils.user.token}';
+    _mydio.options.headers["Authorization"] = 'Bearer ${Utils.token}';
 
     try {
       if (loading) {

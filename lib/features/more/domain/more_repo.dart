@@ -21,6 +21,18 @@ class MoreRepo {
     }
   }
 
+  deleteAccount() async {
+    final response = await dioService.deleteData(
+      url: "/delete_profile",
+      loading: true,
+    );
+    if (response.isError) {
+      return null;
+    } else {
+      return true;
+    }
+  }
+
   getAboutpage() async {
     final response = await dioService.getData(
       url: MoreEndPoints.about,

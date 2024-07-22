@@ -146,16 +146,7 @@ class _MoreItemState extends State<MoreItem> {
                             width: 21,
                             height: 21,
                           ),
-                          // SvgPicture.asset(
-                          //   widget.icon ?? "location",
-                          //   width: 25.w,
-                          //   height: 25.h,
-                          //   color: widget.title == "تسجيل الخروج"
-                          //       ? LightThemeColors.red
-                          //       : LightThemeColors.black,
-                          // ),
                           15.pw,
-
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
