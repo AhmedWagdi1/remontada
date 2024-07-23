@@ -42,6 +42,21 @@ class MoreCubit extends Cubit<MoreStates> {
     }
   }
 
+  deleteAccount() async {
+    emit(LogOutLoading());
+    final response = await moreRepo.deleteAccount();
+
+    if (response != null) {
+      await Utils.dataManager.deleteUserData();
+
+      emit(LogOutSuccess());
+      return true;
+    } else {
+      emit(LogOutFailed());
+      return null;
+    }
+  }
+
   getProfile() async {
     emit(ProfileLoad());
     final res = await editRepo.getProfile();

@@ -14,6 +14,8 @@ import 'package:remontada/features/more/presentation/widgets/more_item.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/shared/widgets/loadinganderror.dart';
 
+import 'package:flutter_svg/svg.dart';
+
 class MoreScreen extends StatelessWidget {
   const MoreScreen({super.key});
 
@@ -85,8 +87,8 @@ class MoreScreen extends StatelessWidget {
                             // weight: FontWeight.w500,
                           ),
                           26.ph,
-                          Column(
-                            children: List.generate(
+                          Column(children: [
+                            ...List.generate(
                               titles.length,
                               (index) => MoreItem(
                                 cubit: cubit,
@@ -105,7 +107,78 @@ class MoreScreen extends StatelessWidget {
                                 title: titles[index],
                               ),
                             ),
-                          ),
+                            GestureDetector(
+                              onTap: () async {
+                                final res = await cubit.deleteAccount();
+                                if (res == true) {
+                                  Navigator.pushNamedAndRemoveUntil(context,
+                                      Routes.LoginScreen, (route) => false);
+                                  Alerts.snack(
+                                    text: "تم تسجيل الخروج بنجاح",
+                                    state: SnackState.success,
+                                  );
+                                }
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 21,
+                                  // vertical: 10.h,
+                                ),
+                                // width: 341.w,
+                                height: 54,
+                                decoration: BoxDecoration(
+                                  color: context.background,
+                                  borderRadius: BorderRadius.circular(13),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      offset: Offset.zero,
+                                      blurRadius: 30,
+                                      color: LightThemeColors.black.withOpacity(
+                                        .1,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.delete_outline,
+                                          color: LightThemeColors.red,
+                                          size: 21,
+                                        ),
+                                        15.pw,
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            CustomText(
+                                              style: TextStyle(
+                                                color: LightThemeColors.red,
+                                              ).s14.bold,
+                                              "حذف الحساب",
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    IconButton(
+                                      onPressed: null,
+                                      icon: SvgPicture.asset(
+                                        "forowrdButton".svg(),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ]),
                           SizedBox(
                             height: 129.29,
                           ),
