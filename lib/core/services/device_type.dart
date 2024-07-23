@@ -14,10 +14,12 @@ class Device {
       if (Platform.isAndroid) {
         var androidInfo = await deviceInfoPlugin.androidInfo;
         Utils.deviceType = 'Android Device: ${androidInfo.model}';
+        Utils.uuid = androidInfo.id;
         log(Utils.deviceType ?? "ashraf");
       } else if (Platform.isIOS) {
         var iosInfo = await deviceInfoPlugin.iosInfo;
         Utils.deviceType = 'iOS Device: ${iosInfo.utsname.machine}';
+        Utils.uuid = iosInfo.identifierForVendor ?? "";
       } else {
         Utils.deviceType = 'Unknown Device';
       }

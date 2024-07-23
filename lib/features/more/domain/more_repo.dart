@@ -1,5 +1,5 @@
-import 'package:remontada/core/config/key.dart';
 import 'package:remontada/core/data_source/dio_helper.dart';
+import 'package:remontada/core/utils/utils.dart';
 import 'package:remontada/features/more/domain/contact_request.dart';
 import 'package:remontada/features/more/domain/endpoints.dart';
 
@@ -10,7 +10,7 @@ class MoreRepo {
   logout() async {
     final response = await dioService.postData(
       isForm: true,
-      body: {"uuid": ConstKeys.uUid},
+      body: {"uuid": Utils.uuid},
       url: MoreEndPoints.logOut,
       loading: true,
     );

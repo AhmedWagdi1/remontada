@@ -15,6 +15,7 @@ class Utils {
   static String FCMToken = '';
   static String userType = "";
   static String deviceType = "";
+  static String uuid = "";
 
   static User user = User();
   static bool fromNotification = false;

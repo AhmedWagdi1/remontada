@@ -29,8 +29,7 @@ Future<void> main() async {
   FirebaseMessaging.onBackgroundMessage(
     FBMessging.firebaseMessagingBackgroundHandler,
   );
-  // await FBMessging.initUniLink();
-  // bloc observer
+
   Bloc.observer = MyBlocObserver();
   // dotenv.load();
   await setupLocator();
@@ -39,9 +38,7 @@ Future<void> main() async {
   // Utils.getToken();
   await Utils.dataManager.initHive();
   await Device.getDeviceType();
-  // await Utils.dataManager
-  //     .saveDeviceToken(Utils.deviceToken ?? Uuid().v4().hashCode.toString());
-  // await Utils.saveDeviceToken();
+
   runApp(
     EasyLocalization(
       startLocale: const Locale('ar', 'EG'),
