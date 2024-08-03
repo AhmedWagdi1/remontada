@@ -21,6 +21,10 @@ final class CoachFailed extends MoreStates {}
 
 final class ProfileLoad extends MoreStates {}
 
-final class ProfileSuccess extends MoreStates {}
+final class ProfileSuccess extends MoreStates {
+  final String? coaching;
+
+  ProfileSuccess({this.coaching});
+}
 
 final class ProfileFailed extends MoreStates {}

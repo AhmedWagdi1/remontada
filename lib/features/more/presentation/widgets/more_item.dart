@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,7 +10,6 @@ import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/core/utils/launcher.dart';
-import 'package:remontada/core/utils/utils.dart';
 import 'package:remontada/features/more/cubit/more_cubit.dart';
 import 'package:remontada/features/more/cubit/more_states.dart';
 import 'package:remontada/features/more/domain/contact_request.dart';
@@ -32,19 +29,21 @@ class MoreItem extends StatefulWidget {
     this.logOut,
     this.notificationActive,
     this.cubit,
+    this.cochtitle,
   });
   final MoreCubit? cubit;
   final String? icon;
   final String? title;
   final VoidCallback? logOut;
   final bool? notificationActive;
+  final String? cochtitle;
 
   @override
   State<MoreItem> createState() => _MoreItemState();
 }
 
 class _MoreItemState extends State<MoreItem> {
-  Widget cochwidget = SizedBox();
+  // ValueNotifier<String> coach = ValueNotifier<String>(widget.cochtitle ?? "");
   Pages? _page;
   pressedItem(BuildContext context) async {
     if (widget.title == LocaleKeys.profile.tr()) {
@@ -163,78 +162,29 @@ class _MoreItemState extends State<MoreItem> {
                                 // fontSize: 14,
                                 // weight: FontWeight.w600,
                               ),
-                              Utils.user.user?.coaching == "pending" &&
-                                      widget.title ==
-                                          LocaleKeys.captain_request.tr()
-                                  ? Row(
-                                      children: [
-                                        Container(
-                                          width: 3.78,
-                                          height: 4.06,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: LightThemeColors.red,
-                                          ),
+                              if (widget.title ==
+                                  LocaleKeys.captain_request.tr())
+                                Row(
+                                  children: [
+                                    if (widget.cochtitle != "")
+                                      Container(
+                                        width: 3.78,
+                                        height: 4.06,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: LightThemeColors.red,
                                         ),
-                                        3.pw,
-                                        CustomText(
-                                          "request_sent_waiting".tr(),
-                                          color: LightThemeColors.red
-                                              .withOpacity(.9),
-                                          weight: FontWeight.w500,
-                                          fontSize: FontSize.s12,
-                                        ),
-                                      ],
-                                    )
-                                  : Utils.user.user?.coaching == "accepted" &&
-                                          widget.title ==
-                                              LocaleKeys.captain_request.tr()
-                                      ? Row(
-                                          children: [
-                                            Container(
-                                              width: 3.78,
-                                              height: 4.06,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: LightThemeColors.red,
-                                              ),
-                                            ),
-                                            3.pw,
-                                            CustomText(
-                                              "لقد اصبحت كابتن",
-                                              color: LightThemeColors.red
-                                                  .withOpacity(.9),
-                                              weight: FontWeight.w500,
-                                              fontSize: FontSize.s12,
-                                            ),
-                                          ],
-                                        )
-                                      : Utils.user.user?.coaching ==
-                                                  "refused" &&
-                                              widget.title ==
-                                                  LocaleKeys.captain_request
-                                                      .tr()
-                                          ? Row(
-                                              children: [
-                                                Container(
-                                                  width: 3.78,
-                                                  height: 4.06,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: LightThemeColors.red,
-                                                  ),
-                                                ),
-                                                3.pw,
-                                                CustomText(
-                                                  "لقد تم رفض طلبك ككابتن",
-                                                  color: LightThemeColors.red
-                                                      .withOpacity(.9),
-                                                  weight: FontWeight.w500,
-                                                  fontSize: FontSize.s12,
-                                                ),
-                                              ],
-                                            )
-                                          : SizedBox()
+                                      ),
+                                    3.pw,
+                                    CustomText(
+                                      widget.cochtitle ?? "",
+                                      color:
+                                          LightThemeColors.red.withOpacity(.9),
+                                      weight: FontWeight.w500,
+                                      fontSize: FontSize.s12,
+                                    ),
+                                  ],
+                                )
                             ],
                           ),
                         ],

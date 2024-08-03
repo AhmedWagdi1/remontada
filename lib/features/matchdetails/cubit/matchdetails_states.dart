@@ -7,18 +7,20 @@ class MatchDetailsInitial extends MatchDetailsState {}
 class MatchDetailsLoading extends MatchDetailsState {}
 
 class MatchDetailsLoaded extends MatchDetailsState {
-  MatchModel matchDetails;
-  MatchDetailsLoaded(this.matchDetails);
+  final MatchModel matchDetails;
+  final SubScribersModel subScribers;
+  MatchDetailsLoaded(this.matchDetails, this.subScribers);
+
+  // SubScribersLoaded(this.subScribers);
 }
 
 class MatchDetailsFailed extends MatchDetailsState {}
 
 class SubScribersLoading extends MatchDetailsState {}
 
-class SubScribersLoaded extends MatchDetailsState {
-  SubScribersModel subScribers;
-  SubScribersLoaded(this.subScribers);
-}
+// class SubScribersLoaded extends MatchDetailsState {
+
+// }
 
 class SubScribersFailed extends MatchDetailsState {}
 

@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/Router/Router.dart';
 import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
@@ -14,10 +15,15 @@ import 'package:remontada/features/more/presentation/widgets/more_item.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/shared/widgets/loadinganderror.dart';
 
-import 'package:flutter_svg/svg.dart';
-
-class MoreScreen extends StatelessWidget {
+class MoreScreen extends StatefulWidget {
   const MoreScreen({super.key});
+
+  @override
+  State<MoreScreen> createState() => _MoreScreenState();
+}
+
+class _MoreScreenState extends State<MoreScreen> {
+  String coaching = "";
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +32,11 @@ class MoreScreen extends StatelessWidget {
         ..checkNotificationEnabled()
         ..getProfile(),
       child: BlocConsumer<MoreCubit, MoreStates>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is ProfileSuccess) {
+            coaching = state.coaching ?? "";
+          }
+        },
         builder: (context, state) {
           final cubit = MoreCubit.get(context);
           return Scaffold(
@@ -40,7 +50,7 @@ class MoreScreen extends StatelessWidget {
             //     ),
             //   ),
             body: LoadingAndError(
-              isLoading: (state is ProfileLoad || state is CoachLoading),
+              isLoading: (state is ProfileLoad),
               isError: state is ProfileFailed,
               child: Stack(
                 alignment: Alignment.center,
@@ -91,6 +101,7 @@ class MoreScreen extends StatelessWidget {
                             ...List.generate(
                               titles.length,
                               (index) => MoreItem(
+                                cochtitle: coaching,
                                 cubit: cubit,
                                 logOut: () async {
                                   final res = await cubit.logOut();

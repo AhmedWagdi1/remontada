@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:remontada/core/config/key.dart';
 import 'package:remontada/core/utils/utils.dart';
 import 'package:remontada/features/auth/domain/model/auth_model.dart';
 
@@ -88,18 +87,18 @@ class AuthRepository {
     required String phone,
     required String code,
   }) async {
-   
     final response = await dioService.postData(
-        url: AuthEndPoints.sendCode,
-        body: {
-          'mobile': phone,
-          'code': code,
-          "device_token": Utils.FCMToken,
-          "device_type": Utils.deviceType,
-          "uuid": Utils.uuid,
-        },
-        loading: true,
-        isForm: true);
+      url: AuthEndPoints.sendCode,
+      body: {
+        'mobile': phone,
+        'code': code,
+        "device_token": Utils.FCMToken,
+        "device_type": Utils.deviceType,
+        "uuid": "00",
+      },
+      loading: true,
+      isForm: true,
+    );
     if (response.isError == false) {
       // Alerts.snack(text: response.response?.data['message'], state: 1);
       return response.response?.data['data'];

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:remontada/core/data_source/dio_helper.dart';
@@ -62,9 +63,24 @@ class MoreCubit extends Cubit<MoreStates> {
     final res = await editRepo.getProfile();
     if (res != null) {
       Utils.user = User.fromMap(res);
-      emit(
-        ProfileSuccess(),
-      );
+      if (Utils.user.user?.coaching == "pending") {
+        emit(
+          ProfileSuccess(coaching: "request_sent_waiting".tr()),
+        );
+      } else if (Utils.user.user?.coaching == "accepted") {
+        emit(
+          ProfileSuccess(coaching: "لقد اصبحت كابتن"),
+        );
+      } else if (Utils.user.user?.coaching == "refused") {
+        emit(
+          ProfileSuccess(coaching: "لقد تم رفض طلبك ككابتن"),
+        );
+      } else {
+        emit(
+          ProfileSuccess(coaching: ""),
+        );
+      }
+
       return true;
     } else {
       emit(ProfileFailed());
@@ -91,11 +107,12 @@ class MoreCubit extends Cubit<MoreStates> {
   }
 
   requestCoach() async {
-    emit(CoachLoading());
+    // emit(CoachLoading());
     final res = await moreRepo.coachRequest();
 
     if (res != null) {
-      getProfile();
+      // getProfile();
+      emit(ProfileSuccess(coaching: "request_sent_waiting".tr()));
       return true;
     } else {
       emit(CoachFailed());
@@ -106,6 +123,9 @@ class MoreCubit extends Cubit<MoreStates> {
   contactRequest(ContactRequest request) async {
     final res = await moreRepo.contactUs(request);
     if (res != null) {
+      // emit(
+      //   ProfileSuccess(coaching: "لقد تم رفض طلبك ككابتن"),
+      // );
       return true;
     } else {
       return null;

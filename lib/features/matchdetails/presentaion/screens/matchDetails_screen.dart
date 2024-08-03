@@ -48,10 +48,15 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
       create: (context) => MatchDetailsCubit()
         ..getMatchDetails(widget.id.toString())
         ..getSubscribers(widget.id.toString()),
+      // ..getOwner(widget.id.toString()),
       child: BlocConsumer<MatchDetailsCubit, MatchDetailsState>(
         listener: (context, state) {
-          if (state is MatchDetailsLoaded) matchModel = state.matchDetails;
-          if (state is SubScribersLoaded) subScribersModel = state.subScribers;
+          if (state is MatchDetailsLoaded) {
+            matchModel = state.matchDetails;
+            subScribersModel = state.subScribers;
+          }
+          ;
+          // if (state is SubScribersLoaded) subScribersModel = state.subScribers;
         },
         builder: (context, state) {
           final cubit = MatchDetailsCubit.get(context);
@@ -311,10 +316,9 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                         subScribersModel.isMymatch != null
                             ? (matchModel.flag == false && Utils.token != "")
                                 ? ButtonWidget(
-                                    buttonColor:
-                                        subScribersModel.isMymatch ?? false
-                                            ? LightThemeColors.warningButton
-                                            : context.primaryColor,
+                                    buttonColor: cubit.isMymatch ?? false
+                                        ? LightThemeColors.warningButton
+                                        : context.primaryColor,
                                     onTap: subScribersModel.isMymatch ?? false
                                         ? () async {
                                             // widget.onreturn?.call();

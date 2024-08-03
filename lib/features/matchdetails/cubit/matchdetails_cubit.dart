@@ -11,6 +11,9 @@ import 'matchdetails_states.dart';
 class MatchDetailsCubit extends Cubit<MatchDetailsState> {
   MatchDetailsCubit() : super(MatchDetailsInitial());
   static MatchDetailsCubit get(context) => BlocProvider.of(context);
+  SubScribersModel subscribers = SubScribersModel();
+  MatchModel matchmodel = MatchModel();
+
   MatchDetailsRepo matchDetailsRepo = MatchDetailsRepo(locator<DioService>());
   MatchModel? matchModel;
   bool? isMymatch;
@@ -19,12 +22,14 @@ class MatchDetailsCubit extends Cubit<MatchDetailsState> {
     emit(MatchDetailsLoading());
     final res = await matchDetailsRepo.getMatchDetails(id);
     if (res != null) {
-      await getOwner(id);
+      // await getOwner(id);
+      matchmodel = MatchModel.fromMap(
+        res["match"],
+      );
       emit(
         MatchDetailsLoaded(
-          MatchModel.fromMap(
-            res["match"],
-          ),
+          matchmodel,
+          subscribers,
         ),
       );
 
@@ -36,28 +41,34 @@ class MatchDetailsCubit extends Cubit<MatchDetailsState> {
   }
 
   getSubscribers(String id) async {
+    // emit(SubScribersLoading());
     final res = await matchDetailsRepo.getSubscribers(id);
     if (res != null) {
-      emit(SubScribersLoaded(SubScribersModel.fromMap(res)));
+      subscribers = SubScribersModel.fromMap(res);
+      subscribers.subscribers?.forEach(
+        (element) {
+          playersId.add(element.id ?? 0);
+        },
+      );
+      isMymatch = playersId.contains(Utils.user.user?.id);
+      emit(MatchDetailsLoaded(
+        matchmodel,
+        subscribers,
+      ));
       return SubScribersModel.fromMap(res);
     } else {
       return null;
     }
   }
 
-  getOwner(id) async {
-    final res = await getSubscribers(id);
-    if (res != null) {
-      (res as SubScribersModel).subscribers?.forEach(
-        (element) {
-          playersId.add(element.id ?? 0);
-        },
-      );
-      isMymatch = playersId.contains(Utils.user.user?.id);
+  // getOwner(id) async {
+  //   final res = await getSubscribers(id);
+  //   if (res != null) {
+  //     (res as SubScribersModel)
 
-      return isMymatch;
-    }
-  }
+  //     return isMymatch;
+  //   }
+  // }
 
   subScribe(int id) async {
     final res = await matchDetailsRepo.subScribe(id);
