@@ -94,7 +94,7 @@ class AuthRepository {
         'code': code,
         "device_token": Utils.FCMToken,
         "device_type": Utils.deviceType,
-        "uuid": "00",
+        "uuid": Utils.uuid,
       },
       loading: true,
       isForm: true,

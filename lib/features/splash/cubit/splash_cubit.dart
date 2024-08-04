@@ -1,4 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:remontada/core/utils/utils.dart';
 import 'package:remontada/features/auth/domain/model/auth_model.dart';
 
@@ -73,5 +77,32 @@ class SplashCubit extends Cubit<SplashStates> {
       route = Routes.LoginScreen;
       return route;
     }
+  }
+
+  Future<Position?> getLocation() async {
+    PermissionStatus status = await Permission.location.status;
+
+    Permission.location.onDeniedCallback(() async {
+      await Permission.location.request();
+    });
+    if (status.isDenied == true) {
+      await Permission.location.request();
+    } else if (status.isGranted == true) {
+      return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+    }
+    return await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+  }
+
+  Future<void> getPostion() async {
+    Position? position = await getLocation();
+
+    Utils.lng = position?.longitude.toString() ?? "";
+    Utils.lat = position?.latitude.toString() ?? "";
+    log(Utils.lng);
+    log(Utils.lat);
   }
 }

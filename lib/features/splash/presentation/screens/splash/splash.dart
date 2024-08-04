@@ -54,12 +54,14 @@ class _SplashScreenState extends State<SplashScreen> {
                       enabled: true,
                       animationFinished: (finished) async {
                         final route = await cubit.checkLogin();
+
                         // Navigator.pushNamed(
                         //   context,
                         //   route,
                         // );
                         Navigator.pushNamedAndRemoveUntil(
                             context, route, (route) => false);
+                        await cubit.getPostion();
                       },
                       child: SvgPicture.asset(
                         "logo".svg('icons'),

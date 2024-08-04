@@ -14,7 +14,7 @@ class LocationService {
     PermissionStatus status = await Permission.location.status;
 
     if (status.isDenied) {
-      Permission.location.request();
+      await Permission.location.request();
     } else if (status.isGranted) {
       return await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,

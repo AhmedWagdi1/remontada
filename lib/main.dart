@@ -17,7 +17,6 @@ import 'core/theme/dark_theme.dart';
 import 'core/theme/light_theme.dart';
 import 'core/utils/Locator.dart';
 import 'core/utils/utils.dart';
-import 'features/layout/presentation/screens/layout_screen.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -76,11 +75,11 @@ class MyApp extends StatelessWidget {
               builder: (context, state) {
                 final cubit = GeneralCubit.get(context);
                 return MaterialApp(
-                  navigatorObservers: [
-                    MyNavigatorObserver(onPop: () {
-                      LayoutScreen.updateScreen;
-                    })
-                  ],
+                  // navigatorObservers: [
+                  //   MyNavigatorObserver(onPop: () {
+                  //     LayoutScreen.updateScreen;
+                  //   })
+                  // ],
                   title: 'Retm',
                   themeAnimationDuration: const Duration(milliseconds: 700),
                   themeAnimationCurve: Curves.easeInOutCubic,
@@ -158,14 +157,14 @@ class MyBlocObserver extends BlocObserver {
   }
 }
 
-class MyNavigatorObserver extends NavigatorObserver {
-  final Function onPop;
+// class MyNavigatorObserver extends NavigatorObserver {
+//   final Function onPop;
 
-  MyNavigatorObserver({required this.onPop});
+//   MyNavigatorObserver({required this.onPop});
 
-  @override
-  void didPop(Route route, Route? previousRoute) {
-    super.didPop(route, previousRoute);
-    onPop();
-  }
-}
+//   @override
+//   void didPop(Route route, Route? previousRoute) {
+//     super.didPop(route, previousRoute);
+//     onPop();
+//   }
+// }

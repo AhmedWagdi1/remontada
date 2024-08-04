@@ -16,6 +16,8 @@ class Utils {
   static String userType = "";
   static String deviceType = "";
   static String uuid = "";
+  static String lat = "";
+  static String lng = "";
 
   static User user = User();
   static bool fromNotification = false;

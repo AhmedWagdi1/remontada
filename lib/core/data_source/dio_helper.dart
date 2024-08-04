@@ -36,6 +36,8 @@ class DioService {
           headers: {
             "Accept": "application/json",
             'Content-Type': "application/x-www-form-urlencoded",
+            "lat": Utils.lat,
+            "lng": Utils.lng,
           },
           baseUrl: baseUrl,
           contentType: "application/x-www-form-urlencoded",
@@ -65,6 +67,8 @@ class DioService {
     bool isFile = false,
   }) async {
     _mydio.options.headers["Authorization"] = 'Bearer ${Utils.token}';
+    _mydio.options.headers["lat"] = Utils.lat;
+    _mydio.options.headers["lng"] = Utils.lng;
     if (isFile == true)
       _mydio.options.headers["Content-Type"] = 'multipart/form-data';
     print(FormData.fromMap(body ?? {}).fields);
@@ -118,7 +122,8 @@ class DioService {
     bool loading = false,
   }) async {
     _mydio.options.headers["Authorization"] = 'Bearer ${Utils.token}';
-
+    _mydio.options.headers["lat"] = Utils.lat;
+    _mydio.options.headers["lng"] = Utils.lng;
     try {
       if (loading) {
         MyLoading.show();
@@ -141,7 +146,8 @@ class DioService {
     bool loading = false,
   }) async {
     _mydio.options.headers["Authorization"] = 'Bearer ${Utils.token}';
-
+    _mydio.options.headers["lat"] = Utils.lat;
+    _mydio.options.headers["lng"] = Utils.lng;
     try {
       if (loading) {
         MyLoading.show();

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:remontada/core/data_source/dio_helper.dart';
 import 'package:remontada/core/utils/Locator.dart';
+import 'package:remontada/core/utils/firebase_message.dart';
 import 'package:remontada/features/more/cubit/more_states.dart';
 import 'package:remontada/features/more/domain/contact_request.dart';
 import 'package:remontada/features/more/domain/model/model.dart';
@@ -34,6 +35,7 @@ class MoreCubit extends Cubit<MoreStates> {
 
     if (response != null) {
       await Utils.dataManager.deleteUserData();
+      await FBMessging.revokeToken();
 
       emit(LogOutSuccess());
       return true;
@@ -112,7 +114,10 @@ class MoreCubit extends Cubit<MoreStates> {
 
     if (res != null) {
       // getProfile();
-      emit(ProfileSuccess(coaching: "request_sent_waiting".tr()));
+      if (Utils.user.user?.coaching == "") {
+        emit(ProfileSuccess(coaching: "request_sent_waiting".tr()));
+      }
+
       return true;
     } else {
       emit(CoachFailed());
