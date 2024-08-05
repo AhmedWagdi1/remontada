@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) => SplashCubit(),
+        create: (context) => SplashCubit()..getPostion(),
         child: Scaffold(
           body: BlocConsumer<SplashCubit, SplashStates>(
             listener: (context, state) {},
@@ -60,8 +60,10 @@ class _SplashScreenState extends State<SplashScreen> {
                         //   route,
                         // );
                         Navigator.pushNamedAndRemoveUntil(
-                            context, route, (route) => false);
-                        await cubit.getPostion();
+                          context,
+                          route,
+                          (route) => false,
+                        );
                       },
                       child: SvgPicture.asset(
                         "logo".svg('icons'),
