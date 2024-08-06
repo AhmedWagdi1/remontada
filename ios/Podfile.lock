@@ -3,6 +3,9 @@ PODS:
     - Flutter
   - device_info_plus (0.0.1):
     - Flutter
+  - device_uuid (0.0.1):
+    - Flutter
+    - XYUUID
   - Firebase/CoreOnly (10.28.0):
     - FirebaseCore (= 10.28.0)
   - Firebase/Messaging (10.28.0):
@@ -115,10 +118,12 @@ PODS:
     - Flutter
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
+  - XYUUID (1.0.0)
 
 DEPENDENCIES:
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
+  - device_uuid (from `.symlinks/plugins/device_uuid/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
@@ -152,12 +157,15 @@ SPEC REPOS:
     - nanopb
     - PromisesObjC
     - Toast
+    - XYUUID
 
 EXTERNAL SOURCES:
   audio_session:
     :path: ".symlinks/plugins/audio_session/ios"
   device_info_plus:
     :path: ".symlinks/plugins/device_info_plus/ios"
+  device_uuid:
+    :path: ".symlinks/plugins/device_uuid/ios"
   firebase_core:
     :path: ".symlinks/plugins/firebase_core/ios"
   firebase_messaging:
@@ -200,6 +208,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   audio_session: 088d2483ebd1dc43f51d253d4a1c517d9a2e7207
   device_info_plus: c6fb39579d0f423935b0c9ce7ee2f44b71b9fce6
+  device_uuid: 1673ecd99e9ae7a1508120f378158c85ecd708a6
   Firebase: 5121c624121af81cbc81df3bda414b3c28c4f3c3
   firebase_core: a9d0180d5285527884d07a41eb4a9ec9ed12cdb6
   firebase_messaging: ccc82a143a74de75f440a4e413dbbb37ec3fddbc
@@ -230,6 +239,7 @@ SPEC CHECKSUMS:
   video_player_avfoundation: 7c6c11d8470e1675df7397027218274b6d2360b3
   wakelock_plus: 78ec7c5b202cab7761af8e2b2b3d0671be6c4ae1
   webview_flutter_wkwebview: 2a23822e9039b7b1bc52e5add778e5d89ad488d1
+  XYUUID: 9a2483143d14fc5204b619042ca65073df9fbd88
 
 PODFILE CHECKSUM: 1959d098c91d8a792531a723c4a9d7e9f6a01e38
 
