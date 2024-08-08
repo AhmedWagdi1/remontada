@@ -146,6 +146,7 @@ class Alerts {
 
   static snack({required String text, required SnackState state}) {
     BotToast.showCustomText(
+      
         align: Alignment.center,
         onlyOne: true,
         toastBuilder: (s) => SnackDesgin(

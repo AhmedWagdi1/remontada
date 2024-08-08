@@ -17,6 +17,7 @@ class MatchModel {
   String? actualSub;
   String? duration;
   bool? flag;
+  bool? isCCompleted;
   // bool? validSub;
   MatchModel({
     this.id,
@@ -32,6 +33,7 @@ class MatchModel {
     this.actualSub,
     this.flag,
     this.duration,
+    this.isCCompleted
     // this.validSub,
   });
 
@@ -58,6 +60,7 @@ class MatchModel {
       lat: map['lat'] != null ? map['lat'] as String : null,
       lng: map['lng'] != null ? map['lng'] as String : null,
       flag: map['flagged'] != null ? map['flagged'] as bool : null,
+      isCCompleted: map['is_completed'] != null ? map['is_completed'] as bool : null,
       duration: map['durations_text'] != null
           ? map['durations_text'] as String
           : null,
