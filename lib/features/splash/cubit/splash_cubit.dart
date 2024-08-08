@@ -81,7 +81,7 @@ class SplashCubit extends Cubit<SplashStates> {
 
   Future<Position?> getLocation() async {
     PermissionStatus status = await Permission.location.status;
-
+    await Permission.location.request;
     Permission.location.onDeniedCallback(() async {
       await Permission.location.request();
     });
@@ -92,9 +92,10 @@ class SplashCubit extends Cubit<SplashStates> {
         desiredAccuracy: LocationAccuracy.high,
       );
     }
-    return await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
+    print("status $status");
+    // return await Geolocator.getCurrentPosition(
+    //   desiredAccuracy: LocationAccuracy.high,
+    // );
   }
 
   Future<void> getPostion() async {

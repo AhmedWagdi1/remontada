@@ -80,7 +80,7 @@ class MyApp extends StatelessWidget {
                   //     LayoutScreen.updateScreen;
                   //   })
                   // ],
-                  title: 'Retm',
+                  title: 'ريمونتادا',
                   themeAnimationDuration: const Duration(milliseconds: 700),
                   themeAnimationCurve: Curves.easeInOutCubic,
                   navigatorKey: Utils.navigatorKey(),
