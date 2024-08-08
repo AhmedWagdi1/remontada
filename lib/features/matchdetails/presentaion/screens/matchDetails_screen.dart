@@ -313,81 +313,92 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                           ),
                         ),
                         28.ph,
-                        subScribersModel.isMymatch != null
-                            ? (matchModel.flag == false && Utils.token != "")
-                                ? ButtonWidget(
-                                    buttonColor: cubit.isMymatch ?? false
-                                        ? LightThemeColors.warningButton
-                                        : context.primaryColor,
-                                    onTap: subScribersModel.isMymatch ?? false
-                                        ? () async {
-                                            // widget.onreturn?.call();
-                                            Navigator.pushReplacementNamed(
-                                              context,
-                                              Routes.LayoutScreen,
-                                            );
-                                            await cubit.cancel(
-                                              widget.id.toString(),
-                                            );
-                                          }
-                                        : () async {
-                                            await showConfirmationSheet(
-                                              isWaiting:
-                                                  matchModel.isCCompleted,
-                                              context,
-                                              () async {
-                                                final response = await cubit
-                                                    .subScribe(widget.id ?? 0);
-                                                if (response == true) {
-                                                  Navigator.pop(
-                                                    context,
-                                                    widget.onreturn,
-                                                  );
-                                                  showSuccessSheet(
-                                                      context, widget.id);
-                                                }
+                        matchModel.isPending == true
+                            ? CustomText(
+                                align: TextAlign.center,
+                                "لقد تم وضعك في قائمة الانتظار في حالة اعتذر احد المشتركين",
+                                weight: FontWeight.w500,
+                                color: Colors.red,
+                                fontSize: 16,
+                              )
+                            : subScribersModel.isMymatch != null
+                                ? (matchModel.flag == false &&
+                                        Utils.token.isNotEmpty)
+                                    ? ButtonWidget(
+                                        buttonColor: cubit.isMymatch ?? false
+                                            ? LightThemeColors.warningButton
+                                            : context.primaryColor,
+                                        onTap: subScribersModel.isMymatch ??
+                                                false
+                                            ? () async {
+                                                // widget.onreturn?.call();
+                                                Navigator.pushReplacementNamed(
+                                                  context,
+                                                  Routes.LayoutScreen,
+                                                );
+                                                await cubit.cancel(
+                                                  widget.id.toString(),
+                                                );
+                                              }
+                                            : () async {
+                                                await showConfirmationSheet(
+                                                  isCompleted:
+                                                      matchModel.isCCompleted,
+                                                  context,
+                                                  () async {
+                                                    final response =
+                                                        await cubit.subScribe(
+                                                            widget.id ?? 0);
+                                                    if (response == true) {
+                                                      Navigator.pop(
+                                                        context,
+                                                        widget.onreturn,
+                                                      );
+                                                      showSuccessSheet(
+                                                          context, widget.id);
+                                                    }
+                                                  },
+                                                  // cubit.subScribe(widget.id ?? 0),
+                                                );
                                               },
-                                              // cubit.subScribe(widget.id ?? 0),
-                                            );
-                                          },
-                                    height: 65,
-                                    // width: 342,
-                                    fontweight: FontWeight.bold,
-                                    radius: 33,
-                                    textColor: context.background,
-                                    child: cubit.isMymatch ?? false
-                                        ? Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              SvgPicture.asset(
-                                                color: context.background,
-                                                Assets.icons.flag,
-                                              ),
-                                              9.pw,
-                                              CustomText(
-                                                LocaleKeys.apology_take_part
-                                                    .tr(),
-                                                fontSize: 16,
+                                        height: 65,
+                                        // width: 342,
+                                        fontweight: FontWeight.bold,
+                                        radius: 33,
+                                        textColor: context.background,
+                                        child: cubit.isMymatch ?? false
+                                            ? Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  SvgPicture.asset(
+                                                    color: context.background,
+                                                    Assets.icons.flag,
+                                                  ),
+                                                  9.pw,
+                                                  CustomText(
+                                                    LocaleKeys.apology_take_part
+                                                        .tr(),
+                                                    fontSize: 16,
+                                                    weight: FontWeight.bold,
+                                                    color: context.background,
+                                                  ),
+                                                ],
+                                              )
+                                            : CustomText(
+                                                matchModel.isCCompleted ?? false
+                                                    ? "انضم الي قائمة الانتظار"
+                                                    : "SubscribeNow".tr(),
+                                                fontSize: 19,
                                                 weight: FontWeight.bold,
                                                 color: context.background,
                                               ),
-                                            ],
-                                          )
-                                        : CustomText(
-                                            matchModel.isCCompleted ?? false
-                                                ? "انضم الي قائمة الانتظار"
-                                                : "SubscribeNow".tr(),
-                                            fontSize: 19,
-                                            weight: FontWeight.bold,
-                                            color: context.background,
-                                          ),
-                                    // title: ,
-                                  )
-                                : SizedBox()
-                            : CircularProgressIndicator(
-                                color: LightThemeColors.primary,
-                              ),
+                                        // title: ,
+                                      )
+                                    : SizedBox()
+                                : CircularProgressIndicator(
+                                    color: LightThemeColors.primary,
+                                  ),
                         // : CircularProgressIndicator(
                         //     color: Colors.blue,
                         //   ),
@@ -519,7 +530,7 @@ showPlayersheet(BuildContext context,
 }
 
 showConfirmationSheet(BuildContext context, VoidCallback confirm,
-    {bool? isWaiting}) {
+    {bool? isCompleted}) {
   Alerts.bottomSheet(
     context,
     shape: RoundedRectangleBorder(
@@ -544,7 +555,7 @@ showConfirmationSheet(BuildContext context, VoidCallback confirm,
           ),
           3.ph,
           CustomText(
-            isWaiting ?? false
+            isCompleted ?? false
                 ? "هل تريد وضعك في قائمة الانتظار في حالة اعتذر احد المشتركين"
                 : LocaleKeys.subscribe_confirmation_desciption.tr(),
             fontSize: 14,

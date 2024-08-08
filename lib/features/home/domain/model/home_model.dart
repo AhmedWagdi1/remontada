@@ -5,6 +5,7 @@ import '../../../../core/utils/utils.dart';
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class MatchModel {
   int? id;
+  bool? isPending;
   String? playGround;
   String? subscribers;
   String? date;
@@ -18,24 +19,26 @@ class MatchModel {
   String? duration;
   bool? flag;
   bool? isCCompleted;
+
   // bool? validSub;
-  MatchModel({
-    this.id,
-    this.playGround,
-    this.subscribers,
-    this.date,
-    this.start,
-    this.price,
-    this.details,
-    this.lat,
-    this.lng,
-    this.constSub,
-    this.actualSub,
-    this.flag,
-    this.duration,
-    this.isCCompleted
-    // this.validSub,
-  });
+  MatchModel(
+      {this.id,
+      this.playGround,
+      this.subscribers,
+      this.date,
+      this.start,
+      this.price,
+      this.details,
+      this.lat,
+      this.lng,
+      this.constSub,
+      this.actualSub,
+      this.flag,
+      this.duration,
+      this.isCCompleted,
+      this.isPending
+      // this.validSub,
+      });
 
   factory MatchModel.fromMap(Map<String, dynamic> map) {
     return MatchModel(
@@ -60,7 +63,9 @@ class MatchModel {
       lat: map['lat'] != null ? map['lat'] as String : null,
       lng: map['lng'] != null ? map['lng'] as String : null,
       flag: map['flagged'] != null ? map['flagged'] as bool : null,
-      isCCompleted: map['is_completed'] != null ? map['is_completed'] as bool : null,
+      isPending: map['is_pending'] != null ? map['is_pending'] as bool : null,
+      isCCompleted:
+          map['is_completed'] != null ? map['is_completed'] as bool : null,
       duration: map['durations_text'] != null
           ? map['durations_text'] as String
           : null,
