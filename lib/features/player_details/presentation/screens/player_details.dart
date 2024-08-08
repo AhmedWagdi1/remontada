@@ -145,15 +145,15 @@ class _PlayerDetailsState extends State<PlayerDetails> {
                             ],
                           ),
                           38.ph,
-                          PlayerDetailsWidget(
-                            function: () {
-                              // LauncherHelper.makeCall(
-                              //     playerdetails?.phone ?? "");
-                            },
-                            icon: Assets.icons.calling,
-                            title: LocaleKeys.auth_hint_phone.tr(),
-                            subtitle: playerdetails?.phone ?? "",
-                          ),
+                          // PlayerDetailsWidget(
+                          //   function: () {
+                          //     // LauncherHelper.makeCall(
+                          //     //     playerdetails?.phone ?? "");
+                          //   },
+                          //   icon: Assets.icons.calling,
+                          //   title: LocaleKeys.auth_hint_phone.tr(),
+                          //   subtitle: playerdetails?.phone ?? "",
+                          // ),
                           PlayerDetailsWidget(
                             function: () {
                               Navigator.pushNamed(context, Routes.MapScreen,

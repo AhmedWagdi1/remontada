@@ -12,6 +12,7 @@ import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/features/more/cubit/more_cubit.dart';
 import 'package:remontada/features/more/cubit/more_states.dart';
 import 'package:remontada/features/more/presentation/widgets/more_item.dart';
+import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/shared/widgets/loadinganderror.dart';
 
@@ -120,15 +121,17 @@ class _MoreScreenState extends State<MoreScreen> {
                             ),
                             GestureDetector(
                               onTap: () async {
-                                final res = await cubit.deleteAccount();
-                                if (res == true) {
-                                  Navigator.pushNamedAndRemoveUntil(context,
-                                      Routes.LoginScreen, (route) => false);
-                                  Alerts.snack(
-                                    text: "تم تسجيل الخروج بنجاح",
-                                    state: SnackState.success,
-                                  );
-                                }
+                                showDeletesheet(context, () async {
+                                  final res = await cubit.deleteAccount();
+                                  if (res == true) {
+                                    Navigator.pushNamedAndRemoveUntil(context,
+                                        Routes.LoginScreen, (route) => false);
+                                    Alerts.snack(
+                                      text: "تم حذف حسابك بنجاح",
+                                      state: SnackState.success,
+                                    );
+                                  }
+                                });
                               },
                               child: Container(
                                 padding: EdgeInsets.symmetric(
@@ -228,3 +231,60 @@ List icons = [
   Assets.icons.policy_privacy,
   Assets.icons.log_out
 ];
+showDeletesheet(BuildContext context, VoidCallback deleteAcoount) {
+  Alerts.bottomSheet(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(114),
+        topRight: Radius.circular(36),
+      ),
+    ),
+    context,
+    child: Container(
+      padding: EdgeInsets.only(
+        right: 15,
+        left: 15,
+        top: 50,
+        bottom: 28,
+      ),
+      decoration: BoxDecoration(
+        color: context.background,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Assets.icons.log_out.toSvg(
+            width: 32.68,
+            height: 32.68,
+          ),
+          11.ph,
+          CustomText(
+            fontSize: 16,
+            "هل تريد حذف الحساب",
+            color: LightThemeColors.primary,
+            weight: FontWeight.w800,
+          ),
+          CustomText(
+            fontSize: 14,
+            "هل انت متاكد من انك تريد حذف الحساب الخاص بك",
+            color: LightThemeColors.secondaryText,
+            weight: FontWeight.w500,
+          ),
+          32.ph,
+          ButtonWidget(
+            buttonColor: LightThemeColors.warningButton,
+            height: 65,
+            radius: 33,
+            child: CustomText(
+              "حذف الحساب",
+              fontSize: 16,
+              weight: FontWeight.bold,
+              color: context.background,
+            ),
+            onTap: deleteAcoount,
+          ),
+        ],
+      ),
+    ),
+  );
+}

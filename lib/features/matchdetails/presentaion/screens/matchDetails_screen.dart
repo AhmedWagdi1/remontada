@@ -185,13 +185,13 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                       color: LightThemeColors.background,
                                     ),
                                     2.87.pw,
-                                    CustomText(
-                                      "${subScribersModel.subscribers?.length}",
-                                      // "13",
-                                      fontSize: 14,
-                                      weight: FontWeight.w400,
-                                      color: LightThemeColors.black,
-                                    ),
+                                    // CustomText(
+                                    //   "${subScribersModel.subscribers?.length}",
+                                    //   // "13",
+                                    //   fontSize: 14,
+                                    //   weight: FontWeight.w400,
+                                    //   color: LightThemeColors.black,
+                                    // ),
                                     1.pw,
                                     CustomText(
                                       matchModel.subscribers ?? "",
@@ -332,6 +332,8 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                           }
                                         : () async {
                                             await showConfirmationSheet(
+                                              isWaiting:
+                                                  matchModel.isCCompleted,
                                               context,
                                               () async {
                                                 final response = await cubit
@@ -373,7 +375,9 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                             ],
                                           )
                                         : CustomText(
-                                            "SubscribeNow".tr(),
+                                            matchModel.isCCompleted ?? false
+                                                ? "انضم الي قائمة الانتظار"
+                                                : "SubscribeNow".tr(),
                                             fontSize: 19,
                                             weight: FontWeight.bold,
                                             color: context.background,
@@ -514,10 +518,8 @@ showPlayersheet(BuildContext context,
   );
 }
 
-showConfirmationSheet(
-  BuildContext context,
-  VoidCallback confirm,
-) {
+showConfirmationSheet(BuildContext context, VoidCallback confirm,
+    {bool? isWaiting}) {
   Alerts.bottomSheet(
     context,
     shape: RoundedRectangleBorder(
@@ -542,7 +544,9 @@ showConfirmationSheet(
           ),
           3.ph,
           CustomText(
-            LocaleKeys.subscribe_confirmation_desciption.tr(),
+            isWaiting ?? false
+                ? "هل تريد وضعك في قائمة الانتظار في حالة اعتذر احد المشتركين"
+                : LocaleKeys.subscribe_confirmation_desciption.tr(),
             fontSize: 14,
             color: LightThemeColors.textSecondary,
             weight: FontWeight.w500,

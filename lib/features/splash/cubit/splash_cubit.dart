@@ -93,9 +93,9 @@ class SplashCubit extends Cubit<SplashStates> {
       );
     }
     print("status $status");
-    // return await Geolocator.getCurrentPosition(
-    //   desiredAccuracy: LocationAccuracy.high,
-    // );
+    return await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
   }
 
   Future<void> getPostion() async {
