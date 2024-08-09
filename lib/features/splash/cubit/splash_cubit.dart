@@ -92,7 +92,6 @@ class SplashCubit extends Cubit<SplashStates> {
         desiredAccuracy: LocationAccuracy.high,
       );
     }
-    print("status $status");
     return await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
@@ -103,7 +102,5 @@ class SplashCubit extends Cubit<SplashStates> {
 
     Utils.lng = position?.longitude.toString() ?? "";
     Utils.lat = position?.latitude.toString() ?? "";
-    log(Utils.lng);
-    log(Utils.lat);
   }
 }
