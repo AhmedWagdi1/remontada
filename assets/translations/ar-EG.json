@@ -25,7 +25,6 @@
     "description_otp": "قم بكتابة كود التحقق الذي تم إرساله إليك عبر رقم الجوال",
     "check": "تحقق",
     "send_otp_again" : "ارسال الكود مرة اخري"
-    
 
     
   },
@@ -64,7 +63,7 @@
   "my_matches": "مبارياتي",
   "notifications": "الاشعارات",
   "available_matches": "المباريات المتاحة",
-  "home_describtion": "قم بالانضمام الي المباراة المناسبة لك الان",
+  "home_describtion": "قم بالانضمام الى المباراة المناسبة لك الان",
   "match_filter_playground": "فلترة المباريات حسب الملعب",
   "match_filter_playground_description": "قم بفلترة ظهورالمباريات حسب الملعب",
   "match_filter_clender": "فلترة المباريات حسب التاريخ",

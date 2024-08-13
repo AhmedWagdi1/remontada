@@ -1,11 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/utils/extentions.dart';
+import 'package:remontada/shared/widgets/customtext.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/theme/light_theme.dart';
 
@@ -71,7 +74,24 @@ class _MapWidgetState extends State<CustomMapWidget> {
 
   @override
   void dispose() {
-    super.dispose();
+    // if(mounted){
+    //   mapController.dispose();
+    // }
+    if (mounted) {
+      super.dispose();
+    }
+  }
+
+  void openGoogleMaps(
+      {required double latitude, required double longitude}) async {
+    final String googleMapsUrl =
+        'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+
+    if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
+      await launchUrl(Uri.parse(googleMapsUrl));
+    } else {
+      throw 'Could not open the map.';
+    }
   }
 
   CameraPosition getCameraPosition() {
@@ -87,6 +107,13 @@ class _MapWidgetState extends State<CustomMapWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: CustomText(
+          "عرض اللوكيشن",
+          weight: FontWeight.w600,
+          fontSize: 14,
+        ),
+      ),
       body: position == null
           ? Center(child: CircularProgressIndicator())
           : Stack(children: [
@@ -128,7 +155,7 @@ class _MapWidgetState extends State<CustomMapWidget> {
               Positioned(
                 bottom: 10,
                 right: 10,
-                child: Row(
+                child: Column(
                   children: [
                     FloatingActionButton(
                       backgroundColor: LightThemeColors.primary,
@@ -154,7 +181,7 @@ class _MapWidgetState extends State<CustomMapWidget> {
                         Icons.navigation_rounded,
                       ),
                     ),
-                    10.pw,
+                    10.ph,
                     FloatingActionButton(
                       backgroundColor: LightThemeColors.primary,
                       shape: CircleBorder(),
@@ -179,6 +206,34 @@ class _MapWidgetState extends State<CustomMapWidget> {
                         Icons.my_location,
                       ),
                     ),
+                    10.ph,
+                    FloatingActionButton(
+                        backgroundColor: LightThemeColors.primary,
+                        shape: CircleBorder(),
+                        onPressed: () async {
+                          openGoogleMaps(
+                            latitude: widget.lat.toDouble(),
+                            longitude: widget.lan.toDouble(),
+                          );
+                          // final GoogleMapController controller =
+                          //     await mapController.future;
+                          // controller.animateCamera(
+                          //   CameraUpdate.newCameraPosition(
+                          //     CameraPosition(
+                          //       bearing: 192.8334901395799,
+                          //       zoom: 19.151926040649414,
+                          //       target: LatLng(
+                          //         position!.latitude,
+                          //         position!.longitude,
+                          //       ),
+                          //     ),
+                          //   ),
+                          // );
+                        },
+                        child: FaIcon(
+                          FontAwesomeIcons.mapMarkerAlt,
+                          color: Colors.white,
+                        )),
                   ],
                 ),
               ),

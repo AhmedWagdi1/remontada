@@ -80,19 +80,32 @@ class SplashCubit extends Cubit<SplashStates> {
   }
 
   Future<Position?> getLocation() async {
-    PermissionStatus status = await Permission.location.status;
-    await Permission.location.request;
-    Permission.location.onDeniedCallback(() async {
-      await Permission.location.request();
-    });
-    if (status.isDenied == true) {
-      await Permission.location.request();
-    } else if (status.isGranted == true) {
-      return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-    }
-    print("status $status");
+    try {
+      PermissionStatus status = await Permission.location.status;
+      await Permission.location.request;
+      // Permission.location.onDeniedCallback(() async {
+      //   await Permission.location.request();
+      // });
+      if (status.isDenied == true) {
+        // await Permission.location.request();
+
+        // showLocationPermissionDialog(
+        //   context,
+        // );
+        emit(LocationDeniedstate());
+      } else if (status.isPermanentlyDenied == true) {
+        // await Permission.location.request();
+        // showLocationPermissionDialog(
+        //   context,
+        // );
+        emit(LocationDeniedstate());
+      } else if (status.isGranted == true) {
+        return await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+        );
+      }
+    } catch (e) {}
+    // print("status $status");
     return await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
@@ -105,5 +118,6 @@ class SplashCubit extends Cubit<SplashStates> {
     Utils.lat = position?.latitude.toString() ?? "";
     log(Utils.lng);
     log(Utils.lat);
+    emit(LocationAcceptedState());
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:remontada/features/auth/domain/model/auth_model.dart';
 import 'package:remontada/features/home/presentation/screens/webview.dart';
 import 'package:remontada/features/layout/presentation/screens/layout_screen.dart';
@@ -7,6 +8,7 @@ import 'package:remontada/features/matchdetails/presentaion/screens/matchDetails
 import 'package:remontada/features/more/domain/contact_request.dart';
 import 'package:remontada/features/player_details/presentation/screens/player_details.dart';
 import 'package:remontada/features/profile/presentation/screens/edit_profile.screen.dart';
+import 'package:remontada/features/splash/cubit/splash_cubit.dart';
 import 'package:remontada/features/staticScreens/presentation/screens/privacy_policy_screen.dart';
 
 import '../../features/auth/presentation/screens/login/login_screen.dart';
@@ -50,7 +52,10 @@ class RouteGenerator {
         return CupertinoPageRoute(
             settings: routeSettings,
             builder: (_) {
-              return const SplashScreen();
+              return BlocProvider(
+                create: (context) => SplashCubit()..getPostion(),
+                child: const SplashScreen(),
+              );
             });
       // case Routes.OnboardingScreen:
       //   return CupertinoPageRoute(
