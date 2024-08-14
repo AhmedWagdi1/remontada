@@ -41,7 +41,14 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocProvider(
       create: (context) => AuthCubit(),
       child: BlocConsumer<AuthCubit, AuthStates>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is NeedRegister) {
+            Navigator.pushNamed(
+              context,
+              Routes.RegisterScreen,
+            );
+          }
+        },
         builder: (context, state) {
           final cubit = AuthCubit.get(context);
           return Scaffold(
@@ -139,22 +146,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     prefixIcon: Assets.icons.calling,
                                     onSaved: (value) =>
                                         authRequest.phone = value,
-                                    // hintSize: FontSize.s14,
                                     borderRadius: 33,
                                     hintText: LocaleKeys.auth_hint_phone.tr(),
                                     hintColor: LightThemeColors.textPrimary,
                                     activeBorderColor:
                                         LightThemeColors.inputFieldBorder,
-                                    // contentPadding:
-                                    //     EdgeInsetsDirectional.symmetric(
-                                    //   vertical: 22.w,
-                                    // ),
-                                    // hintSize: FontSize.s16,
-                                    // borderRadius: 33.r,
-                                    // hintText: "    رقم الجوال",
-                                    // hintColor: LightThemeColors.textPrimary,
-                                    // activeBorderColor:
-                                    //     LightThemeColors.inputFieldBorder,
+                                    type: TextInputType.phone,
                                   ),
                                   26.ph,
                                   ButtonWidget(

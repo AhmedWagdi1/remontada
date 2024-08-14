@@ -143,5 +143,6 @@
     "approval": "Approvals",
     "notifications": "Notifications",
     "settings": "Settings"
-  }
+  },
+  "joinWaiting":"Join Waiting List"
 }

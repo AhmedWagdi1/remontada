@@ -24,7 +24,9 @@ class AuthCubit extends Cubit<AuthStates> {
     final response = await authRepository.loginRequest(loginRequestModel);
 
     if (response != null) {
-      if (response['code'] == null) {
+      if (response is bool) {
+        emit(NeedRegister());
+      } else if (response['code'] == null) {
         emit(LoginErrorState());
         return false;
       } else {

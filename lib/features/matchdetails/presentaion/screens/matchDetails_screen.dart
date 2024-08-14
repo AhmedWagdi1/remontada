@@ -387,7 +387,7 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                               )
                                             : CustomText(
                                                 matchModel.isCCompleted ?? false
-                                                    ? "انضم الي قائمة الانتظار"
+                                                    ? "joinWaiting".tr()
                                                     : "SubscribeNow".tr(),
                                                 fontSize: 19,
                                                 weight: FontWeight.bold,

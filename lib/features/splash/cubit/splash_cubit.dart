@@ -87,7 +87,7 @@ class SplashCubit extends Cubit<SplashStates> {
       //   await Permission.location.request();
       // });
       if (status.isDenied == true) {
-        // await Permission.location.request();
+        await Permission.location.request();
 
         // showLocationPermissionDialog(
         //   context,
@@ -104,7 +104,9 @@ class SplashCubit extends Cubit<SplashStates> {
           desiredAccuracy: LocationAccuracy.high,
         );
       }
-    } catch (e) {}
+    } catch (e) {
+      log(e.toString(), name: "error");
+    }
     // print("status $status");
     return await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,

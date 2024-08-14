@@ -53,3 +53,5 @@ class Locationsssuccess extends AuthStates {
 }
 
 class LocationsFailed extends AuthStates {}
+
+class NeedRegister extends AuthStates {}
