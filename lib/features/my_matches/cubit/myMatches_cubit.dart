@@ -11,9 +11,9 @@ class MyMatchesCubit extends Cubit<MyMatchesState> {
   static MyMatchesCubit get(context) => BlocProvider.of(context);
   MyMatchesRepo myMatchesrepo = MyMatchesRepo(locator<DioService>());
 
-  getMymatches() async {
+  getMymatches(bool isCurrent) async {
     emit(MyMatchesLoading());
-    final res = await myMatchesrepo.getMymatches();
+    final res = await myMatchesrepo.getMymatches(isCurrent);
     if (res != null) {
       emit(
         MyMatchesLoaded(

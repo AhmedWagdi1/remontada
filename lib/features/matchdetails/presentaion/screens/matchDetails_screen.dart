@@ -314,12 +314,55 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                         ),
                         28.ph,
                         matchModel.isPending == true
-                            ? CustomText(
-                                align: TextAlign.center,
-                                "لقد تم وضعك في قائمة الانتظار في حالة اعتذر احد المشتركين",
-                                weight: FontWeight.w500,
-                                color: Colors.red,
-                                fontSize: 16,
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  CustomText(
+                                    align: TextAlign.center,
+                                    "لقد تم وضعك في قائمة الانتظار في حالة اعتذر احد المشتركين",
+                                    weight: FontWeight.w500,
+                                    color: Colors.red,
+                                    fontSize: 16,
+                                  ),
+                                  20.ph,
+                                  ButtonWidget(
+                                      buttonColor:
+                                          LightThemeColors.warningButton,
+                                      height: 65,
+                                      // width: 342,
+                                      fontweight: FontWeight.bold,
+                                      radius: 33,
+                                      textColor: context.background,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          SvgPicture.asset(
+                                            color: context.background,
+                                            Assets.icons.flag,
+                                          ),
+                                          9.pw,
+                                          CustomText(
+                                            LocaleKeys.apology_take_part.tr(),
+                                            fontSize: 16,
+                                            weight: FontWeight.bold,
+                                            color: context.background,
+                                          ),
+                                        ],
+                                      ),
+                                      onTap: () async {
+                                        // widget.onreturn?.call();
+
+                                        final response = await cubit.cancel(
+                                          widget.id.toString(),
+                                        );
+                                        if (mounted && response == true)
+                                          Navigator.pushReplacementNamed(
+                                            context,
+                                            Routes.LayoutScreen,
+                                          );
+                                      })
+                                ],
                               )
                             : subScribersModel.isMymatch != null
                                 ? (matchModel.flag == false &&
@@ -332,13 +375,17 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                                 false
                                             ? () async {
                                                 // widget.onreturn?.call();
-                                                Navigator.pushReplacementNamed(
-                                                  context,
-                                                  Routes.LayoutScreen,
-                                                );
-                                                await cubit.cancel(
+
+                                                final response =
+                                                    await cubit.cancel(
                                                   widget.id.toString(),
                                                 );
+                                                if (mounted && response == true)
+                                                  Navigator
+                                                      .pushReplacementNamed(
+                                                    context,
+                                                    Routes.LayoutScreen,
+                                                  );
                                               }
                                             : () async {
                                                 await showConfirmationSheet(

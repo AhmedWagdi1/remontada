@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,11 +10,11 @@ import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/features/home/presentation/widgets/itemwidget.dart';
 import 'package:remontada/features/my_matches/cubit/myMatches_cubit.dart';
 import 'package:remontada/features/my_matches/cubit/myMatches_states.dart';
-import 'package:remontada/features/my_matches/domain/model/myMatches_Model.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/shared/widgets/loadinganderror.dart';
 
 import '../../../../core/resources/gen/assets.gen.dart';
+import '../../domain/model/myMatches_Model.dart';
 
 class MyMatchesScreen extends StatefulWidget {
   const MyMatchesScreen({super.key});
@@ -21,34 +23,116 @@ class MyMatchesScreen extends StatefulWidget {
   State<MyMatchesScreen> createState() => _MyMatchesScreenState();
 }
 
-class _MyMatchesScreenState extends State<MyMatchesScreen> {
-  MyMatches myMatches = MyMatches();
-  bool thereData = true;
-  Widget getnoMatchesBody() {
+class _MyMatchesScreenState extends State<MyMatchesScreen>
+    with SingleTickerProviderStateMixin {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: SizedBox(),
+        title: CustomText(
+          "مبارياتي",
+          fontSize: 26,
+          weight: FontWeight.w800,
+          color: context.primaryColor,
+        ),
+      ),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CustomText(
+              fontSize: 14,
+              weight: FontWeight.w500,
+              LocaleKeys.my_matches_subtitles.tr(),
+              color: LightThemeColors.secondaryText,
+            ),
+            40.ph,
+            TabBar(
+              labelPadding: EdgeInsets.symmetric(horizontal: 44),
+              padding: const EdgeInsets.symmetric(horizontal: 22),
+              indicatorColor: Colors.black,
+              dividerColor: Colors.transparent,
+              indicatorSize: TabBarIndicatorSize.tab,
+              indicator: BoxDecoration(
+                borderRadius: BorderRadius.circular(33),
+                color: context.primaryColor,
+              ),
+              tabAlignment: TabAlignment.center,
+              physics: const NeverScrollableScrollPhysics(),
+              isScrollable: false,
+              onTap: (value) => setState(() {}),
+              tabs: [
+                Tab(
+                  child: CustomText(
+                    'current_matches'.tr(),
+                    fontSize: 14,
+                    weight: FontWeight.w500,
+                    align: TextAlign.center,
+                    color: DefaultTabController.of(context).index == 0
+                        ? Colors.white
+                        : context.primaryColor,
+                  ),
+                ),
+                Tab(
+                  child: CustomText(
+                    'finished_matches'.tr(),
+                    fontSize: 14,
+                    weight: FontWeight.w500,
+                    align: TextAlign.center,
+                    color: DefaultTabController.of(context).index == 1
+                        ? Colors.white
+                        : context.primaryColor,
+                  ),
+                ),
+              ],
+            ),
+            TabBarView(physics: NeverScrollableScrollPhysics(), children: [
+              BlocProvider(
+                  create: (context) => MyMatchesCubit()..getMymatches(true),
+                  child: MatchesBody()),
+              BlocProvider(
+                  create: (context) => MyMatchesCubit()..getMymatches(false),
+                  child: MatchesBody())
+            ]).expand()
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class EmptyMatchesBody extends StatelessWidget {
+  const EmptyMatchesBody({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       child: Stack(
         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         alignment: Alignment.center,
         children: [
-          Column(
-            children: [
-              70.ph,
-              CustomText(
-                LocaleKeys.my_matches.tr(),
-                fontSize: 28,
-                weight: FontWeight.w800,
-                color: context.primaryColor,
-              ),
-              5.ph,
-              CustomText(
-                fontSize: 16,
-                weight: FontWeight.w500,
-                LocaleKeys.my_matches_subtitles.tr(),
-                color: LightThemeColors.secondaryText,
-              ),
-            ],
-          ),
+          // Column(
+          //   children: [
+          //     70.ph,
+          //     CustomText(
+          //       LocaleKeys.my_matches.tr(),
+          //       fontSize: 28,
+          //       weight: FontWeight.w800,
+          //       color: context.primaryColor,
+          //     ),
+          //     5.ph,
+          //     CustomText(
+          //       fontSize: 16,
+          //       weight: FontWeight.w500,
+          //       LocaleKeys.my_matches_subtitles.tr(),
+          //       color: LightThemeColors.secondaryText,
+          //     ),
+          //   ],
+          // ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -77,78 +161,50 @@ class _MyMatchesScreenState extends State<MyMatchesScreen> {
       ),
     );
   }
+}
 
-  getMatchesBody(MyMatches myMatches) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 8,
-      ),
-      width: double.infinity,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          70.ph,
-          CustomText(
-            LocaleKeys.my_matches.tr(),
-            fontSize: 26,
-            weight: FontWeight.w800,
-            color: context.primaryColor,
-          ),
-          5.ph,
-          CustomText(
-            fontSize: 14,
-            weight: FontWeight.w500,
-            LocaleKeys.my_matches_subtitles.tr(),
-            color: LightThemeColors.secondaryText,
-          ),
-          30.ph,
-          Expanded(
-            child: ListView.builder(
-              itemCount: myMatches.matches?.length ?? 0,
-              itemBuilder: (context, index) => ItemWidget(
-                
-                matchModel: myMatches.matches?[index],
-                ismymatch: true,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 129.29,
-          )
-        ],
-      ),
+class MatchesBody extends StatefulWidget {
+  MatchesBody({
+    super.key,
+  });
+
+  @override
+  State<MatchesBody> createState() => _MatchesBodyState();
+}
+
+class _MatchesBodyState extends State<MatchesBody>
+    with AutomaticKeepAliveClientMixin {
+  MyMatches myMatches = MyMatches();
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return BlocConsumer<MyMatchesCubit, MyMatchesState>(
+      listener: (context, state) {
+        if (state is MyMatchesLoaded) myMatches = state.mymatches;
+      },
+      builder: (context, state) {
+        return LoadingAndError(
+          isLoading: state is MyMatchesLoading,
+          isError: state is MyMatchesFailed,
+          child: myMatches.matches?.isNotEmpty ?? false
+              ? ListView.builder(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 8,
+                  ),
+                  itemCount: myMatches.matches?.length ?? 0,
+                  itemBuilder: (context, index) => ItemWidget(
+                    matchModel: myMatches.matches?[index],
+                    ismymatch: true,
+                  ),
+                )
+              : EmptyMatchesBody(),
+        );
+      },
     );
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      // appBar:
-      // AppBar(
-      //   leading: SizedBox(),
-      //   title: CustomText(
-      //     "مبارياتي",
-      //     fontSize: 26.sp,
-      //     weight: FontWeight.w800,
-      //     color: context.primaryColor,
-      //   ),
-      // ),
-      body: BlocProvider(
-          create: (context) => MyMatchesCubit()..getMymatches(),
-          child: BlocConsumer<MyMatchesCubit, MyMatchesState>(
-            listener: (context, state) {
-              if (state is MyMatchesLoaded) myMatches = state.mymatches;
-            },
-            builder: (context, state) {
-              return LoadingAndError(
-                isLoading: state is MyMatchesLoading,
-                isError: state is MyMatchesFailed,
-                child: myMatches.matches?.isNotEmpty ?? false
-                    ? getMatchesBody(myMatches)
-                    : getnoMatchesBody(),
-              );
-            },
-          )),
-    );
-  }
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

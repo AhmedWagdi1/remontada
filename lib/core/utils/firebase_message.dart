@@ -25,7 +25,6 @@ class FBMessging {
   }
 
   static Future<void> enableIosNotify() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
     await messaging.setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
