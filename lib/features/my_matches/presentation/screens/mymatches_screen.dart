@@ -90,10 +90,14 @@ class _MyMatchesScreenState extends State<MyMatchesScreen>
             TabBarView(physics: NeverScrollableScrollPhysics(), children: [
               BlocProvider(
                   create: (context) => MyMatchesCubit()..getMymatches(true),
-                  child: MatchesBody()),
+                  child: MatchesBody(
+                    isCurrent: true,
+                  )),
               BlocProvider(
                   create: (context) => MyMatchesCubit()..getMymatches(false),
-                  child: MatchesBody())
+                  child: MatchesBody(
+                    isCurrent: false,
+                  ))
             ]).expand()
           ],
         ),
@@ -166,8 +170,9 @@ class EmptyMatchesBody extends StatelessWidget {
 class MatchesBody extends StatefulWidget {
   MatchesBody({
     super.key,
+    required this.isCurrent,
   });
-
+  final bool isCurrent;
   @override
   State<MatchesBody> createState() => _MatchesBodyState();
 }
@@ -184,21 +189,27 @@ class _MatchesBodyState extends State<MatchesBody>
         if (state is MyMatchesLoaded) myMatches = state.mymatches;
       },
       builder: (context, state) {
-        return LoadingAndError(
-          isLoading: state is MyMatchesLoading,
-          isError: state is MyMatchesFailed,
-          child: myMatches.matches?.isNotEmpty ?? false
-              ? ListView.builder(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 8,
-                  ),
-                  itemCount: myMatches.matches?.length ?? 0,
-                  itemBuilder: (context, index) => ItemWidget(
-                    matchModel: myMatches.matches?[index],
-                    ismymatch: true,
-                  ),
-                )
-              : EmptyMatchesBody(),
+        final cubit = MyMatchesCubit.get(context);
+        return RefreshIndicator(
+          onRefresh: () async {
+            await cubit.getMymatches(widget.isCurrent);
+          },
+          child: LoadingAndError(
+            isLoading: state is MyMatchesLoading,
+            isError: state is MyMatchesFailed,
+            child: myMatches.matches?.isNotEmpty ?? false
+                ? ListView.builder(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 8,
+                    ),
+                    itemCount: myMatches.matches?.length ?? 0,
+                    itemBuilder: (context, index) => ItemWidget(
+                      matchModel: myMatches.matches?[index],
+                      ismymatch: true,
+                    ),
+                  )
+                : EmptyMatchesBody(),
+          ),
         );
       },
     );

@@ -319,7 +319,7 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                 children: [
                                   CustomText(
                                     align: TextAlign.center,
-                                    "لقد تم وضعك في قائمة الانتظار في حالة اعتذر احد المشتركين",
+                                    "inWainitingList".tr(),
                                     weight: FontWeight.w500,
                                     color: Colors.red,
                                     fontSize: 16,
