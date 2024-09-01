@@ -9,10 +9,12 @@ import '../../../../core/app_strings/locale_keys.dart';
 import '../../../../core/theme/light_theme.dart';
 import '../../../../shared/widgets/button_widget.dart';
 import '../../../../shared/widgets/customtext.dart';
+import '../../../auth/domain/model/auth_model.dart';
 
 enum SheetType {
   clander,
   playground,
+  area,
 }
 
 class ClanderBottomsheet extends StatefulWidget {
@@ -22,13 +24,17 @@ class ClanderBottomsheet extends StatefulWidget {
     this.onsubmit,
     this.type,
     this.playground,
+    this.areas,
+
     // this.playgroundSubmit,
   });
   final Days? days;
+  final List<Location>? areas;
   final SheetType? type;
   final PlayGrounds? playground;
   // final Function()? playgroundSubmit;
-  final Function(List<String>? dates, List<int>? playgroundId)? onsubmit;
+  final Function(List<String>? dates, List<int>? playgroundId, int? areaId)?
+      onsubmit;
   @override
   State<ClanderBottomsheet> createState() => _ClanderBottomsheetState();
 }
@@ -36,6 +42,7 @@ class ClanderBottomsheet extends StatefulWidget {
 class _ClanderBottomsheetState extends State<ClanderBottomsheet> {
   List<String> dates = [];
   List<int> id = [];
+  int? areaId;
 
   bool? sheetType() {
     if (widget.type == SheetType.playground) {
@@ -58,6 +65,13 @@ class _ClanderBottomsheetState extends State<ClanderBottomsheet> {
           .where((e) => e.isActive == true)
           .map((e) => e.date ?? "")
           .toList();
+    } else if (widget.type == SheetType.area) {
+      final index = widget.areas?.indexWhere((e) => e.isActive == true);
+      if (index != -1) {
+        areaId = widget.areas?[index!].id;
+      } else {
+        areaId = null;
+      }
     }
 
     super.initState();
@@ -154,9 +168,6 @@ class _ClanderBottomsheetState extends State<ClanderBottomsheet> {
                 itemBuilder: (context, i) {
                   return GestureDetector(
                     onTap: () {
-                      // widget.days?.days?.forEach((day) {
-                      //   day.isActive = false;
-                      // });
                       if (sheetType() == false) {
                         widget.days?.days?[i].isActive =
                             !(widget.days?.days?[i].isActive)!;
@@ -285,7 +296,7 @@ class _ClanderBottomsheetState extends State<ClanderBottomsheet> {
                       // widget.days?.days?.forEach((e) {
                       //   e.isActive = false;
                       // });
-                      widget.onsubmit!(dates, id);
+                      widget.onsubmit!(dates, id, areaId);
                       // widget.playgroundSubmit!(id);
                       Navigator.pop(context);
                     },
@@ -304,7 +315,7 @@ class _ClanderBottomsheetState extends State<ClanderBottomsheet> {
                   flex: 2,
                   child: ButtonWidget(
                     onTap: () {
-                      widget.onsubmit!([], []);
+                      widget.onsubmit!([], [], null);
                       Navigator.pop(context);
                     },
                     buttonColor: LightThemeColors.secondbuttonBackground,
@@ -333,6 +344,167 @@ class _ClanderBottomsheetState extends State<ClanderBottomsheet> {
             )
           ],
         ),
+      );
+    } else if (widget.type == SheetType.area) {
+      return Container(
+        padding: EdgeInsets.only(
+          right: 5,
+          left: 5,
+          top: 20,
+          bottom: 24,
+        ),
+        decoration: BoxDecoration(),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  // SvgPicture.asset(
+                  //   width: 40,
+                  //   height: 40,
+                  //   "area_button".svg(),
+                  // ),
+                  14.36.pw,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomText(
+                        fontSize: 17,
+                        "auth.choose_city".tr(),
+                        color: LightThemeColors.primary,
+                        weight: FontWeight.w800,
+                      ),
+                      CustomText(
+                        fontSize: 14,
+                        "match_filter_city_description".tr(),
+                        color: LightThemeColors.secondaryText,
+                        weight: FontWeight.w500,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              42.ph,
+              SizedBox(
+                height: 300,
+                child: GridView.builder(
+                  itemCount: widget.areas?.length ?? 0,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    childAspectRatio: 5 / 1,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    crossAxisCount: 2,
+                  ),
+                  itemBuilder: (context, i) {
+                    return GestureDetector(
+                      onTap: () {
+                        areaId = widget.areas?[i].id;
+                        setState(() {});
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 5,
+                          horizontal: 5,
+                        ),
+                        width: double.infinity,
+                        height: 42,
+                        decoration: BoxDecoration(
+                          color: widget.areas?[i].id == areaId
+                              ? LightThemeColors.surface
+                              : context.background,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            width: 1,
+                            color: widget.areas?[i].isActive ?? false
+                                ? Colors.transparent
+                                : LightThemeColors.border,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            widget.areas?[i].isActive ?? false
+                                ? SvgPicture.asset("checked".svg())
+                                : SizedBox(),
+                            widget.areas?[i].isActive ?? false
+                                ? 5.pw
+                                : SizedBox(),
+                            CustomText(
+                              weight: FontWeight.w400,
+                              widget.areas?[i].name ?? "",
+                              fontSize: 12,
+                              color: widget.areas?[i].isActive ?? false
+                                  ? context.background
+                                  : LightThemeColors.black,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              28.ph,
+              Row(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: ButtonWidget(
+                      onTap: () {
+                        // id = [];
+                        // widget.days?.days?.forEach((e) {
+                        //   e.isActive = false;
+                        // });
+                        widget.onsubmit!(dates, id, areaId);
+                        // widget.playgroundSubmit!(id);
+                        Navigator.pop(context);
+                      },
+                      height: 65,
+                      radius: 33,
+                      child: CustomText(
+                        LocaleKeys.confirmation_button.tr(),
+                        fontSize: 16,
+                        weight: FontWeight.bold,
+                        color: context.background,
+                      ),
+                    ),
+                  ),
+                  10.pw,
+                  Expanded(
+                    flex: 2,
+                    child: ButtonWidget(
+                      onTap: () {
+                        widget.onsubmit!([], [], null);
+                        Navigator.pop(context);
+                      },
+                      buttonColor: LightThemeColors.secondbuttonBackground,
+                      height: 65,
+                      radius: 33,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            color: LightThemeColors.textSecondary,
+                            size: 14.83,
+                            Icons.refresh,
+                          ),
+                          6.pw,
+                          CustomText(
+                            color: LightThemeColors.textSecondary,
+                            LocaleKeys.refresh_button.tr(),
+                            fontSize: 14,
+                            weight: FontWeight.w500,
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              )
+            ]),
       );
     } else {
       return Container();

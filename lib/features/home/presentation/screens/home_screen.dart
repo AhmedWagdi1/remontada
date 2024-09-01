@@ -19,7 +19,10 @@ import 'package:remontada/shared/widgets/network_image.dart';
 
 import '../../../../core/Router/Router.dart';
 import '../../../../core/app_strings/locale_keys.dart';
+import '../../../../core/utils/Locator.dart';
 import '../../../../core/utils/utils.dart';
+import '../../../auth/domain/model/auth_model.dart';
+import '../../../auth/domain/repository/auth_repository.dart';
 import '../widgets/clander_bottomsheet_body.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -33,8 +36,10 @@ class _HomeScreenState extends State<HomeScreen> {
   HomeModel homeModel = HomeModel();
   PlayGrounds playground = PlayGrounds();
   Days _days = Days();
+  List<Location>? areas = [];
   int index = 0;
   List<int> ids = [];
+  int? areaId;
   List<String> dates = [];
 
   @override
@@ -192,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         Expanded(
-                          flex: 2,
+                          flex: 3,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -222,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     showSheet(
                                       SheetType.playground,
                                       context,
-                                      (date, id) async {
+                                      (date, id, j) async {
                                         this.dates = date ?? [];
                                         this.ids = id ?? [];
                                         return await cubit.getHomeData(
@@ -256,7 +261,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     showSheet(
                                       SheetType.clander,
                                       context,
-                                      (dates, id) async {
+                                      (dates, id, l) async {
                                         this.ids = id ?? [];
                                         this.dates = dates ?? [];
                                         await cubit.getHomeData(
@@ -272,6 +277,52 @@ class _HomeScreenState extends State<HomeScreen> {
                                     width: 40,
                                     height: 40,
                                     "cleander_button".svg("icons"),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: IconButton(
+                                  // padding: EdgeInsets.
+                                  // zero,
+                                  onPressed: () async {
+                                    final res = (await locator<AuthRepository>()
+                                            .getArreasRequest(
+                                      loading: true,
+                                    ))
+                                        ?.areas;
+                                    if (res != null) {
+                                      areas = res;
+                                      areas = areas
+                                        ?..map((e) {
+                                          return e..isActive = e.id == areaId;
+                                        }).toList();
+                                      showSheet(
+                                        SheetType.area,
+                                        context,
+                                        (dates, ids, areaId) async {
+                                          this.areaId = areaId;
+
+                                          areas = areas
+                                            ?..map((e) {
+                                              return e
+                                                ..isActive = e.id == areaId;
+                                            }).toList();
+
+                                          await cubit.getHomeData(
+                                              data: dates,
+                                              playgrounds: [],
+                                              areaId: areaId);
+                                        },
+                                        playground,
+                                        _days,
+                                        areas: areas,
+                                      );
+                                    }
+                                  },
+                                  icon: Icon(
+                                    Icons.location_city_outlined,
+                                    color: LightThemeColors.secondary,
                                   ),
                                 ),
                               )
@@ -311,10 +362,12 @@ class _HomeScreenState extends State<HomeScreen> {
   showSheet(
     SheetType type,
     BuildContext context,
-    Function(List<String>? dates, List<int>? playgroundId)? onsubmit,
+    Function(List<String>? dates, List<int>? playgroundId, int? areaId)?
+        onsubmit,
     PlayGrounds? playground,
-    Days? days,
-  ) {
+    Days? days, {
+    List<Location>? areas,
+  }) {
     Alerts.bottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -328,6 +381,7 @@ class _HomeScreenState extends State<HomeScreen> {
         type: type,
         onsubmit: onsubmit,
         days: days,
+        areas: areas,
       ),
     );
   }

@@ -107,9 +107,12 @@ class UserModel {
 class Location {
   int? id;
   String? name;
+  bool? isActive;
+
   Location({
     this.id,
     this.name,
+    this.isActive = false,
   });
 
   Map<String, dynamic> toMap() {

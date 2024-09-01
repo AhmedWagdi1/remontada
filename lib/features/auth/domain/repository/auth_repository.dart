@@ -11,18 +11,16 @@ class AuthRepository {
   final DioService dioService;
   AuthRepository(this.dioService);
 
-  Future<Areas?> getArreasRequest() async {
+  Future<Areas?> getArreasRequest({
+    final bool loading = false,
+  }) async {
     final response = await dioService.getData(
       url: AuthEndPoints.area,
+      loading: loading,
     );
-    log("failed", name: "1");
     if (response.isError == false) {
-      log("success", name: "2");
-      final Map<String, dynamic> res =
-          response.response?.data["data"] as Map<String, dynamic>;
       return Areas.fromMap(response.response?.data["data"]);
     } else {
-      log("failed", name: "3");
       return null;
     }
   }

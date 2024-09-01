@@ -5,13 +5,14 @@ class HomeRepo {
   final DioService dioService;
   HomeRepo(this.dioService);
 
-  getHomedata({List<int>? playgrounds, List<String>? data}) async {
+  getHomedata({List<int>? playgrounds, List<String>? data, int? areaId}) async {
     final ApiResponse response = await dioService.getData(
       url: HomeEndPoints.home,
       query: {
         "playgrounds[]": playgrounds,
         "date[]": data,
-      },
+        "area_id": areaId,
+      }..removeWhere((key, value) => value == null),
     );
 
     if (response.isError == false) {

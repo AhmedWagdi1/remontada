@@ -148,5 +148,6 @@
   "joinWaiting":"Join Waiting List",
   "current_matches": "Current Matches",
   "finished_matches": "Finished Matches",
-  "inWainitingList": "You have been placed on the waiting list in case one of the subscribers apologizes"
+  "inWainitingList": "You have been placed on the waiting list in case one of the subscribers apologizes",
+  "match_filter_city_description": "Filter matches by city"
 }

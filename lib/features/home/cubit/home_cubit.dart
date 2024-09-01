@@ -14,10 +14,10 @@ class HomeCubit extends Cubit<HomeState> {
   static HomeCubit get(context) => BlocProvider.of(context);
   HomeRepo homeRepo = locator<HomeRepo>();
   MatchDetailsRepo matchDetailsRepo = MatchDetailsRepo(locator<DioService>());
-  getHomeData({List<int>? playgrounds, List<String>? data}) async {
+  getHomeData({List<int>? playgrounds, List<String>? data, int? areaId}) async {
     emit(HomeDataLoading());
-    final response =
-        await homeRepo.getHomedata(playgrounds: playgrounds, data: data);
+    final response = await homeRepo.getHomedata(
+        playgrounds: playgrounds, data: data, areaId: areaId);
 
     if (response != null) {
       HomeModel homeModel = HomeModel.fromMap(response as Map<String, dynamic>);
