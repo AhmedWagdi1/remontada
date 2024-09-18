@@ -46,7 +46,10 @@ class _SplashScreenState extends State<SplashScreen>
       body: BlocConsumer<SplashCubit, SplashStates>(
         listener: (context, state) async {
           if (state is LocationDeniedstate)
-            showLocationPermissionDialog(context);
+            showLocationPermissionDialog(
+              context,
+              SplashCubit.get(context),
+            );
 
           // Navigator.pushNamed(
           //   context,
@@ -167,7 +170,7 @@ class _SplashScreenState extends State<SplashScreen>
 //   }
 // }
 
-void showLocationPermissionDialog(BuildContext context) {
+void showLocationPermissionDialog(BuildContext context, SplashCubit cubit) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -189,8 +192,15 @@ void showLocationPermissionDialog(BuildContext context) {
               'الغاء',
               style: TextStyle(color: Colors.grey),
             ),
-            onPressed: () {
-              SystemNavigator.pop();
+            onPressed: () async {
+              // SystemNavigator.pop();
+              final route = await cubit.checkLogin();
+              Future.delayed(Duration(milliseconds: 3000));
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                route,
+                (route) => false,
+              );
             },
           ),
           ElevatedButton(

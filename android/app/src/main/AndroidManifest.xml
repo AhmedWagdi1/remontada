@@ -8,7 +8,8 @@
 
         android:label="ريمونتادا"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher",
+         android:enableOnBackInvokedCallback="true">
         <meta-data android:name="com.google.android.geo.API_KEY"
                android:value="AIzaSyAD25N22diVc_aNlpdm34JnGd8aZV08ZhM"/>
         <activity
