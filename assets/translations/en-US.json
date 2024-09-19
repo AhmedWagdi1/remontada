@@ -150,4 +150,12 @@
   "finished_matches": "Finished Matches",
   "inWainitingList": "You have been placed on the waiting list in case one of the subscribers apologizes",
   "match_filter_city_description": "Filter matches by city"
+
+,
+ "openSetting": "Go to settings",
+"location_req": "Location permission required",
+"enableReq": "Enable permission",
+"location_req1": "This app requires location access to provide you with better services.",
+"location_req2": "Please enable location permissions from the settings.",
+"location_req3": "If canceled, you will not be able to find nearby matches."
 }

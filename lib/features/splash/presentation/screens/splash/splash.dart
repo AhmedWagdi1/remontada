@@ -1,10 +1,10 @@
 import 'package:animated_widgets_flutter/widgets/opacity_animated.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:remontada/core/theme/light_theme.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../../core/utils/extentions.dart';
 import '../../../cubit/splash_cubit.dart';
@@ -45,12 +45,11 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
       body: BlocConsumer<SplashCubit, SplashStates>(
         listener: (context, state) async {
-          if (state is LocationDeniedstate)
-            showLocationPermissionDialog(
-              context,
-              SplashCubit.get(context),
-            );
+          final cubit = context.read<SplashCubit>();
 
+          if (state is LocationDeniedstate) {
+            firstDialog(context, cubit);
+          }
           // Navigator.pushNamed(
           //   context,
           //   route,
@@ -108,6 +107,61 @@ class _SplashScreenState extends State<SplashScreen>
           );
         },
       ),
+    );
+  }
+
+  Future<dynamic> firstDialog(BuildContext context, SplashCubit cubit) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text(
+            "location_req".tr(),
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            'location_req1'.tr() + 'location_req3'.tr(),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                'settings.cancel'.tr(),
+                style: TextStyle(color: Colors.grey),
+              ),
+              onPressed: () async {
+                // SystemNavigator.pop();
+                Navigator.of(context).pop();
+                final route = await cubit.checkLogin();
+                Future.delayed(Duration(milliseconds: 3000));
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  route,
+                  (route) => false,
+                );
+              },
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: LightThemeColors.primary, // لون الزر
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text('enableReq'.tr()),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                showLocationPermissionDialog(
+                  context,
+                  cubit,
+                );
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -178,18 +232,17 @@ void showLocationPermissionDialog(BuildContext context, SplashCubit cubit) {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        title: const Text(
-          "إذن الموقع مطلوب",
+        title: Text(
+          "location_req".tr(),
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        content: const Text(
-          'يتطلب هذا التطبيق الوصول إلى الموقع لتزويدك بخدمات أفضل. '
-          "الرجاء تمكين أذونات الموقع من الإعدادات.",
+        content: Text(
+          'location_req1'.tr() + 'location_req2'.tr() + 'location_req3'.tr(),
         ),
         actions: <Widget>[
           TextButton(
-            child: const Text(
-              'الغاء',
+            child: Text(
+              'settings.cancel'.tr(),
               style: TextStyle(color: Colors.grey),
             ),
             onPressed: () async {
@@ -210,7 +263,7 @@ void showLocationPermissionDialog(BuildContext context, SplashCubit cubit) {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: const Text('الذهاب للاعدادات'),
+            child: Text('openSetting'.tr()),
             onPressed: () async {
               await openAppSettings();
               // يفتح إعدادات التطبيق
