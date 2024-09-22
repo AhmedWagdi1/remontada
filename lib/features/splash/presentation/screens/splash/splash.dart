@@ -48,17 +48,17 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
       body: BlocConsumer<SplashCubit, SplashStates>(
         listener: (context, state) async {
-          final cubit = context.read<SplashCubit>();
+          // final cubit = context.read<SplashCubit>();
 
-          if (state is LocationDeniedstate) {
-            firstDialog(context, cubit);
-          }
+          // if (state is LocationDeniedstate) {
+          //   firstDialog(context, cubit);
+          // }
           // Navigator.pushNamed(
           //   context,
           //   route,
           // );
 
-          if (state is LocationAcceptedState) {
+          if (state is LocationAcceptedState || state is LocationDeniedstate) {
             final route = await SplashCubit.get(context).checkLogin();
             Future.delayed(Duration(milliseconds: 3000));
             Navigator.pushNamedAndRemoveUntil(

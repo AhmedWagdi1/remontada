@@ -16,6 +16,8 @@ import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/shared/widgets/loadinganderror.dart';
 
+import '../../../../core/resources/font_manager.dart';
+
 class MoreScreen extends StatefulWidget {
   const MoreScreen({super.key});
 
@@ -119,6 +121,73 @@ class _MoreScreenState extends State<MoreScreen> {
                                 title: titles[index],
                               ),
                             ),
+                            // Padding(
+                            //   padding: EdgeInsets.only(
+                            //     bottom: 10,
+                            //   ),
+                            //   child: Container(
+                            //     padding: EdgeInsets.symmetric(
+                            //       horizontal: 21,
+                            //       // vertical: 10.h,
+                            //     ),
+                            //     // width: 341.w,
+                            //     height: 54,
+                            //     decoration: BoxDecoration(
+                            //       color: context.background,
+                            //       borderRadius: BorderRadius.circular(13),
+                            //       boxShadow: [
+                            //         BoxShadow(
+                            //           offset: Offset.zero,
+                            //           blurRadius: 30,
+                            //           color: LightThemeColors.black.withOpacity(
+                            //             .1,
+                            //           ),
+                            //         ),
+                            //       ],
+                            //     ),
+                            //     child: Builder(builder: (context) {
+                            //       return Row(
+                            //         mainAxisAlignment:
+                            //             MainAxisAlignment.spaceBetween,
+                            //         children: [
+                            //           Row(
+                            //             children: [
+                            //               "location".svg().toSvg(
+                            //                     color: context.primaryColor,
+                            //                     width: 21,
+                            //                     height: 21,
+                            //                   ),
+                            //               15.pw,
+                            //               Column(
+                            //                 crossAxisAlignment:
+                            //                     CrossAxisAlignment.start,
+                            //                 mainAxisSize: MainAxisSize.min,
+                            //                 mainAxisAlignment:
+                            //                     MainAxisAlignment.center,
+                            //                 children: [
+                            //                   Row(
+                            //                     children: [
+                            //                       CustomText(
+                            //                         "enableLocation".tr(),
+                            //                         style: TextStyle(
+                            //                           color:
+                            //                               context.primaryColor,
+                            //                         ).s14.bold,
+                            //                       ),
+                            //                     ],
+                            //                   )
+                            //                 ],
+                            //               ),
+                            //             ],
+                            //           ),
+                            //           CustomSwitchLocation(
+                            //             cubit: cubit,
+                            //           )
+                            //         ],
+                            //       );
+                            //     }),
+                            //   ),
+                            // ),
                             GestureDetector(
                               onTap: () async {
                                 showDeletesheet(context, () async {
@@ -214,6 +283,7 @@ List titles = [
   LocaleKeys.profile.tr(),
   LocaleKeys.captain_request.tr(),
   LocaleKeys.notification.tr(),
+  "enableLocation".tr(),
   LocaleKeys.contact_us.tr(),
   LocaleKeys.about.tr(),
   LocaleKeys.share.tr(),
@@ -225,6 +295,7 @@ List icons = [
   Assets.icons.name,
   Assets.icons.whistle,
   Assets.icons.notify,
+  "location".svg(),
   Assets.icons.calling,
   Assets.icons.information,
   Assets.icons.share,

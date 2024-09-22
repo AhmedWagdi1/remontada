@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:remontada/core/Router/Router.dart';
 import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
@@ -104,6 +107,70 @@ class _MoreItemState extends State<MoreItem> {
         },
         builder: (context, state) {
           final cubit = MoreCubit.get(context);
+          if (widget.title == "enableLocation".tr())
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: 10,
+              ),
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 21,
+                  // vertical: 10.h,
+                ),
+                // width: 341.w,
+                height: 54,
+                decoration: BoxDecoration(
+                  color: context.background,
+                  borderRadius: BorderRadius.circular(13),
+                  boxShadow: [
+                    BoxShadow(
+                      offset: Offset.zero,
+                      blurRadius: 30,
+                      color: LightThemeColors.black.withOpacity(
+                        .1,
+                      ),
+                    ),
+                  ],
+                ),
+                child: Builder(builder: (context) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          "location".svg().toSvg(
+                                color: context.primaryColor,
+                                width: 21,
+                                height: 21,
+                              ),
+                          15.pw,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  CustomText(
+                                    "enableLocation".tr(),
+                                    style: TextStyle(
+                                      color: context.primaryColor,
+                                    ).s14.bold,
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                      CustomSwitchLocation(
+                        cubit: cubit,
+                      )
+                    ],
+                  );
+                }),
+              ),
+            );
           return GestureDetector(
             onTap: () {
               pressedItem(context);
@@ -266,6 +333,82 @@ class _CustomSwitchItemState extends State<CustomSwitchItem>
         }
 
         setState(() {});
+      },
+    );
+  }
+}
+
+class CustomSwitchLocation extends StatefulWidget {
+  const CustomSwitchLocation({
+    super.key,
+    this.cubit,
+  });
+  final MoreCubit? cubit;
+
+  @override
+  State<CustomSwitchLocation> createState() => _CustomSwitchLocationState();
+}
+
+class _CustomSwitchLocationState extends State<CustomSwitchLocation>
+    with WidgetsBindingObserver {
+  bool isSwitched = false;
+  getLocatiionPermissionStatus() async {
+    bool? switched;
+    switched = await widget.cubit?.getLocatiionPermissionStatus();
+    setState(() {
+      isSwitched = switched ?? false;
+    });
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    getLocatiionPermissionStatus();
+    super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      getLocatiionPermissionStatus();
+      widget.cubit?.getPostion();
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<MoreCubit, MoreStates>(
+      listener: (context, state) {
+        final cubit = context.read<MoreCubit>();
+        if (state is LocationDeniedstate) {
+          cubit.showLocationPermissionDialog(
+            context,
+          );
+        }
+      },
+      builder: (context, state) {
+        final cubit = MoreCubit.get(context);
+        return CustomSwitch(
+          value: isSwitched,
+          onChanged: (val) async {
+            if (val != isSwitched && val == true) {
+              cubit.getPostion();
+            } else {
+              Platform.isAndroid
+                  ? await Geolocator.openAppSettings()
+                  : await Geolocator.openLocationSettings();
+            }
+
+            setState(() {});
+          },
+        );
       },
     );
   }

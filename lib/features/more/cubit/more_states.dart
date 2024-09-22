@@ -28,3 +28,7 @@ final class ProfileSuccess extends MoreStates {
 }
 
 final class ProfileFailed extends MoreStates {}
+
+final class LocationDeniedstate extends MoreStates {}
+
+final class LocationAcceptedState extends MoreStates {}
