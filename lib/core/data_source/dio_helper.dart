@@ -67,10 +67,12 @@ class DioService {
     bool isFile = false,
   }) async {
     _mydio.options.headers["Authorization"] = 'Bearer ${Utils.token}';
+     _mydio.options.headers["Content-Type"] = "application/x-www-form-urlencoded",;
     _mydio.options.headers["lat"] = Utils.lat;
     _mydio.options.headers["lng"] = Utils.lng;
     if (isFile == true)
       _mydio.options.headers["Content-Type"] = 'multipart/form-data';
+
     print(FormData.fromMap(body ?? {}).fields);
     try {
       if (loading) {

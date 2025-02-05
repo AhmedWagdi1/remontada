@@ -124,9 +124,11 @@ class _NotifyItemState extends State<NotifyItem>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
+                              width: 150,
                               child: CustomText(
                                 widget.notificationModel?.data?.title ?? "",
                                 style: TextStyle(
+                                  overflow: TextOverflow.ellipsis,
                                   color:
                                       widget.notificationModel?.isread ?? false
                                           ? LightThemeColors.notifytextSeen
