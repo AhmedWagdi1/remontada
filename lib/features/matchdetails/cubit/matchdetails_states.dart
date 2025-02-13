@@ -17,6 +17,7 @@ class MatchDetailsLoaded extends MatchDetailsState {
 class MatchDetailsFailed extends MatchDetailsState {}
 
 class SubScribersLoading extends MatchDetailsState {}
+// class SubScribersFailed extends MatchDetailsState {}
 
 // class SubScribersLoaded extends MatchDetailsState {
 

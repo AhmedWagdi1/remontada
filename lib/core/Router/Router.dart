@@ -6,6 +6,7 @@ import 'package:remontada/features/home/presentation/screens/webview.dart';
 import 'package:remontada/features/layout/presentation/screens/layout_screen.dart';
 import 'package:remontada/features/matchdetails/presentaion/screens/matchDetails_screen.dart';
 import 'package:remontada/features/more/domain/contact_request.dart';
+import 'package:remontada/features/my_matches/presentation/screens/create_match_screen.dart';
 import 'package:remontada/features/player_details/presentation/screens/player_details.dart';
 import 'package:remontada/features/profile/presentation/screens/edit_profile.screen.dart';
 import 'package:remontada/features/splash/cubit/splash_cubit.dart';
@@ -15,6 +16,7 @@ import '../../features/auth/presentation/screens/login/login_screen.dart';
 import '../../features/auth/presentation/screens/otp/otp_screen.dart';
 import '../../features/auth/presentation/screens/sign_up/sign_up_screen.dart';
 import '../../features/matchdetails/presentaion/screens/map_screen.dart';
+import '../../features/matchdetails/presentaion/screens/players_screen_supervisor.dart';
 import '../../features/more/domain/model/model.dart';
 import '../../features/profile/domain/edit_request.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
@@ -40,6 +42,8 @@ class Routes {
   static const String MapScreen = "/MAPsCREEN";
   static const String contactScreen = "/contactScreen";
   static const String webPage = "/webPage";
+  static const String CreateMatchScreen = "/CreateMatchScreen";
+  static const String PlayersScreenSupervisor = "/PlayersScreenSupervisor";
 }
 
 class RouteGenerator {
@@ -186,6 +190,27 @@ class RouteGenerator {
                 uri: routeSettings.arguments as String,
               );
             });
+      case Routes.CreateMatchScreen:
+        return CupertinoPageRoute(
+          settings: routeSettings,
+          builder: (_) {
+            return CreateMatchScreen(
+              id: routeSettings.arguments as String?,
+              // uri: routeSettings.arguments as String,
+            );
+          },
+        );
+      case Routes.PlayersScreenSupervisor:
+        return CupertinoPageRoute(
+          settings: routeSettings,
+          builder: (_) {
+            return PlayersScreenSupervisor(
+              id: routeSettings.arguments as String?,
+              // id: routeSettings.arguments as String?,
+              // uri: routeSettings.arguments as String,
+            );
+          },
+        );
       // case Routes.SplashScreen:
       //   return CupertinoPageRoute(
       //       settings: routeSettings,

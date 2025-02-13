@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:remontada/core/data_source/dio_helper.dart';
 import 'package:remontada/core/utils/Locator.dart';
 import 'package:remontada/core/utils/firebase_message.dart';
@@ -14,7 +15,6 @@ import 'package:remontada/features/more/domain/contact_request.dart';
 import 'package:remontada/features/more/domain/model/model.dart';
 import 'package:remontada/features/more/domain/more_repo.dart';
 import 'package:remontada/features/profile/domain/repositories/edit_repositories.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/theme/light_theme.dart';
 import '../../../core/utils/utils.dart';
@@ -137,8 +137,8 @@ class MoreCubit extends Cubit<MoreStates> {
     final response = await moreRepo.logout();
 
     if (response != null) {
-      await Utils.dataManager.deleteUserData();
-      await FBMessging.revokeToken();
+      Utils.deleteUserData();
+      FBMessging.revokeToken();
 
       emit(LogOutSuccess());
       return true;

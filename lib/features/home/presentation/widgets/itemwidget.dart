@@ -23,14 +23,22 @@ class ItemWidget extends StatefulWidget {
   const ItemWidget({
     super.key,
     this.ismymatch = false,
+    this.isreserved,
+    this.isHomeGroupe = false,
     this.matchModel,
+    this.delete,
+    this.isSupervisor,
     this.cubit,
     this.cubitt,
   });
   final MatchModel? matchModel;
   final bool? ismymatch;
+  final bool? isHomeGroupe;
+  final bool? isreserved;
+  final bool? isSupervisor;
   final HomeCubit? cubit;
   final MyMatchesCubit? cubitt;
+  final VoidCallback? delete;
 
   @override
   State<ItemWidget> createState() => _ItemWidgetState();
@@ -200,111 +208,174 @@ class _ItemWidgetState extends State<ItemWidget> {
                 ),
                 31.pw,
                 Expanded(
-                  flex: 6,
+                  flex: widget.isSupervisor == true ? 2 : 6,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       // 9.ph,
-                      ButtonWidget(
-                        onTap: () async {
-                          final res = await matchDetailsRepo.getSubscribers(
-                              widget.matchModel?.id.toString() ?? "");
-                          if (res != null)
-                            this.subscribers = SubScribersModel.fromMap(res);
-                          if (Utils.token == "") {
-                            Alerts.bottomSheet(context,
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 25),
+                      widget.isSupervisor == true
+                          ? Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      Routes.CreateMatchScreen,
+                                      arguments:
+                                          widget.matchModel?.id.toString() ??
+                                              "",
+                                    );
+                                  },
+                                  child: Icon(
+                                    Icons.edit,
+                                    color: context.primaryColor,
+                                    size: 20,
+                                  ),
+                                ),
+                                20.pw,
+                                GestureDetector(
+                                  onTap: widget.delete,
+                                  child: Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                    size: 20,
+                                  ),
+                                ),
+                              ],
+                            )
+                          : widget.isHomeGroupe == true
+                              ? Container(
+                                  height: 30,
+                                  width: 95,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                      22,
+                                    ),
+                                    color:
+                                        widget.matchModel?.is_reserved == true
+                                            ? Colors.red.withOpacity(.3)
+                                            : Colors.green.withOpacity(
+                                                .3,
+                                              ),
+                                  ),
+                                  child: Center(
+                                    child: CustomText(
+                                      widget.matchModel?.is_reserved == true
+                                          ? "محجوز"
+                                          : "متاح للحجز",
+                                      color:
+                                          widget.matchModel?.is_reserved == true
+                                              ? Colors.red
+                                              : Colors.green,
+                                    ),
+                                  ),
+                                )
+                              : ButtonWidget(
+                                  onTap: () async {
+                                    final res =
+                                        await matchDetailsRepo.getSubscribers(
+                                            widget.matchModel?.id.toString() ??
+                                                "");
+                                    if (res != null)
+                                      this.subscribers =
+                                          SubScribersModel.fromMap(res);
+                                    if (Utils.token == "") {
+                                      Alerts.bottomSheet(context,
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 15, vertical: 25),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: ButtonWidget(
+                                                    onTap: () =>
+                                                        Navigator.pushNamed(
+                                                      context,
+                                                      Routes.LoginScreen,
+                                                    ),
+                                                    child: CustomText(
+                                                      weight: FontWeight.w600,
+                                                      fontSize: 16,
+                                                      "تسجيل الدخول",
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                                15.pw,
+                                                Expanded(
+                                                  child: ButtonWidget(
+                                                    onTap: () =>
+                                                        Navigator.pushNamed(
+                                                      context,
+                                                      Routes.RegisterScreen,
+                                                    ),
+                                                    child: CustomText(
+                                                      weight: FontWeight.w600,
+                                                      fontSize: 16,
+                                                      " انشاء حساب",
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ));
+                                    } else {
+                                      showPlayersheet(
+                                        matchmodel: widget.matchModel,
+                                        context,
+                                        subscribers: this.subscribers,
+                                      );
+                                    }
+                                  },
+                                  radius: 14,
+                                  width: 186,
+                                  height: 28,
+                                  buttonColor: LightThemeColors.surface,
                                   child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Expanded(
-                                        child: ButtonWidget(
-                                          onTap: () => Navigator.pushNamed(
-                                            context,
-                                            Routes.LoginScreen,
-                                          ),
-                                          child: CustomText(
-                                            weight: FontWeight.w600,
-                                            fontSize: 16,
-                                            "تسجيل الدخول",
-                                            color: Colors.white,
-                                          ),
-                                        ),
+                                      SvgPicture.asset(
+                                        width: 16.54,
+                                        height: 16.54,
+                                        Assets.icons.tshirt,
+                                        color: context.background,
                                       ),
-                                      15.pw,
-                                      Expanded(
-                                        child: ButtonWidget(
-                                          onTap: () => Navigator.pushNamed(
-                                            context,
-                                            Routes.RegisterScreen,
-                                          ),
-                                          child: CustomText(
-                                            weight: FontWeight.w600,
-                                            fontSize: 16,
-                                            " انشاء حساب",
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      )
+                                      3.87.pw,
+                                      CustomText(
+                                        style: TextStyle(
+                                          color: LightThemeColors.background,
+                                        ).s13.regular,
+                                        "المشتركين",
+                                        // fontSize: 12.sp,
+                                        // weight: FontWeight.w400,
+                                        // color: LightThemeColors.background,
+                                      ),
+                                      2.87.pw,
+                                      CustomText(
+                                        "${widget.matchModel?.constSub ?? ''} / ",
+                                        // fontSize: 13,
+                                        // weight: FontWeight.w400,
+
+                                        style: TextStyle(
+                                          color: LightThemeColors.background,
+                                        ).s13.regular,
+                                      ),
+                                      CustomText(
+                                        widget.matchModel?.actualSub ?? "",
+                                        // fontSize: 12.sp,
+                                        // weight: FontWeight.w400,
+                                        // color: LightThemeColors.black,
+                                        style: TextStyle(
+                                          color: LightThemeColors.black,
+                                        ).s14.medium,
+                                      ),
                                     ],
                                   ),
-                                ));
-                          } else {
-                            showPlayersheet(
-                              matchmodel: widget.matchModel,
-                              context,
-                              subscribers: this.subscribers,
-                            );
-                          }
-                        },
-                        radius: 14,
-                        width: 186,
-                        height: 28,
-                        buttonColor: LightThemeColors.surface,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(
-                              width: 16.54,
-                              height: 16.54,
-                              Assets.icons.tshirt,
-                              color: context.background,
-                            ),
-                            3.87.pw,
-                            CustomText(
-                              style: TextStyle(
-                                color: LightThemeColors.background,
-                              ).s13.regular,
-                              "المشتركين",
-                              // fontSize: 12.sp,
-                              // weight: FontWeight.w400,
-                              // color: LightThemeColors.background,
-                            ),
-                            2.87.pw,
-                            CustomText(
-                              "${widget.matchModel?.constSub ?? ''} / ",
-                              // fontSize: 13,
-                              // weight: FontWeight.w400,
-
-                              style: TextStyle(
-                                color: LightThemeColors.background,
-                              ).s13.regular,
-                            ),
-                            CustomText(
-                              widget.matchModel?.actualSub ?? "",
-                              // fontSize: 12.sp,
-                              // weight: FontWeight.w400,
-                              // color: LightThemeColors.black,
-                              style: TextStyle(
-                                color: LightThemeColors.black,
-                              ).s14.medium,
-                            ),
-                          ],
-                        ),
-                      ),
+                                ),
                       // ButtonWidget(
                       //   width: 110.w,
                       //   height: 22.h,

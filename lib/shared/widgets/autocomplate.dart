@@ -544,6 +544,7 @@ class _CutomAutoCompleteTextFeildState<T>
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.symmetric(
                                       vertical: 18,
+                                      horizontal: 20,
                                     ),
                                     constraints: BoxConstraints(),
 
@@ -832,7 +833,7 @@ class _CutomAutoCompleteTextFeildState<T>
             surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.25),
+                  maxHeight: MediaQuery.of(context).size.height * 0.12),
               child: _isLoading
                   ? const Center(
                       child: Padding(
@@ -847,45 +848,45 @@ class _CutomAutoCompleteTextFeildState<T>
                           )
                       : Scrollbar(
                           child: ListView.builder(
-                              padding: EdgeInsets.only(
-                                  // bottom: 10,
-                                  ),
-                              itemCount: searchedSuggestions.length,
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) => InkWell(
-                                    onTap: () {
-                                      if (widget.keepSuggestionAftertSelect ==
-                                          false) {
-                                        selectedItem = widget.itemAsString
-                                                ?.call(searchedSuggestions[
-                                                    index]) ??
-                                            searchedSuggestions[index]
-                                                .toString();
+                            padding: EdgeInsets.only(
+                                // bottom: 10,
+                                ),
+                            itemCount: searchedSuggestions.length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) => InkWell(
+                              onTap: () {
+                                if (widget.keepSuggestionAftertSelect ==
+                                    false) {
+                                  selectedItem = widget.itemAsString
+                                          ?.call(searchedSuggestions[index]) ??
+                                      searchedSuggestions[index].toString();
 
-                                        hightlightIndex = index;
-                                        closeOverlay();
-                                      }
-                                      widget.onChanged(
-                                          searchedSuggestions[index]);
-                                    },
-                                    child: widget.itemBuilder?.call(context,
-                                            searchedSuggestions[index]) ??
-                                        ListTile(
-                                            tileColor: hightlightIndex == index
-                                                ? Colors.grey.withOpacity(0.2)
-                                                : null,
-                                            shape: const UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.grey)),
-                                            title: SelectionContainer.disabled(
-                                              child: CustomText(
-                                                  widget.itemAsString?.call(
-                                                          searchedSuggestions[
-                                                              index]) ??
-                                                      searchedSuggestions[index]
-                                                          .toString()),
-                                            )),
-                                  )),
+                                  hightlightIndex = index;
+                                  closeOverlay();
+                                }
+                                widget.onChanged(searchedSuggestions[index]);
+                              },
+                              child: widget.itemBuilder?.call(
+                                      context, searchedSuggestions[index]) ??
+                                  ListTile(
+                                    tileColor: hightlightIndex == index
+                                        ? Colors.grey.withOpacity(0.2)
+                                        : null,
+                                    shape: const UnderlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.grey)),
+                                    title: SelectionContainer.disabled(
+                                      child: CustomText(
+                                        widget.itemAsString?.call(
+                                              searchedSuggestions[index],
+                                            ) ??
+                                            searchedSuggestions[index]
+                                                .toString(),
+                                      ),
+                                    ),
+                                  ),
+                            ),
+                          ),
                         ),
             ),
           ),

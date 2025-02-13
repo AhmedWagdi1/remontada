@@ -18,6 +18,7 @@ class Utils {
   static String uuid = "";
   static String lat = "";
   static String lng = "";
+  static bool? isSuperVisor = false;
 
   static User user = User();
   static bool fromNotification = false;
@@ -33,6 +34,7 @@ class Utils {
   static saveUserInHive(Map<String, dynamic> response) async {
     user = User.fromMap(response);
     token = user.token ?? '';
+    isSuperVisor = user.type == "supervisor";
     FBMessging.subscripeAllUsers();
     await user.type == "client"
         ? FBMessging.subscripeAllclients()
@@ -43,6 +45,7 @@ class Utils {
   static deleteUserData() async {
     token = '';
     FCMToken = "";
+    isSuperVisor = false;
     await Future.wait([
       dataManager.deleteUserData(),
       FBMessging.subscripeAllUsers(),

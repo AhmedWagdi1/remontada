@@ -15,9 +15,14 @@ class MatchDetailsRepo {
     }
   }
 
-  getSubscribers(String id) async {
-    final ApiResponse response =
-        await dioService.getData(url: "${MatchEndpoints.subscribers}/$id");
+  getSubscribers(String id, {String? type}) async {
+    final ApiResponse response = await dioService.getData(
+      url:
+          // type == "group"
+          //     ? "/subscribers_list"
+          //     :
+          "${MatchEndpoints.subscribers}/$id",
+    );
     if (response.isError == false) {
       return response.response?.data["data"];
     } else {
@@ -31,6 +36,50 @@ class MatchDetailsRepo {
       isForm: true,
       url: "${MatchEndpoints.subscribe}",
       body: {"match_id": id},
+    );
+    if (response.isError == false) {
+      return true;
+    } else {
+      return null;
+    }
+  }
+
+  // perscense(String paymentMethod, {String? id}) async {
+  //   final ApiResponse response = await dioService.postData(
+  //     isForm: true,
+  //     body: {"payment_method": paymentMethod},
+  //     loading: true,
+  //     url: "/perscense/$id",
+  //   );
+  // }
+
+  addSubscribers({String? name, String? matchId, String? phone}) async {
+    final ApiResponse response = await dioService.postData(
+      isForm: true,
+      body: {
+        "name": name,
+        "match_id": matchId,
+        "phone": name,
+      },
+      loading: true,
+      url: "/add_subscriber",
+    );
+  }
+
+  apsence({String? subscriber_id, String? paymment_method}) async {
+    final ApiResponse response = await dioService.postData(
+      isForm: true,
+      body: {
+        "payment_method": paymment_method,
+        // "subscriber_id": subscriber_id,
+      },
+      // body: {
+      //   "name": name,
+      //   "match_id": matchId,
+      //   "phone": name,
+      // },
+      loading: true,
+      url: "/presence/$subscriber_id",
     );
     if (response.isError == false) {
       return true;

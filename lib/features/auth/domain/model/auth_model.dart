@@ -164,9 +164,8 @@ class Locations {
 
 class Areas {
   List<Location>? areas;
-  Areas({
-    this.areas,
-  });
+  List<Location>? playgrounds;
+  Areas({this.areas, this.playgrounds});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -179,6 +178,13 @@ class Areas {
       areas: json['cities'] != null
           ? List<Location>.from(
               (json['cities'] as List).map<Location?>(
+                (x) => Location.fromMap(x as Map<String, dynamic>),
+              ),
+            )
+          : null,
+      playgrounds: json['playgrounds'] != null
+          ? List<Location>.from(
+              (json['playgrounds'] as List).map<Location?>(
                 (x) => Location.fromMap(x as Map<String, dynamic>),
               ),
             )

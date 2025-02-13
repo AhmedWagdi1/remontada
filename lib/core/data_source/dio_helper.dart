@@ -67,7 +67,8 @@ class DioService {
     bool isFile = false,
   }) async {
     _mydio.options.headers["Authorization"] = 'Bearer ${Utils.token}';
-     _mydio.options.headers["Content-Type"] = "application/x-www-form-urlencoded",;
+    _mydio.options.headers["Content-Type"] =
+        "application/x-www-form-urlencoded";
     _mydio.options.headers["lat"] = Utils.lat;
     _mydio.options.headers["lng"] = Utils.lng;
     if (isFile == true)
@@ -196,7 +197,7 @@ class DioService {
         );
       }
       if (e.response?.statusCode == 401) {
-        await Utils.dataManager.deleteUserData();
+        await Utils.deleteUserData();
         Navigator.of(Utils.navigatorKey().currentContext!)
             .pushNamedAndRemoveUntil(
           Routes.LayoutScreen,

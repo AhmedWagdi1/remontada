@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,9 +5,11 @@ import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
+import 'package:remontada/core/utils/utils.dart';
 import 'package:remontada/features/home/presentation/widgets/itemwidget.dart';
 import 'package:remontada/features/my_matches/cubit/myMatches_cubit.dart';
 import 'package:remontada/features/my_matches/cubit/myMatches_states.dart';
+import 'package:remontada/features/my_matches/presentation/screens/supervisorMatches_scree.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/shared/widgets/loadinganderror.dart';
 
@@ -27,82 +27,88 @@ class _MyMatchesScreenState extends State<MyMatchesScreen>
     with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: SizedBox(),
-        title: CustomText(
-          "مبارياتي",
-          fontSize: 26,
-          weight: FontWeight.w800,
-          color: context.primaryColor,
-        ),
-      ),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CustomText(
-              fontSize: 14,
-              weight: FontWeight.w500,
-              LocaleKeys.my_matches_subtitles.tr(),
-              color: LightThemeColors.secondaryText,
-            ),
-            40.ph,
-            TabBar(
-              labelPadding: EdgeInsets.symmetric(horizontal: 44),
-              padding: const EdgeInsets.symmetric(horizontal: 22),
-              indicatorColor: Colors.black,
-              dividerColor: Colors.transparent,
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicator: BoxDecoration(
-                borderRadius: BorderRadius.circular(33),
+    return Utils.isSuperVisor == true
+        ? SupervisormatchesScree()
+        : Scaffold(
+            appBar: AppBar(
+              leading: SizedBox(),
+              title: CustomText(
+                "مبارياتي",
+                fontSize: 26,
+                weight: FontWeight.w800,
                 color: context.primaryColor,
               ),
-              tabAlignment: TabAlignment.center,
-              physics: const NeverScrollableScrollPhysics(),
-              isScrollable: false,
-              onTap: (value) => setState(() {}),
-              tabs: [
-                Tab(
-                  child: CustomText(
-                    'current_matches'.tr(),
-                    fontSize: 14,
-                    weight: FontWeight.w500,
-                    align: TextAlign.center,
-                    color: DefaultTabController.of(context).index == 0
-                        ? Colors.white
-                        : context.primaryColor,
-                  ),
-                ),
-                Tab(
-                  child: CustomText(
-                    'finished_matches'.tr(),
-                    fontSize: 14,
-                    weight: FontWeight.w500,
-                    align: TextAlign.center,
-                    color: DefaultTabController.of(context).index == 1
-                        ? Colors.white
-                        : context.primaryColor,
-                  ),
-                ),
-              ],
             ),
-            TabBarView(physics: NeverScrollableScrollPhysics(), children: [
-              BlocProvider(
-                  create: (context) => MyMatchesCubit()..getMymatches(true),
-                  child: MatchesBody(
-                    isCurrent: true,
-                  )),
-              BlocProvider(
-                  create: (context) => MyMatchesCubit()..getMymatches(false),
-                  child: MatchesBody(
-                    isCurrent: false,
-                  ))
-            ]).expand()
-          ],
-        ),
-      ),
-    );
+            body: SafeArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CustomText(
+                    fontSize: 14,
+                    weight: FontWeight.w500,
+                    LocaleKeys.my_matches_subtitles.tr(),
+                    color: LightThemeColors.secondaryText,
+                  ),
+                  40.ph,
+                  TabBar(
+                    labelPadding: EdgeInsets.symmetric(horizontal: 44),
+                    padding: const EdgeInsets.symmetric(horizontal: 22),
+                    indicatorColor: Colors.black,
+                    dividerColor: Colors.transparent,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    indicator: BoxDecoration(
+                      borderRadius: BorderRadius.circular(33),
+                      color: context.primaryColor,
+                    ),
+                    tabAlignment: TabAlignment.center,
+                    physics: const NeverScrollableScrollPhysics(),
+                    isScrollable: false,
+                    onTap: (value) => setState(() {}),
+                    tabs: [
+                      Tab(
+                        child: CustomText(
+                          'current_matches'.tr(),
+                          fontSize: 14,
+                          weight: FontWeight.w500,
+                          align: TextAlign.center,
+                          color: DefaultTabController.of(context).index == 0
+                              ? Colors.white
+                              : context.primaryColor,
+                        ),
+                      ),
+                      Tab(
+                        child: CustomText(
+                          'finished_matches'.tr(),
+                          fontSize: 14,
+                          weight: FontWeight.w500,
+                          align: TextAlign.center,
+                          color: DefaultTabController.of(context).index == 1
+                              ? Colors.white
+                              : context.primaryColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  TabBarView(
+                      physics: NeverScrollableScrollPhysics(),
+                      children: [
+                        BlocProvider(
+                            create: (context) =>
+                                MyMatchesCubit()..getMymatches(isCurrent: true),
+                            child: MatchesBody(
+                              isCurrent: true,
+                            )),
+                        BlocProvider(
+                            create: (context) => MyMatchesCubit()
+                              ..getMymatches(isCurrent: false),
+                            child: MatchesBody(
+                              isCurrent: false,
+                            ))
+                      ]).expand()
+                ],
+              ),
+            ),
+          );
   }
 }
 
@@ -192,7 +198,7 @@ class _MatchesBodyState extends State<MatchesBody>
         final cubit = MyMatchesCubit.get(context);
         return RefreshIndicator(
           onRefresh: () async {
-            await cubit.getMymatches(widget.isCurrent);
+            await cubit.getMymatches(isCurrent: widget.isCurrent);
           },
           child: LoadingAndError(
             isLoading: state is MyMatchesLoading,

@@ -17,6 +17,7 @@ import 'package:remontada/features/matchdetails/presentaion/widgets/item_widget.
 import 'package:remontada/shared/back_widget.dart';
 import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
+import 'package:remontada/shared/widgets/edit_text_widget.dart';
 import 'package:remontada/shared/widgets/loadinganderror.dart';
 
 import '../../../../core/resources/gen/assets.gen.dart';
@@ -54,6 +55,13 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
           if (state is MatchDetailsLoaded) {
             matchModel = state.matchDetails;
             subScribersModel = state.subScribers;
+          }
+          ;
+          if (state is RefreshState) {
+            MatchDetailsCubit.get(context).getMatchDetails(
+              widget.id.toString(),
+              isLoading: false,
+            );
           }
           ;
           // if (state is SubScribersLoaded) subScribersModel = state.subScribers;
@@ -108,6 +116,49 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                               // bottom: 0,
                               child: BackWidget(),
                             ),
+                            if (Utils.isSuperVisor == false)
+                              if (matchModel.is_owner == true)
+                                Positioned(
+                                  left: 0,
+                                  // bottom: 0,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Alerts.bottomSheet(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(114),
+                                            topRight: Radius.circular(36),
+                                          ),
+                                        ),
+                                        context,
+                                        child: SheetBodyAddPlayers(
+                                          addPlayer: (name, phone) =>
+                                              cubit.addsubscrubers(
+                                            matchid:
+                                                matchModel.id.toString() ?? "",
+                                            name: name,
+                                            phone: phone,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      width: 35,
+                                      height: 35,
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(
+                                          .15,
+                                        ),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Center(
+                                        child: Icon(
+                                          Icons.add,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
                           ],
                         ),
                         5.ph,
@@ -118,6 +169,31 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                           LocaleKeys.match_details_subtitle.tr(),
                           // fontSize: 14.sp,
                           // weight: FontWeight.w500,
+                        ),
+                        25.ph,
+                        Container(
+                          height: 30,
+                          width: 95,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              22,
+                            ),
+                            color: matchModel.isCCompleted == true
+                                ? Colors.red.withOpacity(.3)
+                                : Colors.green.withOpacity(
+                                    .3,
+                                  ),
+                          ),
+                          child: Center(
+                            child: CustomText(
+                              matchModel.isCCompleted == true
+                                  ? "محجوز"
+                                  : "متاح للحجز",
+                              color: matchModel.isCCompleted == true
+                                  ? Colors.red
+                                  : Colors.green,
+                            ),
+                          ),
                         ),
                         31.ph,
                         Column(children: [
@@ -205,17 +281,28 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                               Expanded(
                                 child: ButtonWidget(
                                   onTap: () async {
-                                    final subscribers = await cubit
-                                        .getSubscribers(widget.id.toString());
+                                    final subscribers =
+                                        (Utils.isSuperVisor == false)
+                                            ? await cubit.getSubscribers(
+                                                widget.id.toString(),
+                                                type: matchModel.type ?? "")
+                                            : null;
                                     if (subscribers != null) {
                                       subScribersModel = subscribers;
                                     }
                                     if (Utils.token != "") {
-                                      showPlayersheet(
-                                        matchmodel: matchModel,
-                                        context,
-                                        subscribers: subScribersModel,
-                                      );
+                                      Utils.isSuperVisor == true
+                                          ? Navigator.pushNamed(
+                                              context,
+                                              Routes.PlayersScreenSupervisor,
+                                              arguments:
+                                                  matchModel.id.toString(),
+                                            )
+                                          : showPlayersheet(
+                                              matchmodel: matchModel,
+                                              context,
+                                              subscribers: subScribersModel,
+                                            );
                                     } else {
                                       Alerts.bottomSheet(context,
                                           child: Container(
@@ -313,108 +400,38 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                           ),
                         ),
                         28.ph,
-                        matchModel.isPending == true
-                            ? Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  CustomText(
-                                    align: TextAlign.center,
-                                    "inWainitingList".tr(),
-                                    weight: FontWeight.w500,
-                                    color: Colors.red,
-                                    fontSize: 16,
-                                  ),
-                                  20.ph,
-                                  ButtonWidget(
-                                      buttonColor:
-                                          LightThemeColors.warningButton,
-                                      height: 65,
-                                      // width: 342,
-                                      fontweight: FontWeight.bold,
-                                      radius: 33,
-                                      textColor: context.background,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                        if (Utils.isSuperVisor == false)
+                          if (matchModel.isCCompleted == false)
+                            matchModel.type == "group"
+                                ? ButtonWidget(
+                                    onTap: () => cubit.subScribe(
+                                      matchModel.id ?? 0,
+                                    ),
+                                    radius: 33,
+                                    title: "حجز بالكامل",
+                                  )
+                                : matchModel.isPending == true
+                                    ? Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
-                                          SvgPicture.asset(
-                                            color: context.background,
-                                            Assets.icons.flag,
-                                          ),
-                                          9.pw,
                                           CustomText(
-                                            LocaleKeys.apology_take_part.tr(),
+                                            align: TextAlign.center,
+                                            "inWainitingList".tr(),
+                                            weight: FontWeight.w500,
+                                            color: Colors.red,
                                             fontSize: 16,
-                                            weight: FontWeight.bold,
-                                            color: context.background,
                                           ),
-                                        ],
-                                      ),
-                                      onTap: () async {
-                                        // widget.onreturn?.call();
-
-                                        final response = await cubit.cancel(
-                                          widget.id.toString(),
-                                        );
-                                        if (mounted && response == true)
-                                          Navigator.pushReplacementNamed(
-                                            context,
-                                            Routes.LayoutScreen,
-                                          );
-                                      })
-                                ],
-                              )
-                            : subScribersModel.isMymatch != null
-                                ? (matchModel.flag == false &&
-                                        Utils.token.isNotEmpty)
-                                    ? ButtonWidget(
-                                        buttonColor: cubit.isMymatch ?? false
-                                            ? LightThemeColors.warningButton
-                                            : context.primaryColor,
-                                        onTap: subScribersModel.isMymatch ??
-                                                false
-                                            ? () async {
-                                                // widget.onreturn?.call();
-
-                                                final response =
-                                                    await cubit.cancel(
-                                                  widget.id.toString(),
-                                                );
-                                                if (mounted && response == true)
-                                                  Navigator
-                                                      .pushReplacementNamed(
-                                                    context,
-                                                    Routes.LayoutScreen,
-                                                  );
-                                              }
-                                            : () async {
-                                                await showConfirmationSheet(
-                                                  isCompleted:
-                                                      matchModel.isCCompleted,
-                                                  context,
-                                                  () async {
-                                                    final response =
-                                                        await cubit.subScribe(
-                                                            widget.id ?? 0);
-                                                    if (response == true) {
-                                                      Navigator.pop(
-                                                        context,
-                                                        widget.onreturn,
-                                                      );
-                                                      showSuccessSheet(
-                                                          context, widget.id);
-                                                    }
-                                                  },
-                                                  // cubit.subScribe(widget.id ?? 0),
-                                                );
-                                              },
-                                        height: 65,
-                                        // width: 342,
-                                        fontweight: FontWeight.bold,
-                                        radius: 33,
-                                        textColor: context.background,
-                                        child: cubit.isMymatch ?? false
-                                            ? Row(
+                                          20.ph,
+                                          ButtonWidget(
+                                              buttonColor: LightThemeColors
+                                                  .warningButton,
+                                              height: 65,
+                                              // width: 342,
+                                              fontweight: FontWeight.bold,
+                                              radius: 33,
+                                              textColor: context.background,
+                                              child: Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
                                                 children: [
@@ -431,21 +448,122 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                                     color: context.background,
                                                   ),
                                                 ],
-                                              )
-                                            : CustomText(
-                                                matchModel.isCCompleted ?? false
-                                                    ? "joinWaiting".tr()
-                                                    : "SubscribeNow".tr(),
-                                                fontSize: 19,
-                                                weight: FontWeight.bold,
-                                                color: context.background,
                                               ),
-                                        // title: ,
+                                              onTap: () async {
+                                                // widget.onreturn?.call();
+
+                                                final response =
+                                                    await cubit.cancel(
+                                                  widget.id.toString(),
+                                                );
+                                                if (mounted && response == true)
+                                                  Navigator
+                                                      .pushReplacementNamed(
+                                                    context,
+                                                    Routes.LayoutScreen,
+                                                  );
+                                              })
+                                        ],
                                       )
-                                    : SizedBox()
-                                : CircularProgressIndicator(
-                                    color: LightThemeColors.primary,
-                                  ),
+                                    : subScribersModel.isMymatch != null
+                                        ? (matchModel.flag == false &&
+                                                Utils.token.isNotEmpty)
+                                            ? ButtonWidget(
+                                                buttonColor:
+                                                    cubit.isMymatch ?? false
+                                                        ? LightThemeColors
+                                                            .warningButton
+                                                        : context.primaryColor,
+                                                onTap: subScribersModel
+                                                            .isMymatch ??
+                                                        false
+                                                    ? () async {
+                                                        // widget.onreturn?.call();
+
+                                                        final response =
+                                                            await cubit.cancel(
+                                                          widget.id.toString(),
+                                                        );
+                                                        if (mounted &&
+                                                            response == true)
+                                                          Navigator
+                                                              .pushReplacementNamed(
+                                                            context,
+                                                            Routes.LayoutScreen,
+                                                          );
+                                                      }
+                                                    : () async {
+                                                        await showConfirmationSheet(
+                                                          isCompleted:
+                                                              matchModel
+                                                                  .isCCompleted,
+                                                          context,
+                                                          () async {
+                                                            final response =
+                                                                await cubit
+                                                                    .subScribe(
+                                                                        widget.id ??
+                                                                            0);
+                                                            if (response ==
+                                                                true) {
+                                                              Navigator.pop(
+                                                                context,
+                                                                widget.onreturn,
+                                                              );
+                                                              showSuccessSheet(
+                                                                  context,
+                                                                  widget.id);
+                                                            }
+                                                          },
+                                                          // cubit.subScribe(widget.id ?? 0),
+                                                        );
+                                                      },
+                                                height: 65,
+                                                // width: 342,
+                                                fontweight: FontWeight.bold,
+                                                radius: 33,
+                                                textColor: context.background,
+                                                child: cubit.isMymatch ?? false
+                                                    ? Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          SvgPicture.asset(
+                                                            color: context
+                                                                .background,
+                                                            Assets.icons.flag,
+                                                          ),
+                                                          9.pw,
+                                                          CustomText(
+                                                            LocaleKeys
+                                                                .apology_take_part
+                                                                .tr(),
+                                                            fontSize: 16,
+                                                            weight:
+                                                                FontWeight.bold,
+                                                            color: context
+                                                                .background,
+                                                          ),
+                                                        ],
+                                                      )
+                                                    : CustomText(
+                                                        matchModel.isCCompleted ??
+                                                                false
+                                                            ? "joinWaiting".tr()
+                                                            : "SubscribeNow"
+                                                                .tr(),
+                                                        fontSize: 19,
+                                                        weight: FontWeight.bold,
+                                                        color:
+                                                            context.background,
+                                                      ),
+                                                // title: ,
+                                              )
+                                            : SizedBox()
+                                        : CircularProgressIndicator(
+                                            color: LightThemeColors.primary,
+                                          ),
                         // : CircularProgressIndicator(
                         //     color: Colors.blue,
                         //   ),
@@ -694,4 +812,234 @@ showSuccessSheet(
       ),
     ),
   );
+}
+
+class SheetBodyAddPlayers extends StatefulWidget {
+  const SheetBodyAddPlayers({
+    super.key,
+    this.addPlayer,
+    this.subscribe,
+  });
+  final Function(String? name, String? phone)? addPlayer;
+  final VoidCallback? subscribe;
+  @override
+  State<SheetBodyAddPlayers> createState() => _SheetBodyAddPlayersState();
+}
+
+class _SheetBodyAddPlayersState extends State<SheetBodyAddPlayers> {
+  List<String> names = [];
+  TextEditingController? name = TextEditingController();
+  TextEditingController? phone = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: Container(
+        padding: EdgeInsets.only(
+          right: 5,
+          left: 5,
+          top: 20,
+          bottom: 24,
+        ),
+        decoration: BoxDecoration(
+          // color: Colors.transparent,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(114),
+            topRight: Radius.circular(36),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                // SvgPicture.asset(
+                //   width: 40,
+                //   height: 40,
+                //   "playground_button".svg(),
+                // ),
+                14.36.pw,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomText(
+                      // style: TextStyle().s16.heavy,
+                      fontSize: 17,
+                      "تأكيد حجز مباراة بالكامل",
+                      color: LightThemeColors.primary,
+                      weight: FontWeight.w800,
+                    ),
+                    CustomText(
+                      fontSize: 14,
+                      "قم بإعادة اللاعبين المشتركين",
+                      color: LightThemeColors.secondaryText,
+                      weight: FontWeight.w500,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            42.ph,
+            Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: TextFormFieldWidget(
+                    contentPadding: EdgeInsetsDirectional.symmetric(
+                      horizontal: 6,
+                    ),
+                    type: TextInputType.phone,
+                    controller: name,
+                    hintText: "ادخل اسم اللاعب",
+                    hintSize: 12,
+                    // suffixIcon: Row(
+                    //   mainAxisSize: MainAxisSize.min,
+                    //   children: [
+                    //     Container(
+                    //       width: 45,
+                    //       height: 45,
+                    //       decoration: BoxDecoration(
+                    //         color: Colors.green,
+                    //         shape: BoxShape.circle,
+                    //       ),
+                    //       child: Center(
+                    //         child: Icon(
+                    //           color: Colors.white,
+                    //           Icons.add,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     20.pw,
+                    //   ],
+                    // ),
+                    borderRadius: 33,
+                    activeBorderColor: LightThemeColors.primary,
+                  ),
+                ),
+                12.pw,
+                Expanded(
+                  flex: 2,
+                  child: TextFormFieldWidget(
+                    controller: phone,
+                    contentPadding: EdgeInsetsDirectional.symmetric(
+                      horizontal: 6,
+                    ),
+                    hintSize: 12,
+                    type: TextInputType.phone,
+                    hintText: "ادخل رقم الهاتف",
+                    // suffixIcon: Row(
+                    //   mainAxisSize: MainAxisSize.min,
+                    //   children: [
+
+                    //     20.pw,
+                    //   ],
+                    // ),
+                    borderRadius: 33,
+                    activeBorderColor: LightThemeColors.primary,
+                  ),
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () async {
+                      final res = await widget.addPlayer?.call(
+                        phone?.text,
+                        name?.text,
+                      );
+
+                      if (res == true) {
+                        names.add(
+                          name?.text ?? "",
+                        );
+                        setState(() {});
+                      }
+                    },
+                    child: Container(
+                      width: 45,
+                      height: 45,
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Icon(
+                          color: Colors.white,
+                          Icons.add,
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+            28.ph,
+            if (names.isNotEmpty == true) ...[
+              CustomText(""),
+              SizedBox(
+                height: 200,
+                child: GridView.builder(
+                  itemCount: names.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, childAspectRatio: 9 / 3
+                      // mainAxisSpacing: 2,
+                      // crossAxisSpacing: 2,
+                      ),
+                  itemBuilder: (context, index) => Container(
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 35,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                          ),
+                          child: ClipOval(
+                            child: Image.asset(
+                              fit: BoxFit.fill,
+                              "profile_image".png(),
+                            ),
+                          ),
+                        ),
+                        10.pw,
+                        CustomText(
+                          names[index],
+                          fontSize: 14,
+                          weight: FontWeight.w700,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            ]
+            // Row(
+            //   children: [
+            //     Expanded(
+            //       flex: 3,
+            //       child: ButtonWidget(
+            //         onTap: () {
+            //           // widget.onsubmit!(id);
+            //           Navigator.pop(context);
+            //         },
+            //         height: 65,
+            //         radius: 33,
+            //         child: CustomText(
+            //           LocaleKeys.confirmation_button.tr(),
+            //           fontSize: 16,
+            //           weight: FontWeight.bold,
+            //           color: context.background,
+            //         ),
+            //       ),
+            //     ),
+            //     10.pw,
+            //   ],
+            // )
+          ],
+        ),
+      ),
+    );
+  }
 }

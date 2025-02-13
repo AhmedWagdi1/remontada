@@ -5,7 +5,6 @@ import 'package:remontada/core/Router/Router.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/core/utils/utils.dart';
-import 'package:remontada/features/home/cubit/home_cubit.dart';
 import 'package:remontada/features/more/presentation/screens/more_screen.dart';
 import 'package:remontada/features/my_matches/presentation/screens/mymatches_screen.dart';
 import 'package:remontada/features/notifications/presentation/screens/notification_Screen.dart';
@@ -43,11 +42,7 @@ class _LayoutScreenState extends State<LayoutScreen>
               controller: cubit.tabController,
               physics: const NeverScrollableScrollPhysics(),
               children: [
-                BlocProvider(
-                  create: (context) =>
-                      HomeCubit()..getHomeData(playgrounds: [], data: []),
-                  child: HomeScreen(),
-                ),
+                HomeScreen(),
                 Utils.token == ""
                     ? Center(
                         child: Padding(

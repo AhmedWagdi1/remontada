@@ -14,12 +14,12 @@ class MatchDetailsCubit extends Cubit<MatchDetailsState> {
   SubScribersModel subscribers = SubScribersModel();
   MatchModel matchmodel = MatchModel();
 
-  MatchDetailsRepo matchDetailsRepo = MatchDetailsRepo(locator<DioService>());
   MatchModel? matchModel;
   bool? isMymatch;
   List<int> playersId = [];
-  getMatchDetails(String id) async {
-    emit(MatchDetailsLoading());
+  MatchDetailsRepo matchDetailsRepo = MatchDetailsRepo(locator<DioService>());
+  getMatchDetails(String id, {bool isLoading = true}) async {
+    if (isLoading == true) emit(MatchDetailsLoading());
     final res = await matchDetailsRepo.getMatchDetails(id);
     if (res != null) {
       // await getOwner(id);
@@ -40,9 +40,9 @@ class MatchDetailsCubit extends Cubit<MatchDetailsState> {
     }
   }
 
-  getSubscribers(String id) async {
-    // emit(SubScribersLoading());
-    final res = await matchDetailsRepo.getSubscribers(id);
+  getSubscribers(String id, {String? type, bool? isloading}) async {
+    if (isloading == true) emit(SubScribersLoading());
+    final res = await matchDetailsRepo.getSubscribers(id, type: type);
     if (res != null) {
       subscribers = SubScribersModel.fromMap(res);
       subscribers.subscribers?.forEach(
@@ -57,7 +57,19 @@ class MatchDetailsCubit extends Cubit<MatchDetailsState> {
       ));
       return SubScribersModel.fromMap(res);
     } else {
+      emit(SubScribersFailed());
       return null;
+    }
+  }
+
+  apcense({String? paymentMethod, String? id}) async {
+    final res = await matchDetailsRepo.apsence(
+      subscriber_id: id,
+      paymment_method: paymentMethod,
+    );
+    if (res != null) {
+      emit(RefreshState());
+      return true;
     }
   }
 
@@ -69,6 +81,20 @@ class MatchDetailsCubit extends Cubit<MatchDetailsState> {
   //     return isMymatch;
   //   }
   // }
+
+  addsubscrubers({String? matchid, String? name, String? phone}) async {
+    final res = await matchDetailsRepo.addSubscribers(
+      name: name,
+      phone: phone,
+      matchId: matchid,
+    );
+    if (res != null) {
+      emit(RefreshState());
+      return true;
+    } else {
+      return null;
+    }
+  }
 
   subScribe(int id) async {
     final res = await matchDetailsRepo.subScribe(id);

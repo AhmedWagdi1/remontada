@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/theme/light_theme.dart';
+import 'package:remontada/core/utils/utils.dart';
 
 import '../../../../core/extensions/all_extensions.dart';
 import '../../../../core/resources/gen/assets.gen.dart';
@@ -66,7 +67,9 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
               ),
               navBarItem(
                 Assets.icons.myMatches,
-                LocaleKeys.my_matches_nav.tr(),
+                Utils.isSuperVisor == true
+                    ? "الفترات"
+                    : LocaleKeys.my_matches_nav.tr(),
                 1,
                 Assets.icons.myMatches_active,
               ),

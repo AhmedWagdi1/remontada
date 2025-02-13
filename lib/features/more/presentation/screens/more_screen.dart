@@ -9,14 +9,13 @@ import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/services/alerts.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
+import 'package:remontada/core/utils/utils.dart';
 import 'package:remontada/features/more/cubit/more_cubit.dart';
 import 'package:remontada/features/more/cubit/more_states.dart';
 import 'package:remontada/features/more/presentation/widgets/more_item.dart';
 import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/shared/widgets/loadinganderror.dart';
-
-import '../../../../core/resources/font_manager.dart';
 
 class MoreScreen extends StatefulWidget {
   const MoreScreen({super.key});
@@ -281,7 +280,7 @@ class _MoreScreenState extends State<MoreScreen> {
 
 List titles = [
   LocaleKeys.profile.tr(),
-  LocaleKeys.captain_request.tr(),
+  if (Utils.isSuperVisor == false) LocaleKeys.captain_request.tr(),
   LocaleKeys.notification.tr(),
   "enableLocation".tr(),
   LocaleKeys.contact_us.tr(),
@@ -293,7 +292,7 @@ List titles = [
 
 List icons = [
   Assets.icons.name,
-  Assets.icons.whistle,
+  if (Utils.isSuperVisor == false) Assets.icons.whistle,
   Assets.icons.notify,
   "location".svg(),
   Assets.icons.calling,

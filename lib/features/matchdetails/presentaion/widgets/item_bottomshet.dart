@@ -4,6 +4,7 @@ import 'package:remontada/core/Router/Router.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/resources/gen/assets.gen.dart';
 import 'package:remontada/core/utils/extentions.dart';
+import 'package:remontada/core/utils/utils.dart';
 import 'package:remontada/features/home/domain/model/home_model.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/shared/widgets/network_image.dart';
@@ -11,8 +12,13 @@ import 'package:remontada/shared/widgets/network_image.dart';
 import '../../../../core/theme/light_theme.dart';
 
 class PlayerBottomSheet extends StatelessWidget {
-  const PlayerBottomSheet({super.key, this.subscriber});
+  const PlayerBottomSheet({
+    super.key,
+    this.subscriber,
+    this.endIcon,
+  });
   final Subscriber? subscriber;
+  final Widget? endIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +28,7 @@ class PlayerBottomSheet extends StatelessWidget {
             // bottom: 9.h,
             ),
         height: 60,
-        width: 355,
+        width: Utils.isSuperVisor == true ? double.infinity : 355,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(25),
           color: context.primaryColor.withOpacity(
@@ -109,21 +115,22 @@ class PlayerBottomSheet extends StatelessWidget {
               ),
             ),
             Expanded(
-              flex: 1,
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    Routes.playerDetails,
-                    arguments: subscriber?.id.toString(),
-                  );
-                },
-                icon: SvgPicture.asset(
-                  width: 38,
-                  height: 38,
-                  "forowrdButton".svg(),
-                ),
-              ),
+              flex: Utils.isSuperVisor == true ? 2 : 1,
+              child: endIcon ??
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        Routes.playerDetails,
+                        arguments: subscriber?.id.toString(),
+                      );
+                    },
+                    icon: SvgPicture.asset(
+                      width: 38,
+                      height: 38,
+                      "forowrdButton".svg(),
+                    ),
+                  ),
             )
           ],
         ),

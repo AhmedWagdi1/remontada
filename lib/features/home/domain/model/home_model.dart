@@ -17,7 +17,12 @@ class MatchModel {
   String? constSub;
   String? actualSub;
   String? duration;
+  String? amount;
+  String? type;
+  String? durations_text;
   bool? flag;
+  bool? is_reserved;
+  bool? is_owner;
   bool? isCCompleted;
 
   // bool? validSub;
@@ -25,10 +30,15 @@ class MatchModel {
       {this.id,
       this.playGround,
       this.subscribers,
+      this.is_reserved,
+      this.durations_text,
       this.date,
+      this.is_owner,
+      this.type,
       this.start,
       this.price,
       this.details,
+      this.amount,
       this.lat,
       this.lng,
       this.constSub,
@@ -50,13 +60,21 @@ class MatchModel {
       actualSub: map['subscribers_count'] != null
           ? (map['subscribers_count'] as String).split("/").first
           : null,
+      is_reserved:
+          map['is_reserved'] != null ? (map['is_reserved'] as bool) : null,
+      type: map['type'] != null ? (map['type'] as String) : null,
       id: map['id'] != null ? map['id'] as int : null,
       playGround:
           map['playground'] != null ? map['playground'] as String : null,
+      durations_text: map['durations_text'] != null
+          ? map['durations_text'] as String
+          : null,
       subscribers: map['subscribers_count'] != null
           ? map['subscribers_count'] as String
           : null,
+      is_owner: map['is_owner'] != null ? map['is_owner'] as bool : null,
       date: map['date'] != null ? map['date'] as String : null,
+      amount: map['amount'] != null ? map['amount'] as String : null,
       start: map['start_time'] != null ? map['start_time'] as String : null,
       price: map['amount'] != null ? map['amount'] as String : null,
       details: map['details'] != null ? map['details'] as String : null,
@@ -245,6 +263,7 @@ class Subscriber {
   String? location;
   String? phone;
   String? city;
+  bool? presence;
   Subscriber({
     this.id,
     this.image,
@@ -252,6 +271,7 @@ class Subscriber {
     this.location,
     this.phone,
     this.city,
+    this.presence,
   });
 
   factory Subscriber.fromMap(Map<String, dynamic> map) {
@@ -262,6 +282,7 @@ class Subscriber {
       location: map['location'] != null ? map['location'] as String : null,
       phone: map['phone'] != null ? map['phone'] as String : null,
       city: map['city'] != null ? map['city'] as String : null,
+      presence: map['presence'] != null ? map['presence'] as bool : null,
     );
   }
 

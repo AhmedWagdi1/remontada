@@ -58,6 +58,7 @@ class DataManager {
       final user = (Map<String, dynamic>.from(userData.get(USER)));
 
       Utils.token = user['access_token'];
+      Utils.isSuperVisor = user['type'] == "supervisor";
       log(Utils.token);
 
       // Utils.userModel = UserModel.fromJson(Map<String, dynamic>.from(user));

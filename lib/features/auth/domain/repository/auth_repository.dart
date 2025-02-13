@@ -25,6 +25,20 @@ class AuthRepository {
     }
   }
 
+  Future<Areas?> getPlaygrounds({
+    final bool loading = false,
+  }) async {
+    final response = await dioService.getData(
+      url: "/playground_list",
+      loading: loading,
+    );
+    if (response.isError == false) {
+      return Areas.fromMap(response.response?.data["data"]);
+    } else {
+      return null;
+    }
+  }
+
   Future<Locations?> getlocationRequest() async {
     final ApiResponse response = await dioService.getData(
       url: AuthEndPoints.location,
