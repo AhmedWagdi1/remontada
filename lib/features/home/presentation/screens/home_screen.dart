@@ -391,7 +391,7 @@ class _HomeScreenState extends State<HomeScreen>
                             tabs: [
                               Tab(
                                 child: CustomText(
-                                  'current_matches'.tr(),
+                                 "مباريات فردية" ,// 'current_matches'.tr(),
                                   fontSize: 14,
                                   weight: FontWeight.w500,
                                   align: TextAlign.center,
@@ -402,7 +402,7 @@ class _HomeScreenState extends State<HomeScreen>
                               ),
                               Tab(
                                 child: CustomText(
-                                  'finished_matches'.tr(),
+                                 "مباريات جماعية", // 'finished_matches'.tr(),
                                   fontSize: 14,
                                   weight: FontWeight.w500,
                                   align: TextAlign.center,
