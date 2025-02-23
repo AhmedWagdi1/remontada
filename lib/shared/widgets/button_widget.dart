@@ -52,15 +52,15 @@ class ButtonWidget extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onTap,
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(
+          backgroundColor: WidgetStateProperty.all<Color>(
             buttonColor ??
                 Colors.transparent.withOpacity(
                   0,
                 ),
           ),
-          overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
-          shadowColor: MaterialStateProperty.all<Color>(Colors.white),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          overlayColor: WidgetStateProperty.all<Color>(Colors.transparent),
+          shadowColor: WidgetStateProperty.all<Color>(Colors.white),
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(radius),
               side: withBorder

@@ -61,7 +61,7 @@ class LoadingAndError extends StatelessWidget {
         );
       } else if (isLoading) {
         return Material(
-          color: context.colorScheme.background,
+          color: context.colorScheme.surface,
           child: const Center(
             child: CircularProgressIndicator(),
           ),

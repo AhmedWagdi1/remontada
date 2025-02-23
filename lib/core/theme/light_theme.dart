@@ -321,12 +321,10 @@ class LightTheme {
         errorContainer: Color(0xFFFFDAD6),
         onError: Color(0xFFFFFFFF),
         onErrorContainer: Color(0xFF410002),
-        background: Color(0xFFF8FDFF),
-        onBackground: Color(0xFF001F25),
         surface: Color(0xFFFFFFFF),
         // surface: Color(0x05FFFFFF),
         onSurface: Color(0xFF001F25),
-        surfaceVariant: Color(0xFFF5DDDA),
+        surfaceContainerHighest: Color(0xFFF5DDDA),
         onSurfaceVariant: Color(0xFF534341),
         outline: Color(0xFF857371),
         onInverseSurface: Color(0xFFD6F6FF),
@@ -338,10 +336,10 @@ class LightTheme {
         outlineVariant: Color(0xFFD8C2BF),
         scrim: Color(0xFF000000),
       )
-          .copyWith(background: LightThemeColors.scaffoldBackground)
-          .copyWith(background: Colors.red)
-          .copyWith(background: LightThemeColors.containerBackgrond)
-          .copyWith(background: LightThemeColors.containerBackgrond),
+          .copyWith(surface: LightThemeColors.scaffoldBackground)
+          .copyWith(surface: Colors.red)
+          .copyWith(surface: LightThemeColors.containerBackgrond)
+          .copyWith(surface: LightThemeColors.containerBackgrond),
 
       //* Input Decoration Theme
       // inputDecorationTheme: InputDecorationTheme(

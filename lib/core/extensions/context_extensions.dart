@@ -82,7 +82,7 @@ extension ThemeExtension on BuildContext {
   ColorScheme get colorScheme => theme.colorScheme;
   Color get primaryColor => theme.colorScheme.primary;
   Color get primaryFontColor => theme.colorScheme.primary;
-  Color get background => theme.colorScheme.background;
+  Color get background => theme.colorScheme.surface;
   Color get secondaryColor => theme.colorScheme.secondary;
 
   /// only found in one place in login screen

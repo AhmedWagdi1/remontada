@@ -1,6 +1,4 @@
-import 'endpoints.dart';
 
-import '../model/layout_model.dart';
 import '../../../../core/data_source/dio_helper.dart';
 
   //put it in locators locator.registerLazySingleton(() => LayoutRepository(locator<DioService>()));
