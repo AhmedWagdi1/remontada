@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -59,6 +61,8 @@ class _ItemWidgetState extends State<ItemWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
+        log(widget.isHomeGroupe.toString());
+
         await Navigator.pushNamed(
           context,
           Routes.matchDetails,
@@ -67,6 +71,7 @@ class _ItemWidgetState extends State<ItemWidget> {
             isMymatch: widget.ismymatch,
           ),
         );
+        print(widget.isHomeGroupe);
         //  widget.ismymatch ?? false ? await widget.cubitt?.getMymatches() :
         widget.isHomeGroupe == true
             ? await widget.cubit?.getGroupeMatches(
@@ -401,9 +406,17 @@ class _ItemWidgetState extends State<ItemWidget> {
                               isMymatch: widget.ismymatch,
                             ),
                           );
+                          print(widget.isHomeGroupe);
                           //  widget.ismymatch ?? false ? await widget.cubitt?.getMymatches() :
-                          await widget.cubit
-                              ?.getHomeData(playgrounds: [], data: []);
+                          widget.isHomeGroupe == true
+                              ? await widget.cubit?.getGroupeMatches(
+                                  playgrounds: [],
+                                  data: [],
+                                )
+                              : await widget.cubit?.getHomeData(
+                                  playgrounds: [],
+                                  data: [],
+                                );
                         },
                         icon: SvgPicture.asset(
                           width: 45.94,

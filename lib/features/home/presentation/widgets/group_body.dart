@@ -6,10 +6,17 @@ import 'package:remontada/features/home/domain/model/home_model.dart';
 import 'package:remontada/features/home/presentation/widgets/itemwidget.dart';
 
 class GroupBody extends StatefulWidget {
-  const GroupBody({super.key, this.areaId, this.data, this.playgroundId});
+  const GroupBody({
+    super.key,
+    this.areaId,
+    this.data,
+    this.playgroundId,
+    this.itemGroupe,
+  });
   final List<int>? playgroundId;
   final List<String>? data;
   final int? areaId;
+  final bool? itemGroupe;
   @override
   State<GroupBody> createState() => _GroupBodyState();
 }

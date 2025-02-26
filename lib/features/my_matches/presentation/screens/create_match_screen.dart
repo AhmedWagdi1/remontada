@@ -14,6 +14,7 @@ import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/shared/widgets/loadinganderror.dart';
 
+import '../../../../core/Router/Router.dart';
 import '../../../../shared/widgets/autocomplate.dart';
 import '../../../../shared/widgets/edit_text_widget.dart';
 import '../../../auth/domain/model/auth_model.dart';
@@ -48,10 +49,19 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
         ..getMatchDetails(widget.id ?? "", makeRequest: widget.id != null),
       child: BlocConsumer<MyMatchesCubit, MyMatchesState>(
         listener: (context, state) {
+          if (state is CreateMatchSuccess) {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              Routes.LayoutScreen,
+              (r) => false,
+            );
+          }
           if (state is MatchDetailsLoaded) {
             matchModel = state.matchModel;
+            MyMatchesCubit.get(context).request.playgroundId =
+                state.matchModel.playground_id.toString();
             playgroundcontroller.text = matchModel.playGround ?? "";
-            date.text = matchModel.date ?? "";
+            date.text = matchModel.dateDate?.date ?? "";
             number.text = matchModel.subscribers?.split("/").last ?? "";
             peroid.text = matchModel.duration.toString() ?? "";
             text.text = matchModel.durations_text ?? "";
@@ -60,8 +70,8 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
               "",
             );
             description.text = matchModel.details ?? "";
-            startTime.text = matchModel.start ?? "";
-            endTime.text = matchModel.endTime ?? "";
+            startTime.text = matchModel.dateDate?.start_time ?? "";
+            endTime.text = matchModel.dateDate?.end_time ?? "";
             // MyMatchesCubit.get(context).request.playgroundId = matchModel.pla;
           }
         },
@@ -158,12 +168,8 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                               (pickedDate) {
                                 date.text =
                                     DateFormat('yyyy-MM-dd', 'en_US').format(
-                                          pickedDate ?? DateTime.now(),
-                                        ) +
-                                        " " +
-                                        DateFormat('EEEE', 'ar_EG').format(
-                                          pickedDate ?? DateTime.now(),
-                                        );
+                                  pickedDate ?? DateTime.now(),
+                                );
                               },
                             );
                             setState(() {});
@@ -206,8 +212,11 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                               context: context,
                               initialTime: TimeOfDay.now(),
                             ).then((value) {
-                              startTime.text =
-                                  "${value!.hour}:${value.minute} ${value.period.name}";
+                              String minute =
+                                  value?.minute.toString().length == 1
+                                      ? "0${value?.minute.toString()}"
+                                      : value?.minute.toString() ?? "";
+                              startTime.text = "${value!.hour}:${minute} ";
                             });
                           },
                           onSaved: (value) => cubit.request.statrtTime = value,
@@ -228,8 +237,12 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                               context: context,
                               initialTime: TimeOfDay.now(),
                             ).then((value) {
-                              endTime.text =
-                                  "${value!.hour}:${value.minute} ${value.period.name}";
+                              String minute =
+                                  value?.minute.toString().length == 1
+                                      ? "0${value?.minute.toString()}"
+                                      : value?.minute.toString() ?? "";
+                              startTime.text =
+                                  endTime.text = "${value!.hour}:${minute} ";
                             });
                           },
                           onSaved: (value) => cubit.request.endTime = value,

@@ -146,7 +146,11 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                             // }
                                           },
                                         ),
-                                      );
+                                      ).then((val) {
+                                        cubit.getMatchDetails(
+                                          widget.id.toString() ?? "",
+                                        );
+                                      });
                                     },
                                     child: Container(
                                       width: 35,
@@ -971,11 +975,14 @@ class _SheetBodyAddPlayersState extends State<SheetBodyAddPlayers> {
                         phone?.text,
                         name?.text,
                       );
+                      name?.clear();
+                      phone?.clear();
 
                       if (res == true) {
                         names.add(
                           name?.text ?? "",
                         );
+
                         setState(() {});
                       }
                     },

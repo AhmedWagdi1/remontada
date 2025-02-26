@@ -7,6 +7,7 @@ class MatchModel {
   int? id;
   bool? isPending;
   String? playGround;
+  int? playground_id;
   String? subscribers;
   String? date;
   String? start;
@@ -22,6 +23,7 @@ class MatchModel {
   String? startTime;
   String? endTime;
   String? durations_text;
+  DateDate? dateDate;
   bool? flag;
   bool? is_reserved;
   bool? is_owner;
@@ -31,6 +33,8 @@ class MatchModel {
   MatchModel(
       {this.id,
       this.playGround,
+      this.playground_id,
+      this.dateDate,
       this.subscribers,
       this.is_reserved,
       this.durations_text,
@@ -59,7 +63,8 @@ class MatchModel {
       constSub: map['subscribers_count'] != null
           ? (map['subscribers_count'] as String).split("/").last
           : null,
-
+      dateDate:
+          map['data_date'] != null ? DateDate.fromMap(map['data_date']) : null,
       // validSub:  int.parse(constSub) == 20,
       actualSub: map['subscribers_count'] != null
           ? (map['subscribers_count'] as String).split("/").first
@@ -67,6 +72,8 @@ class MatchModel {
       is_reserved:
           map['is_reserved'] != null ? (map['is_reserved'] as bool) : null,
       type: map['type'] != null ? (map['type'] as String) : null,
+      playground_id:
+          map['playground_id'] != null ? (map['playground_id'] as int) : null,
       id: map['id'] != null ? map['id'] as int : null,
       playGround:
           map['playground'] != null ? map['playground'] as String : null,
@@ -318,4 +325,24 @@ class SubScribersModel {
 
   factory SubScribersModel.fromJson(String source) =>
       SubScribersModel.fromMap(json.decode(source) as Map<String, dynamic>);
+}
+
+class DateDate {
+  String? date;
+  String? start_time;
+  String? end_time;
+  DateDate({
+    this.date,
+    this.start_time,
+    this.end_time,
+  });
+
+  factory DateDate.fromMap(Map<String, dynamic> map) {
+    return DateDate(
+      date: map['date'] != null ? map['date'] as String : null,
+      start_time:
+          map['start_time'] != null ? map['start_time'] as String : null,
+      end_time: map['end_time'] != null ? map['end_time'] as String : null,
+    );
+  }
 }

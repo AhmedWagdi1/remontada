@@ -1,4 +1,5 @@
 import 'package:remontada/core/data_source/dio_helper.dart';
+import 'package:remontada/core/services/alerts.dart';
 import 'package:remontada/features/my_matches/domain/request/create_match_request.dart';
 
 import 'myMatches_endpoints.dart';
@@ -40,6 +41,10 @@ class MyMatchesRepo {
       body: request.toMap(),
     );
     if (response.isError == false) {
+      Alerts.snack(
+        text: response.response?.data["message"],
+        state: SnackState.success,
+      );
       return true;
     } else {
       return null;
