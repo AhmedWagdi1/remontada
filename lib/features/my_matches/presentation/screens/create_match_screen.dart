@@ -53,13 +53,15 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
             playgroundcontroller.text = matchModel.playGround ?? "";
             date.text = matchModel.date ?? "";
             number.text = matchModel.subscribers?.split("/").last ?? "";
-            peroid.text = matchModel.duration ?? "";
+            peroid.text = matchModel.duration.toString() ?? "";
             text.text = matchModel.durations_text ?? "";
             price.text = (matchModel.amount ?? "").replaceAll(
               "ر.س",
               "",
             );
             description.text = matchModel.details ?? "";
+            startTime.text = matchModel.start ?? "";
+            endTime.text = matchModel.endTime ?? "";
             // MyMatchesCubit.get(context).request.playgroundId = matchModel.pla;
           }
         },

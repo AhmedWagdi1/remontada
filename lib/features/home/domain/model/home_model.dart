@@ -16,9 +16,11 @@ class MatchModel {
   String? lng;
   String? constSub;
   String? actualSub;
-  String? duration;
+  int? duration;
   String? amount;
   String? type;
+  String? startTime;
+  String? endTime;
   String? durations_text;
   bool? flag;
   bool? is_reserved;
@@ -41,6 +43,8 @@ class MatchModel {
       this.amount,
       this.lat,
       this.lng,
+      this.startTime,
+      this.endTime,
       this.constSub,
       this.actualSub,
       this.flag,
@@ -73,6 +77,8 @@ class MatchModel {
           ? map['subscribers_count'] as String
           : null,
       is_owner: map['is_owner'] != null ? map['is_owner'] as bool : null,
+      // startTime: map['is_owner'] != null ? map['is_owner'] as bool : null,
+      endTime: map['end_time'] != null ? map['end_time'] as String : null,
       date: map['date'] != null ? map['date'] as String : null,
       amount: map['amount'] != null ? map['amount'] as String : null,
       start: map['start_time'] != null ? map['start_time'] as String : null,
@@ -84,9 +90,7 @@ class MatchModel {
       isPending: map['is_pending'] != null ? map['is_pending'] as bool : null,
       isCCompleted:
           map['is_completed'] != null ? map['is_completed'] as bool : null,
-      duration: map['durations_text'] != null
-          ? map['durations_text'] as String
-          : null,
+      duration: map['durations'] != null ? map['durations'] as int : null,
     );
   }
 
