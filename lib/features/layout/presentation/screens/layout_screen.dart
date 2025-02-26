@@ -95,7 +95,10 @@ class _LayoutScreenState extends State<LayoutScreen>
                         ),
                       )
                     : DefaultTabController(
-                        length: 2, initialIndex: 0, child: MyMatchesScreen()),
+                        length: 2,
+                        initialIndex: 0,
+                        child: MyMatchesScreen(),
+                      ),
                 Utils.token == ""
                     ? Center(
                         child: Padding(

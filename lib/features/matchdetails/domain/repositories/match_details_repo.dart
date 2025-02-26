@@ -1,6 +1,8 @@
 import 'package:remontada/core/data_source/dio_helper.dart';
 import 'package:remontada/features/matchdetails/domain/repositories/match_endpoints.dart';
 
+import '../../../../core/services/alerts.dart';
+
 class MatchDetailsRepo {
   DioService dioService;
   MatchDetailsRepo(this.dioService);
@@ -38,6 +40,10 @@ class MatchDetailsRepo {
       body: {"match_id": id},
     );
     if (response.isError == false) {
+      Alerts.snack(
+        text: response.response?.data["message"],
+        state: SnackState.success,
+      );
       return true;
     } else {
       return null;
@@ -64,14 +70,20 @@ class MatchDetailsRepo {
       loading: true,
       url: "/add_subscriber",
     );
+    if (response.isError == false) {
+      Alerts.snack(
+        text: response.response?.data["message"],
+        state: SnackState.success,
+      );
+    }
   }
 
-  apsence({String? subscriber_id, String? paymment_method}) async {
+  apsence({String? subscriber_id, String? paymment_method, matchid}) async {
     final ApiResponse response = await dioService.postData(
       isForm: true,
       body: {
-        "payment_method": paymment_method,
-        // "subscriber_id": subscriber_id,
+        if (paymment_method != null) "payment_method": paymment_method,
+        "subscriber_id": subscriber_id,
       },
       // body: {
       //   "name": name,
@@ -79,7 +91,7 @@ class MatchDetailsRepo {
       //   "phone": name,
       // },
       loading: true,
-      url: "/presence/$subscriber_id",
+      url: "/presence/$matchid",
     );
     if (response.isError == false) {
       return true;

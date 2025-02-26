@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:remontada/core/Router/Router.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
+import 'package:remontada/core/services/alerts.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/features/home/presentation/widgets/itemwidget.dart';
@@ -214,8 +215,68 @@ class _MatchesBodyState extends State<MatchesSupervisorsBodyBody>
                     itemCount: myMatches.matches?.length ?? 0,
                     itemBuilder: (context, index) => ItemWidget(
                       delete: () {
-                        MyMatchesCubit.get(context).deletMatch(
-                            id: myMatches.matches?[index].id.toString() ?? "");
+                        Alerts.bottomSheet(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(114),
+                              topRight: Radius.circular(36),
+                            ),
+                          ),
+                          context,
+                          child: Container(
+                            padding: EdgeInsets.only(
+                              right: 15,
+                              left: 15,
+                              top: 50,
+                              bottom: 28,
+                            ),
+                            decoration: BoxDecoration(
+                              color: context.background,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.delete,
+                                  size: 32,
+                                  color: Colors.red,
+                                ),
+                                11.ph,
+                                CustomText(
+                                  fontSize: 16,
+                                  "حذف فترة",
+                                  color: LightThemeColors.primary,
+                                  weight: FontWeight.w800,
+                                ),
+                                CustomText(
+                                  fontSize: 14,
+                                  "هل أنت متأكد من أنك تريد حذف الفترة ؟",
+                                  color: LightThemeColors.secondaryText,
+                                  weight: FontWeight.w500,
+                                ),
+                                32.ph,
+                                ButtonWidget(
+                                  buttonColor: LightThemeColors.warningButton,
+                                  height: 65,
+                                  radius: 33,
+                                  child: CustomText(
+                                    "حذف",
+                                    fontSize: 16,
+                                    weight: FontWeight.bold,
+                                    color: context.background,
+                                  ),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    MyMatchesCubit.get(context).deletMatch(
+                                      id: myMatches.matches?[index].id
+                                          .toString(),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
                       },
                       isSupervisor: true,
                       matchModel: myMatches.matches?[index],

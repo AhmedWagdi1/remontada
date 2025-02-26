@@ -141,6 +141,7 @@ class _PlayersScreenSupervisorState extends State<PlayersScreenSupervisor> {
                               (val) => MatchDetailsCubit.get(context).apcense(
                                 id: player?.id.toString(),
                                 paymentMethod: val,
+                                matchid: widget.id,
                               ),
                             ),
                             radius: 33,
@@ -305,7 +306,7 @@ showApsencesheet(
             function: (val) => [
               PaymentMethod(key: "كاش", value: "cash"),
               PaymentMethod(key: "كوبون", value: "coupon"),
-              PaymentMethod(key: "سيجنال", value: "sigenal"),
+              PaymentMethod(key: "شبكة", value: "signal"),
             ],
           ),
           10.ph,

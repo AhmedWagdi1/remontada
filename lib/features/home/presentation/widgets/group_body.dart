@@ -14,8 +14,7 @@ class GroupBody extends StatefulWidget {
   State<GroupBody> createState() => _GroupBodyState();
 }
 
-class _GroupBodyState extends State<GroupBody>
-    with AutomaticKeepAliveClientMixin {
+class _GroupBodyState extends State<GroupBody> {
   HomeModel homeModel = HomeModel();
 
   @override
@@ -57,7 +56,7 @@ class _GroupBodyState extends State<GroupBody>
     );
   }
 
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
+  // @override
+  // // TODO: implement wantKeepAlive
+  // bool get wantKeepAlive => true;
 }

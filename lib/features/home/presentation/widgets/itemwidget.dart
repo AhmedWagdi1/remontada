@@ -68,7 +68,15 @@ class _ItemWidgetState extends State<ItemWidget> {
           ),
         );
         //  widget.ismymatch ?? false ? await widget.cubitt?.getMymatches() :
-        await widget.cubit?.getHomeData(playgrounds: [], data: []);
+        widget.isHomeGroupe == true
+            ? await widget.cubit?.getGroupeMatches(
+                playgrounds: [],
+                data: [],
+              )
+            : await widget.cubit?.getHomeData(
+                playgrounds: [],
+                data: [],
+              );
       },
       child: Padding(
         padding: EdgeInsets.only(

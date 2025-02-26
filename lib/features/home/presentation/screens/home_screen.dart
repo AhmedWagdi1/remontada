@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen>
                                 .getGroupeMatches(playgrounds: [], data: []);
                       },
                       child: CustomScrollView(
-                        physics: AlwaysScrollableScrollPhysics(),
+                        physics: NeverScrollableScrollPhysics(),
                         slivers: [
                           54.84.ph.SliverBox,
                           SvgPicture.asset(
@@ -372,7 +372,7 @@ class _HomeScreenState extends State<HomeScreen>
                               )
                             ],
                           ).paddingLeft(5).paddingRight(20).SliverBox,
-                          18.ph.SliverBox,
+                          10.ph.SliverBox,
                           TabBar(
                             controller: controller,
                             labelPadding: EdgeInsets.symmetric(horizontal: 44),
@@ -391,7 +391,7 @@ class _HomeScreenState extends State<HomeScreen>
                             tabs: [
                               Tab(
                                 child: CustomText(
-                                 "مباريات فردية" ,// 'current_matches'.tr(),
+                                  "مباريات فردية", // 'current_matches'.tr(),
                                   fontSize: 14,
                                   weight: FontWeight.w500,
                                   align: TextAlign.center,
@@ -402,7 +402,7 @@ class _HomeScreenState extends State<HomeScreen>
                               ),
                               Tab(
                                 child: CustomText(
-                                 "مباريات جماعية", // 'finished_matches'.tr(),
+                                  "مباريات جماعية", // 'finished_matches'.tr(),
                                   fontSize: 14,
                                   weight: FontWeight.w500,
                                   align: TextAlign.center,
@@ -413,7 +413,7 @@ class _HomeScreenState extends State<HomeScreen>
                               ),
                             ],
                           ).SliverBox,
-                          20.ph.SliverBox,
+                          10.ph.SliverBox,
                           SliverFillRemaining(
                             child: TabBarView(
                               physics: const NeverScrollableScrollPhysics(),

@@ -62,9 +62,10 @@ class MatchDetailsCubit extends Cubit<MatchDetailsState> {
     }
   }
 
-  apcense({String? paymentMethod, String? id}) async {
+  apcense({String? paymentMethod, String? id, String? matchid}) async {
     final res = await matchDetailsRepo.apsence(
       subscriber_id: id,
+      matchid: matchid,
       paymment_method: paymentMethod,
     );
     if (res != null) {

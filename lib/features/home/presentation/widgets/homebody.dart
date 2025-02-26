@@ -14,8 +14,7 @@ class Homebody extends StatefulWidget {
   State<Homebody> createState() => _HomebodyState();
 }
 
-class _HomebodyState extends State<Homebody>
-    with AutomaticKeepAliveClientMixin {
+class _HomebodyState extends State<Homebody> {
   HomeModel homeModel = HomeModel();
 
   @override
@@ -56,7 +55,7 @@ class _HomebodyState extends State<Homebody>
     );
   }
 
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
+  // @override
+  // // TODO: implement wantKeepAlive
+  // bool get wantKeepAlive => true;
 }

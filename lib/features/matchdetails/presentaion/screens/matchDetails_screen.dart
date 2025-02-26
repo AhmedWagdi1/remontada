@@ -132,13 +132,19 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                         ),
                                         context,
                                         child: SheetBodyAddPlayers(
-                                          addPlayer: (name, phone) =>
-                                              cubit.addsubscrubers(
-                                            matchid:
-                                                matchModel.id.toString() ?? "",
-                                            name: name,
-                                            phone: phone,
-                                          ),
+                                          addPlayer: (name, phone) async {
+                                            final response =
+                                                await cubit.addsubscrubers(
+                                              matchid:
+                                                  matchModel.id.toString() ??
+                                                      "",
+                                              name: name,
+                                              phone: phone,
+                                            );
+                                            // if (response == true) {
+                                            //   Navigator.pop(context);
+                                            // }
+                                          },
                                         ),
                                       );
                                     },
@@ -410,160 +416,173 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                     radius: 33,
                                     title: "حجز بالكامل",
                                   )
-                                : matchModel.isPending == true
-                                    ? Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          CustomText(
-                                            align: TextAlign.center,
-                                            "inWainitingList".tr(),
-                                            weight: FontWeight.w500,
-                                            color: Colors.red,
-                                            fontSize: 16,
-                                          ),
-                                          20.ph,
-                                          ButtonWidget(
-                                              buttonColor: LightThemeColors
-                                                  .warningButton,
-                                              height: 65,
-                                              // width: 342,
-                                              fontweight: FontWeight.bold,
-                                              radius: 33,
-                                              textColor: context.background,
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  SvgPicture.asset(
-                                                    color: context.background,
-                                                    Assets.icons.flag,
-                                                  ),
-                                                  9.pw,
-                                                  CustomText(
-                                                    LocaleKeys.apology_take_part
-                                                        .tr(),
-                                                    fontSize: 16,
-                                                    weight: FontWeight.bold,
-                                                    color: context.background,
-                                                  ),
-                                                ],
-                                              ),
-                                              onTap: () async {
-                                                // widget.onreturn?.call();
+                                // : matchModel.isPending == true
+                                //     ? Column(
+                                //         crossAxisAlignment:
+                                //             CrossAxisAlignment.center,
+                                //         children: [
+                                //           CustomText(
+                                //             align: TextAlign.center,
+                                //             "inWainitingList".tr(),
+                                //             weight: FontWeight.w500,
+                                //             color: Colors.red,
+                                //             fontSize: 16,
+                                //           ),
+                                //           20.ph,
+                                //           ButtonWidget(
+                                //               buttonColor: LightThemeColors
+                                //                   .warningButton,
+                                //               height: 65,
+                                //               // width: 342,
+                                //               fontweight: FontWeight.bold,
+                                //               radius: 33,
+                                //               textColor: context.background,
+                                //               child: Row(
+                                //                 mainAxisAlignment:
+                                //                     MainAxisAlignment.center,
+                                //                 children: [
+                                //                   SvgPicture.asset(
+                                //                     color: context.background,
+                                //                     Assets.icons.flag,
+                                //                   ),
+                                //                   9.pw,
+                                //                   CustomText(
+                                //                     LocaleKeys.apology_take_part
+                                //                         .tr(),
+                                //                     fontSize: 16,
+                                //                     weight: FontWeight.bold,
+                                //                     color: context.background,
+                                //                   ),
+                                //                 ],
+                                //               ),
+                                //               onTap: () async {
+                                //                 // widget.onreturn?.call();
 
-                                                final response =
-                                                    await cubit.cancel(
-                                                  widget.id.toString(),
-                                                );
-                                                if (mounted && response == true)
-                                                  Navigator
-                                                      .pushReplacementNamed(
-                                                    context,
-                                                    Routes.LayoutScreen,
-                                                  );
-                                              })
-                                        ],
-                                      )
-                                    : subScribersModel.isMymatch != null
-                                        ? (matchModel.flag == false &&
-                                                Utils.token.isNotEmpty)
-                                            ? ButtonWidget(
-                                                buttonColor:
-                                                    cubit.isMymatch ?? false
-                                                        ? LightThemeColors
-                                                            .warningButton
-                                                        : context.primaryColor,
-                                                onTap: subScribersModel
-                                                            .isMymatch ??
-                                                        false
-                                                    ? () async {
-                                                        // widget.onreturn?.call();
+                                //                 final response =
+                                //                     await cubit.cancel(
+                                //                   widget.id.toString(),
+                                //                 );
+                                //                 if (mounted && response == true)
+                                //                   Navigator
+                                //                       .pushReplacementNamed(
+                                //                     context,
+                                //                     Routes.LayoutScreen,
+                                //                   );
+                                //               })
+                                //         ],
+                                //       )
+                                : subScribersModel.isMymatch != null
+                                    ? (matchModel.flag == false &&
+                                            Utils.token.isNotEmpty)
+                                        ? ButtonWidget(
+                                            buttonColor: cubit.isMymatch ??
+                                                    false
+                                                ? LightThemeColors.warningButton
+                                                : context.primaryColor,
+                                            onTap: subScribersModel.isMymatch ??
+                                                    false
+                                                ? () async {
+                                                    // widget.onreturn?.call();
 
+                                                    final response =
+                                                        await cubit.cancel(
+                                                      widget.id.toString(),
+                                                    );
+                                                    if (mounted &&
+                                                        response == true)
+                                                      Navigator
+                                                          .pushReplacementNamed(
+                                                        context,
+                                                        Routes.LayoutScreen,
+                                                      );
+                                                  }
+                                                : () async {
+                                                    await showConfirmationSheet(
+                                                      isCompleted: matchModel
+                                                          .isCCompleted,
+                                                      context,
+                                                      () async {
                                                         final response =
-                                                            await cubit.cancel(
-                                                          widget.id.toString(),
-                                                        );
-                                                        if (mounted &&
-                                                            response == true)
-                                                          Navigator
-                                                              .pushReplacementNamed(
+                                                            await cubit
+                                                                .subScribe(
+                                                                    widget.id ??
+                                                                        0);
+                                                        if (response == true) {
+                                                          Navigator.pop(
                                                             context,
-                                                            Routes.LayoutScreen,
+                                                            widget.onreturn,
                                                           );
-                                                      }
-                                                    : () async {
-                                                        await showConfirmationSheet(
-                                                          isCompleted:
-                                                              matchModel
-                                                                  .isCCompleted,
-                                                          context,
-                                                          () async {
-                                                            final response =
-                                                                await cubit
-                                                                    .subScribe(
-                                                                        widget.id ??
-                                                                            0);
-                                                            if (response ==
-                                                                true) {
-                                                              Navigator.pop(
-                                                                context,
-                                                                widget.onreturn,
+                                                          showSuccessSheet(
+                                                            context,
+                                                            widget.id,
+                                                            ontap: () {
+                                                              MatchDetailsCubit
+                                                                      .get(
+                                                                          context)
+                                                                  .getMatchDetails(
+                                                                widget.id
+                                                                    .toString(),
                                                               );
-                                                              showSuccessSheet(
-                                                                  context,
-                                                                  widget.id);
-                                                            }
-                                                          },
-                                                          // cubit.subScribe(widget.id ?? 0),
-                                                        );
+                                                              MatchDetailsCubit
+                                                                      .get(
+                                                                          context)
+                                                                  .getSubscribers(
+                                                                widget.id
+                                                                    .toString(),
+                                                              )(
+                                                                widget.id
+                                                                    .toString(),
+                                                              );
+                                                            },
+                                                          );
+                                                        }
                                                       },
-                                                height: 65,
-                                                // width: 342,
-                                                fontweight: FontWeight.bold,
-                                                radius: 33,
-                                                textColor: context.background,
-                                                child: cubit.isMymatch ?? false
-                                                    ? Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          SvgPicture.asset(
-                                                            color: context
-                                                                .background,
-                                                            Assets.icons.flag,
-                                                          ),
-                                                          9.pw,
-                                                          CustomText(
-                                                            LocaleKeys
-                                                                .apology_take_part
-                                                                .tr(),
-                                                            fontSize: 16,
-                                                            weight:
-                                                                FontWeight.bold,
-                                                            color: context
-                                                                .background,
-                                                          ),
-                                                        ],
-                                                      )
-                                                    : CustomText(
-                                                        matchModel.isCCompleted ??
-                                                                false
-                                                            ? "joinWaiting".tr()
-                                                            : "SubscribeNow"
-                                                                .tr(),
-                                                        fontSize: 19,
+                                                      // cubit.subScribe(widget.id ?? 0),
+                                                    );
+                                                  },
+                                            height: 65,
+                                            // width: 342,
+                                            fontweight: FontWeight.bold,
+                                            radius: 33,
+                                            textColor: context.background,
+                                            child: cubit.isMymatch ?? false
+                                                ? Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      SvgPicture.asset(
+                                                        color:
+                                                            context.background,
+                                                        Assets.icons.flag,
+                                                      ),
+                                                      9.pw,
+                                                      CustomText(
+                                                        LocaleKeys
+                                                            .apology_take_part
+                                                            .tr(),
+                                                        fontSize: 16,
                                                         weight: FontWeight.bold,
                                                         color:
                                                             context.background,
                                                       ),
-                                                // title: ,
-                                              )
-                                            : SizedBox()
-                                        : CircularProgressIndicator(
-                                            color: LightThemeColors.primary,
-                                          ),
+                                                    ],
+                                                  )
+                                                : CustomText(
+                                                    matchModel.isCCompleted ??
+                                                            false
+                                                        ? "joinWaiting".tr()
+                                                        : "SubscribeNow".tr(),
+                                                    fontSize: 19,
+                                                    weight: FontWeight.bold,
+                                                    color: context.background,
+                                                  ),
+                                            // title: ,
+                                          )
+                                        : SizedBox()
+                                    : CircularProgressIndicator(
+                                        color: LightThemeColors.primary,
+                                      ),
                         // : CircularProgressIndicator(
                         //     color: Colors.blue,
                         //   ),
@@ -749,10 +768,7 @@ showConfirmationSheet(BuildContext context, VoidCallback confirm,
   );
 }
 
-showSuccessSheet(
-  BuildContext context,
-  int? id,
-) {
+showSuccessSheet(BuildContext context, int? id, {VoidCallback? ontap}) {
   Alerts.bottomSheet(
     context,
     shape: RoundedRectangleBorder(
@@ -811,7 +827,9 @@ showSuccessSheet(
         ],
       ),
     ),
-  );
+  ).then((val) {
+    ontap?.call();
+  });
 }
 
 class SheetBodyAddPlayers extends StatefulWidget {
@@ -889,10 +907,8 @@ class _SheetBodyAddPlayersState extends State<SheetBodyAddPlayers> {
                 Expanded(
                   flex: 2,
                   child: TextFormFieldWidget(
-                    contentPadding: EdgeInsetsDirectional.symmetric(
-                      horizontal: 6,
-                    ),
-                    type: TextInputType.phone,
+                    contentPadding: EdgeInsetsDirectional.zero,
+                    type: TextInputType.name,
                     controller: name,
                     hintText: "ادخل اسم اللاعب",
                     hintSize: 12,
@@ -924,13 +940,12 @@ class _SheetBodyAddPlayersState extends State<SheetBodyAddPlayers> {
                 Expanded(
                   flex: 2,
                   child: TextFormFieldWidget(
+                    prefixIcon: null,
                     controller: phone,
-                    contentPadding: EdgeInsetsDirectional.symmetric(
-                      horizontal: 6,
-                    ),
+                    contentPadding: EdgeInsetsDirectional.zero,
                     hintSize: 12,
                     type: TextInputType.phone,
-                    hintText: "ادخل رقم الهاتف",
+                    hintText: "05xxxxxxxx",
                     // suffixIcon: Row(
                     //   mainAxisSize: MainAxisSize.min,
                     //   children: [

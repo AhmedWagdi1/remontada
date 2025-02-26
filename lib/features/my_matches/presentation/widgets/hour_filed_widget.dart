@@ -9,7 +9,7 @@ class HpurFieldWidget extends StatefulWidget {
     this.onTimeChanged,
     this.title,
   });
-  final Function(int hour, int minute)? onTimeChanged;
+  final Function(num hour, int minute)? onTimeChanged;
   final String? title;
 
   @override
@@ -17,19 +17,19 @@ class HpurFieldWidget extends StatefulWidget {
 }
 
 class _HpurFieldWidgetState extends State<HpurFieldWidget> {
-  int _hour = 12;
+  num _hour = 12;
   int _minute = 0;
 
   void _incrementHour() {
     setState(() {
-      _hour = (_hour + 1) % 24;
+      _hour = (_hour + 1) % 25 == 0 ? 1 : _hour + 1;
       widget.onTimeChanged!(_hour, _minute);
     });
   }
 
   void _decrementHour() {
     setState(() {
-      _hour = (_hour - 1) < 0 ? 23 : _hour - 1;
+      _hour = (_hour - 1) < 1 ? 24 : _hour - 1;
       widget.onTimeChanged!(_hour, _minute);
     });
   }

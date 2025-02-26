@@ -183,13 +183,12 @@ class MatchesBody extends StatefulWidget {
   State<MatchesBody> createState() => _MatchesBodyState();
 }
 
-class _MatchesBodyState extends State<MatchesBody>
-    with AutomaticKeepAliveClientMixin {
+class _MatchesBodyState extends State<MatchesBody> {
   MyMatches myMatches = MyMatches();
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    // super.build(context);
     return BlocConsumer<MyMatchesCubit, MyMatchesState>(
       listener: (context, state) {
         if (state is MyMatchesLoaded) myMatches = state.mymatches;
@@ -221,7 +220,7 @@ class _MatchesBodyState extends State<MatchesBody>
     );
   }
 
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
+  // @override
+  // // TODO: implement wantKeepAlive
+  // bool get wantKeepAlive => true;
 }

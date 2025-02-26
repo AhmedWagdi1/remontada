@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -18,7 +19,6 @@ import '../../../../shared/widgets/edit_text_widget.dart';
 import '../../../auth/domain/model/auth_model.dart';
 import '../../../auth/domain/repository/auth_repository.dart';
 import '../../../home/domain/model/home_model.dart';
-import '../widgets/hour_filed_widget.dart';
 
 class CreateMatchScreen extends StatefulWidget {
   const CreateMatchScreen({
@@ -35,6 +35,8 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
   TextEditingController playgroundcontroller = TextEditingController();
   TextEditingController date = TextEditingController();
   TextEditingController number = TextEditingController();
+  TextEditingController startTime = TextEditingController();
+  TextEditingController endTime = TextEditingController();
   TextEditingController peroid = TextEditingController();
   TextEditingController text = TextEditingController();
   TextEditingController price = TextEditingController();
@@ -137,6 +139,34 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                           },
                         ),
                         TextFormFieldWidget(
+                          readOnly: true,
+                          onTap: () {
+                            showDatePicker(
+                              context: context,
+                              firstDate: DateTime(
+                                DateTime.now().year,
+
+                                // (DateTime.now().hour + 12),
+                              ),
+                              lastDate: DateTime(
+                                DateTime.now().year + 100,
+                              ),
+                              locale: Locale('ar', 'EG'),
+                            ).then(
+                              (pickedDate) {
+                                date.text =
+                                    DateFormat('yyyy-MM-dd', 'en_US').format(
+                                          pickedDate ?? DateTime.now(),
+                                        ) +
+                                        " " +
+                                        DateFormat('EEEE', 'ar_EG').format(
+                                          pickedDate ?? DateTime.now(),
+                                        );
+                              },
+                            );
+                            setState(() {});
+                            ;
+                          },
                           controller: date,
                           onSaved: (value) {
                             cubit.request.date = value;
@@ -153,7 +183,7 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                         12.ph,
                         TextFormFieldWidget(
                           controller: number,
-
+                          type: TextInputType.number,
                           onSaved: (value) {
                             cubit.request.subscribers_quantity = value;
                           }, // register.email = value,
@@ -167,19 +197,62 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                           activeBorderColor: LightThemeColors.inputFieldBorder,
                         ),
                         12.ph,
-                        HpurFieldWidget(
-                          title: "بداية الفترة",
-                          onTimeChanged: (hour, minute) {
-                            cubit.request.statrtTime = "$hour:$minute";
+                        TextFormFieldWidget(
+                          readOnly: true,
+                          onTap: () {
+                            showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.now(),
+                            ).then((value) {
+                              startTime.text =
+                                  "${value!.hour}:${value.minute} ${value.period.name}";
+                            });
                           },
+                          onSaved: (value) => cubit.request.statrtTime = value,
+                          controller: startTime,
+                          validator: Utils.valid.defaultValidation,
+                          prefixIcon: "clock".svg(),
+                          hintSize: 16,
+                          borderRadius: 33,
+                          hintText: "بداية الفترة",
+                          hintColor: LightThemeColors.textPrimary,
+                          activeBorderColor: LightThemeColors.inputFieldBorder,
                         ),
                         12.ph,
-                        HpurFieldWidget(
-                          title: "نهاية الفترة",
-                          onTimeChanged: (hour, minute) {
-                            cubit.request.endTime = "$hour:$minute";
+                        TextFormFieldWidget(
+                          readOnly: true,
+                          onTap: () {
+                            showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.now(),
+                            ).then((value) {
+                              endTime.text =
+                                  "${value!.hour}:${value.minute} ${value.period.name}";
+                            });
                           },
+                          onSaved: (value) => cubit.request.endTime = value,
+                          controller: endTime,
+                          validator: Utils.valid.defaultValidation,
+                          prefixIcon: "clock".svg(),
+                          hintSize: 16,
+                          borderRadius: 33,
+                          hintText: "نهاية الفترة",
+                          hintColor: LightThemeColors.textPrimary,
+                          activeBorderColor: LightThemeColors.inputFieldBorder,
                         ),
+                        // HpurFieldWidget(
+                        //   title: "بداية الفترة",
+                        //   onTimeChanged: (hour, minute) {
+                        //     cubit.request.statrtTime = "$hour:$minute";
+                        //   },
+                        // ),
+                        // 12.ph,
+                        // HpurFieldWidget(
+                        //   title: "نهاية الفترة",
+                        //   onTimeChanged: (hour, minute) {
+                        //     cubit.request.endTime = "$hour:$minute";
+                        //   },
+                        // ),
                         // TextFormFieldWidget(
                         //   onSaved: (value) {
                         //     cubit.request.date = value;
@@ -196,7 +269,7 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                         12.ph,
                         TextFormFieldWidget(
                           controller: peroid,
-
+                          type: TextInputType.number,
                           onSaved: (value) {
                             cubit.request.duration = value;
                           }, // register.email = value,
@@ -228,7 +301,7 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                         12.ph,
                         TextFormFieldWidget(
                           controller: price,
-
+                          type: TextInputType.number,
                           onSaved: (value) {
                             cubit.request.amount = value;
                           }, // register.email = value,
