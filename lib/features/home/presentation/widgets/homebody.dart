@@ -36,6 +36,8 @@ class _HomebodyState extends State<Homebody> {
       builder: (context, state) {
         final cubit = HomeCubit.get(context);
         return ListView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
           itemCount: homeModel.match?.length ?? 0,
           itemBuilder: (context, index) {
             return

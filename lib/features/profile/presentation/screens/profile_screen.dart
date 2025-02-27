@@ -88,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           weight: FontWeight.w500,
                           color: LightThemeColors.secondaryText,
                         ),
-                        28.ph,
+                        5.ph,
                         Container(
                           width: 90,
                           height: 90,
@@ -125,23 +125,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           // fontSize: 20,
                           // weight: FontWeight.w600,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Assets.icons.playLocation.toSvg(),
-                            // SvgPicture.asset(
-                            //     color: context.primaryColor, "wallet".svg()),
-                            5.27.pw,
-                            CustomText(
-                              style: TextStyle(
-                                color: context.primaryColor,
-                              ).s18.regular,
-                              user.user?.location ?? "",
-                              // fontSize: 18,
-                              // weight: FontWeight.w500,
-                            ),
-                          ],
-                        ),
+                        if (Utils.isSuperVisor != true)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Assets.icons.playLocation.toSvg(),
+                              // SvgPicture.asset(
+                              //     color: context.primaryColor, "wallet".svg()),
+                              5.27.pw,
+                              CustomText(
+                                style: TextStyle(
+                                  color: context.primaryColor,
+                                ).s18.regular,
+                                user.user?.location ?? "",
+                                // fontSize: 18,
+                                // weight: FontWeight.w500,
+                              ),
+                            ],
+                          ),
                         38.ph,
                         PlayerDetailsWidget(
                           icon: Assets.icons.calling,

@@ -122,6 +122,35 @@ class _MoreScreenState extends State<MoreScreen> {
                             // fontSize: 16.sp,
                             // weight: FontWeight.w500,
                           ),
+                          12.ph,
+                          if (Utils.isSuperVisor == true)
+                            Container(
+                              height: 60,
+                              width: 200,
+                              decoration: BoxDecoration(
+                                color: LightThemeColors.primary.withOpacity(
+                                  .15,
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                  33,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    "whistle".svg(),
+                                  ),
+                                  12.pw,
+                                  CustomText(
+                                    "عضوية مشرف",
+                                    color: LightThemeColors.primary,
+                                    fontSize: 18,
+                                    weight: FontWeight.w500,
+                                  )
+                                ],
+                              ),
+                            ),
                           26.ph,
                           Column(children: [
                             ...List.generate(

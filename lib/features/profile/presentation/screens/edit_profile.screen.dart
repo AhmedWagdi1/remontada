@@ -311,42 +311,43 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       },
                     ),
                     10.ph,
-                    CustomAutoCompleteTextField<Location>(
-                      // contentPadding: EdgeInsets.only(
-                      //   bottom: 20,
-                      // ),
-                      padding: EdgeInsets.only(
-                        bottom: 20,
-                      ),
-                      controller: location,
-                      validator: Utils.valid.defaultValidation,
-
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.only(
-                          right: 35,
-                          left: 9.76,
+                    if (Utils.isSuperVisor != true)
+                      CustomAutoCompleteTextField<Location>(
+                        // contentPadding: EdgeInsets.only(
+                        //   bottom: 20,
+                        // ),
+                        padding: EdgeInsets.only(
+                          bottom: 20,
                         ),
-                        child: SvgPicture.asset(Assets.icons.playLocation),
+                        controller: location,
+                        validator: Utils.valid.defaultValidation,
+
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.only(
+                            right: 35,
+                            left: 9.76,
+                          ),
+                          child: SvgPicture.asset(Assets.icons.playLocation),
+                        ),
+                        // c: context.primaryColor,
+                        hint: LocaleKeys.auth_hint_choose_choose_playlocation
+                            .tr(),
+                        function: (p0) async {
+                          return (await locator<AuthRepository>()
+                                      .getlocationRequest())
+                                  ?.locations ??
+                              [];
+                        },
+                        itemAsString: (p0) => p0.name ?? "",
+                        localData: true,
+                        showLabel: false,
+                        showSufix: true,
+                        // radius: 33,
+                        // options: List.generate(cubit.getlocations()., (index) => null),
+                        onChanged: (val) {
+                          edit.locationId = val.id;
+                        },
                       ),
-                      // c: context.primaryColor,
-                      hint:
-                          LocaleKeys.auth_hint_choose_choose_playlocation.tr(),
-                      function: (p0) async {
-                        return (await locator<AuthRepository>()
-                                    .getlocationRequest())
-                                ?.locations ??
-                            [];
-                      },
-                      itemAsString: (p0) => p0.name ?? "",
-                      localData: true,
-                      showLabel: false,
-                      showSufix: true,
-                      // radius: 33,
-                      // options: List.generate(cubit.getlocations()., (index) => null),
-                      onChanged: (val) {
-                        edit.locationId = val.id;
-                      },
-                    ),
                     21.ph,
                     ButtonWidget(
                       onTap: () async {

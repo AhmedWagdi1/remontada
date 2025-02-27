@@ -145,7 +145,9 @@ class HomeModel {
     if (map['matches'] != null) {
       match = <MatchModel>[];
       (map['matches'] as List).forEach((v) {
-        match!.add(MatchModel.fromMap(v));
+        match!.add(
+          MatchModel.fromMap(v),
+        );
       });
     }
   }

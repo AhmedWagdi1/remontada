@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:remontada/core/utils/utils.dart';
 
 class EditRequest {
   String? name;
@@ -26,7 +27,7 @@ class EditRequest {
       'mobile': phone,
       'email': email,
       'area_id': areaId,
-      'location_id': locationId,
+      if (Utils.isSuperVisor != true) 'location_id': locationId,
       if (image != null)
         'image': await MultipartFile.fromFile(image?.path ?? ""),
     };
