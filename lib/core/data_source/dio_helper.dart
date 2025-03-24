@@ -182,11 +182,17 @@ class DioService {
       log('case 2');
       log('Server reachable. Error in resposne');
       log("${e.response!.statusCode}");
-      checkForSuccess(e.response!);
-      // Alerts.snack(
-      //     text: e.response?.data["message"] ?? "لا يمكن الوصول للسيرفير",
-      //     state: SnackState.failed);
-
+      // checkForSuccess(e.response!);
+      Alerts.snack(
+        text: e.response?.data["message"] ?? "لا يمكن الوصول للسيرفير",
+        state: SnackState.failed,
+      );
+      Utils.deleteUserData();
+      // Navigator.pushNamedAndRemoveUntil(
+      //   Utils.navigatorKey().currentContext!,
+      //   Routes.LoginScreen,
+      //   (route) => false,
+      // );
       log("hello im errroe");
       if (e.response?.data["message"]?.contains("Unauthenticated") ?? false) {
         await Utils.dataManager.deleteUserData();

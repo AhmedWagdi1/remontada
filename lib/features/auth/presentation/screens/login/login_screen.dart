@@ -42,6 +42,35 @@ class _LoginScreenState extends State<LoginScreen> {
       create: (context) => AuthCubit(),
       child: BlocConsumer<AuthCubit, AuthStates>(
         listener: (context, state) {
+          final cubit = AuthCubit.get(context);
+          if (state is LoginSuccessState) {
+            // phone.clear();
+            Navigator.pushNamed(
+              context,
+              Routes.OtpScreen,
+              arguments: OtpArguments(
+                sendTo: authRequest.phone ?? "",
+                onSubmit: (value) async {
+                  authRequest.code = value;
+                  final res = await cubit.sendCode(
+                      phone: authRequest.phone ?? "",
+                      code: authRequest.code ?? "");
+                  if (res == true) {
+                    Alerts.snack(
+                      text: "تم تسجيل الدخول بنجاح",
+                      state: SnackState.success,
+                    );
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, Routes.LayoutScreen, (route) => false);
+                  }
+                },
+                onReSend: () async {
+                  await cubit.resendCode(authRequest.phone ?? "");
+                },
+                init: false,
+              ),
+            );
+          }
           if (state is NeedRegister) {
             Navigator.pushNamed(
               context,
@@ -162,50 +191,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   ?.validate() ??
                                               false) {
                                             formKey.currentState?.save();
-                                            final res = await cubit.login(
+                                            cubit.login(
                                                 loginRequestModel: authRequest);
-                                            if (res == true) {
-                                              phone.clear();
-                                              Navigator.pushNamed(
-                                                context,
-                                                Routes.OtpScreen,
-                                                arguments: OtpArguments(
-                                                  sendTo:
-                                                      authRequest.phone ?? "",
-                                                  onSubmit: (value) async {
-                                                    authRequest.code = value;
-                                                    final res =
-                                                        await cubit.sendCode(
-                                                            phone: authRequest
-                                                                    .phone ??
-                                                                "",
-                                                            code: authRequest
-                                                                    .code ??
-                                                                "");
-                                                    if (res == true) {
-                                                      Alerts.snack(
-                                                        text:
-                                                            "تم تسجيل الدخول بنجاح",
-                                                        state:
-                                                            SnackState.success,
-                                                      );
-                                                      Navigator
-                                                          .pushNamedAndRemoveUntil(
-                                                              context,
-                                                              Routes
-                                                                  .LayoutScreen,
-                                                              (route) => false);
-                                                    }
-                                                  },
-                                                  onReSend: () async {
-                                                    await cubit.resendCode(
-                                                        authRequest.phone ??
-                                                            "");
-                                                  },
-                                                  init: false,
-                                                ),
-                                              );
-                                            }
                                           }
                                         },
                                         height: 65,

@@ -132,7 +132,7 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                         ),
                                         context,
                                         child: SheetBodyAddPlayers(
-                                          addPlayer: (name, phone) async {
+                                          addPlayer: (phone, name) async {
                                             final response =
                                                 await cubit.addsubscrubers(
                                               matchid:
@@ -480,13 +480,14 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                                 Utils.token.isNotEmpty)
                                             ? ButtonWidget(
                                                 buttonColor:
-                                                    cubit.isMymatch ?? false
+                                                    matchModel.is_subscribed ==
+                                                            true
                                                         ? LightThemeColors
                                                             .warningButton
                                                         : context.primaryColor,
-                                                onTap: subScribersModel
-                                                            .isMymatch ??
-                                                        false
+                                                onTap: matchModel
+                                                            .is_subscribed ==
+                                                        true
                                                     ? () async {
                                                         // widget.onreturn?.call();
 
@@ -553,7 +554,9 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                                 fontweight: FontWeight.bold,
                                                 radius: 33,
                                                 textColor: context.background,
-                                                child: cubit.isMymatch ?? false
+                                                child: matchModel
+                                                            .is_subscribed ==
+                                                        true
                                                     ? Row(
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
@@ -714,6 +717,7 @@ showPlayersheet(BuildContext context,
             child: ListView.builder(
               itemCount: subscribers?.subscribers?.length ?? 0,
               itemBuilder: (context, i) => PlayerBottomSheet(
+                isGroupe: matchmodel?.type == "group",
                 subscriber: subscribers?.subscribers?[i],
               ),
             ),

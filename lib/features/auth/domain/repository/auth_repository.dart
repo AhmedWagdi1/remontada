@@ -57,10 +57,11 @@ class AuthRepository {
 
   loginRequest(AuthRequest user) async {
     final response = await dioService.postData(
-        isForm: true,
-        url: AuthEndPoints.login,
-        body: user.login(),
-        loading: true);
+      isForm: true,
+      url: AuthEndPoints.login,
+      body: user.login(),
+      loading: true,
+    );
     if (response.isError == false) {
       return response.response?.data['data'];
     } else {

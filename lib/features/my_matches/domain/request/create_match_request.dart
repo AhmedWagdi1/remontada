@@ -9,7 +9,7 @@ class CreateMatchRequest {
   String? durationTetx;
   String? amount;
   String? details;
-  bool? type;
+  String? type;
   bool? isUpdate;
   CreateMatchRequest({
     this.playgroundId,
@@ -36,7 +36,7 @@ class CreateMatchRequest {
       'durations_text': durationTetx,
       'amount': amount,
       'details': details,
-      'type': type == true ? "single" : "group",
+      'type': type,
       if (isUpdate == true) '_method': "put",
     };
   }

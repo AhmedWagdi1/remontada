@@ -15,6 +15,7 @@ import 'package:remontada/features/home/presentation/widgets/custom_dots.dart';
 import 'package:remontada/features/home/presentation/widgets/group_body.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/shared/widgets/network_image.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../core/Router/Router.dart';
 import '../../../../core/app_strings/locale_keys.dart';
@@ -131,60 +132,82 @@ class _HomeScreenState extends State<HomeScreen>
                               alignment: Alignment.center,
                               children: [
                                 if (Utils.isSuperVisor == false)
-                                  CarouselSlider(
-                                    items: List.generate(
-                                      homeModel.slider?.length ?? 0,
-                                      (index) => ClipRRect(
-                                        borderRadius: BorderRadius.circular(18),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            if (homeModel.slider?[index].link !=
-                                                    "" &&
-                                                homeModel.slider?[index].link !=
-                                                    null)
-                                              Navigator.pushNamed(
-                                                  context, Routes.webPage,
-                                                  arguments: homeModel
-                                                          .slider?[index]
-                                                          .link ??
-                                                      "");
-                                          },
-                                          child: NetworkImagesWidgets(
-                                            homeModel.slider?[index].image ??
-                                                "",
-                                            width: 400,
-                                            fit: BoxFit.fill,
+                                  state is HomeDataLoading
+                                      ? Container(
+                                          height: 200,
+                                          width: 400,
+                                          child: Shimmer.fromColors(
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.black,
+                                                borderRadius:
+                                                    BorderRadius.circular(18),
+                                              ),
+                                              width: 400,
+                                            ),
+                                            baseColor: Colors.grey.shade300,
+                                            highlightColor:
+                                                Colors.grey.shade100,
                                           ),
-                                          //  Image.asset(
-                                          //   "slider".png(),
-                                          // ),
-                                          // SvgPicture.network(
-                                          //   // height: 150.h,
-                                          //   // homeModel.slider?[index].image ??
-                                          //   "https://match.almasader.net/storage/2/Group-175261.svg",
-                                          //   width: 400,
-                                          //   fit: BoxFit.fill,
-                                          //   // images[index],
-                                          // ),
-                                        ),
-                                      ),
-                                    ),
-                                    options: CarouselOptions(
-                                      onPageChanged: (index, reason) {
-                                        this.index = index;
-                                        setState(() {});
-                                      },
-                                      enlargeCenterPage: true,
-                                      enlargeStrategy:
-                                          CenterPageEnlargeStrategy.zoom,
-                                      autoPlayAnimationDuration: Duration(
-                                        seconds: 1,
-                                      ),
-                                      autoPlay: true,
-                                      height: 170,
-                                      viewportFraction: 1,
-                                    ),
-                                  ).paddingHorizontal(5),
+                                        )
+                                      : CarouselSlider(
+                                          items: List.generate(
+                                            homeModel.slider?.length ?? 0,
+                                            (index) => ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(18),
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  if (homeModel.slider?[index]
+                                                              .link !=
+                                                          "" &&
+                                                      homeModel.slider?[index]
+                                                              .link !=
+                                                          null)
+                                                    Navigator.pushNamed(
+                                                        context, Routes.webPage,
+                                                        arguments: homeModel
+                                                                .slider?[index]
+                                                                .link ??
+                                                            "");
+                                                },
+                                                child: NetworkImagesWidgets(
+                                                  homeModel.slider?[index]
+                                                          .image ??
+                                                      "",
+                                                  width: 400,
+                                                  fit: BoxFit.fill,
+                                                ),
+                                                //  Image.asset(
+                                                //   "slider".png(),
+                                                // ),
+                                                // SvgPicture.network(
+                                                //   // height: 150.h,
+                                                //   // homeModel.slider?[index].image ??
+                                                //   "https://match.almasader.net/storage/2/Group-175261.svg",
+                                                //   width: 400,
+                                                //   fit: BoxFit.fill,
+                                                //   // images[index],
+                                                // ),
+                                              ),
+                                            ),
+                                          ),
+                                          options: CarouselOptions(
+                                            onPageChanged: (index, reason) {
+                                              this.index = index;
+                                              setState(() {});
+                                            },
+                                            enlargeCenterPage: true,
+                                            enlargeStrategy:
+                                                CenterPageEnlargeStrategy.zoom,
+                                            autoPlayAnimationDuration: Duration(
+                                              seconds: 1,
+                                            ),
+                                            autoPlay: true,
+                                            height: 170,
+                                            viewportFraction: 1,
+                                          ),
+                                        ).paddingHorizontal(5),
                                 if (Utils.isSuperVisor == false)
                                   Positioned(
                                     bottom: 30,

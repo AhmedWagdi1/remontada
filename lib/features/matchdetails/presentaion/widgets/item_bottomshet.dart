@@ -16,9 +16,11 @@ class PlayerBottomSheet extends StatelessWidget {
     super.key,
     this.subscriber,
     this.endIcon,
+    this.isGroupe,
   });
   final Subscriber? subscriber;
   final Widget? endIcon;
+  final bool? isGroupe;
 
   @override
   Widget build(BuildContext context) {
@@ -114,24 +116,25 @@ class PlayerBottomSheet extends StatelessWidget {
                 ],
               ),
             ),
-            Expanded(
-              flex: Utils.isSuperVisor == true ? 2 : 1,
-              child: endIcon ??
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pushNamed(
-                        context,
-                        Routes.playerDetails,
-                        arguments: subscriber?.id.toString(),
-                      );
-                    },
-                    icon: SvgPicture.asset(
-                      width: 38,
-                      height: 38,
-                      "forowrdButton".svg(),
+            if (isGroupe == false)
+              Expanded(
+                flex: Utils.isSuperVisor == true ? 2 : 1,
+                child: endIcon ??
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          Routes.playerDetails,
+                          arguments: subscriber?.id.toString(),
+                        );
+                      },
+                      icon: SvgPicture.asset(
+                        width: 38,
+                        height: 38,
+                        "forowrdButton".svg(),
+                      ),
                     ),
-                  ),
-            )
+              )
           ],
         ),
       ),

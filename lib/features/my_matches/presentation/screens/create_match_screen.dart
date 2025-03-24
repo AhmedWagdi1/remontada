@@ -15,6 +15,7 @@ import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/shared/widgets/loadinganderror.dart';
 
 import '../../../../core/Router/Router.dart';
+import '../../../../core/general/general_model.dart';
 import '../../../../shared/widgets/autocomplate.dart';
 import '../../../../shared/widgets/edit_text_widget.dart';
 import '../../../auth/domain/model/auth_model.dart';
@@ -34,6 +35,7 @@ class CreateMatchScreen extends StatefulWidget {
 class _CreateMatchScreenState extends State<CreateMatchScreen> {
   MatchModel matchModel = MatchModel();
   TextEditingController playgroundcontroller = TextEditingController();
+  TextEditingController matchType = TextEditingController();
   TextEditingController date = TextEditingController();
   TextEditingController number = TextEditingController();
   TextEditingController startTime = TextEditingController();
@@ -61,6 +63,9 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
             MyMatchesCubit.get(context).request.playgroundId =
                 state.matchModel.playground_id.toString();
             playgroundcontroller.text = matchModel.playGround ?? "";
+            matchType.text =
+                matchModel.type == "group" ? "مباراة جماعية" : "مباراة فردية";
+            MyMatchesCubit.get(context).request.type = matchModel.type;
             date.text = matchModel.dateDate?.date ?? "";
             number.text = matchModel.subscribers?.split("/").last ?? "";
             peroid.text = matchModel.duration.toString() ?? "";
@@ -111,6 +116,43 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                           color: LightThemeColors.textSecondary,
                         ),
                         40.ph,
+                        CustomAutoCompleteTextField<GeneralModel>(
+                          controller: matchType,
+                          // contentPadding: EdgeInsets.only(
+                          //   bottom: 20,
+                          // ),
+                          padding: EdgeInsets.only(
+                            bottom: 20,
+                          ),
+                          // controller: location,
+                          validator: Utils.valid.defaultValidation,
+
+                          prefixIcon: Padding(
+                            padding: const EdgeInsets.only(
+                              right: 35,
+                              left: 9.76,
+                            ),
+                            child: SvgPicture.asset(
+                              "playground_button".svg(),
+                            ),
+                          ),
+                          // c: context.primaryColor,
+                          hint: "نوع المباراة",
+                          function: (p0) => [
+                            GeneralModel(id: "group", value: "مباراة جماعية"),
+                            GeneralModel(id: "single", value: "مباراة فردية"),
+                          ],
+                          itemAsString: (p0) => p0.value ?? "",
+                          localData: true,
+                          showLabel: false,
+                          showSufix: true,
+                          // radius: 33,
+                          // options: List.generate(cubit.getlocations()., (index) => null),
+                          onChanged: (val) {
+                            cubit.request.type = val.id.toString();
+                            // edit.locationId = val.id;
+                          },
+                        ),
                         CustomAutoCompleteTextField<Location>(
                           controller: playgroundcontroller,
                           // contentPadding: EdgeInsets.only(
@@ -241,8 +283,8 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                                   value?.minute.toString().length == 1
                                       ? "0${value?.minute.toString()}"
                                       : value?.minute.toString() ?? "";
-                              startTime.text =
-                                  endTime.text = "${value!.hour}:${minute} ";
+                              // startTime.text =
+                              endTime.text = "${value!.hour}:${minute} ";
                             });
                           },
                           onSaved: (value) => cubit.request.endTime = value,

@@ -28,11 +28,13 @@ class MatchModel {
   bool? is_reserved;
   bool? is_owner;
   bool? isCCompleted;
+  bool? is_subscribed;
 
   // bool? validSub;
   MatchModel(
       {this.id,
       this.playGround,
+      this.is_subscribed,
       this.playground_id,
       this.dateDate,
       this.subscribers,
@@ -84,6 +86,8 @@ class MatchModel {
           ? map['subscribers_count'] as String
           : null,
       is_owner: map['is_owner'] != null ? map['is_owner'] as bool : null,
+      is_subscribed:
+          map['is_subscribed'] != null ? map['is_subscribed'] as bool : null,
       // startTime: map['is_owner'] != null ? map['is_owner'] as bool : null,
       endTime: map['end_time'] != null ? map['end_time'] as String : null,
       date: map['date'] != null ? map['date'] as String : null,

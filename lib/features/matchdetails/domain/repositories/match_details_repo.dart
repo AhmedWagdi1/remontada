@@ -65,7 +65,7 @@ class MatchDetailsRepo {
       body: {
         "name": name,
         "match_id": matchId,
-        "phone": name,
+        "phone": phone,
       },
       loading: true,
       url: "/add_subscriber",
