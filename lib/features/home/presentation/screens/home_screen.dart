@@ -344,7 +344,9 @@ class _HomeScreenState extends State<HomeScreen>
                                           icon: SvgPicture.asset(
                                             width: 40,
                                             height: 40,
-                                            "cleander_button".svg("icons"),
+                                            "cleander_button".svg(
+                                              "icons",
+                                            ),
                                           ),
                                         ),
                                       ),
