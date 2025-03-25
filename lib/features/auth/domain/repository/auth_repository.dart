@@ -29,7 +29,7 @@ class AuthRepository {
     final bool loading = false,
   }) async {
     final response = await dioService.getData(
-      url: "/playground_list",
+      url: "/playgrounds",
       loading: loading,
     );
     if (response.isError == false) {
