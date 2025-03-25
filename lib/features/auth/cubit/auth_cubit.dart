@@ -18,11 +18,7 @@ class AuthCubit extends Cubit<AuthStates> {
 
   login({required AuthRequest loginRequestModel}) async {
     emit(LoginLoadingState());
-    if (Utils.FCMToken.isEmpty) {
-      await FBMessging.getToken();
-    }
     final response = await authRepository.loginRequest(loginRequestModel);
-
     if (response != null) {
       if (response is bool) {
         emit(NeedRegister());
@@ -41,9 +37,6 @@ class AuthCubit extends Cubit<AuthStates> {
 
   signUp({required AuthRequest registerRequestModel}) async {
     emit(RegisterLoadingState());
-    if (Utils.FCMToken.isEmpty) {
-      await FBMessging.getToken();
-    }
     final response = await authRepository.registerRequest(registerRequestModel);
     if (response != null) {
       emit(RegisterSuccessState());
@@ -60,7 +53,6 @@ class AuthCubit extends Cubit<AuthStates> {
   resendCode(String mobile) async {
     emit(ResendCodeLoadingState());
     final response = await authRepository.resendCodeRequest(mobile);
-
     if (response != null) {
       emit(ResendCodeSuccessState());
 
@@ -86,6 +78,9 @@ class AuthCubit extends Cubit<AuthStates> {
   String codeId = "";
   sendCode({required String phone, required String code}) async {
     emit(ActivateCodeLoadingState());
+    if (Utils.FCMToken.isEmpty) {
+      await FBMessging.getToken();
+    }
     final response = await authRepository.sendCodeRequest(
       phone: phone,
       code: code,

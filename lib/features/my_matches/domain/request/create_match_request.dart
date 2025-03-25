@@ -27,16 +27,16 @@ class CreateMatchRequest {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'playground_id': playgroundId,
-      'subscribers_qty': subscribers_quantity,
-      'date': date,
-      'start_time': statrtTime,
-      'end_time': endTime,
-      'durations': duration,
-      'durations_text': durationTetx,
-      'amount': amount,
-      'details': details,
-      'type': type,
+      if (playgroundId != null) 'playground_id': playgroundId,
+      if (subscribers_quantity != null) 'subscribers_qty': subscribers_quantity,
+      if (date != null) 'date': date,
+      if (statrtTime != null) 'start_time': statrtTime,
+      if (endTime != null) 'end_time': endTime,
+      if (duration != null) 'durations': duration,
+      if (durationTetx != null) 'durations_text': durationTetx,
+      if (amount != null) 'amount': amount,
+      if (details != null) 'details': details,
+      if (type != null) 'type': type,
       if (isUpdate == true) '_method': "put",
     };
   }

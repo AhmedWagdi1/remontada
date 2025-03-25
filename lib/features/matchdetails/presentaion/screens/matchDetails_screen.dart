@@ -314,46 +314,48 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                               subscribers: subScribersModel,
                                             );
                                     } else {
-                                      Alerts.bottomSheet(context,
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 15, vertical: 25),
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  child: ButtonWidget(
-                                                    onTap: () =>
-                                                        Navigator.pushNamed(
-                                                      context,
-                                                      Routes.LoginScreen,
-                                                    ),
-                                                    child: CustomText(
-                                                      weight: FontWeight.w600,
-                                                      fontSize: 16,
-                                                      "تسجيل الدخول",
-                                                      color: Colors.white,
-                                                    ),
+                                      Alerts.bottomSheet(
+                                        context,
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 15, vertical: 25),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: ButtonWidget(
+                                                  onTap: () =>
+                                                      Navigator.pushNamed(
+                                                    context,
+                                                    Routes.LoginScreen,
+                                                  ),
+                                                  child: CustomText(
+                                                    weight: FontWeight.w600,
+                                                    fontSize: 16,
+                                                    "تسجيل الدخول",
+                                                    color: Colors.white,
                                                   ),
                                                 ),
-                                                15.pw,
-                                                Expanded(
-                                                  child: ButtonWidget(
-                                                    onTap: () =>
-                                                        Navigator.pushNamed(
-                                                      context,
-                                                      Routes.RegisterScreen,
-                                                    ),
-                                                    child: CustomText(
-                                                      weight: FontWeight.w600,
-                                                      fontSize: 16,
-                                                      " انشاء حساب",
-                                                      color: Colors.white,
-                                                    ),
+                                              ),
+                                              15.pw,
+                                              Expanded(
+                                                child: ButtonWidget(
+                                                  onTap: () =>
+                                                      Navigator.pushNamed(
+                                                    context,
+                                                    Routes.RegisterScreen,
                                                   ),
-                                                )
-                                              ],
-                                            ),
-                                          ));
+                                                  child: CustomText(
+                                                    weight: FontWeight.w600,
+                                                    fontSize: 16,
+                                                    " انشاء حساب",
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      );
                                     }
                                   },
                                   radius: 15,

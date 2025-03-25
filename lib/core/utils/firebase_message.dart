@@ -2,7 +2,9 @@ import 'dart:developer';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:remontada/core/Router/Router.dart';
 import 'package:remontada/core/utils/utils.dart';
 import 'package:remontada/firebase_options.dart';
 
@@ -121,6 +123,14 @@ class FBMessging {
       // if ((notificationModel.modelId != Utils.room_id ||
       //         notificationModel.modelType == "global") &&
       //     RouteGenerator.currentRoute != Routes.ChatScreen) {
+      if (notificationModel.type == "client" ||
+          notificationModel.type == "supervisor") {
+        // locator<SplashRepository>().getProfileData();
+        Navigator.pushNamed(
+          Utils.navigatorKey().currentContext!,
+          Routes.splashScreen,
+        );
+      }
       plugin.show(
         payload: notificationModel.toJson(),
         notification.hashCode,

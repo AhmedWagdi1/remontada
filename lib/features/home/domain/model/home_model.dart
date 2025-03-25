@@ -277,6 +277,7 @@ class Subscriber {
   int? id;
   String? image;
   String? name;
+  // String? phone;
   String? location;
   String? phone;
   String? city;

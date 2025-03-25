@@ -100,7 +100,9 @@ class PlayerBottomSheet extends StatelessWidget {
                                     style: TextStyle(
                                       color: context.primaryColor,
                                     ).s14.regular,
-                                    subscriber?.location ?? "",
+                                    subscriber?.location ??
+                                        subscriber?.phone ??
+                                        "",
                                     // fontSize: 12.sp,
 
                                     // weight: FontWeight.w500,

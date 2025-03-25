@@ -65,9 +65,9 @@ class AuthRepository {
     if (response.isError == false) {
       return response.response?.data['data'];
     } else {
-      if (response.response?.statusCode == 307) {
-        return true;
-      }
+      // if (response.response?.statusCode == 307) {
+      //   return true;
+      // }
       return null;
     }
   }

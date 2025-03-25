@@ -22,11 +22,13 @@ class NotificationModel {
   NotificationData? data;
   bool? isread;
   String? createdAt;
+  String? type;
   NotificationModel({
     this.id,
     this.data,
     this.isread,
     this.createdAt,
+    this.type,
   });
 
   factory NotificationModel.fromMap(Map<String, dynamic> map) {
@@ -37,6 +39,7 @@ class NotificationModel {
           : null,
       isread: map['is_read'] != null ? map['is_read'] as bool : null,
       createdAt: map['created_at'] != null ? map['created_at'] as String : null,
+      type: map['type'] != null ? map['type'] as String : null,
     );
   }
 

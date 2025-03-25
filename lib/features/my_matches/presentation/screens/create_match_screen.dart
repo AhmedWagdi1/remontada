@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/core/utils/Locator.dart';
@@ -162,7 +163,7 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                             bottom: 20,
                           ),
                           // controller: location,
-                          validator: Utils.valid.defaultValidation,
+                          // validator: Utils.valid.defaultValidation,
 
                           prefixIcon: Padding(
                             padding: const EdgeInsets.only(
@@ -238,7 +239,17 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                             cubit.request.subscribers_quantity = value;
                           }, // register.email = value,
                           // controller: email,
-                          validator: Utils.valid.defaultValidation,
+                          validator: (value) {
+                            if (value?.isEmpty == true) {
+                              return LocaleKeys.valid_requiredField.tr();
+                            }
+                            if (int.parse(value ?? "0") > 30) {
+                              return "لا يمكن ان يكون عدد المشتركين اكبر من 30";
+                            }
+
+                            return null;
+                          },
+                          // Utils.valid.defaultValidation,
                           prefixIcon: "clender".svg(),
                           hintSize: 16,
                           borderRadius: 33,

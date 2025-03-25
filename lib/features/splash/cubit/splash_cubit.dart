@@ -9,6 +9,7 @@ import 'package:remontada/features/auth/domain/model/auth_model.dart';
 import '../../../core/Router/Router.dart';
 import '../../../core/data_source/dio_helper.dart';
 import '../../../core/utils/Locator.dart';
+import '../../../core/utils/firebase_message.dart';
 import '../domain/repository/splash_repository.dart';
 import 'splash_states.dart';
 
@@ -48,6 +49,7 @@ class SplashCubit extends Cubit<SplashStates> {
     final res = await splashRepository.getProfileData();
     if (res != null) {
       Utils.user = User.fromMap(res);
+      Utils.isSuperVisor = Utils.user.user?.type == "supervisor" ? true : false;
       return true;
     } else {
       null;
@@ -56,7 +58,7 @@ class SplashCubit extends Cubit<SplashStates> {
 
   String? route;
   checkLogin() async {
-    // await FBMessging.initUniLink();
+    await FBMessging.initUniLink();
     await Utils.dataManager.getUserData();
 
     // await Utils.deleteUserData();

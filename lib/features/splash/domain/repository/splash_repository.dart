@@ -9,11 +9,14 @@ class SplashRepository {
   getProfileData() async {
     final ApiResponse response = await dioService.getData(url: "/profile");
     if (response.isError == false) {
+      // Utils.user = User.fromMap(
+      //   response.response?.data["data"],
+      // );
+      // Utils.isSuperVisor = Utils.user.type == "supervisor";
+      // Utils.is = Utils.user.type == "supervisor";
       return response.response?.data["data"];
     } else {
       return null;
     }
   }
-
-  
 }
