@@ -33,9 +33,10 @@ class Utils {
 
   static saveUserInHive(Map<String, dynamic> response) async {
     // user = User.fromMap(response);
-    token = user.token ?? '';
+
     user = User.fromMap(response);
-    isSuperVisor = user.type == "supervisor";
+    token = user.token ?? '';
+    isSuperVisor = user.user?.type == "supervisor";
     FBMessging.subscripeAllUsers();
     await user.type == "client"
         ? FBMessging.subscripeAllclients()

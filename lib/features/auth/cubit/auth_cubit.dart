@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:remontada/shared/widgets/myLoading.dart';
 
 import '../../../core/data_source/dio_helper.dart';
 import '../../../core/utils/Locator.dart';
@@ -18,7 +19,9 @@ class AuthCubit extends Cubit<AuthStates> {
 
   login({required AuthRequest loginRequestModel}) async {
     emit(LoginLoadingState());
+    MyLoading.show();
     final response = await authRepository.loginRequest(loginRequestModel);
+    MyLoading.dismis();
     if (response != null) {
       if (response is bool) {
         emit(NeedRegister());
