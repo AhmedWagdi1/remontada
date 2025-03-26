@@ -29,6 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
   // TextEditingController password = TextEditingController();
   final formKey = GlobalKey<FormState>();
   AuthRequest authRequest = AuthRequest();
+  int count = 0;
   @override
   void dispose() {
     phone.dispose();
@@ -52,25 +53,26 @@ class _LoginScreenState extends State<LoginScreen> {
                 sendTo: authRequest.phone ?? "",
                 onSubmit: (value) async {
                   authRequest.code = value;
-                  final res = await cubit.sendCode(
+                  cubit.sendCode(
                       phone: authRequest.phone ?? "",
                       code: authRequest.code ?? "");
-                  if (res == true) {
-                    Alerts.snack(
-                      text: "تم تسجيل الدخول بنجاح",
-                      state: SnackState.success,
-                    );
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, Routes.LayoutScreen, (route) => false);
-                  }
                 },
                 onReSend: () async {
-                  await cubit.resendCode(authRequest.phone ?? "");
+                  cubit.resendCode(authRequest.phone ?? "");
                 },
                 init: false,
               ),
             );
           }
+          if (state is ActivateCodeSuccessState) {
+            Alerts.snack(
+              text: "تم تسجيل الدخول بنجاح",
+              state: SnackState.success,
+            );
+            Navigator.pushNamedAndRemoveUntil(
+                context, Routes.LayoutScreen, (route) => false);
+          }
+
           if (state is NeedRegister) {
             Navigator.pushNamed(
               context,
@@ -189,9 +191,21 @@ class _LoginScreenState extends State<LoginScreen> {
                                         if (formKey.currentState?.validate() ??
                                             false) {
                                           formKey.currentState?.save();
-                                          cubit.login(
-                                            loginRequestModel: authRequest,
-                                          );
+                                          if (count == 0) {
+                                            cubit.login(
+                                              loginRequestModel: authRequest,
+                                            );
+                                            count = 1;
+                                            Future.delayed(
+                                                Duration(
+                                                  seconds: 2,
+                                                ), () {
+                                              count = 0;
+                                              setState(() {});
+                                            });
+                                          } else {
+                                            return;
+                                          }
                                         }
                                       },
                                       height: 65,

@@ -18,8 +18,8 @@ class AuthCubit extends Cubit<AuthStates> {
   AuthRepository authRepository = AuthRepository(locator<DioService>());
 
   login({required AuthRequest loginRequestModel}) async {
-    emit(LoginLoadingState());
     MyLoading.show();
+    emit(LoginLoadingState());
     final response = await authRepository.loginRequest(loginRequestModel);
     MyLoading.dismis();
     if (response != null) {

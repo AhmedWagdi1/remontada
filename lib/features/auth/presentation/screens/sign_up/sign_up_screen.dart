@@ -53,7 +53,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return BlocProvider(
       create: (context) => AuthCubit(),
       child: BlocConsumer<AuthCubit, AuthStates>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is RegisterSuccessState) {
+            Navigator.pushNamed(
+              context,
+              Routes.OtpScreen,
+              arguments: OtpArguments(
+                sendTo: register.phone ?? "",
+                onSubmit: (value) async {
+                  register.code = value;
+                  AuthCubit.get(context).sendCode(
+                      phone: register.phone ?? "", code: register.code ?? "");
+
+                  Alerts.snack(
+                      text: "تم التسجيل بنجاح", state: SnackState.success);
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, Routes.LayoutScreen, (route) => false);
+                },
+                onReSend: () async {
+                  AuthCubit.get(context).resendCode(register.phone ?? "");
+                },
+              ),
+            );
+          }
+        },
         builder: (context, state) {
           final cubit = AuthCubit.get(context);
           return Scaffold(
@@ -255,36 +278,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             onTap: () async {
                               if (formKey.currentState!.validate()) {
                                 formKey.currentState!.save();
-                                final respons = await cubit.signUp(
-                                    registerRequestModel: register);
-                                if (respons == true) {
-                                  Navigator.pushNamed(
-                                    context,
-                                    Routes.OtpScreen,
-                                    arguments: OtpArguments(
-                                      sendTo: register.phone ?? "",
-                                      onSubmit: (value) async {
-                                        register.code = value;
-                                        final res = await cubit.sendCode(
-                                            phone: register.phone ?? "",
-                                            code: register.code ?? "");
-                                        if (res == true) {
-                                          Alerts.snack(
-                                              text: "تم التسجيل بنجاح",
-                                              state: SnackState.success);
-                                          Navigator.pushNamedAndRemoveUntil(
-                                              context,
-                                              Routes.LayoutScreen,
-                                              (route) => false);
-                                        }
-                                      },
-                                      onReSend: () async {
-                                        await cubit
-                                            .resendCode(register.phone ?? "");
-                                      },
-                                    ),
-                                  );
-                                }
+                                cubit.signUp(registerRequestModel: register);
                               }
                             },
                             // height: 65,
