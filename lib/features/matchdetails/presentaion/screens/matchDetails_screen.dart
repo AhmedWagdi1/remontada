@@ -76,6 +76,10 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
             body: LoadingAndError(
               isLoading: state is MatchDetailsLoading,
               isError: state is MatchDetailsFailed,
+              function: () {
+                cubit.getSubscribers(widget.id.toString());
+                cubit.getMatchDetails(widget.id.toString());
+              },
               child: RefreshIndicator(
                 onRefresh: () async {
                   await cubit.getMatchDetails(

@@ -132,6 +132,7 @@ class _PlayersScreenSupervisorState extends State<PlayersScreenSupervisor> {
                             ?.where((e) => e.presence == false)
                             .toList()[i];
                         return PlayerBottomSheet(
+                          isGroupe: false,
                           subscriber: player,
                           endIcon: ButtonWidget(
                             height: 45,
