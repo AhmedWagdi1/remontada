@@ -9,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:remontada/core/services/device_type.dart';
 import 'package:remontada/core/utils/firebase_message.dart';
+import 'package:remontada/core/utils/firebase_remote_confige.dart';
 import 'package:remontada/core/utils/responsive_framework_widget.dart';
 
 import 'core/Router/Router.dart';
@@ -22,13 +23,15 @@ import 'firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   FirebaseMessaging.onBackgroundMessage(
     FBMessging.firebaseMessagingBackgroundHandler,
   );
-
+  await FireBaseRemoteService.intializeRemoteConfig();
   Bloc.observer = MyBlocObserver();
   // dotenv.load();
   await setupLocator();

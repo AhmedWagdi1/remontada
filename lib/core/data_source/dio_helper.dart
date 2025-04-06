@@ -187,7 +187,7 @@ class DioService {
         text: e.response?.data["message"] ?? "لا يمكن الوصول للسيرفير",
         state: SnackState.failed,
       );
-      Utils.deleteUserData();
+      // Utils.deleteUserData();
       // Navigator.pushNamedAndRemoveUntil(
       //   Utils.navigatorKey().currentContext!,
       //   Routes.LoginScreen,

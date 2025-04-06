@@ -1,14 +1,12 @@
-import 'dart:io';
-
 import 'package:animated_widgets_flutter/widgets/opacity_animated.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:remontada/core/theme/light_theme.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../../core/services/alerts.dart';
 import '../../../../../core/utils/extentions.dart';
+import '../../../../../core/utils/utils.dart';
 import '../../../cubit/splash_cubit.dart';
 import '../../../cubit/splash_states.dart';
 
@@ -47,6 +45,9 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
       body: BlocConsumer<SplashCubit, SplashStates>(
         listener: (context, state) async {
+          if (state is LastVersionSuccessState) {
+            SplashCubit.get(context).isLastversion = state.isLastVersion;
+          }
           // final cubit = context.read<SplashCubit>();
 
           // if (state is LocationDeniedstate) {
@@ -60,11 +61,78 @@ class _SplashScreenState extends State<SplashScreen>
           if (state is LocationAcceptedState || state is LocationDeniedstate) {
             final route = await SplashCubit.get(context).checkLogin();
             Future.delayed(Duration(milliseconds: 3000));
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              route,
-              (route) => false,
-            );
+            SplashCubit.get(context).isLastversion
+                ? Alerts.dialog(
+                    Utils.navigatorKey().currentState!.context,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.85,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(color: Colors.black12, blurRadius: 10)
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.system_update,
+                              size: 50, color: Colors.blue),
+                          SizedBox(height: 15),
+                          Text(
+                            'تحديث جديد متاح!',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'يرجى تحديث التطبيق للحصول على آخر الميزات وتحسينات الأداء.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: TextButton(
+                                  child: Text('لاحقاً'),
+                                  onPressed: () =>
+                                      Navigator.pushNamedAndRemoveUntil(
+                                    context,
+                                    route,
+                                    (route) => false,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    launchUrl(
+                                      Uri.parse(
+                                          "https://match.almasader.net/share"),
+                                      mode: LaunchMode.externalApplication,
+                                    );
+                                  },
+                                  child: Text(
+                                    'تحديث الآن',
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                : Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    route,
+                    (route) => false,
+                  );
           }
         },
         builder: (context, state) {
@@ -112,61 +180,61 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 
-  Future<dynamic> firstDialog(BuildContext context, SplashCubit cubit) {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          title: Text(
-            "location_req".tr(),
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          content: Text(
-            'location_req1'.tr() + 'location_req3'.tr(),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(
-                'settings.cancel'.tr(),
-                style: TextStyle(color: Colors.grey),
-              ),
-              onPressed: () async {
-                // SystemNavigator.pop();
-                Navigator.of(context).pop();
-                final route = await cubit.checkLogin();
-                Future.delayed(Duration(milliseconds: 3000));
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  route,
-                  (route) => false,
-                );
-              },
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: LightThemeColors.primary, // لون الزر
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: Text('enableReq'.tr()),
-              onPressed: () async {
-                Navigator.of(context).pop();
-                showLocationPermissionDialog(
-                  context,
-                  cubit,
-                );
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
+//   Future<dynamic> firstDialog(BuildContext context, SplashCubit cubit) {
+//     return showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return AlertDialog(
+//           shape: RoundedRectangleBorder(
+//             borderRadius: BorderRadius.circular(20),
+//           ),
+//           title: Text(
+//             "location_req".tr(),
+//             style: TextStyle(fontWeight: FontWeight.bold),
+//           ),
+//           content: Text(
+//             'location_req1'.tr() + 'location_req3'.tr(),
+//           ),
+//           actions: <Widget>[
+//             TextButton(
+//               child: Text(
+//                 'settings.cancel'.tr(),
+//                 style: TextStyle(color: Colors.grey),
+//               ),
+//               onPressed: () async {
+//                 // SystemNavigator.pop();
+//                 Navigator.of(context).pop();
+//                 final route = await cubit.checkLogin();
+//                 Future.delayed(Duration(milliseconds: 3000));
+//                 Navigator.pushNamedAndRemoveUntil(
+//                   context,
+//                   route,
+//                   (route) => false,
+//                 );
+//               },
+//             ),
+//             ElevatedButton(
+//               style: ElevatedButton.styleFrom(
+//                 backgroundColor: LightThemeColors.primary, // لون الزر
+//                 shape: RoundedRectangleBorder(
+//                   borderRadius: BorderRadius.circular(12),
+//                 ),
+//               ),
+//               child: Text('enableReq'.tr()),
+//               onPressed: () async {
+//                 Navigator.of(context).pop();
+//                 showLocationPermissionDialog(
+//                   context,
+//                   cubit,
+//                 );
+//               },
+//             ),
+//           ],
+//         );
+//       },
+//     );
+//   }
+// }
 
 // showLocatioDialog(BuildContext context) {
 //   Alerts.dialog(
@@ -226,56 +294,56 @@ class _SplashScreenState extends State<SplashScreen>
 //   }
 // }
 
-void showLocationPermissionDialog(BuildContext context, SplashCubit cubit) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        title: Text(
-          "location_req".tr(),
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        content: Text(
-          'location_req1'.tr() + 'location_req2'.tr() + 'location_req3'.tr(),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text(
-              'settings.cancel'.tr(),
-              style: TextStyle(color: Colors.grey),
-            ),
-            onPressed: () async {
-              // SystemNavigator.pop();
-              final route = await cubit.checkLogin();
-              Future.delayed(Duration(milliseconds: 3000));
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                route,
-                (route) => false,
-              );
-            },
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: LightThemeColors.primary, // لون الزر
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            child: Text('openSetting'.tr()),
-            onPressed: () async {
-              Platform.isAndroid
-                  ? await Geolocator.openAppSettings()
-                  : await Geolocator
-                      .openLocationSettings(); // يفتح إعدادات التطبيق
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
+// void showLocationPermissionDialog(BuildContext context, SplashCubit cubit) {
+//   showDialog(
+//     context: context,
+//     builder: (BuildContext context) {
+//       return AlertDialog(
+//         shape: RoundedRectangleBorder(
+//           borderRadius: BorderRadius.circular(20),
+//         ),
+//         title: Text(
+//           "location_req".tr(),
+//           style: TextStyle(fontWeight: FontWeight.bold),
+//         ),
+//         content: Text(
+//           'location_req1'.tr() + 'location_req2'.tr() + 'location_req3'.tr(),
+//         ),
+//         actions: <Widget>[
+//           TextButton(
+//             child: Text(
+//               'settings.cancel'.tr(),
+//               style: TextStyle(color: Colors.grey),
+//             ),
+//             onPressed: () async {
+//               // SystemNavigator.pop();
+//               final route = await cubit.checkLogin();
+//               Future.delayed(Duration(milliseconds: 3000));
+//               Navigator.pushNamedAndRemoveUntil(
+//                 context,
+//                 route,
+//                 (route) => false,
+//               );
+//             },
+//           ),
+//           ElevatedButton(
+//             style: ElevatedButton.styleFrom(
+//               backgroundColor: LightThemeColors.primary, // لون الزر
+//               shape: RoundedRectangleBorder(
+//                 borderRadius: BorderRadius.circular(12),
+//               ),
+//             ),
+//             child: Text('openSetting'.tr()),
+//             onPressed: () async {
+//               Platform.isAndroid
+//                   ? await Geolocator.openAppSettings()
+//                   : await Geolocator
+//                       .openLocationSettings(); // يفتح إعدادات التطبيق
+//               Navigator.of(context).pop();
+//             },
+//           ),
+//         ],
+//       );
+//     },
+//   );
 }

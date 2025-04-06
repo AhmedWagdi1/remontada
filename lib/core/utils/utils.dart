@@ -11,6 +11,8 @@ import 'validations.dart';
 
 class Utils {
   static String token = '';
+  static String appVersion = '';
+
   static String lang = '';
   static String FCMToken = '';
   static String userType = "";

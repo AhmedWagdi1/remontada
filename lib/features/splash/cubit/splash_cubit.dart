@@ -2,7 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:remontada/core/utils/firebase_remote_confige.dart';
 import 'package:remontada/core/utils/utils.dart';
 import 'package:remontada/features/auth/domain/model/auth_model.dart';
 
@@ -58,6 +60,7 @@ class SplashCubit extends Cubit<SplashStates> {
 
   String? route;
   checkLogin() async {
+    await getAppversion();
     await FBMessging.initUniLink();
     await Utils.dataManager.getUserData();
 
@@ -123,5 +126,22 @@ class SplashCubit extends Cubit<SplashStates> {
     log(Utils.lng);
     log(Utils.lat);
     emit(LocationAcceptedState());
+  }
+
+  bool isLastversion = false;
+  getAppversion() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    Utils.appVersion = packageInfo.version;
+
+    isLastversion =
+        Utils.appVersion != FireBaseRemoteService.getString("app_version");
+
+    if (isLastversion) {
+      emit(
+        LastVersionSuccessState(
+          isLastversion,
+        ),
+      );
+    }
   }
 }
