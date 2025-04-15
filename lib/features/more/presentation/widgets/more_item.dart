@@ -91,7 +91,7 @@ class _MoreItemState extends State<MoreItem> {
     } else if (widget.title == LocaleKeys.share.tr()) {
       final box = context.findRenderObject() as RenderBox?;
       await Share.share(
-        "https://match.almasader.net/share",
+        "https://rmontada.com/share",
         sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
       );
     }
