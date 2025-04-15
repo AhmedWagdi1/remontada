@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:animated_widgets_flutter/widgets/opacity_animated.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -112,8 +114,13 @@ class _SplashScreenState extends State<SplashScreen>
                                 child: ElevatedButton(
                                   onPressed: () {
                                     launchUrl(
-                                      Uri.parse(
-                                          "https://match.almasader.net/share"),
+                                      Platform.isAndroid
+                                          ? Uri.parse(
+                                              "https://play.google.com/store/apps/details?id=com.masader.remontada",
+                                            )
+                                          : Uri.parse(
+                                              "https://apps.apple.com/us/app/6550914902",
+                                            ),
                                       mode: LaunchMode.externalApplication,
                                     );
                                   },
