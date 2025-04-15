@@ -32,10 +32,10 @@
                 android:name="com.google.firebase.messaging.default_notification_channel_id"
                 android:value="default_channel_id" />
 
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN"/>-->
-<!--                <category android:name="android.intent.category.LAUNCHER"/>-->
-<!--            </intent-filter>-->
+           <intent-filter>
+               <action android:name="android.intent.action.MAIN"/>
+               <category android:name="android.intent.category.LAUNCHER"/>
+           </intent-filter>
 <!--            <data android:scheme="https" android:host="rmontada.com" android:pathPrefix="/share" />-->
 <!--      -->
 <!--        <meta-data android:name="flutter_deeplinking_enabled" android:value="false" />-->
