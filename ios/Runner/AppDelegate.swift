@@ -3,7 +3,7 @@ import Flutter
 import GoogleMaps
 import Firebase
 import flutter_local_notifications
-import app_links
+// import app_links
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -28,12 +28,12 @@ import app_links
         UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
         application.registerUserNotificationSettings(settings)
     }
-    application.registerForRemoteNotifications()
-      if let url = AppLinks.shared.getLink(launchOptions: launchOptions) {
-      // We have a link, propagate it to your Flutter app or not
-      AppLinks.shared.handleLink(url: url)
-      return true // Returning true will stop the propagation to other packages
-    }
+    // application.registerForRemoteNotifications()
+    //   if let url = AppLinks.shared.getLink(launchOptions: launchOptions) {
+    //   // We have a link, propagate it to your Flutter app or not
+    //   AppLinks.shared.handleLink(url: url)
+    //   return true // Returning true will stop the propagation to other packages
+    // }
   
     application.registerForRemoteNotifications()
     

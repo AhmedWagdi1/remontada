@@ -10,6 +10,7 @@ import 'package:remontada/features/my_matches/presentation/screens/create_match_
 import 'package:remontada/features/player_details/presentation/screens/player_details.dart';
 import 'package:remontada/features/profile/presentation/screens/edit_profile.screen.dart';
 import 'package:remontada/features/splash/cubit/splash_cubit.dart';
+import 'package:remontada/features/splash/presentation/screens/splash/update_app.dart';
 import 'package:remontada/features/staticScreens/presentation/screens/privacy_policy_screen.dart';
 
 import '../../features/auth/presentation/screens/login/login_screen.dart';
@@ -44,6 +45,7 @@ class Routes {
   static const String webPage = "/webPage";
   static const String CreateMatchScreen = "/CreateMatchScreen";
   static const String PlayersScreenSupervisor = "/PlayersScreenSupervisor";
+  static const String UpdateAppScreen = "/UpdateAppScreen";
 }
 
 class RouteGenerator {
@@ -72,6 +74,12 @@ class RouteGenerator {
             settings: routeSettings,
             builder: (_) {
               return const LoginScreen();
+            });
+      case Routes.UpdateAppScreen:
+        return CupertinoPageRoute(
+            settings: routeSettings,
+            builder: (_) {
+              return const UpdateAppScreen();
             });
       // case Routes.ResetPasswordScreen:
       //   return CupertinoPageRoute(
