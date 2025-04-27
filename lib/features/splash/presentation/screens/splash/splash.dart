@@ -1,15 +1,10 @@
-import 'dart:io';
-
 import 'package:animated_widgets_flutter/widgets/opacity_animated.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../core/Router/Router.dart';
-import '../../../../../core/services/alerts.dart';
 import '../../../../../core/utils/extentions.dart';
-import '../../../../../core/utils/utils.dart';
 import '../../../cubit/splash_cubit.dart';
 import '../../../cubit/splash_states.dart';
 
