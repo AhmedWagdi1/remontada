@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../../../core/Router/Router.dart';
 import '../../../../../core/utils/extentions.dart';
 import '../../../cubit/splash_cubit.dart';
 import '../../../cubit/splash_states.dart';
@@ -59,8 +58,9 @@ class _SplashScreenState extends State<SplashScreen>
           if (state is LocationAcceptedState || state is LocationDeniedstate) {
             final route = await SplashCubit.get(context).checkLogin();
             Future.delayed(Duration(milliseconds: 3000));
-            SplashCubit.get(context).isLastversion
-                ? /* Alerts.dialog(
+            // SplashCubit.get(context).isLastversion
+            // ?
+            /* Alerts.dialog(
                     Utils.navigatorKey().currentState!.context,
                     child: Container(
                       width: MediaQuery.of(context).size.width * 0.85,
@@ -132,16 +132,17 @@ class _SplashScreenState extends State<SplashScreen>
                     ),
                   ) */
 
-                Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    Routes.UpdateAppScreen,
-                    (route) => false,
-                  )
-                : Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    route,
-                    (route) => false,
-                  );
+            // Navigator.pushNamedAndRemoveUntil(
+            //     context,
+            //     Routes.UpdateAppScreen,
+            //     (route) => false,
+            //   )
+            // :
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              route,
+              (route) => false,
+            );
           }
         },
         builder: (context, state) {

@@ -419,13 +419,55 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                         if (Utils.isSuperVisor == false)
                           // if (matchModel.isCCompleted == false)
                           matchModel.type == "group"
-                              ? ButtonWidget(
-                                  onTap: () => cubit.subScribe(
-                                    matchModel.id ?? 0,
-                                  ),
-                                  radius: 33,
-                                  title: "حجز بالكامل",
-                                )
+                              ? matchModel.isCCompleted == true
+                                  ? matchModel.is_owner == true
+                                      ? ButtonWidget(
+                                          buttonColor:
+                                              LightThemeColors.warningButton,
+                                          height: 65,
+                                          // width: 342,
+                                          fontweight: FontWeight.bold,
+                                          radius: 33,
+                                          textColor: context.background,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              SvgPicture.asset(
+                                                color: context.background,
+                                                Assets.icons.flag,
+                                              ),
+                                              9.pw,
+                                              CustomText(
+                                                LocaleKeys.apology_take_part
+                                                    .tr(),
+                                                fontSize: 16,
+                                                weight: FontWeight.bold,
+                                                color: context.background,
+                                              ),
+                                            ],
+                                          ),
+                                          onTap: () async {
+                                            // widget.onreturn?.call();
+
+                                            final response = await cubit.cancel(
+                                              widget.id.toString(),
+                                            );
+                                            if (mounted && response == true)
+                                              Navigator.pushReplacementNamed(
+                                                context,
+                                                Routes.LayoutScreen,
+                                              );
+                                          },
+                                        )
+                                      : SizedBox()
+                                  : ButtonWidget(
+                                      onTap: () => cubit.subScribe(
+                                        matchModel.id ?? 0,
+                                      ),
+                                      radius: 33,
+                                      title: "حجز بالكامل",
+                                    )
                               : matchModel.isPending == true
                                   ? Column(
                                       crossAxisAlignment:
@@ -440,44 +482,44 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                         ),
                                         20.ph,
                                         ButtonWidget(
-                                            buttonColor:
-                                                LightThemeColors.warningButton,
-                                            height: 65,
-                                            // width: 342,
-                                            fontweight: FontWeight.bold,
-                                            radius: 33,
-                                            textColor: context.background,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                SvgPicture.asset(
-                                                  color: context.background,
-                                                  Assets.icons.flag,
-                                                ),
-                                                9.pw,
-                                                CustomText(
-                                                  LocaleKeys.apology_take_part
-                                                      .tr(),
-                                                  fontSize: 16,
-                                                  weight: FontWeight.bold,
-                                                  color: context.background,
-                                                ),
-                                              ],
-                                            ),
-                                            onTap: () async {
-                                              // widget.onreturn?.call();
+                                          buttonColor:
+                                              LightThemeColors.warningButton,
+                                          height: 65,
+                                          // width: 342,
+                                          fontweight: FontWeight.bold,
+                                          radius: 33,
+                                          textColor: context.background,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              SvgPicture.asset(
+                                                color: context.background,
+                                                Assets.icons.flag,
+                                              ),
+                                              9.pw,
+                                              CustomText(
+                                                LocaleKeys.apology_take_part
+                                                    .tr(),
+                                                fontSize: 16,
+                                                weight: FontWeight.bold,
+                                                color: context.background,
+                                              ),
+                                            ],
+                                          ),
+                                          onTap: () async {
+                                            // widget.onreturn?.call();
 
-                                              final response =
-                                                  await cubit.cancel(
-                                                widget.id.toString(),
+                                            final response = await cubit.cancel(
+                                              widget.id.toString(),
+                                            );
+                                            if (mounted && response == true)
+                                              Navigator.pushReplacementNamed(
+                                                context,
+                                                Routes.LayoutScreen,
                                               );
-                                              if (mounted && response == true)
-                                                Navigator.pushReplacementNamed(
-                                                  context,
-                                                  Routes.LayoutScreen,
-                                                );
-                                            })
+                                          },
+                                        )
                                       ],
                                     )
                                   : (matchModel.flag == false &&
