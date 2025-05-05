@@ -131,10 +131,14 @@ class SplashCubit extends Cubit<SplashStates> {
   bool isLastversion = false;
   getAppversion() async {
     final packageInfo = await PackageInfo.fromPlatform();
+    // Utils.appVersion = "1.0.13";
     Utils.appVersion = packageInfo.version;
-
-    isLastversion =
-        Utils.appVersion != FireBaseRemoteService.getString("app_version");
+    // print("app version ${Utils.appVersion}");
+    isLastversion = Utils.appVersion
+            .compareTo(FireBaseRemoteService.getString("app_version")) <
+        0;
+    // print(
+    //     "FireBaseRemoteService.getString( ${FireBaseRemoteService.getString("app_version")}");
 
     if (isLastversion) {
       emit(
