@@ -209,7 +209,7 @@ class DarkTheme {
       bottomSheetTheme: BottomSheetThemeData(),
 
       //* Tab Bar Theme
-      tabBarTheme: TabBarTheme(),
+      tabBarTheme: const TabBarThemeData(),
 
       //* ElevatedButtonThemeData
       elevatedButtonTheme: ElevatedButtonThemeData(),
