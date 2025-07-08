@@ -1,3 +1,5 @@
+import '../../../../core/config/key.dart';
+
 class AuthRequest {
   String? name;
   String? email;
@@ -31,9 +33,12 @@ class AuthRequest {
   }
 
   Map<String, dynamic> login() {
+    final String mobile = ConstKeys.devEnv
+        ? ConstKeys.devLoginPhone
+        : phone ?? '';
     return <String, dynamic>{
       // 'fcm_token': fcm_token,
-      'mobile': phone,
+      'mobile': mobile,
       // 'password': password,
     };
   }

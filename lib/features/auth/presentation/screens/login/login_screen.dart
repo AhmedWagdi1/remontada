@@ -13,6 +13,7 @@ import 'package:remontada/shared/widgets/edit_text_widget.dart';
 
 import '../../../../../core/app_strings/locale_keys.dart';
 import '../../../../../core/utils/extentions.dart';
+import '../../../../../core/config/key.dart';
 import '../../../cubit/auth_cubit.dart';
 import '../../../cubit/auth_states.dart';
 import '../../../domain/request/auth_request.dart';
@@ -30,6 +31,15 @@ class _LoginScreenState extends State<LoginScreen> {
   final formKey = GlobalKey<FormState>();
   AuthRequest authRequest = AuthRequest();
   int count = 0;
+  @override
+  void initState() {
+    super.initState();
+    if (ConstKeys.devEnv) {
+      phone.text = ConstKeys.devLoginPhone;
+      authRequest.phone = ConstKeys.devLoginPhone;
+    }
+  }
+
   @override
   void dispose() {
     phone.dispose();
@@ -54,8 +64,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 onSubmit: (value) async {
                   authRequest.code = value;
                   cubit.sendCode(
-                      phone: authRequest.phone ?? "",
-                      code: authRequest.code ?? "");
+                    phone: authRequest.phone ?? "",
+                    code: authRequest.code ?? "",
+                  );
                 },
                 onReSend: () async {
                   cubit.resendCode(authRequest.phone ?? "");
@@ -70,14 +81,14 @@ class _LoginScreenState extends State<LoginScreen> {
               state: SnackState.success,
             );
             Navigator.pushNamedAndRemoveUntil(
-                context, Routes.LayoutScreen, (route) => false);
+              context,
+              Routes.LayoutScreen,
+              (route) => false,
+            );
           }
 
           if (state is NeedRegister) {
-            Navigator.pushNamed(
-              context,
-              Routes.RegisterScreen,
-            );
+            Navigator.pushNamed(context, Routes.RegisterScreen);
           }
         },
         builder: (context, state) {
@@ -112,9 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.fill,
-                        image: AssetImage(
-                          "Splash".png("images"),
-                        ),
+                        image: AssetImage("Splash".png("images")),
                       ),
                     ),
                   ),
@@ -141,16 +150,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(69),
-                                  topRight: Radius.circular(
-                                    69,
-                                  ),
+                                  topRight: Radius.circular(69),
                                 ),
                                 color: context.background,
                               ),
                               child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 18,
-                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 18),
                                 child: Column(
                                   children: [
                                     66.ph,
@@ -178,6 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       prefixIcon: Assets.icons.calling,
                                       onSaved: (value) =>
                                           authRequest.phone = value,
+                                      controller: phone,
                                       borderRadius: 33,
                                       hintText: LocaleKeys.auth_hint_phone.tr(),
                                       hintColor: LightThemeColors.textPrimary,
@@ -197,12 +203,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                             );
                                             count = 1;
                                             Future.delayed(
-                                                Duration(
-                                                  seconds: 2,
-                                                ), () {
-                                              count = 0;
-                                              setState(() {});
-                                            });
+                                              Duration(seconds: 2),
+                                              () {
+                                                count = 0;
+                                                setState(() {});
+                                              },
+                                            );
                                           } else {
                                             return;
                                           }
