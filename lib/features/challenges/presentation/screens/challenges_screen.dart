@@ -237,6 +237,7 @@ class ChallengesScreen extends StatelessWidget {
                   ),
                 ],
               ),
+              SizedBox(height: 15,)
             ],
           ),
         ),
@@ -292,17 +293,10 @@ class ChallengesScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              const Spacer(),
-              const Center(
-                child: CustomText(
-                  'هذه الصفحة قيد التطوير',
-                  fontSize: 18,
-                  weight: FontWeight.w600,
-                  color: Colors.grey,
-                ),
-              ),
-              _joinChallengeCard(),
               _completedChallengeCard(),
+              _joinChallengeCard(),
+              const Spacer(),
+
             ],
           ),
         ),
