@@ -216,6 +216,7 @@ abstract class LocaleKeys {
   static const challenge_more = 'challenge_more';
   static const challenge_updates = 'challenge_updates';
   static const challenge_create_team = 'challenge_create_team';
+  static const challenge_create_challenge = 'challenge_create_challenge';
   static const league_schedule = 'league_schedule';
   static const championships = 'championships';
   static const under_construction = 'under_construction';
