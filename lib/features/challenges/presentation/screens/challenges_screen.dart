@@ -18,12 +18,14 @@ class ChallengesScreen extends StatefulWidget {
 class _ChallengesScreenState extends State<ChallengesScreen>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
+
   /// Local images displayed in the carousel slider.
   final List<String> _sliderImages = const [
     'assets/images/slider.png',
     'assets/images/slider.png',
     'assets/images/slider.png',
   ];
+
   /// Dummy league standings used in the league table widget.
   final List<Map<String, dynamic>> _standings = [
     {
@@ -191,7 +193,12 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 12,bottom: 12,left: 12,right: 12),
+                padding: const EdgeInsets.only(
+                  top: 12,
+                  bottom: 12,
+                  left: 12,
+                  right: 12,
+                ),
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -372,7 +379,11 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   }
 
   /// Builds a numbered step item for the how challenges work card.
-  Widget _buildHowStep({required Widget icon, required String title, required String subtitle}) {
+  Widget _buildHowStep({
+    required Widget icon,
+    required String title,
+    required String subtitle,
+  }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -384,7 +395,10 @@ class _ChallengesScreenState extends State<ChallengesScreen>
             children: [
               Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 4),
-              Text(subtitle, style: const TextStyle(fontSize: 12, color: Colors.black54)),
+              Text(
+                subtitle,
+                style: const TextStyle(fontSize: 12, color: Colors.black54),
+              ),
             ],
           ),
         ),
@@ -426,7 +440,10 @@ class _ChallengesScreenState extends State<ChallengesScreen>
               icon: const CircleAvatar(
                 radius: 12,
                 backgroundColor: infoColor,
-                child: Text('1', style: TextStyle(color: Colors.white, fontSize: 12)),
+                child: Text(
+                  '1',
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                ),
               ),
               title: LocaleKeys.how_challenges_step1_title.tr(),
               subtitle: LocaleKeys.how_challenges_step1_subtitle.tr(),
@@ -446,7 +463,10 @@ class _ChallengesScreenState extends State<ChallengesScreen>
               icon: const CircleAvatar(
                 radius: 12,
                 backgroundColor: infoColor,
-                child: Text('3', style: TextStyle(color: Colors.white, fontSize: 12)),
+                child: Text(
+                  '3',
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                ),
               ),
               title: LocaleKeys.how_challenges_step3_title.tr(),
               subtitle: LocaleKeys.how_challenges_step3_subtitle.tr(),
@@ -510,7 +530,13 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   }
 
   /// Builds the table displaying current league standings.
+  ///
+  /// The table is styled with reduced padding and font sizes so that it fits on
+  /// smaller screens without requiring horizontal scrolling in most cases.
   Widget _leagueTable() {
+    const headingStyle = TextStyle(fontSize: 12, fontWeight: FontWeight.bold);
+    const dataStyle = TextStyle(fontSize: 12);
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Container(
@@ -525,49 +551,83 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: DataTable(
+            columnSpacing: 10,
+            horizontalMargin: 8,
+            headingRowHeight: 32,
+            dataRowHeight: 32,
             columns: [
-              DataColumn(label: Text(LocaleKeys.league_rank.tr())),
-              DataColumn(label: Text(LocaleKeys.league_team.tr())),
-              DataColumn(label: Text(LocaleKeys.league_played.tr())),
-              DataColumn(label: Text(LocaleKeys.league_won.tr())),
-              DataColumn(label: Text(LocaleKeys.league_drawn.tr())),
-              DataColumn(label: Text(LocaleKeys.league_lost.tr())),
-              DataColumn(label: Text(LocaleKeys.league_goals_for.tr())),
-              DataColumn(label: Text(LocaleKeys.league_goals_against.tr())),
-              DataColumn(label: Text(LocaleKeys.league_goal_diff.tr())),
-              DataColumn(label: Text(LocaleKeys.league_points.tr())),
+              DataColumn(
+                label: Text(LocaleKeys.league_rank.tr(), style: headingStyle),
+              ),
+              DataColumn(
+                label: Text(LocaleKeys.league_team.tr(), style: headingStyle),
+              ),
+              DataColumn(
+                label: Text(LocaleKeys.league_played.tr(), style: headingStyle),
+              ),
+              DataColumn(
+                label: Text(LocaleKeys.league_won.tr(), style: headingStyle),
+              ),
+              DataColumn(
+                label: Text(LocaleKeys.league_drawn.tr(), style: headingStyle),
+              ),
+              DataColumn(
+                label: Text(LocaleKeys.league_lost.tr(), style: headingStyle),
+              ),
+              DataColumn(
+                label: Text(
+                  LocaleKeys.league_goals_for.tr(),
+                  style: headingStyle,
+                ),
+              ),
+              DataColumn(
+                label: Text(
+                  LocaleKeys.league_goals_against.tr(),
+                  style: headingStyle,
+                ),
+              ),
+              DataColumn(
+                label: Text(
+                  LocaleKeys.league_goal_diff.tr(),
+                  style: headingStyle,
+                ),
+              ),
+              DataColumn(
+                label: Text(LocaleKeys.league_points.tr(), style: headingStyle),
+              ),
             ],
             rows: _standings.map((team) {
               final int gd = team['gd'] as int;
               return DataRow(
                 cells: [
-                  DataCell(Text(team['rank'].toString())),
-                  DataCell(Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 12,
-                        backgroundImage: AssetImage(team['logo'] as String),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        team['name'] as String,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  )),
-                  DataCell(Text(team['played'].toString())),
-                  DataCell(Text(team['won'].toString())),
-                  DataCell(Text(team['drawn'].toString())),
-                  DataCell(Text(team['lost'].toString())),
-                  DataCell(Text(team['gf'].toString())),
-                  DataCell(Text(team['ga'].toString())),
-                  DataCell(Text(
-                    gd.toString(),
-                    style: TextStyle(
-                      color: gd >= 0 ? Colors.green : Colors.red,
+                  DataCell(Text(team['rank'].toString(), style: dataStyle)),
+                  DataCell(
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 12,
+                          backgroundImage: AssetImage(team['logo'] as String),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(team['name'] as String, style: headingStyle),
+                      ],
                     ),
-                  )),
-                  DataCell(Text(team['pts'].toString())),
+                  ),
+                  DataCell(Text(team['played'].toString(), style: dataStyle)),
+                  DataCell(Text(team['won'].toString(), style: dataStyle)),
+                  DataCell(Text(team['drawn'].toString(), style: dataStyle)),
+                  DataCell(Text(team['lost'].toString(), style: dataStyle)),
+                  DataCell(Text(team['gf'].toString(), style: dataStyle)),
+                  DataCell(Text(team['ga'].toString(), style: dataStyle)),
+                  DataCell(
+                    Text(
+                      gd.toString(),
+                      style: dataStyle.copyWith(
+                        color: gd >= 0 ? Colors.green : Colors.red,
+                      ),
+                    ),
+                  ),
+                  DataCell(Text(team['pts'].toString(), style: dataStyle)),
                 ],
               );
             }).toList(),
@@ -587,11 +647,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
               .map(
                 (img) => ClipRRect(
                   borderRadius: BorderRadius.circular(18),
-                  child: Image.asset(
-                    img,
-                    width: 400,
-                    fit: BoxFit.fill,
-                  ),
+                  child: Image.asset(img, width: 400, fit: BoxFit.fill),
                 ),
               )
               .toList(),
