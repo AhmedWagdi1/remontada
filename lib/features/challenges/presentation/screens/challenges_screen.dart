@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:remontada/core/app_strings/locale_keys.dart';
+import 'package:remontada/core/extensions/all_extensions.dart';
+import 'package:remontada/core/utils/extentions.dart';
+import 'package:remontada/features/home/presentation/widgets/custom_dots.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 
 /// Placeholder screen shown for the upcoming Challenges feature.
@@ -14,6 +18,13 @@ class ChallengesScreen extends StatefulWidget {
 class _ChallengesScreenState extends State<ChallengesScreen>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
+  /// Local images displayed in the carousel slider.
+  final List<String> _sliderImages = const [
+    'assets/images/slider.png',
+    'assets/images/slider.png',
+    'assets/images/slider.png',
+  ];
+  int _currentSlideIndex = 0;
 
   @override
   void initState() {
@@ -268,6 +279,47 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     );
   }
 
+  /// Returns the carousel slider displayed at the top of the page.
+  Widget _buildCarousel() {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        CarouselSlider(
+          items: _sliderImages
+              .map(
+                (img) => ClipRRect(
+                  borderRadius: BorderRadius.circular(18),
+                  child: Image.asset(
+                    img,
+                    width: 400,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              )
+              .toList(),
+          options: CarouselOptions(
+            onPageChanged: (index, reason) {
+              setState(() => _currentSlideIndex = index);
+            },
+            enlargeCenterPage: true,
+            enlargeStrategy: CenterPageEnlargeStrategy.zoom,
+            autoPlayAnimationDuration: const Duration(seconds: 1),
+            autoPlay: true,
+            height: 170,
+            viewportFraction: 1,
+          ),
+        ).paddingHorizontal(5),
+        Positioned(
+          bottom: 30,
+          child: CustomSliderDots(
+            length: _sliderImages.length,
+            indexItem: _currentSlideIndex,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
@@ -317,6 +369,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                 ),
               ),
               const SizedBox(height: 16),
+              _buildCarousel(),
+              18.ph,
               Directionality(
                 textDirection: TextDirection.rtl,
                 child: Container(
