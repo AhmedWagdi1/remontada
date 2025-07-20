@@ -279,6 +279,43 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     );
   }
 
+  /// Builds a button allowing a user to initiate a new challenge.
+  Widget _createChallengeButton() {
+    const darkBlue = Color(0xFF23425F);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () {},
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Colors.white, Color(0xFFF5F5F5)],
+            ),
+            border: Border.all(color: darkBlue),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.add, color: darkBlue),
+              const SizedBox(height: 4),
+              Text(
+                LocaleKeys.challenge_create_challenge.tr(),
+                style: const TextStyle(
+                  color: darkBlue,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   /// Returns the carousel slider displayed at the top of the page.
   Widget _buildCarousel() {
     return Stack(
@@ -403,6 +440,9 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                     SingleChildScrollView(
                       child: Column(
                         children: [
+                          const SizedBox(height: 12),
+                          _createChallengeButton(),
+                          const SizedBox(height: 12),
                           _completedChallengeCard(),
                           _joinChallengeCard(),
                         ],

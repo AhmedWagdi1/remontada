@@ -40,6 +40,7 @@ void main() {
     });
     await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
     await tester.pumpAndSettle();
+    expect(find.text('challenge_create_challenge'), findsOneWidget);
     expect(find.text('تحدي مكتمل - اليوم 8:00 م'), findsOneWidget);
     expect(find.text('انضم للتحدي - اليوم 7:30 م'), findsOneWidget);
   });
