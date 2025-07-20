@@ -12,12 +12,25 @@ import '../domain/repository/auth_repository.dart';
 import 'auth_states.dart';
 
 class AuthCubit extends Cubit<AuthStates> {
-  AuthCubit() : super(AuthInitial());
+  /// Creates [AuthCubit] with an optional custom [AuthRepository].
+  /// This allows dependency injection for testing purposes.
+  AuthCubit({AuthRepository? repository})
+      : authRepository =
+            repository ?? AuthRepository(locator<DioService>()),
+        super(AuthInitial());
   static AuthCubit get(context) => BlocProvider.of(context);
 
-  AuthRepository authRepository = AuthRepository(locator<DioService>());
+  /// Repository handling authentication related requests.
+  final AuthRepository authRepository;
 
-  login({required AuthRequest loginRequestModel}) async {
+  /// Attempts to login with the provided [loginRequestModel].
+  ///
+  /// When the API response contains a `code` it indicates that the user
+  /// should verify via OTP and [LoginSuccessState] is emitted. In test mode
+  /// the API returns an `access_token` directly which means OTP should be
+  /// skipped; in that case the user data is stored and
+  /// [ActivateCodeSuccessState] is emitted.
+  Future<bool?> login({required AuthRequest loginRequestModel}) async {
     MyLoading.show();
     emit(LoginLoadingState());
     final response = await authRepository.loginRequest(loginRequestModel);
@@ -25,17 +38,23 @@ class AuthCubit extends Cubit<AuthStates> {
     if (response != null) {
       if (response is bool) {
         emit(NeedRegister());
-      } else if (response['code'] == null) {
-        emit(LoginErrorState());
-        return false;
-      } else {
+        return null;
+      }
+
+      if (response['access_token'] != null) {
+        await Utils.saveUserInHive(Map<String, dynamic>.from(response));
+        emit(ActivateCodeSuccessState());
+        return true;
+      }
+
+      if (response['code'] != null) {
         emit(LoginSuccessState());
         return true;
       }
-    } else {
-      emit(LoginErrorState());
-      return null;
     }
+
+    emit(LoginErrorState());
+    return false;
   }
 
   signUp({required AuthRequest registerRequestModel}) async {
