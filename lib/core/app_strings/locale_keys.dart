@@ -228,4 +228,15 @@ abstract class LocaleKeys {
   static const how_challenges_step3_title = 'how_challenges_step3_title';
   static const how_challenges_step3_subtitle = 'how_challenges_step3_subtitle';
   static const how_challenges_tip = 'how_challenges_tip';
+  static const league_table_title = 'league_table_title';
+  static const league_rank = 'league_rank';
+  static const league_team = 'league_team';
+  static const league_played = 'league_played';
+  static const league_won = 'league_won';
+  static const league_drawn = 'league_drawn';
+  static const league_lost = 'league_lost';
+  static const league_goals_for = 'league_goals_for';
+  static const league_goals_against = 'league_goals_against';
+  static const league_goal_diff = 'league_goal_diff';
+  static const league_points = 'league_points';
 }

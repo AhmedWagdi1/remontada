@@ -24,6 +24,61 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     'assets/images/slider.png',
     'assets/images/slider.png',
   ];
+  /// Dummy league standings used in the league table widget.
+  final List<Map<String, dynamic>> _standings = [
+    {
+      'rank': 1,
+      'name': 'الفهود',
+      'logo': 'assets/images/profile_image.png',
+      'played': 5,
+      'won': 4,
+      'drawn': 1,
+      'lost': 0,
+      'gf': 12,
+      'ga': 3,
+      'gd': 9,
+      'pts': 13,
+    },
+    {
+      'rank': 2,
+      'name': 'النسور',
+      'logo': 'assets/images/profile_image.png',
+      'played': 5,
+      'won': 3,
+      'drawn': 1,
+      'lost': 1,
+      'gf': 9,
+      'ga': 6,
+      'gd': 3,
+      'pts': 10,
+    },
+    {
+      'rank': 3,
+      'name': 'الصقور',
+      'logo': 'assets/images/profile_image.png',
+      'played': 5,
+      'won': 2,
+      'drawn': 2,
+      'lost': 1,
+      'gf': 7,
+      'ga': 5,
+      'gd': 2,
+      'pts': 8,
+    },
+    {
+      'rank': 4,
+      'name': 'الابطال',
+      'logo': 'assets/images/profile_image.png',
+      'played': 5,
+      'won': 1,
+      'drawn': 1,
+      'lost': 3,
+      'gf': 5,
+      'ga': 10,
+      'gd': -5,
+      'pts': 4,
+    },
+  ];
   int _currentSlideIndex = 0;
 
   @override
@@ -423,6 +478,105 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     );
   }
 
+  /// Displays the league table header with a trophy icon.
+  Widget _leagueHeaderCard() {
+    const darkBlue = Color(0xFF23425F);
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Container(
+        decoration: const BoxDecoration(
+          color: darkBlue,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12),
+          ),
+        ),
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            const Icon(Icons.emoji_events, color: Colors.white),
+            const SizedBox(width: 8),
+            Text(
+              LocaleKeys.league_table_title.tr(),
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Builds the table displaying current league standings.
+  Widget _leagueTable() {
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(12),
+            bottomRight: Radius.circular(12),
+          ),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: DataTable(
+            columns: [
+              DataColumn(label: Text(LocaleKeys.league_rank.tr())),
+              DataColumn(label: Text(LocaleKeys.league_team.tr())),
+              DataColumn(label: Text(LocaleKeys.league_played.tr())),
+              DataColumn(label: Text(LocaleKeys.league_won.tr())),
+              DataColumn(label: Text(LocaleKeys.league_drawn.tr())),
+              DataColumn(label: Text(LocaleKeys.league_lost.tr())),
+              DataColumn(label: Text(LocaleKeys.league_goals_for.tr())),
+              DataColumn(label: Text(LocaleKeys.league_goals_against.tr())),
+              DataColumn(label: Text(LocaleKeys.league_goal_diff.tr())),
+              DataColumn(label: Text(LocaleKeys.league_points.tr())),
+            ],
+            rows: _standings.map((team) {
+              final int gd = team['gd'] as int;
+              return DataRow(
+                cells: [
+                  DataCell(Text(team['rank'].toString())),
+                  DataCell(Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 12,
+                        backgroundImage: AssetImage(team['logo'] as String),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        team['name'] as String,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  )),
+                  DataCell(Text(team['played'].toString())),
+                  DataCell(Text(team['won'].toString())),
+                  DataCell(Text(team['drawn'].toString())),
+                  DataCell(Text(team['lost'].toString())),
+                  DataCell(Text(team['gf'].toString())),
+                  DataCell(Text(team['ga'].toString())),
+                  DataCell(Text(
+                    gd.toString(),
+                    style: TextStyle(
+                      color: gd >= 0 ? Colors.green : Colors.red,
+                    ),
+                  )),
+                  DataCell(Text(team['pts'].toString())),
+                ],
+              );
+            }).toList(),
+          ),
+        ),
+      ),
+    );
+  }
+
   /// Returns the carousel slider displayed at the top of the page.
   Widget _buildCarousel() {
     return Stack(
@@ -558,11 +712,13 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                         ],
                       ),
                     ),
-                    Center(
-                      child: Text(
-                        LocaleKeys.under_construction.tr(),
-                        style: const TextStyle(color: Colors.grey),
-                        textAlign: TextAlign.center,
+                    SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          _leagueHeaderCard(),
+                          const SizedBox(height: 8),
+                          _leagueTable(),
+                        ],
                       ),
                     ),
                     Center(

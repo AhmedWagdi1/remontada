@@ -185,4 +185,15 @@
 "how_challenges_step3_title":"متابعة التحديات",
 "how_challenges_step3_subtitle":"انقر على أي تحدي مكتمل لعرض التفاصيل ومتابعة النتائج",
 "how_challenges_tip":"نصيحة: تأكد من إنشاء فريقك أولاً قبل المشاركة في التحديات"
+"league_table_title":"جدول ترتيب الدوري",
+"league_rank":"#",
+"league_team":"الفريق",
+"league_played":"لعب",
+"league_won":"فاز",
+"league_drawn":"تعادل",
+"league_lost":"خسر",
+"league_goals_for":"له",
+"league_goals_against":"عليه",
+"league_goal_diff":"الفرق",
+"league_points":"النقاط"
 }

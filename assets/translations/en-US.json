@@ -175,4 +175,15 @@
   "how_challenges_step3_title": "Track challenges",
   "how_challenges_step3_subtitle": "Tap any completed challenge to view details and follow the results",
   "how_challenges_tip": "Tip: Make sure to create your team first before participating in challenges"
+  "league_table_title": "League Standings",
+  "league_rank": "#",
+  "league_team": "Team",
+  "league_played": "Played",
+  "league_won": "Won",
+  "league_drawn": "Drawn",
+  "league_lost": "Lost",
+  "league_goals_for": "GF",
+  "league_goals_against": "GA",
+  "league_goal_diff": "GD",
+  "league_points": "Pts"
 }

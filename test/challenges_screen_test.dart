@@ -55,11 +55,23 @@ void main() {
     });
     await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
     await tester.pumpAndSettle();
-    await tester.tap(find.byType(Tab).at(1));
-    await tester.pumpAndSettle();
-    expect(find.text('under_construction'), findsOneWidget);
     await tester.tap(find.byType(Tab).at(2));
     await tester.pumpAndSettle();
     expect(find.text('under_construction'), findsOneWidget);
+  });
+
+  testWidgets('league tab shows standings table', (tester) async {
+    tester.binding.window.physicalSizeTestValue = const Size(1200, 800);
+    tester.binding.window.devicePixelRatioTestValue = 1.0;
+    addTearDown(() {
+      tester.binding.window.clearPhysicalSizeTestValue();
+      tester.binding.window.clearDevicePixelRatioTestValue();
+    });
+    await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(Tab).at(1));
+    await tester.pumpAndSettle();
+    expect(find.text('league_table_title'), findsOneWidget);
+    expect(find.byType(DataTable), findsOneWidget);
   });
 }
