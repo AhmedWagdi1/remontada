@@ -320,16 +320,16 @@ class _ChallengesScreenState extends State<ChallengesScreen>
               Directionality(
                 textDirection: TextDirection.rtl,
                 child: Container(
-                  padding: const EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color: Color(0xFFF2F2F2),
-                    borderRadius: BorderRadius.circular(25),
+                    borderRadius: BorderRadius.circular(15),
                   ),
                   child: TabBar(
                     controller: _tabController,
                     indicator: BoxDecoration(
                       color: darkBlue,
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     labelColor: Colors.white,
                     unselectedLabelColor: Colors.grey,
@@ -341,7 +341,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 21),
               Expanded(
                 child: TabBarView(
                   controller: _tabController,
