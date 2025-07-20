@@ -7,6 +7,7 @@ import 'package:remontada/features/layout/presentation/screens/layout_screen.dar
 import 'package:remontada/features/matchdetails/presentaion/screens/matchDetails_screen.dart';
 import 'package:remontada/features/more/domain/contact_request.dart';
 import 'package:remontada/features/my_matches/presentation/screens/create_match_screen.dart';
+import 'package:remontada/features/challenges/presentation/screens/challenges_screen.dart';
 import 'package:remontada/features/player_details/presentation/screens/player_details.dart';
 import 'package:remontada/features/profile/presentation/screens/edit_profile.screen.dart';
 import 'package:remontada/features/splash/cubit/splash_cubit.dart';
@@ -45,6 +46,7 @@ class Routes {
   static const String webPage = "/webPage";
   static const String CreateMatchScreen = "/CreateMatchScreen";
   static const String PlayersScreenSupervisor = "/PlayersScreenSupervisor";
+  static const String challengesScreen = "/ChallengesScreen";
   static const String UpdateAppScreen = "/UpdateAppScreen";
 }
 
@@ -217,6 +219,13 @@ class RouteGenerator {
               // id: routeSettings.arguments as String?,
               // uri: routeSettings.arguments as String,
             );
+          },
+        );
+      case Routes.challengesScreen:
+        return CupertinoPageRoute(
+          settings: routeSettings,
+          builder: (_) {
+            return const ChallengesScreen();
           },
         );
       // case Routes.SplashScreen:

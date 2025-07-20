@@ -8,6 +8,7 @@ import 'package:remontada/core/utils/utils.dart';
 import 'package:remontada/features/more/presentation/screens/more_screen.dart';
 import 'package:remontada/features/my_matches/presentation/screens/mymatches_screen.dart';
 import 'package:remontada/features/notifications/presentation/screens/notification_Screen.dart';
+import 'package:remontada/features/challenges/presentation/screens/challenges_screen.dart';
 import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 
@@ -99,6 +100,58 @@ class _LayoutScreenState extends State<LayoutScreen>
                         initialIndex: 0,
                         child: MyMatchesScreen(),
                       ),
+                Utils.token == ""
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                Assets.icons.logo,
+                                // width: 100,
+                                // height: 70,
+                                color: context.primaryColor,
+                              ),
+                              20.ph,
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: ButtonWidget(
+                                      onTap: () => Navigator.pushNamed(
+                                        context,
+                                        Routes.LoginScreen,
+                                      ),
+                                      child: CustomText(
+                                        weight: FontWeight.w600,
+                                        fontSize: 16,
+                                        "تسجيل الدخول",
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  15.pw,
+                                  Expanded(
+                                    child: ButtonWidget(
+                                      onTap: () => Navigator.pushNamed(
+                                        context,
+                                        Routes.RegisterScreen,
+                                      ),
+                                      child: CustomText(
+                                        weight: FontWeight.w600,
+                                        fontSize: 16,
+                                        " انشاء حساب",
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    : const ChallengesScreen(),
                 Utils.token == ""
                     ? Center(
                         child: Padding(

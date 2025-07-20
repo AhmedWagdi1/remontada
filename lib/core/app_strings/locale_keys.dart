@@ -32,6 +32,7 @@ abstract class LocaleKeys {
   // start nav
   static const home_nav = 'navBar.home';
   static const my_matches_nav = 'navBar.my_matches';
+  static const challenges_nav = 'navBar.challenges';
   static const notifications_nav = 'navBar.notifications';
   static const more_nav = 'navBar.more';
   //end nav

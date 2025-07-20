@@ -85,11 +85,17 @@ class $AssetsIconsGen {
   /// File path: assets/icons/active_notify.svg
   String get active_notify => 'assets/icons/active_notify.svg';
 
+  /// File path: assets/icons/active_trophy.svg
+  String get active_trophy => 'assets/icons/active_trophy.svg';
+
   /// File path: ssets/icons/active_more.svg
   String get active_more => 'assets/icons/active_more.svg';
 
   /// File path: assets/icons/notify.svg
   String get notify => 'assets/icons/notify.svg';
+
+  /// File path: assets/icons/trophy.svg
+  String get trophy => 'assets/icons/trophy.svg';
 
   /// File path: ssets/icons/arena.svg
   String get arena => 'assets/icons/arena.svg';
