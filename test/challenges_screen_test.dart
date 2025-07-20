@@ -18,9 +18,7 @@ void main() {
     expect(find.byIcon(Icons.more_horiz), findsOneWidget);
   });
 
-  testWidgets('challenge screen contains completed challenge card', (
-    tester,
-  ) async {
+  testWidgets('first tab shows challenge cards', (tester) async {
     tester.binding.window.physicalSizeTestValue = const Size(1200, 800);
     tester.binding.window.devicePixelRatioTestValue = 1.0;
     addTearDown(() {
@@ -30,10 +28,10 @@ void main() {
     await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
     await tester.pumpAndSettle();
     expect(find.text('تحدي مكتمل - اليوم 8:00 م'), findsOneWidget);
-    expect(find.text('عرض التفاصيل'), findsOneWidget);
+    expect(find.text('انضم للتحدي - اليوم 7:30 م'), findsOneWidget);
   });
 
-  testWidgets('challenge screen contains join challenge card', (tester) async {
+  testWidgets('other tabs show under construction placeholder', (tester) async {
     tester.binding.window.physicalSizeTestValue = const Size(1200, 800);
     tester.binding.window.devicePixelRatioTestValue = 1.0;
     addTearDown(() {
@@ -42,7 +40,11 @@ void main() {
     });
     await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
     await tester.pumpAndSettle();
-    expect(find.text('انضم للتحدي - اليوم 7:30 م'), findsOneWidget);
-    expect(find.byIcon(Icons.add), findsOneWidget);
+    await tester.tap(find.text('جدول الدوري'));
+    await tester.pumpAndSettle();
+    expect(find.text('🚧 تحت الإنشاء'), findsOneWidget);
+    await tester.tap(find.text('البطولات'));
+    await tester.pumpAndSettle();
+    expect(find.text('🚧 تحت الإنشاء'), findsOneWidget);
   });
 }

@@ -4,8 +4,28 @@ import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 
 /// Placeholder screen shown for the upcoming Challenges feature.
-class ChallengesScreen extends StatelessWidget {
+class ChallengesScreen extends StatefulWidget {
   const ChallengesScreen({super.key});
+
+  @override
+  State<ChallengesScreen> createState() => _ChallengesScreenState();
+}
+
+class _ChallengesScreenState extends State<ChallengesScreen>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   /// Builds the card displaying a completed challenge summary.
   Widget _completedChallengeCard() {
@@ -195,8 +215,9 @@ class ChallengesScreen extends StatelessWidget {
                       SizedBox(height: 4),
                       CircleAvatar(
                         radius: 20,
-                        backgroundImage:
-                            AssetImage('assets/images/profile_image.png'),
+                        backgroundImage: AssetImage(
+                          'assets/images/profile_image.png',
+                        ),
                       ),
                     ],
                   ),
@@ -237,7 +258,7 @@ class ChallengesScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 15,)
+              SizedBox(height: 15),
             ],
           ),
         ),
@@ -293,10 +314,61 @@ class ChallengesScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              _completedChallengeCard(),
-              _joinChallengeCard(),
-              const Spacer(),
-
+              const SizedBox(height: 16),
+              Directionality(
+                textDirection: TextDirection.rtl,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Color(0xFFF2F2F2),
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  child: TabBar(
+                    controller: _tabController,
+                    indicator: BoxDecoration(
+                      color: darkBlue,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    labelColor: Colors.white,
+                    unselectedLabelColor: Colors.grey,
+                    tabs: const [
+                      Tab(text: 'التحديات'),
+                      Tab(text: 'جدول الدوري'),
+                      Tab(text: 'البطولات'),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          _completedChallengeCard(),
+                          _joinChallengeCard(),
+                        ],
+                      ),
+                    ),
+                    const Center(
+                      child: Text(
+                        '🚧 تحت الإنشاء',
+                        style: TextStyle(color: Colors.grey),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    const Center(
+                      child: Text(
+                        '🚧 تحت الإنشاء',
+                        style: TextStyle(color: Colors.grey),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
