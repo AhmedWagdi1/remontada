@@ -162,5 +162,8 @@
 "location_req3": "If canceled, you will not be able to find nearby matches.",
 "challenge_more": "More",
 "challenge_updates": "Updates",
-"challenge_create_team": "Create Team"
+  "challenge_create_team": "Create Team",
+  "league_schedule": "League Schedule",
+  "championships": "Championships",
+  "under_construction": "\ud83d\udea7 Under Construction"
 }

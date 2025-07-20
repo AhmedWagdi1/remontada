@@ -40,11 +40,11 @@ void main() {
     });
     await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('جدول الدوري'));
+    await tester.tap(find.byType(Tab).at(1));
     await tester.pumpAndSettle();
-    expect(find.text('🚧 تحت الإنشاء'), findsOneWidget);
-    await tester.tap(find.text('البطولات'));
+    expect(find.text('under_construction'), findsOneWidget);
+    await tester.tap(find.byType(Tab).at(2));
     await tester.pumpAndSettle();
-    expect(find.text('🚧 تحت الإنشاء'), findsOneWidget);
+    expect(find.text('under_construction'), findsOneWidget);
   });
 }

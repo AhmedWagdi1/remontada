@@ -331,10 +331,10 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                     ),
                     labelColor: Colors.white,
                     unselectedLabelColor: Colors.grey,
-                    tabs: const [
-                      Tab(text: 'التحديات'),
-                      Tab(text: 'جدول الدوري'),
-                      Tab(text: 'البطولات'),
+                    tabs: [
+                      Tab(text: LocaleKeys.challenges_nav.tr()),
+                      Tab(text: LocaleKeys.league_schedule.tr()),
+                      Tab(text: LocaleKeys.championships.tr()),
                     ],
                   ),
                 ),
@@ -352,17 +352,17 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                         ],
                       ),
                     ),
-                    const Center(
+                    Center(
                       child: Text(
-                        '🚧 تحت الإنشاء',
-                        style: TextStyle(color: Colors.grey),
+                        LocaleKeys.under_construction.tr(),
+                        style: const TextStyle(color: Colors.grey),
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    const Center(
+                    Center(
                       child: Text(
-                        '🚧 تحت الإنشاء',
-                        style: TextStyle(color: Colors.grey),
+                        LocaleKeys.under_construction.tr(),
+                        style: const TextStyle(color: Colors.grey),
                         textAlign: TextAlign.center,
                       ),
                     ),
