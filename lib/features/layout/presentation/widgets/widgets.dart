@@ -74,15 +74,21 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                 Assets.icons.myMatches_active,
               ),
               navBarItem(
+                Assets.icons.trophy,
+                LocaleKeys.challenges_nav.tr(),
+                2,
+                Assets.icons.active_trophy,
+              ),
+              navBarItem(
                 Assets.icons.notify,
                 LocaleKeys.notifications_nav.tr(),
-                2,
+                3,
                 Assets.icons.active_notify,
               ),
               navBarItem(
                 Assets.icons.more,
                 LocaleKeys.more_nav.tr(),
-                3,
+                4,
                 Assets.icons.active_more,
               ),
             ],

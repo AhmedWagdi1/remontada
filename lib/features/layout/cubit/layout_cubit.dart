@@ -12,8 +12,12 @@ class LayoutCubit extends Cubit<LayoutStates> {
   LayoutRepository layoutRepository = LayoutRepository(locator<DioService>());
   late TabController tabController;
 
-  initTabBar(vsync, [int index = 0]) {
-    tabController = TabController(length: 4, vsync: vsync, initialIndex: index);
+  /// Initializes the bottom navigation tab controller.
+  ///
+  /// [vsync] provides the ticker provider for animations.
+  /// [index] sets the initial tab index.
+  void initTabBar(vsync, [int index = 0]) {
+    tabController = TabController(length: 5, vsync: vsync, initialIndex: index);
   }
 
   void changeTab(int tab) {
@@ -33,9 +37,6 @@ class LayoutCubit extends Cubit<LayoutStates> {
         break;
       case 4:
         tabController.animateTo(4);
-        break;
-      case 5:
-        tabController.animateTo(5);
         break;
       default:
     }
