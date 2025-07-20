@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:remontada/features/challenges/presentation/screens/challenges_screen.dart';
 
 void main() {
@@ -16,6 +17,18 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byIcon(Icons.group), findsOneWidget);
     expect(find.byIcon(Icons.more_horiz), findsOneWidget);
+  });
+
+  testWidgets('carousel slider is visible', (tester) async {
+    tester.binding.window.physicalSizeTestValue = const Size(1200, 800);
+    tester.binding.window.devicePixelRatioTestValue = 1.0;
+    addTearDown(() {
+      tester.binding.window.clearPhysicalSizeTestValue();
+      tester.binding.window.clearDevicePixelRatioTestValue();
+    });
+    await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
+    await tester.pumpAndSettle();
+    expect(find.byType(CarouselSlider), findsOneWidget);
   });
 
   testWidgets('first tab shows challenge cards', (tester) async {
