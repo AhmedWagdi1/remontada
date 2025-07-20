@@ -213,4 +213,7 @@ abstract class LocaleKeys {
   static const navBar_notifications = 'navBar.notifications';
   static const navBar_settings = 'navBar.settings';
   static const navBar = 'navBar';
+  static const challenge_more = 'challenge_more';
+  static const challenge_updates = 'challenge_updates';
+  static const challenge_create_team = 'challenge_create_team';
 }

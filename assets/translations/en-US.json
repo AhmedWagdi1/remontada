@@ -159,5 +159,8 @@
 "enableReq": "Enable permission",
 "location_req1": "This app requires location access to provide you with better services.",
 "location_req2": "Please enable location permissions from the settings.",
-"location_req3": "If canceled, you will not be able to find nearby matches."
+"location_req3": "If canceled, you will not be able to find nearby matches.",
+"challenge_more": "More",
+"challenge_updates": "Updates",
+"challenge_create_team": "Create Team"
 }
