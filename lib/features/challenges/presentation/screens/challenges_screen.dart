@@ -125,7 +125,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 12),
+                padding: const EdgeInsets.only(top: 12,bottom: 12,left: 12,right: 12),
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -135,6 +135,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(12),
                           bottomRight: Radius.circular(12),
+                          topRight: Radius.circular(12),
+                          topLeft: Radius.circular(12),
                         ),
                       ),
                     ),
