@@ -7,6 +7,135 @@ import 'package:remontada/shared/widgets/customtext.dart';
 class ChallengesScreen extends StatelessWidget {
   const ChallengesScreen({super.key});
 
+  /// Builds the card displaying a completed challenge summary.
+  Widget _completedChallengeCard() {
+    const borderColor = Color(0xFFD4EDDA);
+    const badgeColor = Color(0xFFE6F4EA);
+    const badgeTextColor = Color(0xFF28A745);
+    const buttonColor = Color(0xFF23425F);
+
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 24),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: borderColor),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: badgeColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Icon(Icons.check_circle, color: badgeTextColor, size: 16),
+                      SizedBox(width: 4),
+                      Text(
+                        'تحدي مكتمل - اليوم 8:00 م',
+                        style: TextStyle(
+                          color: badgeTextColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: const [
+                      Text(
+                        'الفهود',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 4),
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundImage: AssetImage(
+                          'assets/images/profile_image.png',
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      const Text(
+                        'VS',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 4),
+                        height: 2,
+                        width: 20,
+                        color: Colors.blue,
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: const [
+                      Text(
+                        'ابطال الخرج',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 4),
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundImage: AssetImage(
+                          'assets/images/profile_image.png',
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: buttonColor,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(12),
+                          bottomRight: Radius.circular(12),
+                        ),
+                      ),
+                    ),
+                    onPressed: () {},
+                    child: const Text(
+                      'عرض التفاصيل',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
@@ -64,6 +193,7 @@ class ChallengesScreen extends StatelessWidget {
                   color: Colors.grey,
                 ),
               ),
+              _completedChallengeCard(),
             ],
           ),
         ),
