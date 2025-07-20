@@ -220,4 +220,12 @@ abstract class LocaleKeys {
   static const league_schedule = 'league_schedule';
   static const championships = 'championships';
   static const under_construction = 'under_construction';
+  static const how_challenges_work_title = 'how_challenges_work_title';
+  static const how_challenges_step1_title = 'how_challenges_step1_title';
+  static const how_challenges_step1_subtitle = 'how_challenges_step1_subtitle';
+  static const how_challenges_step2_title = 'how_challenges_step2_title';
+  static const how_challenges_step2_subtitle = 'how_challenges_step2_subtitle';
+  static const how_challenges_step3_title = 'how_challenges_step3_title';
+  static const how_challenges_step3_subtitle = 'how_challenges_step3_subtitle';
+  static const how_challenges_tip = 'how_challenges_tip';
 }
