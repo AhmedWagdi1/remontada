@@ -176,5 +176,13 @@
 "challenge_create_challenge":"إنشاء تحدي جديد",
 "league_schedule":"جدول الدوري",
 "championships":"البطولات",
-"under_construction":"\ud83d\udea7 تحت الإنشاء"
+"under_construction":"\ud83d\udea7 تحت الإنشاء",
+"how_challenges_work_title":"كيف تعمل التحديات؟",
+"how_challenges_step1_title":"إنشاء تحدي جديد",
+"how_challenges_step1_subtitle":"انقر على بطاقة 'إنشاء تحدي جديد' لبدء تحدي ودعوة الفرق الأخرى",
+"how_challenges_step2_title":"انضم للتحديات",
+"how_challenges_step2_subtitle":"انقر على علامة '+' للانضمام لتحدي موجود ضد فريق آخر",
+"how_challenges_step3_title":"متابعة التحديات",
+"how_challenges_step3_subtitle":"انقر على أي تحدي مكتمل لعرض التفاصيل ومتابعة النتائج",
+"how_challenges_tip":"نصيحة: تأكد من إنشاء فريقك أولاً قبل المشاركة في التحديات"
 }

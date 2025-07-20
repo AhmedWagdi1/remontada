@@ -316,6 +316,113 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     );
   }
 
+  /// Builds a numbered step item for the how challenges work card.
+  Widget _buildHowStep({required Widget icon, required String title, required String subtitle}) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        icon,
+        const SizedBox(width: 8),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 4),
+              Text(subtitle, style: const TextStyle(fontSize: 12, color: Colors.black54)),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Creates an informational card explaining how challenges work.
+  Widget _howChallengesWorkCard() {
+    final borderColor = Colors.grey.shade300;
+    const infoColor = Colors.blue;
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: borderColor),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.info_outline, color: infoColor),
+                const SizedBox(width: 4),
+                Text(
+                  LocaleKeys.how_challenges_work_title.tr(),
+                  style: const TextStyle(
+                    color: infoColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            _buildHowStep(
+              icon: const CircleAvatar(
+                radius: 12,
+                backgroundColor: infoColor,
+                child: Text('1', style: TextStyle(color: Colors.white, fontSize: 12)),
+              ),
+              title: LocaleKeys.how_challenges_step1_title.tr(),
+              subtitle: LocaleKeys.how_challenges_step1_subtitle.tr(),
+            ),
+            const SizedBox(height: 12),
+            _buildHowStep(
+              icon: const CircleAvatar(
+                radius: 12,
+                backgroundColor: infoColor,
+                child: Icon(Icons.add, size: 16, color: Colors.white),
+              ),
+              title: LocaleKeys.how_challenges_step2_title.tr(),
+              subtitle: LocaleKeys.how_challenges_step2_subtitle.tr(),
+            ),
+            const SizedBox(height: 12),
+            _buildHowStep(
+              icon: const CircleAvatar(
+                radius: 12,
+                backgroundColor: infoColor,
+                child: Text('3', style: TextStyle(color: Colors.white, fontSize: 12)),
+              ),
+              title: LocaleKeys.how_challenges_step3_title.tr(),
+              subtitle: LocaleKeys.how_challenges_step3_subtitle.tr(),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.info_outline, size: 16, color: Colors.grey),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      LocaleKeys.how_challenges_tip.tr(),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   /// Returns the carousel slider displayed at the top of the page.
   Widget _buildCarousel() {
     return Stack(
@@ -443,8 +550,11 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                           const SizedBox(height: 12),
                           _createChallengeButton(),
                           const SizedBox(height: 12),
-                          _completedChallengeCard(),
                           _joinChallengeCard(),
+                          const SizedBox(height: 12),
+                          _howChallengesWorkCard(),
+                          const SizedBox(height: 12),
+                          _completedChallengeCard(),
                         ],
                       ),
                     ),

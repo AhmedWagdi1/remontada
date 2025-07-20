@@ -166,5 +166,13 @@
   "challenge_create_challenge": "Create New Challenge",
   "league_schedule": "League Schedule",
   "championships": "Championships",
-  "under_construction": "\ud83d\udea7 Under Construction"
+  "under_construction": "\ud83d\udea7 Under Construction",
+  "how_challenges_work_title": "How do challenges work?",
+  "how_challenges_step1_title": "Create a new challenge",
+  "how_challenges_step1_subtitle": "Click the 'Create New Challenge' card to start a challenge and invite other teams",
+  "how_challenges_step2_title": "Join challenges",
+  "how_challenges_step2_subtitle": "Tap the '+' icon to join an existing challenge against another team",
+  "how_challenges_step3_title": "Track challenges",
+  "how_challenges_step3_subtitle": "Tap any completed challenge to view details and follow the results",
+  "how_challenges_tip": "Tip: Make sure to create your team first before participating in challenges"
 }
