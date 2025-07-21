@@ -26,6 +26,7 @@ class TeamDetailsPage extends StatelessWidget {
               SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
                     _TopBar(),
                     SizedBox(height: 16),
