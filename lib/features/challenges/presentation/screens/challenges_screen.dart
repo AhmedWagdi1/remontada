@@ -676,6 +676,54 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     );
   }
 
+  /// Displays a row with a manage team button, team name and a groups icon.
+  Widget _manageTeamRow() {
+    const darkBlue = Color(0xFF23425F);
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              height: 36,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: darkBlue,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: Text(
+                  LocaleKeys.manage_your_team.tr(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Center(
+                child: Text(
+                  'ريـمونتادا',
+                  style: const TextStyle(
+                    color: darkBlue,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            CircleAvatar(
+              backgroundColor: darkBlue,
+              child: const Icon(Icons.groups, color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
@@ -736,6 +784,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
               ),
               const SizedBox(height: 16),
               _buildCarousel(),
+              _manageTeamRow(),
               18.ph,
               Directionality(
                 textDirection: TextDirection.rtl,
