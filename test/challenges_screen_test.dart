@@ -31,6 +31,20 @@ void main() {
     expect(find.byType(CarouselSlider), findsOneWidget);
   });
 
+  testWidgets('manage team row is displayed', (tester) async {
+    tester.binding.window.physicalSizeTestValue = const Size(1200, 800);
+    tester.binding.window.devicePixelRatioTestValue = 1.0;
+    addTearDown(() {
+      tester.binding.window.clearPhysicalSizeTestValue();
+      tester.binding.window.clearDevicePixelRatioTestValue();
+    });
+    await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
+    await tester.pumpAndSettle();
+    expect(find.text('manage_your_team'), findsOneWidget);
+    expect(find.text('ريـمونتادا'), findsOneWidget);
+    expect(find.byIcon(Icons.groups), findsOneWidget);
+  });
+
   testWidgets('first tab shows challenge cards', (tester) async {
     tester.binding.window.physicalSizeTestValue = const Size(1200, 800);
     tester.binding.window.devicePixelRatioTestValue = 1.0;
