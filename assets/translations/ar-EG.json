@@ -233,5 +233,15 @@
 "player_number_label":"رقم القميص",
 "player_number_hint":"رقم",
 "player_phone_label":"رقم الهاتف",
-"player_phone_hint":"أدخل رقم الهاتف"
+"player_phone_hint":"أدخل رقم الهاتف",
+"add_new_player":"إضافة لاعب جديد",
+"invite_members_section":"دعوة الأعضاء",
+"enable_invite_title":"تفعيل دعوة الأعضاء",
+"enable_invite_subtitle":"السماح بدعوة اللاعبين عبر منصات التواصل الاجتماعي",
+"choose_social_platforms_label":"اختر منصات التواصل:",
+"social_whatsapp":"واتساب",
+"social_telegram":"تيليجرام",
+"social_instagram":"إنستجرام",
+"social_twitter":"تويتر",
+"create_team_button":"إنشاء الفريق"
 }
