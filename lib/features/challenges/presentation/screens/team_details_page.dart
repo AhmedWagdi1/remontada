@@ -44,7 +44,7 @@ class TeamDetailsPage extends StatelessWidget {
                   ],
                 ),
               ),
-              Center(child: Text(LocaleKeys.team_details_members.tr())),
+              const _MembersTab(),
               Center(child: Text(LocaleKeys.team_details_join.tr())),
               Center(child: Text(LocaleKeys.team_details_transfer.tr())),
               Center(child: Text(LocaleKeys.team_details_chat.tr())),
@@ -536,6 +536,236 @@ class _InviteSettingsSection extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Members tab displaying team players.
+class _MembersTab extends StatelessWidget {
+  /// Creates a const [_MembersTab].
+  const _MembersTab();
+
+  @override
+  Widget build(BuildContext context) {
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: const [
+            _TopBar(),
+            SizedBox(height: 16),
+            _StatsSummaryRow(),
+            SizedBox(height: 16),
+            _PlayersSectionTitle(),
+            SizedBox(height: 16),
+            _PlayerList(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Row showing active and total players stats.
+class _StatsSummaryRow extends StatelessWidget {
+  /// Creates a const [_StatsSummaryRow].
+  const _StatsSummaryRow();
+
+  Widget _buildBox({
+    required String label,
+    required String value,
+    required Color valueColor,
+    required Color bgColor,
+  }) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          children: [
+            Text(label),
+            const SizedBox(height: 4),
+            Text(
+              value,
+              style: TextStyle(
+                color: valueColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        _buildBox(
+          label: 'اللاعبين النشطين',
+          value: '10',
+          valueColor: Colors.green,
+          bgColor: const Color(0xFFE1F3E2),
+        ),
+        const SizedBox(width: 8),
+        _buildBox(
+          label: 'إجمالي اللاعبين',
+          value: '10',
+          valueColor: Colors.grey,
+          bgColor: Color(0xFFF0F0F0),
+        ),
+      ],
+    );
+  }
+}
+
+/// Section title for the players list.
+class _PlayersSectionTitle extends StatelessWidget {
+  /// Creates a const [_PlayersSectionTitle].
+  const _PlayersSectionTitle();
+
+  @override
+  Widget build(BuildContext context) {
+    const darkBlue = Color(0xFF23425F);
+    return Padding(
+      padding: const EdgeInsets.only(right: 16),
+      child: Text(
+        'قائمة اللاعبين',
+        style: const TextStyle(
+          color: darkBlue,
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+        ),
+        textAlign: TextAlign.right,
+      ),
+    );
+  }
+}
+
+/// List of player cards.
+class _PlayerList extends StatelessWidget {
+  /// Creates a const [_PlayerList].
+  const _PlayerList();
+
+  @override
+  Widget build(BuildContext context) {
+    final players = [
+      {'num': 3, 'name': 'فهد', 'shirt': 3, 'phone': '٠........٥'},
+      {'num': 10, 'name': 'عمر', 'shirt': 10, 'phone': '٠........٥'},
+      {'num': 8, 'name': 'سالم', 'shirt': 8, 'phone': '٠........٥'},
+    ];
+    return ListView.separated(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: players.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 16),
+      itemBuilder: (context, index) {
+        final p = players[index];
+        return _PlayerCard(
+          number: p['num'] as int,
+          name: p['name'] as String,
+          shirt: p['shirt'] as int,
+          phone: p['phone'] as String,
+        );
+      },
+    );
+  }
+}
+
+/// Card widget displaying basic player info.
+class _PlayerCard extends StatelessWidget {
+  /// Player number for badge.
+  final int number;
+
+  /// Player full name.
+  final String name;
+
+  /// Jersey number.
+  final int shirt;
+
+  /// Obfuscated phone number.
+  final String phone;
+
+  /// Creates a const [_PlayerCard].
+  const _PlayerCard({
+    required this.number,
+    required this.name,
+    required this.shirt,
+    required this.phone,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 20,
+                backgroundColor: Colors.grey.shade200,
+                child: Text(number.toString()),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 4),
+                    Text('رقم القميص: $shirt'),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        const Icon(Icons.phone, size: 14, color: Colors.grey),
+                        const SizedBox(width: 4),
+                        Text(phone),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          top: 0,
+          left: 0,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: Colors.green,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: const Text(
+              'نشط',
+              style: TextStyle(color: Colors.white, fontSize: 10),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

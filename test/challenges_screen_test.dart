@@ -186,7 +186,7 @@ void main() async {
     expect(find.text('Info'), findsWidgets);
     // Verify that elements from the info tab exist.
     expect(find.text('ريـمونتادا'), findsWidgets);
-    expect(find.byIcon(Icons.settings), findsOneWidget);
+    expect(find.byIcon(Icons.settings), findsNWidgets(2));
     expect(find.text('الأوسمة والإنجازات'), findsOneWidget);
     expect(find.text('الإحصائيات المفصلة'), findsOneWidget);
   });
