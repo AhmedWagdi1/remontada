@@ -184,5 +184,9 @@ void main() async {
     await tester.tap(find.widgetWithText(ElevatedButton, 'Manage Your Team'));
     await tester.pumpAndSettle();
     expect(find.text('Info'), findsWidgets);
+    // Verify that elements from the info tab exist.
+    expect(find.text('ريـمونتادا'), findsWidgets);
+    expect(find.byIcon(Icons.settings), findsOneWidget);
+    expect(find.text('الأوسمة والإنجازات'), findsOneWidget);
   });
 }
