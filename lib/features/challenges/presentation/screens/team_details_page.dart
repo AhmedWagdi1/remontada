@@ -44,7 +44,7 @@ class TeamDetailsPage extends StatelessWidget {
               ),
               const _MembersTab(),
               const _JoinRequestsTab(),
-              Center(child: Text(LocaleKeys.team_details_transfer.tr())),
+              const _TransferRequestsTab(),
               Center(child: Text(LocaleKeys.team_details_chat.tr())),
             ],
           ),
@@ -1015,6 +1015,184 @@ class _JoinRequestCard extends StatelessWidget {
               ),
             ],
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Tab displaying transfer requests with actions for pending ones.
+class _TransferRequestsTab extends StatelessWidget {
+  /// Creates a const [_TransferRequestsTab].
+  const _TransferRequestsTab();
+
+  @override
+  Widget build(BuildContext context) {
+    const darkBlue = Color(0xFF23425F);
+    final requests = [
+      {
+        'name': 'سالم عبدالله',
+        'toTeam': 'النجوم',
+        'reason': 'فرصة أفضل',
+        'date': '2024-05-05',
+        'status': 'pending',
+      },
+      {
+        'name': 'خالد محمد',
+        'toTeam': 'الهلال',
+        'reason': 'تحدي جديد',
+        'date': '2024-05-02',
+        'status': 'approved',
+      },
+    ];
+
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const _TopBar(),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'طلبات الانتقال',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: darkBlue,
+                  ),
+                ),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.lightBlue,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '${requests.length} طلب',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            for (var r in requests) ...[
+              _TransferRequestCard(
+                name: r['name'] as String,
+                toTeam: r['toTeam'] as String,
+                reason: r['reason'] as String,
+                date: r['date'] as String,
+                status: r['status'] as String,
+              ),
+              const SizedBox(height: 16),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Card widget displaying transfer request info and actions.
+class _TransferRequestCard extends StatelessWidget {
+  /// Player name submitting the transfer request.
+  final String name;
+
+  /// Destination team name.
+  final String toTeam;
+
+  /// Reason for requesting transfer.
+  final String reason;
+
+  /// Date of the request.
+  final String date;
+
+  /// Request status value; 'pending' or 'approved'.
+  final String status;
+
+  /// Creates a const [_TransferRequestCard].
+  const _TransferRequestCard({
+    required this.name,
+    required this.toTeam,
+    required this.reason,
+    required this.date,
+    required this.status,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isPending = status == 'pending';
+    final borderColor = isPending ? Colors.orange : Colors.green;
+    final iconColor = borderColor;
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        border: Border.all(color: borderColor),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                name,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Icon(Icons.directions_walk, color: iconColor),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text('إلى فريق: $toTeam'),
+          Text('السبب: $reason'),
+          Text('تاريخ الطلب: $date'),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: borderColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  isPending ? 'قيد المراجعة' : 'موافق عليه',
+                  style: TextStyle(color: borderColor),
+                ),
+              ),
+            ],
+          ),
+          if (isPending) ...[
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white),
+                    onPressed: () {},
+                    child: const Text('موافقة'),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.red,
+                        side: const BorderSide(color: Colors.red)),
+                    onPressed: () {},
+                    child: const Text('رفض'),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );
