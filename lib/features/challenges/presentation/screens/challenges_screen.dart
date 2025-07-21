@@ -7,6 +7,7 @@ import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/features/home/presentation/widgets/custom_dots.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import '../widgets/championship_card.dart';
+import 'create_team_page.dart';
 
 /// Placeholder screen shown for the upcoming Challenges feature.
 class ChallengesScreen extends StatefulWidget {
@@ -690,17 +691,26 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.group, color: darkBlue),
-                        const SizedBox(height: 4),
-                        CustomText(
-                          LocaleKeys.challenge_create_team.tr(),
-                          color: darkBlue,
-                          weight: FontWeight.bold,
-                        ),
-                      ],
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const CreateTeamPage()),
+                        );
+                      },
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.group, color: darkBlue),
+                          const SizedBox(height: 4),
+                          CustomText(
+                            LocaleKeys.challenge_create_team.tr(),
+                            color: darkBlue,
+                            weight: FontWeight.bold,
+                          ),
+                        ],
+                      ),
                     ),
 
                     CustomText(

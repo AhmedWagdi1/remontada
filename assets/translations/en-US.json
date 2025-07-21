@@ -190,5 +190,15 @@
   "elite_remontada_championship": "Elite Remontada Championship",
   "champions_league_remontada_championship": "Remontada Champions League",
   "rounds_count": "Rounds: {}",
-  "available_to_join": "Available to Join"
+  "available_to_join": "Available to Join",
+  "create_team_title": "Create New Team",
+  "team_add_image": "Add Image",
+  "team_info_section": "Team Information",
+  "team_name_label": "Team Name",
+  "team_name_hint": "Enter team name",
+  "team_description_label": "Team Description",
+  "team_description_hint": "Enter a short description",
+  "team_level_label": "Team Level",
+  "team_level_hint": "Will be determined later",
+  "team_level_note": "Note: Team level will be automatically determined based on match results and overall team performance"
 }

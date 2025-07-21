@@ -117,4 +117,18 @@ void main() {
     expect(containerDecoration.borderRadius, BorderRadius.circular(30));
     expect(containerDecoration.color, const Color(0xFFF2F2F2));
   });
+
+  testWidgets('tapping create team navigates to CreateTeamPage', (tester) async {
+    tester.binding.window.physicalSizeTestValue = const Size(1200, 800);
+    tester.binding.window.devicePixelRatioTestValue = 1.0;
+    addTearDown(() {
+      tester.binding.window.clearPhysicalSizeTestValue();
+      tester.binding.window.clearDevicePixelRatioTestValue();
+    });
+    await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.group));
+    await tester.pumpAndSettle();
+    expect(find.text('create_team_title'), findsOneWidget);
+  });
 }
