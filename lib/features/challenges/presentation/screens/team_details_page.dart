@@ -45,7 +45,8 @@ class TeamDetailsPage extends StatelessWidget {
               const _MembersTab(),
               const _JoinRequestsTab(),
               const _TransferRequestsTab(),
-              Center(child: Text(LocaleKeys.team_details_chat.tr())),
+              // Chat tab for messaging within the team.
+              const _ChatTab(),
             ],
           ),
           bottomNavigationBar: Container(
@@ -1066,8 +1067,10 @@ class _TransferRequestsTab extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.lightBlue,
                     borderRadius: BorderRadius.circular(20),
@@ -1140,10 +1143,7 @@ class _TransferRequestCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                name,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
+              Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
               Icon(Icons.directions_walk, color: iconColor),
             ],
           ),
@@ -1174,8 +1174,9 @@ class _TransferRequestCard extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        foregroundColor: Colors.white),
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white,
+                    ),
                     onPressed: () {},
                     child: const Text('موافقة'),
                   ),
@@ -1184,8 +1185,9 @@ class _TransferRequestCard extends StatelessWidget {
                 Expanded(
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.red,
-                        side: const BorderSide(color: Colors.red)),
+                      foregroundColor: Colors.red,
+                      side: const BorderSide(color: Colors.red),
+                    ),
                     onPressed: () {},
                     child: const Text('رفض'),
                   ),
@@ -1195,6 +1197,153 @@ class _TransferRequestCard extends StatelessWidget {
           ],
         ],
       ),
+    );
+  }
+}
+
+/// Chat tab displaying a simple team chat UI with a list of messages.
+class _ChatTab extends StatelessWidget {
+  /// Creates a const [_ChatTab].
+  const _ChatTab();
+
+  @override
+  Widget build(BuildContext context) {
+    const darkBlue = Color(0xFF23425F);
+    final messages = [
+      {
+        'sender': 'حسن',
+        'text': 'مرحبا شباب',
+        'time': '10:00',
+        'isSender': true,
+      },
+      {
+        'sender': 'محمود',
+        'text': 'أهلا بك',
+        'time': '10:05',
+        'isSender': false,
+      },
+    ];
+
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Column(
+        children: [
+          const _TopBar(),
+          Container(
+            color: const Color(0xFFF2F2F2),
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Row(
+                  children: [
+                    Icon(Icons.wifi, color: Colors.green, size: 16),
+                    SizedBox(width: 4),
+                    Text('متصل', style: TextStyle(color: Colors.green)),
+                  ],
+                ),
+                Text(
+                  'دردشة الفريق',
+                  style: TextStyle(
+                    color: darkBlue,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Icon(Icons.chat_bubble, color: darkBlue),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              reverse: true,
+              padding: const EdgeInsets.all(12),
+              itemCount: messages.length,
+              itemBuilder: (context, index) {
+                final msg = messages[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: _MessageBubble(
+                    sender: msg['sender'] as String,
+                    message: msg['text'] as String,
+                    time: msg['time'] as String,
+                    isSender: msg['isSender'] as bool,
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Single chat message bubble with timestamp and sender name.
+class _MessageBubble extends StatelessWidget {
+  /// Name of the message sender.
+  final String sender;
+
+  /// Text content of the message.
+  final String message;
+
+  /// Timestamp string displayed above the bubble.
+  final String time;
+
+  /// Whether the current user is the sender.
+  final bool isSender;
+
+  /// Creates a const [_MessageBubble].
+  const _MessageBubble({
+    required this.sender,
+    required this.message,
+    required this.time,
+    required this.isSender,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bubbleColor = isSender ? const Color(0xFFF2F2F2) : Colors.white;
+    final mainAxis = isSender ? MainAxisAlignment.end : MainAxisAlignment.start;
+    return Column(
+      crossAxisAlignment:
+          isSender ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      children: [
+        Text(time, style: const TextStyle(fontSize: 10, color: Colors.grey)),
+        const SizedBox(height: 2),
+        Text(sender, style: const TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 4),
+        Row(
+          mainAxisAlignment: mainAxis,
+          children: [
+            if (isSender) ...[
+              const Icon(Icons.person_outline),
+              const SizedBox(width: 4),
+            ],
+            Flexible(
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: bubbleColor,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    if (!isSender)
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                  ],
+                ),
+                child: Text(message),
+              ),
+            ),
+            if (!isSender) ...[
+              const SizedBox(width: 4),
+              const Icon(Icons.person_outline),
+            ],
+          ],
+        ),
+      ],
     );
   }
 }

@@ -90,4 +90,30 @@ void main() async {
     expect(find.text('سالم عبدالله'), findsOneWidget);
     expect(find.text('خالد محمد'), findsOneWidget);
   }, skip: true);
+
+  testWidgets('chat tab shows chat messages', (tester) async {
+    await tester.pumpWidget(
+      EasyLocalization(
+        supportedLocales: const [Locale('en', 'US')],
+        path: 'assets/translations',
+        fallbackLocale: const Locale('en', 'US'),
+        child: Builder(
+          builder: (context) => MaterialApp(
+            locale: context.locale,
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            home: const TeamDetailsPage(),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final controllerContext = tester.element(find.byType(DefaultTabController));
+    DefaultTabController.of(controllerContext).animateTo(4);
+    await tester.pumpAndSettle();
+
+    expect(find.text('دردشة الفريق'), findsOneWidget);
+    expect(find.text('متصل'), findsOneWidget);
+    expect(find.text('مرحبا شباب'), findsOneWidget);
+  }, skip: true);
 }
