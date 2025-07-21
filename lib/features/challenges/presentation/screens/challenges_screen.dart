@@ -6,6 +6,7 @@ import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/features/home/presentation/widgets/custom_dots.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
+import '../widgets/championship_card.dart';
 
 /// Placeholder screen shown for the upcoming Challenges feature.
 class ChallengesScreen extends StatefulWidget {
@@ -777,11 +778,15 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                         ],
                       ),
                     ),
-                    Center(
-                      child: Text(
-                        LocaleKeys.under_construction.tr(),
-                        style: const TextStyle(color: Colors.grey),
-                        textAlign: TextAlign.center,
+                    SingleChildScrollView(
+                      child: Column(
+                        children: const [
+                          SuperRemontadaChampionshipCard(),
+                          SizedBox(height: 12),
+                          EliteRemontadaChampionshipCard(),
+                          SizedBox(height: 12),
+                          RemontadaChampionsLeagueCard(),
+                        ],
                       ),
                     ),
                   ],

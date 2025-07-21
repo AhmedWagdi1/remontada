@@ -195,5 +195,10 @@
 "league_goals_for":"له",
 "league_goals_against":"عليه",
 "league_goal_diff":"الفرق",
-"league_points":"النقاط"
+"league_points":"النقاط",
+"super_remontada_championship":"بطولة سوبر ريمونتادا",
+"elite_remontada_championship":"بطولة نخبة ريمونتادا",
+"champions_league_remontada_championship":"بطولة دوري أبطال ريمونتادا",
+"rounds_count":"عدد الجولات: {}",
+"available_to_join":"متاح للانضمام"
 }

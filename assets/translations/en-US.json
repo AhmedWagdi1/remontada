@@ -174,7 +174,7 @@
   "how_challenges_step2_subtitle": "Tap the '+' icon to join an existing challenge against another team",
   "how_challenges_step3_title": "Track challenges",
   "how_challenges_step3_subtitle": "Tap any completed challenge to view details and follow the results",
-  "how_challenges_tip": "Tip: Make sure to create your team first before participating in challenges"
+  "how_challenges_tip": "Tip: Make sure to create your team first before participating in challenges",
   "league_table_title": "League Standings",
   "league_rank": "#",
   "league_team": "Team",
@@ -185,5 +185,10 @@
   "league_goals_for": "GF",
   "league_goals_against": "GA",
   "league_goal_diff": "GD",
-  "league_points": "Pts"
+  "league_points": "Pts",
+  "super_remontada_championship": "Super Remontada Championship",
+  "elite_remontada_championship": "Elite Remontada Championship",
+  "champions_league_remontada_championship": "Remontada Champions League",
+  "rounds_count": "Rounds: {}",
+  "available_to_join": "Available to Join"
 }
