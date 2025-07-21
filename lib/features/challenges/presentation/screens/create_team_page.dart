@@ -466,6 +466,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                 ),
                 const SizedBox(height: 12),
                 _buildPlayerCard(1),
+                _buildPlayerCard(2),
                 const SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
