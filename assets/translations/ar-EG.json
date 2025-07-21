@@ -211,5 +211,16 @@
 "team_description_hint":"أدخل وصف بسيط للفريق",
 "team_level_label":"مستوى الفريق",
 "team_level_hint":"سيتم تحديده لاحقًا",
-"team_level_note":"ملاحظة: سيتم تحديد مستوى الفريق تلقائيًا بناءً على نتائج المباريات والأداء العام للفريق"
+"team_level_note":"ملاحظة: سيتم تحديد مستوى الفريق تلقائيًا بناءً على نتائج المباريات والأداء العام للفريق",
+"coaching_staff_section":"الجهاز الفني",
+"coach_title":"المدرب",
+"coach_name_label":"اسم المدرب",
+"coach_name_hint":"أدخل اسم المدرب",
+"coach_phone_label":"رقم هاتف المدرب",
+"coach_phone_hint":"أدخل رقم الهاتف",
+"assistant_title":"المساعد",
+"assistant_name_label":"اسم المساعد",
+"assistant_name_hint":"أدخل اسم المساعد",
+"assistant_phone_label":"رقم هاتف المساعد",
+"assistant_phone_hint":"أدخل رقم الهاتف"
 }

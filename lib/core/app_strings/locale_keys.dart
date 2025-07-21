@@ -258,4 +258,15 @@ abstract class LocaleKeys {
   static const team_level_label = 'team_level_label';
   static const team_level_hint = 'team_level_hint';
   static const team_level_note = 'team_level_note';
+  static const coaching_staff_section = 'coaching_staff_section';
+  static const coach_title = 'coach_title';
+  static const coach_name_label = 'coach_name_label';
+  static const coach_name_hint = 'coach_name_hint';
+  static const coach_phone_label = 'coach_phone_label';
+  static const coach_phone_hint = 'coach_phone_hint';
+  static const assistant_title = 'assistant_title';
+  static const assistant_name_label = 'assistant_name_label';
+  static const assistant_name_hint = 'assistant_name_hint';
+  static const assistant_phone_label = 'assistant_phone_label';
+  static const assistant_phone_hint = 'assistant_phone_hint';
 }

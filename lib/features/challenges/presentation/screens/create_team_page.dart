@@ -167,6 +167,124 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                     color: Colors.black54,
                   ),
                 ),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    const Icon(Icons.groups_2, color: darkBlue),
+                    const SizedBox(width: 4),
+                    CustomText(
+                      LocaleKeys.coaching_staff_section.tr(),
+                      color: darkBlue,
+                      weight: FontWeight.bold,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 4,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(Icons.person, size: 18, color: darkBlue),
+                              const SizedBox(width: 4),
+                              CustomText(
+                                LocaleKeys.coach_title.tr(),
+                                color: darkBlue,
+                                weight: FontWeight.bold,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: LocaleKeys.coach_name_label.tr(),
+                              hintText: LocaleKeys.coach_name_hint.tr(),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: LocaleKeys.coach_phone_label.tr(),
+                              hintText: LocaleKeys.coach_phone_hint.tr(),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 4,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(Icons.person, size: 18, color: darkBlue),
+                              const SizedBox(width: 4),
+                              CustomText(
+                                LocaleKeys.assistant_title.tr(),
+                                color: darkBlue,
+                                weight: FontWeight.bold,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: LocaleKeys.assistant_name_label.tr(),
+                              hintText: LocaleKeys.assistant_name_hint.tr(),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: LocaleKeys.assistant_phone_label.tr(),
+                              hintText: LocaleKeys.assistant_phone_hint.tr(),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
