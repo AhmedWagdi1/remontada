@@ -44,6 +44,11 @@ void main() {
       find.widgetWithText(ElevatedButton, 'manage_your_team'),
       findsOneWidget,
     );
+    final buttonBox = tester.renderObject<RenderBox>(
+      find.widgetWithText(ElevatedButton, 'manage_your_team'),
+    );
+    expect(buttonBox.size.height, 36);
+    expect(buttonBox.size.width, greaterThanOrEqualTo(120));
     expect(find.text('ريـمونتادا'), findsOneWidget);
     expect(find.byIcon(Icons.groups), findsOneWidget);
   });
