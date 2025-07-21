@@ -297,7 +297,7 @@ class _DetailedStatsSection extends StatelessWidget {
         Directionality(
           textDirection: TextDirection.rtl,
           child: SizedBox(
-            height: 200,
+            height: 310,
             child: GridView.count(
               crossAxisCount: 2,
               physics: const NeverScrollableScrollPhysics(),
