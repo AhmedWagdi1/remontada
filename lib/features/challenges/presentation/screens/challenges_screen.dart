@@ -693,28 +693,29 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.more_horiz, color: darkBlue),
+                        const Icon(Icons.group, color: darkBlue),
                         const SizedBox(height: 4),
                         CustomText(
-                          LocaleKeys.challenge_more.tr(),
+                          LocaleKeys.challenge_create_team.tr(),
                           color: darkBlue,
                           weight: FontWeight.bold,
                         ),
                       ],
                     ),
+
                     CustomText(
                       LocaleKeys.challenge_updates.tr(),
                       color: darkBlue,
                       weight: FontWeight.bold,
                       fontSize: 20,
                     ),
-                    Column(
+                                     Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.group, color: darkBlue),
+                        const Icon(Icons.more_horiz, color: darkBlue),
                         const SizedBox(height: 4),
                         CustomText(
-                          LocaleKeys.challenge_create_team.tr(),
+                          LocaleKeys.challenge_more.tr(),
                           color: darkBlue,
                           weight: FontWeight.bold,
                         ),
