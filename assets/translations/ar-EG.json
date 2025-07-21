@@ -202,6 +202,7 @@
 "rounds_count":"عدد الجولات: {}",
 "available_to_join":"متاح للانضمام",
 "create_team_title":"إنشاء فريق جديد",
+"team_logo_section":"صورة وشعار الفريق",
 "team_add_image":"إضافة صورة",
 "team_info_section":"معلومات الفريق",
 "team_name_label":"اسم الفريق",

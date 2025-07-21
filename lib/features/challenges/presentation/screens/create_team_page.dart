@@ -28,6 +28,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
   }
 
   @override
+  /// Builds the full create team page UI.
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
     return Scaffold(
@@ -61,39 +62,46 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
           padding: const EdgeInsets.all(16),
           child: Directionality(
             textDirection: TextDirection.rtl,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                GestureDetector(
-                  onTap: _pickLogo,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 100,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: darkBlue),
-                        ),
-                        child: _logo != null
-                            ? ClipOval(
-                                child: Image.file(
-                                  _logo!,
-                                  fit: BoxFit.cover,
-                                ),
-                              )
-                            : const Icon(Icons.camera_alt, color: darkBlue),
-                      ),
-                      const SizedBox(height: 8),
-                      CustomText(
-                        LocaleKeys.team_add_image.tr(),
-                        color: darkBlue,
-                      ),
-                    ],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  CustomText(
+                    LocaleKeys.team_logo_section.tr(),
+                    color: darkBlue,
+                    weight: FontWeight.bold,
+                    align: TextAlign.right,
                   ),
-                ),
-                const SizedBox(height: 24),
+                  const SizedBox(height: 8),
+                  GestureDetector(
+                    onTap: _pickLogo,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: darkBlue),
+                          ),
+                          child: _logo != null
+                              ? ClipOval(
+                                  child: Image.file(
+                                    _logo!,
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              : const Icon(Icons.camera_alt, color: darkBlue),
+                        ),
+                        const SizedBox(height: 8),
+                        CustomText(
+                          LocaleKeys.team_add_image.tr(),
+                          color: darkBlue,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
                 CustomText(
                   LocaleKeys.team_info_section.tr(),
                   color: darkBlue,
@@ -122,14 +130,27 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                   ),
                 ),
                 const SizedBox(height: 16),
+                Row(
+                  children: [
+                    const Icon(Icons.info_outline, color: darkBlue, size: 18),
+                    const SizedBox(width: 4),
+                    CustomText(
+                      LocaleKeys.team_level_label.tr(),
+                      color: darkBlue,
+                      weight: FontWeight.bold,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
                 TextFormField(
                   enabled: false,
                   decoration: InputDecoration(
-                    labelText: LocaleKeys.team_level_label.tr(),
                     hintText: LocaleKeys.team_level_hint.tr(),
-                    suffixIcon: const Icon(Icons.info_outline),
+                    filled: true,
+                    fillColor: Colors.grey.shade200,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
                     ),
                   ),
                 ),
