@@ -248,6 +248,7 @@ abstract class LocaleKeys {
   static const league_goal_diff = 'league_goal_diff';
   static const league_points = 'league_points';
   static const create_team_title = 'create_team_title';
+  static const team_logo_section = 'team_logo_section';
   static const team_add_image = 'team_add_image';
   static const team_info_section = 'team_info_section';
   static const team_name_label = 'team_name_label';
