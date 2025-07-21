@@ -677,6 +677,9 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   }
 
   /// Builds the manage team row consisting of an icon, team name and action button.
+  ///
+  /// The button has an explicit minimum width to avoid layout issues when the
+  /// row is placed inside scrollable containers with unconstrained widths.
   Widget _manageTeamRow() {
     const darkBlue = Color(0xFF23425F);
     return Directionality(
@@ -709,6 +712,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: darkBlue,
+                  minimumSize: const Size(120, 36),
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
