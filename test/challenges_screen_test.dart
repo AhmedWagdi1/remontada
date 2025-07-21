@@ -188,5 +188,6 @@ void main() async {
     expect(find.text('ريـمونتادا'), findsWidgets);
     expect(find.byIcon(Icons.settings), findsOneWidget);
     expect(find.text('الأوسمة والإنجازات'), findsOneWidget);
+    expect(find.text('الإحصائيات المفصلة'), findsOneWidget);
   });
 }

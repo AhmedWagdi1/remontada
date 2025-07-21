@@ -32,6 +32,8 @@ class TeamDetailsPage extends StatelessWidget {
                     _TeamSummaryCard(),
                     SizedBox(height: 16),
                     _AchievementsSection(),
+                    SizedBox(height: 16),
+                    _DetailedStatsSection(),
                   ],
                 ),
               ),
@@ -259,6 +261,146 @@ class _Badge extends StatelessWidget {
             style: const TextStyle(color: Colors.white),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Section showing detailed statistics in a 2x2 grid.
+class _DetailedStatsSection extends StatelessWidget {
+  /// Creates a const [_DetailedStatsSection].
+  const _DetailedStatsSection();
+
+  @override
+  Widget build(BuildContext context) {
+    const darkBlue = Color(0xFF23425F);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: const [
+            Text(
+              'الإحصائيات المفصلة',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: darkBlue,
+              ),
+            ),
+            SizedBox(width: 8),
+            Icon(Icons.insert_chart, color: darkBlue),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Directionality(
+          textDirection: TextDirection.rtl,
+          child: SizedBox(
+            height: 200,
+            child: GridView.count(
+              crossAxisCount: 2,
+              physics: const NeverScrollableScrollPhysics(),
+              childAspectRatio: 1.3,
+              children: const [
+                _StatTile(
+                  icon: Icons.emoji_events,
+                  value: '12',
+                  label: 'الانتصارات',
+                  backgroundColor: Color(0xFFE1F3E2),
+                  textColor: Colors.green,
+                ),
+                _StatTile(
+                  icon: Icons.sports_soccer,
+                  value: '15',
+                  label: 'المباريات',
+                  backgroundColor: Color(0xFFE1F0FB),
+                  textColor: Colors.blue,
+                ),
+                _StatTile(
+                  icon: Icons.trending_down,
+                  value: '1',
+                  label: 'الهزائم',
+                  backgroundColor: Color(0xFFFDEAEA),
+                  textColor: Colors.red,
+                ),
+                _StatTile(
+                  icon: Icons.swap_horiz,
+                  value: '2',
+                  label: 'التعادل',
+                  backgroundColor: Color(0xFFFFF4D9),
+                  textColor: Colors.orange,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Tile used within [_DetailedStatsSection] to show a single stat value.
+class _StatTile extends StatelessWidget {
+  /// Icon to display inside the tile.
+  final IconData icon;
+
+  /// Numerical value for the stat.
+  final String value;
+
+  /// Label describing the stat.
+  final String label;
+
+  /// Background color of the tile.
+  final Color backgroundColor;
+
+  /// Text and icon color used inside the tile.
+  final Color textColor;
+
+  /// Creates a const [_StatTile].
+  const _StatTile({
+    required this.icon,
+    required this.value,
+    required this.label,
+    required this.backgroundColor,
+    required this.textColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(4),
+      child: Container(
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: textColor),
+            const SizedBox(height: 4),
+            Text(
+              value,
+              style: TextStyle(
+                color: textColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: TextStyle(color: textColor),
+            ),
+          ],
+        ),
       ),
     );
   }
