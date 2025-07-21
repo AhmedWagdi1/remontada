@@ -40,7 +40,10 @@ void main() {
     });
     await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
     await tester.pumpAndSettle();
-    expect(find.text('manage_your_team'), findsOneWidget);
+    expect(
+      find.widgetWithText(ElevatedButton, 'manage_your_team'),
+      findsOneWidget,
+    );
     expect(find.text('ريـمونتادا'), findsOneWidget);
     expect(find.byIcon(Icons.groups), findsOneWidget);
   });
