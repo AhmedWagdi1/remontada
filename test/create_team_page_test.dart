@@ -10,5 +10,6 @@ void main() {
     expect(find.byIcon(Icons.arrow_back_ios), findsOneWidget);
     expect(find.text('team_logo_section'), findsOneWidget);
     expect(find.text('team_info_section'), findsOneWidget);
+    expect(find.text('coaching_staff_section'), findsOneWidget);
   });
 }

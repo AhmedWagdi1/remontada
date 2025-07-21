@@ -201,5 +201,16 @@
   "team_description_hint": "Enter a short description",
   "team_level_label": "Team Level",
   "team_level_hint": "Will be determined later",
-  "team_level_note": "Note: Team level will be automatically determined based on match results and overall team performance"
+  "team_level_note": "Note: Team level will be automatically determined based on match results and overall team performance",
+  "coaching_staff_section": "Coaching Staff",
+  "coach_title": "Coach",
+  "coach_name_label": "Coach Name",
+  "coach_name_hint": "Enter coach name",
+  "coach_phone_label": "Coach Phone",
+  "coach_phone_hint": "Enter phone number",
+  "assistant_title": "Assistant",
+  "assistant_name_label": "Assistant Name",
+  "assistant_name_hint": "Enter assistant name",
+  "assistant_phone_label": "Assistant Phone",
+  "assistant_phone_hint": "Enter phone number"
 }
