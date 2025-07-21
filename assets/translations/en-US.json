@@ -234,5 +234,10 @@
   "social_telegram": "Telegram",
   "social_instagram": "Instagram",
   "social_twitter": "Twitter",
-  "create_team_button": "Create Team"
+  "create_team_button": "Create Team",
+  "team_details_info": "Info",
+  "team_details_members": "Members",
+  "team_details_join": "Join",
+  "team_details_transfer": "Transfer",
+  "team_details_chat": "Chat"
 }
