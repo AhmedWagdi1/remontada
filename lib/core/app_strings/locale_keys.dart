@@ -269,4 +269,15 @@ abstract class LocaleKeys {
   static const assistant_name_hint = 'assistant_name_hint';
   static const assistant_phone_label = 'assistant_phone_label';
   static const assistant_phone_hint = 'assistant_phone_hint';
+  static const players_list_section = 'players_list_section';
+  static const players_list_badge = 'players_list_badge';
+  static const players_mandatory_note = 'players_mandatory_note';
+  static const player_card_title = 'player_card_title';
+  static const mandatory_tag = 'mandatory_tag';
+  static const player_name_label = 'player_name_label';
+  static const player_name_hint = 'player_name_hint';
+  static const player_number_label = 'player_number_label';
+  static const player_number_hint = 'player_number_hint';
+  static const player_phone_label = 'player_phone_label';
+  static const player_phone_hint = 'player_phone_hint';
 }

@@ -222,5 +222,16 @@
 "assistant_name_label":"اسم المساعد",
 "assistant_name_hint":"أدخل اسم المساعد",
 "assistant_phone_label":"رقم هاتف المساعد",
-"assistant_phone_hint":"أدخل رقم الهاتف"
+"assistant_phone_hint":"أدخل رقم الهاتف",
+"players_list_section":"قائمة اللاعبين",
+"players_list_badge":"10 لاعب",
+"players_mandatory_note":"أول 10 لاعبين إجباريين لإنشاء الفريق",
+"player_card_title":"اللاعب",
+"mandatory_tag":"إجباري",
+"player_name_label":"اسم اللاعب",
+"player_name_hint":"أدخل اسم اللاعب",
+"player_number_label":"رقم القميص",
+"player_number_hint":"رقم",
+"player_phone_label":"رقم الهاتف",
+"player_phone_hint":"أدخل رقم الهاتف"
 }

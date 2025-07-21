@@ -212,5 +212,16 @@
   "assistant_name_label": "Assistant Name",
   "assistant_name_hint": "Enter assistant name",
   "assistant_phone_label": "Assistant Phone",
-  "assistant_phone_hint": "Enter phone number"
+  "assistant_phone_hint": "Enter phone number",
+  "players_list_section": "Player List",
+  "players_list_badge": "10 players",
+  "players_mandatory_note": "First 10 players are required to create the team",
+  "player_card_title": "Player",
+  "mandatory_tag": "Mandatory",
+  "player_name_label": "Player Name",
+  "player_name_hint": "Enter player name",
+  "player_number_label": "Jersey Number",
+  "player_number_hint": "Number",
+  "player_phone_label": "Phone Number",
+  "player_phone_hint": "Enter phone number"
 }
