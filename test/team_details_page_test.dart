@@ -40,4 +40,29 @@ void main() async {
     expect(find.text('الجهاز الفني'), findsOneWidget);
     expect(find.text('إعدادات الدعوة'), findsOneWidget);
   });
+
+  testWidgets('join tab shows request cards', (tester) async {
+    await tester.pumpWidget(
+      EasyLocalization(
+        supportedLocales: const [Locale('en', 'US')],
+        path: 'assets/translations',
+        fallbackLocale: const Locale('en', 'US'),
+        child: Builder(
+          builder: (context) => MaterialApp(
+            locale: context.locale,
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            home: const TeamDetailsPage(),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Join'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('طلبات الانضمام'), findsOneWidget);
+    expect(find.text('أحمد محمد'), findsOneWidget);
+    expect(find.text('محمد علي'), findsOneWidget);
+  }, skip: true);
 }
