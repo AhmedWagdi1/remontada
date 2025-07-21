@@ -729,19 +729,23 @@ class _ChallengesScreenState extends State<ChallengesScreen>
               Directionality(
                 textDirection: TextDirection.rtl,
                 child: Container(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                    color: Color(0xFFF2F2F2),
-                    borderRadius: BorderRadius.circular(15),
+                    color: const Color(0xFFF2F2F2),
+                    borderRadius: BorderRadius.circular(30),
                   ),
                   child: TabBar(
                     controller: _tabController,
+                    isScrollable: false,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    indicatorPadding: const EdgeInsets.all(2),
                     indicator: BoxDecoration(
                       color: darkBlue,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(30),
                     ),
                     labelColor: Colors.white,
                     unselectedLabelColor: Colors.grey,
+                    labelStyle: const TextStyle(fontWeight: FontWeight.bold),
                     tabs: [
                       Tab(text: LocaleKeys.challenges_nav.tr()),
                       Tab(text: LocaleKeys.league_schedule.tr()),

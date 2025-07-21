@@ -93,4 +93,28 @@ void main() {
     expect(dataTable.horizontalMargin, lessThan(12));
     expect(dataTable.dataRowHeight, 32);
   });
+
+  testWidgets('tab bar has segmented control style', (tester) async {
+    tester.binding.window.physicalSizeTestValue = const Size(1200, 800);
+    tester.binding.window.devicePixelRatioTestValue = 1.0;
+    addTearDown(() {
+      tester.binding.window.clearPhysicalSizeTestValue();
+      tester.binding.window.clearDevicePixelRatioTestValue();
+    });
+    await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
+    await tester.pumpAndSettle();
+
+    final tabBar = tester.widget<TabBar>(find.byType(TabBar));
+    expect(tabBar.isScrollable, isFalse);
+    final indicator = tabBar.indicator as BoxDecoration;
+    expect(indicator.color, const Color(0xFF23425F));
+    expect(indicator.borderRadius, BorderRadius.circular(30));
+
+    final containerFinder =
+        find.ancestor(of: find.byType(TabBar), matching: find.byType(Container)).first;
+    final containerWidget = tester.widget<Container>(containerFinder);
+    final containerDecoration = containerWidget.decoration as BoxDecoration;
+    expect(containerDecoration.borderRadius, BorderRadius.circular(30));
+    expect(containerDecoration.color, const Color(0xFFF2F2F2));
+  });
 }
