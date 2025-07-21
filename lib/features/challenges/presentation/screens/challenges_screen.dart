@@ -676,32 +676,21 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     );
   }
 
-  /// Displays a row with a manage team button, team name and a groups icon.
+  /// Builds the manage team row consisting of an icon, team name and action button.
   Widget _manageTeamRow() {
     const darkBlue = Color(0xFF23425F);
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        color: const Color(0xFFF2F2F2),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              height: 36,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                color: darkBlue,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Center(
-                child: Text(
-                  LocaleKeys.manage_your_team.tr(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+            CircleAvatar(
+              backgroundColor: darkBlue,
+              child: const Icon(Icons.groups, color: Colors.white),
             ),
             Expanded(
               child: Center(
@@ -714,9 +703,25 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                 ),
               ),
             ),
-            CircleAvatar(
-              backgroundColor: darkBlue,
-              child: const Icon(Icons.groups, color: Colors.white),
+            SizedBox(
+              height: 36,
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: darkBlue,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  LocaleKeys.manage_your_team.tr(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
