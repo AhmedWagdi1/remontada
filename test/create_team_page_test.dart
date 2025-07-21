@@ -11,5 +11,6 @@ void main() {
     expect(find.text('team_logo_section'), findsOneWidget);
     expect(find.text('team_info_section'), findsOneWidget);
     expect(find.text('coaching_staff_section'), findsOneWidget);
+    expect(find.text('players_list_section'), findsOneWidget);
   });
 }

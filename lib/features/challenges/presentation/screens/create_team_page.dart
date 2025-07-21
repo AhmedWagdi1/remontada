@@ -27,7 +27,101 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
     }
   }
 
+  /// Builds a single player card with form fields.
+  Widget _buildPlayerCard(int index) {
+    const darkBlue = Color(0xFF23425F);
+    return Stack(
+      children: [
+        Container(
+          margin: const EdgeInsets.only(top: 12),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  CustomText(
+                    '${LocaleKeys.player_card_title.tr()} $index',
+                    color: darkBlue,
+                    weight: FontWeight.bold,
+                  ),
+                  const SizedBox(width: 8),
+                  CircleAvatar(
+                    radius: 12,
+                    backgroundColor: Colors.grey.shade200,
+                    child: CustomText('$index', fontSize: 12, color: darkBlue),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: LocaleKeys.player_name_label.tr(),
+                  hintText: LocaleKeys.player_name_hint.tr(),
+                  prefixIcon: const Icon(Icons.person),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: LocaleKeys.player_number_label.tr(),
+                  hintText: LocaleKeys.player_number_hint.tr(),
+                  prefixIcon: const Icon(Icons.numbers),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: LocaleKeys.player_phone_label.tr(),
+                  hintText: LocaleKeys.player_phone_hint.tr(),
+                  prefixIcon: const Icon(Icons.phone),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          top: 0,
+          left: 0,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: CustomText(
+              LocaleKeys.mandatory_tag.tr(),
+              color: Colors.white,
+              fontSize: 10,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
+
   /// Builds the full create team page UI.
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
@@ -62,46 +156,43 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
           padding: const EdgeInsets.all(16),
           child: Directionality(
             textDirection: TextDirection.rtl,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  CustomText(
-                    LocaleKeys.team_logo_section.tr(),
-                    color: darkBlue,
-                    weight: FontWeight.bold,
-                    align: TextAlign.right,
-                  ),
-                  const SizedBox(height: 8),
-                  GestureDetector(
-                    onTap: _pickLogo,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: darkBlue),
-                          ),
-                          child: _logo != null
-                              ? ClipOval(
-                                  child: Image.file(
-                                    _logo!,
-                                    fit: BoxFit.cover,
-                                  ),
-                                )
-                              : const Icon(Icons.camera_alt, color: darkBlue),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                CustomText(
+                  LocaleKeys.team_logo_section.tr(),
+                  color: darkBlue,
+                  weight: FontWeight.bold,
+                  align: TextAlign.right,
+                ),
+                const SizedBox(height: 8),
+                GestureDetector(
+                  onTap: _pickLogo,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: darkBlue),
                         ),
-                        const SizedBox(height: 8),
-                        CustomText(
-                          LocaleKeys.team_add_image.tr(),
-                          color: darkBlue,
-                        ),
-                      ],
-                    ),
+                        child: _logo != null
+                            ? ClipOval(
+                                child: Image.file(_logo!, fit: BoxFit.cover),
+                              )
+                            : const Icon(Icons.camera_alt, color: darkBlue),
+                      ),
+                      const SizedBox(height: 8),
+                      CustomText(
+                        LocaleKeys.team_add_image.tr(),
+                        color: darkBlue,
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 24),
+                ),
+                const SizedBox(height: 24),
                 CustomText(
                   LocaleKeys.team_info_section.tr(),
                   color: darkBlue,
@@ -200,7 +291,11 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                         children: [
                           Row(
                             children: [
-                              const Icon(Icons.person, size: 18, color: darkBlue),
+                              const Icon(
+                                Icons.person,
+                                size: 18,
+                                color: darkBlue,
+                              ),
                               const SizedBox(width: 4),
                               CustomText(
                                 LocaleKeys.coach_title.tr(),
@@ -251,7 +346,11 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                         children: [
                           Row(
                             children: [
-                              const Icon(Icons.person, size: 18, color: darkBlue),
+                              const Icon(
+                                Icons.person,
+                                size: 18,
+                                color: darkBlue,
+                              ),
                               const SizedBox(width: 4),
                               CustomText(
                                 LocaleKeys.assistant_title.tr(),
@@ -285,6 +384,55 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    const Icon(Icons.groups, color: darkBlue),
+                    const SizedBox(width: 4),
+                    CustomText(
+                      LocaleKeys.players_list_section.tr(),
+                      color: darkBlue,
+                      weight: FontWeight.bold,
+                    ),
+                    const Spacer(),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: CustomText(
+                        LocaleKeys.players_list_badge.tr(),
+                        color: darkBlue,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.shade50,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: CustomText(
+                          LocaleKeys.players_mandatory_note.tr(),
+                          color: darkBlue,
+                        ),
+                      ),
+                      const Icon(Icons.info_outline, color: darkBlue, size: 18),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _buildPlayerCard(1),
               ],
             ),
           ),
@@ -293,4 +441,3 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
     );
   }
 }
-
