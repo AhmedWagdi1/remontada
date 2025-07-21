@@ -35,6 +35,12 @@ class TeamDetailsPage extends StatelessWidget {
                     _AchievementsSection(),
                     SizedBox(height: 16),
                     _DetailedStatsSection(),
+                    SizedBox(height: 16),
+                    _HonorsAchievementsSection(),
+                    SizedBox(height: 16),
+                    _TechnicalStaffSummary(),
+                    SizedBox(height: 16),
+                    _InviteSettingsSection(),
                   ],
                 ),
               ),
@@ -399,6 +405,184 @@ class _StatTile extends StatelessWidget {
             Text(
               label,
               style: TextStyle(color: textColor),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Section summarizing honors and achievements for the team.
+class _HonorsAchievementsSection extends StatelessWidget {
+  /// Creates a const [_HonorsAchievementsSection].
+  const _HonorsAchievementsSection();
+
+  @override
+  Widget build(BuildContext context) {
+    const headerColor = Colors.green;
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.greenAccent.shade100,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            Row(
+              children: [
+                Icon(Icons.star, color: headerColor),
+                SizedBox(width: 8),
+                Text(
+                  'التكريم والإنجازات',
+                  style: TextStyle(
+                    color: headerColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 8),
+            _BulletText('أفضل فريق في الدوري المحلي (2024)'),
+            _BulletText('فريق اللعب النظيف (3 مرات)'),
+            _BulletText('أفضل هجوم في البطولة'),
+            _BulletText('جائزة الروح الرياضية'),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Card summarizing the technical staff information.
+class _TechnicalStaffSummary extends StatelessWidget {
+  /// Creates a const [_TechnicalStaffSummary].
+  const _TechnicalStaffSummary();
+
+  @override
+  Widget build(BuildContext context) {
+    const headerColor = Colors.blue;
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Row(
+                children: [
+                  Icon(Icons.settings, color: headerColor),
+                  SizedBox(width: 8),
+                  Text(
+                    'الجهاز الفني',
+                    style: TextStyle(
+                      color: headerColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              _LabeledText(label: 'المدرب:', value: 'غاري'),
+              _LabeledText(label: 'هاتف المدرب:', value: '0........5'),
+              _LabeledText(label: 'المساعد:', value: 'عبدالرحمن'),
+              _LabeledText(label: 'هاتف المساعد:', value: '0........5'),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Card describing invite settings for the team.
+class _InviteSettingsSection extends StatelessWidget {
+  /// Creates a const [_InviteSettingsSection].
+  const _InviteSettingsSection();
+
+  @override
+  Widget build(BuildContext context) {
+    const headerColor = Colors.blue;
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Row(
+                children: [
+                  Icon(Icons.share, color: headerColor),
+                  SizedBox(width: 8),
+                  Text(
+                    'إعدادات الدعوة',
+                    style: TextStyle(
+                      color: headerColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              _LabeledText(label: 'الدعوة الاجتماعية:', value: 'مفعلة'),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Helper widget to display a bullet point text line.
+class _BulletText extends StatelessWidget {
+  /// Text to display after the bullet.
+  final String text;
+
+  /// Creates a const [_BulletText].
+  const _BulletText(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Text(
+        '• $text',
+        style: const TextStyle(fontSize: 12, color: Colors.green),
+      ),
+    );
+  }
+}
+
+/// Helper widget to display a bold label followed by a value.
+class _LabeledText extends StatelessWidget {
+  /// Label text shown in bold.
+  final String label;
+
+  /// Value text shown in normal weight.
+  final String value;
+
+  /// Creates a const [_LabeledText].
+  const _LabeledText({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Text.rich(
+        TextSpan(
+          text: label + ' ',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+          children: [
+            TextSpan(
+              text: value,
+              style: const TextStyle(fontWeight: FontWeight.normal),
             ),
           ],
         ),
