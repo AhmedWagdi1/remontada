@@ -16,9 +16,7 @@ class TeamDetailsPage extends StatelessWidget {
       child: Directionality(
         textDirection: TextDirection.rtl,
         child: Scaffold(
-          appBar: AppBar(
-            title: Text(LocaleKeys.manage_your_team.tr()),
-          ),
+          appBar: AppBar(title: Text(LocaleKeys.manage_your_team.tr())),
           body: TabBarView(
             physics: const NeverScrollableScrollPhysics(),
             children: [
@@ -45,7 +43,7 @@ class TeamDetailsPage extends StatelessWidget {
                 ),
               ),
               const _MembersTab(),
-              Center(child: Text(LocaleKeys.team_details_join.tr())),
+              const _JoinRequestsTab(),
               Center(child: Text(LocaleKeys.team_details_transfer.tr())),
               Center(child: Text(LocaleKeys.team_details_chat.tr())),
             ],
@@ -60,11 +58,26 @@ class TeamDetailsPage extends StatelessWidget {
               unselectedLabelColor: Colors.grey,
               indicatorWeight: 3,
               tabs: [
-                Tab(icon: const Icon(Icons.info), text: LocaleKeys.team_details_info.tr()),
-                Tab(icon: const Icon(Icons.groups), text: LocaleKeys.team_details_members.tr()),
-                Tab(icon: const Icon(Icons.person_add), text: LocaleKeys.team_details_join.tr()),
-                Tab(icon: const Icon(Icons.transfer_within_a_station), text: LocaleKeys.team_details_transfer.tr()),
-                Tab(icon: const Icon(Icons.chat), text: LocaleKeys.team_details_chat.tr()),
+                Tab(
+                  icon: const Icon(Icons.info),
+                  text: LocaleKeys.team_details_info.tr(),
+                ),
+                Tab(
+                  icon: const Icon(Icons.groups),
+                  text: LocaleKeys.team_details_members.tr(),
+                ),
+                Tab(
+                  icon: const Icon(Icons.person_add),
+                  text: LocaleKeys.team_details_join.tr(),
+                ),
+                Tab(
+                  icon: const Icon(Icons.transfer_within_a_station),
+                  text: LocaleKeys.team_details_transfer.tr(),
+                ),
+                Tab(
+                  icon: const Icon(Icons.chat),
+                  text: LocaleKeys.team_details_chat.tr(),
+                ),
               ],
             ),
           ),
@@ -123,10 +136,7 @@ class _TeamSummaryCard extends StatelessWidget {
           const SizedBox(height: 8),
           const Text(
             'ريـمونتادا',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
           const Text(
@@ -171,10 +181,7 @@ class _TeamStatItem extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        Text(
-          label,
-          style: const TextStyle(color: Colors.white),
-        ),
+        Text(label, style: const TextStyle(color: Colors.white)),
       ],
     );
   }
@@ -211,11 +218,36 @@ class _AchievementsSection extends StatelessWidget {
           spacing: 8,
           runSpacing: 8,
           children: const [
-            _Badge(label: 'ذهبي', color: Colors.amber, count: '5x', icon: Icons.emoji_events),
-            _Badge(label: 'فضي', color: Colors.grey, count: '3x', icon: Icons.emoji_events),
-            _Badge(label: 'برونزي', color: Colors.brown, count: '2x', icon: Icons.emoji_events),
-            _Badge(label: 'أسطوري', color: Colors.deepPurple, count: '1x', icon: Icons.emoji_events),
-            _Badge(label: 'بلاتيني', color: Colors.blueGrey, count: '1x', icon: Icons.emoji_events),
+            _Badge(
+              label: 'ذهبي',
+              color: Colors.amber,
+              count: '5x',
+              icon: Icons.emoji_events,
+            ),
+            _Badge(
+              label: 'فضي',
+              color: Colors.grey,
+              count: '3x',
+              icon: Icons.emoji_events,
+            ),
+            _Badge(
+              label: 'برونزي',
+              color: Colors.brown,
+              count: '2x',
+              icon: Icons.emoji_events,
+            ),
+            _Badge(
+              label: 'أسطوري',
+              color: Colors.deepPurple,
+              count: '1x',
+              icon: Icons.emoji_events,
+            ),
+            _Badge(
+              label: 'بلاتيني',
+              color: Colors.blueGrey,
+              count: '1x',
+              icon: Icons.emoji_events,
+            ),
           ],
         ),
       ],
@@ -258,15 +290,9 @@ class _Badge extends StatelessWidget {
         children: [
           Icon(icon, size: 16, color: Colors.white),
           const SizedBox(width: 4),
-          Text(
-            label,
-            style: const TextStyle(color: Colors.white),
-          ),
+          Text(label, style: const TextStyle(color: Colors.white)),
           const SizedBox(width: 4),
-          Text(
-            count,
-            style: const TextStyle(color: Colors.white),
-          ),
+          Text(count, style: const TextStyle(color: Colors.white)),
         ],
       ),
     );
@@ -402,10 +428,7 @@ class _StatTile extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 2),
-            Text(
-              label,
-              style: TextStyle(color: textColor),
-            ),
+            Text(label, style: TextStyle(color: textColor)),
           ],
         ),
       ),
@@ -816,6 +839,183 @@ class _LabeledText extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Tab displaying pending join requests for the team.
+class _JoinRequestsTab extends StatelessWidget {
+  /// Creates a const [_JoinRequestsTab].
+  const _JoinRequestsTab();
+
+  @override
+  Widget build(BuildContext context) {
+    const darkBlue = Color(0xFF23425F);
+    final requests = [
+      {
+        'name': 'أحمد محمد',
+        'position': 'مهاجم',
+        'age': 25,
+        'date': '2024-05-01',
+        'note': 'أريد الانضمام لفريقكم المميز',
+      },
+      {
+        'name': 'محمد علي',
+        'position': 'حارس',
+        'age': 22,
+        'date': '2024-05-03',
+        'note': 'متحمس للعب معكم',
+      },
+    ];
+
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const _TopBar(),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'طلبات الانضمام',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: darkBlue,
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.orange,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '${requests.length} طلب',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            for (var r in requests) ...[
+              _JoinRequestCard(
+                name: r['name'] as String,
+                position: r['position'] as String,
+                age: r['age'] as int,
+                date: r['date'] as String,
+                note: r['note'] as String,
+              ),
+              const SizedBox(height: 12),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Card displaying the details of a join request with action buttons.
+class _JoinRequestCard extends StatelessWidget {
+  /// Applicant name.
+  final String name;
+
+  /// Applicant position on the field.
+  final String position;
+
+  /// Applicant age in years.
+  final int age;
+
+  /// Date of the request.
+  final String date;
+
+  /// Additional note from the applicant.
+  final String note;
+
+  /// Creates a const [_JoinRequestCard].
+  const _JoinRequestCard({
+    required this.name,
+    required this.position,
+    required this.age,
+    required this.date,
+    required this.note,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                date,
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+              CircleAvatar(
+                backgroundColor: Colors.yellow.shade700,
+                child: const Icon(Icons.person, color: Colors.white),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 4),
+          Text(
+            '$position - $age سنة',
+            style: const TextStyle(color: Colors.grey),
+          ),
+          const SizedBox(height: 8),
+          Text(note),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                  ),
+                  onPressed: () {},
+                  child: const Text('قبول'),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.red,
+                    side: const BorderSide(color: Colors.red),
+                  ),
+                  onPressed: () {},
+                  child: const Text('رفض'),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
