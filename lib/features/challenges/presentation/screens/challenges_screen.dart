@@ -8,6 +8,7 @@ import 'package:remontada/features/home/presentation/widgets/custom_dots.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import '../widgets/championship_card.dart';
 import 'create_team_page.dart';
+import 'team_details_page.dart';
 
 /// Placeholder screen shown for the upcoming Challenges feature.
 class ChallengesScreen extends StatefulWidget {
@@ -709,7 +710,14 @@ class _ChallengesScreenState extends State<ChallengesScreen>
             SizedBox(
               height: 36,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const TeamDetailsPage(),
+                    ),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: darkBlue,
                   minimumSize: const Size(120, 36),

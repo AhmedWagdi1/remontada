@@ -153,4 +153,18 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('create_team_title'), findsOneWidget);
   });
+
+  testWidgets('tapping manage team navigates to TeamDetailsPage', (tester) async {
+    tester.binding.window.physicalSizeTestValue = const Size(1200, 800);
+    tester.binding.window.devicePixelRatioTestValue = 1.0;
+    addTearDown(() {
+      tester.binding.window.clearPhysicalSizeTestValue();
+      tester.binding.window.clearDevicePixelRatioTestValue();
+    });
+    await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(ElevatedButton, 'manage_your_team'));
+    await tester.pumpAndSettle();
+    expect(find.text('team_details_info'), findsWidgets);
+  });
 }

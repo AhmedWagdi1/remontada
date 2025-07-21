@@ -244,5 +244,10 @@
 "social_telegram":"تيليجرام",
 "social_instagram":"إنستجرام",
 "social_twitter":"تويتر",
-"create_team_button":"إنشاء الفريق"
+"create_team_button":"إنشاء الفريق",
+"team_details_info":"المعلومات",
+"team_details_members":"الأعضاء",
+"team_details_join":"الانضمام",
+"team_details_transfer":"الانتقال",
+"team_details_chat":"الدردشة"
 }

@@ -291,4 +291,9 @@ abstract class LocaleKeys {
   static const social_instagram = 'social_instagram';
   static const social_twitter = 'social_twitter';
   static const create_team_button = 'create_team_button';
+  static const team_details_info = 'team_details_info';
+  static const team_details_members = 'team_details_members';
+  static const team_details_join = 'team_details_join';
+  static const team_details_transfer = 'team_details_transfer';
+  static const team_details_chat = 'team_details_chat';
 }
