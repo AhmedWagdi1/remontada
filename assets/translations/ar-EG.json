@@ -200,5 +200,15 @@
 "elite_remontada_championship":"بطولة نخبة ريمونتادا",
 "champions_league_remontada_championship":"بطولة دوري أبطال ريمونتادا",
 "rounds_count":"عدد الجولات: {}",
-"available_to_join":"متاح للانضمام"
+"available_to_join":"متاح للانضمام",
+"create_team_title":"إنشاء فريق جديد",
+"team_add_image":"إضافة صورة",
+"team_info_section":"معلومات الفريق",
+"team_name_label":"اسم الفريق",
+"team_name_hint":"أدخل اسم الفريق",
+"team_description_label":"وصف الفريق",
+"team_description_hint":"أدخل وصف بسيط للفريق",
+"team_level_label":"مستوى الفريق",
+"team_level_hint":"سيتم تحديده لاحقًا",
+"team_level_note":"ملاحظة: سيتم تحديد مستوى الفريق تلقائيًا بناءً على نتائج المباريات والأداء العام للفريق"
 }

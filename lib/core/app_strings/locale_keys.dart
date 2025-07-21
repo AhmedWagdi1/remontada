@@ -247,4 +247,14 @@ abstract class LocaleKeys {
   static const league_goals_against = 'league_goals_against';
   static const league_goal_diff = 'league_goal_diff';
   static const league_points = 'league_points';
+  static const create_team_title = 'create_team_title';
+  static const team_add_image = 'team_add_image';
+  static const team_info_section = 'team_info_section';
+  static const team_name_label = 'team_name_label';
+  static const team_name_hint = 'team_name_hint';
+  static const team_description_label = 'team_description_label';
+  static const team_description_hint = 'team_description_hint';
+  static const team_level_label = 'team_level_label';
+  static const team_level_hint = 'team_level_hint';
+  static const team_level_note = 'team_level_note';
 }
