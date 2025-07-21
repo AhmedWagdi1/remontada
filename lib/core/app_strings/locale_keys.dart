@@ -219,6 +219,14 @@ abstract class LocaleKeys {
   static const challenge_create_challenge = 'challenge_create_challenge';
   static const league_schedule = 'league_schedule';
   static const championships = 'championships';
+  static const super_remontada_championship =
+      'super_remontada_championship';
+  static const elite_remontada_championship =
+      'elite_remontada_championship';
+  static const champions_league_remontada_championship =
+      'champions_league_remontada_championship';
+  static const rounds_count = 'rounds_count';
+  static const available_to_join = 'available_to_join';
   static const under_construction = 'under_construction';
   static const how_challenges_work_title = 'how_challenges_work_title';
   static const how_challenges_step1_title = 'how_challenges_step1_title';

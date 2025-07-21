@@ -46,7 +46,7 @@ void main() {
     expect(find.text('تحدي مكتمل - اليوم 8:00 م'), findsOneWidget);
   });
 
-  testWidgets('other tabs show under construction placeholder', (tester) async {
+  testWidgets('championship tab shows championship cards', (tester) async {
     tester.binding.window.physicalSizeTestValue = const Size(1200, 800);
     tester.binding.window.devicePixelRatioTestValue = 1.0;
     addTearDown(() {
@@ -57,7 +57,9 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byType(Tab).at(2));
     await tester.pumpAndSettle();
-    expect(find.text('under_construction'), findsOneWidget);
+    expect(find.text('super_remontada_championship'), findsOneWidget);
+    expect(find.text('elite_remontada_championship'), findsOneWidget);
+    expect(find.text('champions_league_remontada_championship'), findsOneWidget);
   });
 
   testWidgets('league tab shows standings table', (tester) async {
