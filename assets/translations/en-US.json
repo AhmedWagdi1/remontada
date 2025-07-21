@@ -223,5 +223,15 @@
   "player_number_label": "Jersey Number",
   "player_number_hint": "Number",
   "player_phone_label": "Phone Number",
-  "player_phone_hint": "Enter phone number"
+  "player_phone_hint": "Enter phone number",
+  "add_new_player": "Add New Player",
+  "invite_members_section": "Invite Members",
+  "enable_invite_title": "Enable Member Invites",
+  "enable_invite_subtitle": "Allow inviting players via social platforms",
+  "choose_social_platforms_label": "Choose social platforms:",
+  "social_whatsapp": "WhatsApp",
+  "social_telegram": "Telegram",
+  "social_instagram": "Instagram",
+  "social_twitter": "Twitter",
+  "create_team_button": "Create Team"
 }

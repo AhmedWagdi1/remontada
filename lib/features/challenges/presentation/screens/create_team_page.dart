@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/app_strings/locale_keys.dart';
 import '../../../../core/services/media/my_media.dart';
 import '../../../../shared/widgets/customtext.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Page allowing users to create a new team.
 class CreateTeamPage extends StatefulWidget {
@@ -18,6 +19,38 @@ class CreateTeamPage extends StatefulWidget {
 
 class _CreateTeamPageState extends State<CreateTeamPage> {
   File? _logo;
+  bool _inviteEnabled = false;
+  final Set<String> _selectedPlatforms = {};
+
+  /// Builds a choice chip for selecting a social platform.
+  Widget _buildSocialChip(String key, IconData icon, String label) {
+    const darkBlue = Color(0xFF23425F);
+    final selected = _selectedPlatforms.contains(key);
+    return ChoiceChip(
+      label: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: selected ? Colors.white : darkBlue),
+          const SizedBox(width: 4),
+          CustomText(label, color: selected ? Colors.white : darkBlue),
+        ],
+      ),
+      selected: selected,
+      onSelected: (val) {
+        setState(() {
+          if (val) {
+            _selectedPlatforms.add(key);
+          } else {
+            _selectedPlatforms.remove(key);
+          }
+        });
+      },
+      backgroundColor: Colors.grey.shade200,
+      selectedColor: darkBlue,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      labelPadding: const EdgeInsets.symmetric(horizontal: 8),
+    );
+  }
 
   /// Picks an image from the gallery and updates the logo state.
   Future<void> _pickLogo() async {
@@ -433,6 +466,105 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                 ),
                 const SizedBox(height: 12),
                 _buildPlayerCard(1),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.add, color: darkBlue),
+                    label: CustomText(
+                      LocaleKeys.add_new_player.tr(),
+                      color: darkBlue,
+                      weight: FontWeight.bold,
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: Colors.grey.shade100,
+                      side: const BorderSide(color: darkBlue),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    const Icon(Icons.share, color: darkBlue),
+                    const SizedBox(width: 4),
+                    CustomText(
+                      LocaleKeys.invite_members_section.tr(),
+                      color: darkBlue,
+                      weight: FontWeight.bold,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                SwitchListTile(
+                  value: _inviteEnabled,
+                  onChanged: (val) => setState(() => _inviteEnabled = val),
+                  contentPadding: EdgeInsets.zero,
+                  title: CustomText(
+                    LocaleKeys.enable_invite_title.tr(),
+                    color: darkBlue,
+                    weight: FontWeight.bold,
+                  ),
+                  subtitle: CustomText(
+                    LocaleKeys.enable_invite_subtitle.tr(),
+                    color: Colors.black54,
+                  ),
+                  activeColor: darkBlue,
+                ),
+                const SizedBox(height: 12),
+                CustomText(
+                  LocaleKeys.choose_social_platforms_label.tr(),
+                  color: darkBlue,
+                  weight: FontWeight.bold,
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    _buildSocialChip(
+                      'whatsapp',
+                      FontAwesomeIcons.whatsapp,
+                      LocaleKeys.social_whatsapp.tr(),
+                    ),
+                    _buildSocialChip(
+                      'telegram',
+                      FontAwesomeIcons.telegram,
+                      LocaleKeys.social_telegram.tr(),
+                    ),
+                    _buildSocialChip(
+                      'instagram',
+                      FontAwesomeIcons.instagram,
+                      LocaleKeys.social_instagram.tr(),
+                    ),
+                    _buildSocialChip(
+                      'twitter',
+                      FontAwesomeIcons.twitter,
+                      LocaleKeys.social_twitter.tr(),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: darkBlue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: CustomText(
+                      LocaleKeys.create_team_button.tr(),
+                      color: Colors.white,
+                      weight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

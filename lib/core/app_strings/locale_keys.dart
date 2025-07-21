@@ -280,4 +280,14 @@ abstract class LocaleKeys {
   static const player_number_hint = 'player_number_hint';
   static const player_phone_label = 'player_phone_label';
   static const player_phone_hint = 'player_phone_hint';
+  static const add_new_player = 'add_new_player';
+  static const invite_members_section = 'invite_members_section';
+  static const enable_invite_title = 'enable_invite_title';
+  static const enable_invite_subtitle = 'enable_invite_subtitle';
+  static const choose_social_platforms_label = 'choose_social_platforms_label';
+  static const social_whatsapp = 'social_whatsapp';
+  static const social_telegram = 'social_telegram';
+  static const social_instagram = 'social_instagram';
+  static const social_twitter = 'social_twitter';
+  static const create_team_button = 'create_team_button';
 }

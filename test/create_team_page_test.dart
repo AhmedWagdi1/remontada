@@ -12,5 +12,10 @@ void main() {
     expect(find.text('team_info_section'), findsOneWidget);
     expect(find.text('coaching_staff_section'), findsOneWidget);
     expect(find.text('players_list_section'), findsOneWidget);
+    expect(find.text('add_new_player'), findsOneWidget);
+    expect(find.text('invite_members_section'), findsOneWidget);
+    expect(find.text('enable_invite_title'), findsOneWidget);
+    expect(find.text('choose_social_platforms_label'), findsOneWidget);
+    expect(find.text('create_team_button'), findsOneWidget);
   });
 }
