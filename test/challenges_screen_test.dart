@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:remontada/features/challenges/presentation/screens/challenges_screen.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
   TestWidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences.setMockInitialValues({});
+  await EasyLocalization.ensureInitialized();
 
   testWidgets('challenge screen shows header icons', (tester) async {
     tester.binding.window.physicalSizeTestValue = const Size(1200, 800);
@@ -161,10 +165,24 @@ void main() {
       tester.binding.window.clearPhysicalSizeTestValue();
       tester.binding.window.clearDevicePixelRatioTestValue();
     });
-    await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
+    await tester.pumpWidget(
+      EasyLocalization(
+        supportedLocales: const [Locale('en', 'US')],
+        path: 'assets/translations',
+        fallbackLocale: const Locale('en', 'US'),
+        child: Builder(
+          builder: (context) => MaterialApp(
+            locale: context.locale,
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            home: const ChallengesScreen(),
+          ),
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(ElevatedButton, 'manage_your_team'));
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Manage Your Team'));
     await tester.pumpAndSettle();
-    expect(find.text('team_details_info'), findsWidgets);
+    expect(find.text('Info'), findsWidgets);
   });
 }

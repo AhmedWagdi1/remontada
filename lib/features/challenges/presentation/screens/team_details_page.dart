@@ -19,14 +19,14 @@ class TeamDetailsPage extends StatelessWidget {
           appBar: AppBar(
             title: Text(LocaleKeys.manage_your_team.tr()),
           ),
-          body: const TabBarView(
-            physics: NeverScrollableScrollPhysics(),
+          body: TabBarView(
+            physics: const NeverScrollableScrollPhysics(),
             children: [
-              Center(child: Text(LocaleKeys.team_details_info)),
-              Center(child: Text(LocaleKeys.team_details_members)),
-              Center(child: Text(LocaleKeys.team_details_join)),
-              Center(child: Text(LocaleKeys.team_details_transfer)),
-              Center(child: Text(LocaleKeys.team_details_chat)),
+              Center(child: Text(LocaleKeys.team_details_info.tr())),
+              Center(child: Text(LocaleKeys.team_details_members.tr())),
+              Center(child: Text(LocaleKeys.team_details_join.tr())),
+              Center(child: Text(LocaleKeys.team_details_transfer.tr())),
+              Center(child: Text(LocaleKeys.team_details_chat.tr())),
             ],
           ),
           bottomNavigationBar: Container(
@@ -38,12 +38,12 @@ class TeamDetailsPage extends StatelessWidget {
               labelColor: darkBlue,
               unselectedLabelColor: Colors.grey,
               indicatorWeight: 3,
-              tabs: const [
-                Tab(icon: Icon(Icons.info), text: LocaleKeys.team_details_info),
-                Tab(icon: Icon(Icons.groups), text: LocaleKeys.team_details_members),
-                Tab(icon: Icon(Icons.person_add), text: LocaleKeys.team_details_join),
-                Tab(icon: Icon(Icons.transfer_within_a_station), text: LocaleKeys.team_details_transfer),
-                Tab(icon: Icon(Icons.chat), text: LocaleKeys.team_details_chat),
+              tabs: [
+                Tab(icon: const Icon(Icons.info), text: LocaleKeys.team_details_info.tr()),
+                Tab(icon: const Icon(Icons.groups), text: LocaleKeys.team_details_members.tr()),
+                Tab(icon: const Icon(Icons.person_add), text: LocaleKeys.team_details_join.tr()),
+                Tab(icon: const Icon(Icons.transfer_within_a_station), text: LocaleKeys.team_details_transfer.tr()),
+                Tab(icon: const Icon(Icons.chat), text: LocaleKeys.team_details_chat.tr()),
               ],
             ),
           ),
