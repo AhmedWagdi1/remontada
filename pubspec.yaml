@@ -78,6 +78,7 @@ dependencies:
   firebase_core:
   device_uuid:
     path: packages/device_uuid
+  http: ^0.13.6
   app_links: ^6.4.0
 
 dev_dependencies:

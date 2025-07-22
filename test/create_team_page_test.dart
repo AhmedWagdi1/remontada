@@ -18,4 +18,20 @@ void main() {
     expect(find.text('choose_social_platforms_label'), findsOneWidget);
     expect(find.text('create_team_button'), findsOneWidget);
   });
+
+  testWidgets('Add player button adds a new card', (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: CreateTeamPage()));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('player_card_title'), findsNWidgets(2));
+    final scrollable = find.byType(Scrollable).first;
+    await tester.scrollUntilVisible(
+      find.byIcon(Icons.add),
+      500,
+      scrollable: scrollable,
+    );
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('player_card_title'), findsNWidgets(3));
+  });
 }
