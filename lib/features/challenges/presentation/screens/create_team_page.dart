@@ -140,7 +140,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
         return;
       }
 
-      final dynamic teamIdRaw = data['data']['team_id'];
+      final dynamic teamIdRaw = data['data']['id'];
       final teamId = parseTeamId(teamIdRaw);
 
       // Step 2: optional subleader
