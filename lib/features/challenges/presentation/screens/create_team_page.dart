@@ -13,6 +13,20 @@ import '../../../../core/config/key.dart';
 import '../../../../core/utils/utils.dart';
 import 'team_details_page.dart';
 
+/// Converts the dynamic value returned from the API into a valid team id.
+///
+/// Throws a [FormatException] when the id is missing or not numeric.
+int parseTeamId(dynamic teamId) {
+  if (teamId == null) {
+    throw const FormatException('team_id is missing from response');
+  }
+  final parsed = int.tryParse(teamId.toString());
+  if (parsed == null) {
+    throw FormatException('Invalid team_id format: $teamId');
+  }
+  return parsed;
+}
+
 /// Page allowing users to create a new team.
 class CreateTeamPage extends StatefulWidget {
   /// Default constructor for [CreateTeamPage].
@@ -92,6 +106,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
     super.dispose();
   }
 
+
   /// Handles the multi-step create team flow as described in the docs.
   Future<void> _submitForm() async {
     if (_isSubmitting) return;
@@ -125,7 +140,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
         return;
       }
 
-      final int teamId = data['data']['team_id'] as int;
+      final dynamic teamIdRaw = data['data']['team_id'];
+      final teamId = parseTeamId(teamIdRaw);
 
       // Step 2: optional subleader
       final subName = _assistantNameController.text.trim();

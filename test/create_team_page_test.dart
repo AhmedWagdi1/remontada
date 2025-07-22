@@ -3,6 +3,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:remontada/features/challenges/presentation/screens/create_team_page.dart';
 
 void main() {
+  group('parseTeamId', () {
+    test('returns integer when value is numeric', () {
+      expect(parseTeamId(5), 5);
+      expect(parseTeamId('10'), 10);
+    });
+
+    test('throws FormatException when null', () {
+      expect(() => parseTeamId(null), throwsFormatException);
+    });
+
+    test('throws FormatException on invalid format', () {
+      expect(() => parseTeamId('abc'), throwsFormatException);
+    });
+  });
   testWidgets('CreateTeamPage layout displays all sections', (tester) async {
     await tester.pumpWidget(const MaterialApp(home: CreateTeamPage()));
     await tester.pumpAndSettle();
