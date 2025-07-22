@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
@@ -7,6 +8,10 @@ import '../../../../core/app_strings/locale_keys.dart';
 import '../../../../core/services/media/my_media.dart';
 import '../../../../shared/widgets/customtext.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart' as http;
+import '../../../../core/config/key.dart';
+import '../../../../core/utils/utils.dart';
+import 'team_details_page.dart';
 
 /// Page allowing users to create a new team.
 class CreateTeamPage extends StatefulWidget {
@@ -21,6 +26,26 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
   File? _logo;
   bool _inviteEnabled = false;
   final Set<String> _selectedPlatforms = {};
+  bool _isSubmitting = false;
+
+  final TextEditingController _teamNameController = TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
+  final TextEditingController _coachNameController = TextEditingController();
+  final TextEditingController _coachPhoneController = TextEditingController();
+  final TextEditingController _assistantNameController = TextEditingController();
+  final TextEditingController _assistantPhoneController = TextEditingController();
+
+  final List<TextEditingController> _playerPhoneControllers = [
+    TextEditingController(),
+    TextEditingController(),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _coachNameController.text = Utils.user.user?.name ?? '';
+    _coachPhoneController.text = Utils.user.user?.phone ?? '';
+  }
 
   /// Builds a choice chip for selecting a social platform.
   Widget _buildSocialChip(String key, IconData icon, String label) {
@@ -37,6 +62,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
       ),
       selected: selected,
       onSelected: (val) {
+        if (_isSubmitting) return;
         setState(() {
           if (val) {
             _selectedPlatforms.add(key);
@@ -52,6 +78,143 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
     );
   }
 
+  @override
+  void dispose() {
+    _teamNameController.dispose();
+    _bioController.dispose();
+    _coachNameController.dispose();
+    _coachPhoneController.dispose();
+    _assistantNameController.dispose();
+    _assistantPhoneController.dispose();
+    for (final c in _playerPhoneControllers) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  /// Handles the multi-step create team flow as described in the docs.
+  Future<void> _submitForm() async {
+    if (_isSubmitting) return;
+    setState(() => _isSubmitting = true);
+
+    try {
+      // Step 1: create the team
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse('${ConstKeys.baseUrl}/team/store'),
+      )
+        ..headers['Accept'] = 'application/json'
+        ..headers['Authorization'] = 'Bearer ${Utils.token}'
+        ..fields['area_id'] =
+            (Utils.user.user?.cityId ?? '').toString()
+        ..fields['bio'] = _bioController.text
+        ..fields['name'] = _teamNameController.text;
+
+      if (_logo != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath('logo', _logo!.path),
+        );
+      }
+
+      final streamed = await request.send();
+      final res = await http.Response.fromStream(streamed);
+      final data = jsonDecode(res.body);
+      if (res.statusCode >= 400 || data['status'] != true) {
+        await _showError(data['message'] ?? 'خطأ غير متوقع');
+        setState(() => _isSubmitting = false);
+        return;
+      }
+
+      final int teamId = data['data']['team_id'] as int;
+
+      // Step 2: optional subleader
+      final subName = _assistantNameController.text.trim();
+      final subPhone = _assistantPhoneController.text.trim();
+      if (subName.isEmpty != subPhone.isEmpty) {
+        await _showError('يرجى تعبئة اسم ورقم هاتف المساعد أو ترك كلاهما فارغين.');
+        setState(() => _isSubmitting = false);
+        return;
+      }
+      if (subName.isNotEmpty && subPhone.isNotEmpty) {
+        final subRes = await http.post(
+          Uri.parse('${ConstKeys.baseUrl}/team/member-role'),
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ${Utils.token}',
+          },
+          body: jsonEncode({
+            'phone_number': subPhone,
+            'team_id': teamId,
+            'role': 'subleader',
+          }),
+        );
+        final subData = jsonDecode(subRes.body);
+        if (subRes.statusCode >= 400 || subData['status'] != true) {
+          await _showError(subData['message'] ?? 'خطأ غير متوقع');
+          setState(() => _isSubmitting = false);
+          return;
+        }
+      }
+
+      // Step 3: add team members
+      for (final controller in _playerPhoneControllers) {
+        final phone = controller.text.trim();
+        if (phone.isEmpty) continue;
+        final playerRes = await http.post(
+          Uri.parse('${ConstKeys.baseUrl}/team/add-member'),
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ${Utils.token}',
+          },
+          body: jsonEncode({
+            'phone_number': phone,
+            'team_id': teamId,
+          }),
+        );
+        final playerData = jsonDecode(playerRes.body);
+        if (playerRes.statusCode >= 400 || playerData['status'] != true) {
+          await _showError(playerData['message'] ?? 'خطأ غير متوقع');
+          setState(() => _isSubmitting = false);
+          return;
+        }
+      }
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('تم إنشاء الفريق بنجاح!')),
+      );
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => const TeamDetailsPage(),
+          settings: RouteSettings(arguments: teamId),
+        ),
+      );
+    } catch (e) {
+      await _showError(e.toString());
+    } finally {
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+      }
+    }
+  }
+
+  Future<void> _showError(String message) async {
+    return showDialog<void>(
+      context: context,
+      builder: (_) => AlertDialog(
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
   /// Picks an image from the gallery and updates the logo state.
   Future<void> _pickLogo() async {
     final image = await MyMedia.pickImageFromGallery();
@@ -60,8 +223,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
     }
   }
 
-  /// Builds a single player card with form fields.
-  Widget _buildPlayerCard(int index) {
+  /// Builds a single player card for entering a player's phone number.
+  Widget _buildPlayerCard(int index, TextEditingController phoneController) {
     const darkBlue = Color(0xFF23425F);
     return Stack(
       children: [
@@ -121,6 +284,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
               ),
               const SizedBox(height: 12),
               TextFormField(
+                controller: phoneController,
+                enabled: !_isSubmitting,
                 decoration: InputDecoration(
                   labelText: LocaleKeys.player_phone_label.tr(),
                   hintText: LocaleKeys.player_phone_hint.tr(),
@@ -233,6 +398,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
+                  controller: _teamNameController,
+                  enabled: !_isSubmitting,
                   decoration: InputDecoration(
                     labelText: LocaleKeys.team_name_label.tr(),
                     hintText: LocaleKeys.team_name_hint.tr(),
@@ -243,6 +410,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
+                  controller: _bioController,
+                  enabled: !_isSubmitting,
                   minLines: 3,
                   maxLines: null,
                   decoration: InputDecoration(
@@ -339,6 +508,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                           ),
                           const SizedBox(height: 8),
                           TextFormField(
+                            controller: _coachNameController,
+                            readOnly: true,
                             decoration: InputDecoration(
                               labelText: LocaleKeys.coach_name_label.tr(),
                               hintText: LocaleKeys.coach_name_hint.tr(),
@@ -349,6 +520,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                           ),
                           const SizedBox(height: 12),
                           TextFormField(
+                            controller: _coachPhoneController,
+                            readOnly: true,
                             decoration: InputDecoration(
                               labelText: LocaleKeys.coach_phone_label.tr(),
                               hintText: LocaleKeys.coach_phone_hint.tr(),
@@ -394,6 +567,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                           ),
                           const SizedBox(height: 8),
                           TextFormField(
+                            controller: _assistantNameController,
+                            enabled: !_isSubmitting,
                             decoration: InputDecoration(
                               labelText: LocaleKeys.assistant_name_label.tr(),
                               hintText: LocaleKeys.assistant_name_hint.tr(),
@@ -404,6 +579,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                           ),
                           const SizedBox(height: 12),
                           TextFormField(
+                            controller: _assistantPhoneController,
+                            enabled: !_isSubmitting,
                             decoration: InputDecoration(
                               labelText: LocaleKeys.assistant_phone_label.tr(),
                               hintText: LocaleKeys.assistant_phone_hint.tr(),
@@ -465,13 +642,20 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                _buildPlayerCard(1),
-                _buildPlayerCard(2),
+                for (int i = 0; i < _playerPhoneControllers.length; i++)
+                  _buildPlayerCard(i + 1, _playerPhoneControllers[i]),
                 const SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton.icon(
-                    onPressed: () {},
+                    onPressed: _playerPhoneControllers.length >= 10 || _isSubmitting
+                        ? null
+                        : () {
+                            setState(() {
+                              _playerPhoneControllers
+                                  .add(TextEditingController());
+                            });
+                          },
                     icon: const Icon(Icons.add, color: darkBlue),
                     label: CustomText(
                       LocaleKeys.add_new_player.tr(),
@@ -502,7 +686,9 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                 const SizedBox(height: 12),
                 SwitchListTile(
                   value: _inviteEnabled,
-                  onChanged: (val) => setState(() => _inviteEnabled = val),
+                  onChanged: _isSubmitting
+                      ? null
+                      : (val) => setState(() => _inviteEnabled = val),
                   contentPadding: EdgeInsets.zero,
                   title: CustomText(
                     LocaleKeys.enable_invite_title.tr(),
@@ -551,7 +737,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: _isSubmitting ? null : _submitForm,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: darkBlue,
                       shape: RoundedRectangleBorder(
