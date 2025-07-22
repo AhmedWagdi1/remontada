@@ -714,7 +714,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const TeamDetailsPage(),
+                      builder: (_) => const TeamDetailsPage(teamId: 23),
                     ),
                   );
                 },

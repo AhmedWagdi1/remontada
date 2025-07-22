@@ -203,8 +203,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
       );
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => const TeamDetailsPage(),
-          settings: RouteSettings(arguments: teamId),
+          builder: (_) => TeamDetailsPage(teamId: teamId),
         ),
       );
     } catch (e) {

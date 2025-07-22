@@ -1,12 +1,52 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
+import 'package:http/http.dart' as http;
 import '../../../../core/app_strings/locale_keys.dart';
+import '../../../../core/config/key.dart';
+import '../../../../core/utils/utils.dart';
 
 /// Displays detailed information about a team using a tab bar styled as a
 /// bottom navigation bar.
-class TeamDetailsPage extends StatelessWidget {
+class TeamDetailsPage extends StatefulWidget {
+  /// ID of the team to load.
+  final int teamId;
+
   /// Creates a new [TeamDetailsPage].
-  const TeamDetailsPage({super.key});
+  const TeamDetailsPage({super.key, required this.teamId});
+
+  @override
+  State<TeamDetailsPage> createState() => _TeamDetailsPageState();
+}
+
+class _TeamDetailsPageState extends State<TeamDetailsPage> {
+  Map<String, dynamic>? _teamData;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchTeamData();
+  }
+
+  /// Fetches the team information from the backend and stores it in [_teamData].
+  Future<void> _fetchTeamData() async {
+    final url = '${ConstKeys.baseUrl}/team/show/${widget.teamId}';
+    final res = await http.get(
+      Uri.parse(url),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${Utils.token}',
+      },
+    );
+    if (res.statusCode < 400) {
+      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      if (data['status'] == true) {
+        setState(() {
+          _teamData = data['data'] as Map<String, dynamic>;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
