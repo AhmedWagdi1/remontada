@@ -5,6 +5,28 @@ import 'package:http/http.dart' as http;
 import '../../../../core/app_strings/locale_keys.dart';
 import '../../../../core/config/key.dart';
 import '../../../../core/utils/utils.dart';
+import '../../../../shared/widgets/network_image.dart';
+
+/// Finds a member with the given [role] inside the provided [users] list.
+Map<String, dynamic>? _findMemberByRole(
+  List<dynamic> users,
+  String role,
+) {
+  for (final u in users) {
+    if (u is Map<String, dynamic> && u['role'] == role) {
+      return u;
+    }
+  }
+  return null;
+}
+
+/// Hides middle digits of a phone number with dots for privacy.
+String obfuscatePhone(String phone) {
+  if (phone.length <= 2) return phone;
+  final first = phone[0];
+  final last = phone[phone.length - 1];
+  return '$first........$last';
+}
 
 /// Displays detailed information about a team using a tab bar styled as a
 /// bottom navigation bar.
@@ -41,8 +63,24 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
     if (res.statusCode < 400) {
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       if (data['status'] == true) {
+        final team = data['data'] as Map<String, dynamic>;
+        final users = team['users'] as List<dynamic>? ?? [];
+        final leader = _findMemberByRole(users, 'leader');
+        final subLeader = _findMemberByRole(users, 'subLeader');
+        team['leader'] = leader == null
+            ? null
+            : {
+                'name': leader['name'],
+                'phone': leader['mobile'],
+              };
+        team['sub_leader'] = subLeader == null
+            ? null
+            : {
+                'name': subLeader['name'],
+                'phone': subLeader['mobile'],
+              };
         setState(() {
-          _teamData = data['data'] as Map<String, dynamic>;
+          _teamData = team;
         });
       }
     }
@@ -65,10 +103,18 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    _TopBar(),
-                    SizedBox(height: 16),
-                    _TeamSummaryCard(),
+                  children: [
+                    _TopBar(
+                      teamName: _teamData?['name'] as String?,
+                      logoUrl: _teamData?['logo_url'] as String?,
+                    ),
+                    const SizedBox(height: 16),
+                    _TeamSummaryCard(
+                      teamName: _teamData?['name'] as String?,
+                      bio: _teamData?['bio'] as String?,
+                      membersCount: _teamData?['members_count'] as int?,
+                      logoUrl: _teamData?['logo_url'] as String?,
+                    ),
                     SizedBox(height: 16),
                     _AchievementsSection(),
                     SizedBox(height: 16),
@@ -76,17 +122,34 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                     SizedBox(height: 16),
                     _HonorsAchievementsSection(),
                     SizedBox(height: 16),
-                    _TechnicalStaffSummary(),
+                    _TechnicalStaffSummary(
+                      leaderName: (_teamData?['leader'] as Map<String, dynamic>?)?['name'] as String?,
+                      leaderPhone: (_teamData?['leader'] as Map<String, dynamic>?)?['phone'] as String?,
+                      subLeaderName: (_teamData?['sub_leader'] as Map<String, dynamic>?)?['name'] as String?,
+                      subLeaderPhone: (_teamData?['sub_leader'] as Map<String, dynamic>?)?['phone'] as String?,
+                    ),
                     SizedBox(height: 16),
                     _InviteSettingsSection(),
                   ],
                 ),
               ),
-              const _MembersTab(),
-              const _JoinRequestsTab(),
-              const _TransferRequestsTab(),
+              _MembersTab(
+                teamName: _teamData?['name'] as String?,
+                logoUrl: _teamData?['logo_url'] as String?,
+              ),
+              _JoinRequestsTab(
+                teamName: _teamData?['name'] as String?,
+                logoUrl: _teamData?['logo_url'] as String?,
+              ),
+              _TransferRequestsTab(
+                teamName: _teamData?['name'] as String?,
+                logoUrl: _teamData?['logo_url'] as String?,
+              ),
               // Chat tab for messaging within the team.
-              const _ChatTab(),
+              _ChatTab(
+                teamName: _teamData?['name'] as String?,
+                logoUrl: _teamData?['logo_url'] as String?,
+              ),
             ],
           ),
           bottomNavigationBar: Container(
@@ -130,27 +193,44 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
 
 /// Top bar showing settings icon, team name and forward arrow.
 class _TopBar extends StatelessWidget {
-  /// Creates a const [_TopBar].
-  const _TopBar();
+  /// Optional name of the team to display.
+  final String? teamName;
+
+  /// Optional logo URL for the team.
+  final String? logoUrl;
+
+  /// Creates a [_TopBar] with optional team details.
+  const _TopBar({this.teamName, this.logoUrl});
 
   @override
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
+    final name = teamName ?? 'ريـمونتادا';
+    final logo = logoUrl;
+    final leading = (logo != null && logo.isNotEmpty)
+        ? NetworkImagesWidgets(
+            logo,
+            width: 24,
+            height: 24,
+            fit: BoxFit.cover,
+            radius: 12,
+          )
+        : const Icon(Icons.settings, color: darkBlue);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: const [
-          Icon(Icons.settings, color: darkBlue),
+        children: [
+          leading,
           Text(
-            'ريـمونتادا',
-            style: TextStyle(
+            name,
+            style: const TextStyle(
               color: darkBlue,
               fontWeight: FontWeight.bold,
               fontSize: 18,
             ),
           ),
-          Icon(Icons.arrow_forward_ios, color: darkBlue),
+          const Icon(Icons.arrow_forward_ios, color: darkBlue),
         ],
       ),
     );
@@ -159,12 +239,33 @@ class _TopBar extends StatelessWidget {
 
 /// Card displaying a summary about the team.
 class _TeamSummaryCard extends StatelessWidget {
-  /// Creates a const [_TeamSummaryCard].
-  const _TeamSummaryCard();
+  /// Optional team name.
+  final String? teamName;
+
+  /// Optional team bio.
+  final String? bio;
+
+  /// Optional count of members.
+  final int? membersCount;
+
+  /// Optional logo URL for the team.
+  final String? logoUrl;
+
+  /// Creates a [_TeamSummaryCard] with optional details.
+  const _TeamSummaryCard({
+    this.teamName,
+    this.bio,
+    this.membersCount,
+    this.logoUrl,
+  });
 
   @override
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
+    final name = teamName ?? 'ريـمونتادا';
+    final description = bio ?? 'فريق يبحث عن التحديات و الصراعات الكوراوويه';
+    final members = membersCount?.toString() ?? '10';
+    final logo = logoUrl;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -173,25 +274,30 @@ class _TeamSummaryCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Icon(Icons.sports_soccer, color: Colors.white, size: 40),
+          if (logo != null && logo.isNotEmpty)
+            NetworkImagesWidgets(logo,
+                width: 40, height: 40, fit: BoxFit.cover, radius: 20)
+          else
+            const Icon(Icons.sports_soccer, color: Colors.white, size: 40),
           const SizedBox(height: 8),
-          const Text(
-            'ريـمونتادا',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          Text(
+            name,
+            style:
+                const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
-          const Text(
-            'فريق يبحث عن التحديات و الصراعات الكوراوويه',
-            style: TextStyle(color: Colors.white),
+          Text(
+            description,
+            style: const TextStyle(color: Colors.white),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const [
-              _TeamStatItem(number: '10', label: 'اللاعبين'),
-              _TeamStatItem(number: '15', label: 'المباريات'),
-              _TeamStatItem(number: '12', label: 'الانتصارات'),
+            children: [
+              _TeamStatItem(number: members, label: 'اللاعبين'),
+              const _TeamStatItem(number: '15', label: 'المباريات'),
+              const _TeamStatItem(number: '12', label: 'الانتصارات'),
             ],
           ),
         ],
@@ -523,8 +629,25 @@ class _HonorsAchievementsSection extends StatelessWidget {
 
 /// Card summarizing the technical staff information.
 class _TechnicalStaffSummary extends StatelessWidget {
-  /// Creates a const [_TechnicalStaffSummary].
-  const _TechnicalStaffSummary();
+  /// Leader name.
+  final String? leaderName;
+
+  /// Leader phone number.
+  final String? leaderPhone;
+
+  /// Assistant name.
+  final String? subLeaderName;
+
+  /// Assistant phone number.
+  final String? subLeaderPhone;
+
+  /// Creates a summary card for the technical staff.
+  const _TechnicalStaffSummary({
+    this.leaderName,
+    this.leaderPhone,
+    this.subLeaderName,
+    this.subLeaderPhone,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -537,9 +660,9 @@ class _TechnicalStaffSummary extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Row(
-                children: [
+                children: const [
                   Icon(Icons.settings, color: headerColor),
                   SizedBox(width: 8),
                   Text(
@@ -551,11 +674,27 @@ class _TechnicalStaffSummary extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 8),
-              _LabeledText(label: 'المدرب:', value: 'غاري'),
-              _LabeledText(label: 'هاتف المدرب:', value: '0........5'),
-              _LabeledText(label: 'المساعد:', value: 'عبدالرحمن'),
-              _LabeledText(label: 'هاتف المساعد:', value: '0........5'),
+              const SizedBox(height: 8),
+              _LabeledText(
+                label: 'المدرب:',
+                value: leaderName ?? 'غاري',
+              ),
+              _LabeledText(
+                label: 'هاتف المدرب:',
+                value: leaderPhone != null
+                    ? obfuscatePhone(leaderPhone!)
+                    : '0........5',
+              ),
+              _LabeledText(
+                label: 'المساعد:',
+                value: subLeaderName ?? 'عبدالرحمن',
+              ),
+              _LabeledText(
+                label: 'هاتف المساعد:',
+                value: subLeaderPhone != null
+                    ? obfuscatePhone(subLeaderPhone!)
+                    : '0........5',
+              ),
             ],
           ),
         ),
@@ -606,8 +745,14 @@ class _InviteSettingsSection extends StatelessWidget {
 
 /// Members tab displaying team players.
 class _MembersTab extends StatelessWidget {
-  /// Creates a const [_MembersTab].
-  const _MembersTab();
+  /// Team name to pass to [_TopBar].
+  final String? teamName;
+
+  /// Logo URL to pass to [_TopBar].
+  final String? logoUrl;
+
+  /// Creates a [_MembersTab].
+  const _MembersTab({this.teamName, this.logoUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -617,14 +762,14 @@ class _MembersTab extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: const [
-            _TopBar(),
-            SizedBox(height: 16),
-            _StatsSummaryRow(),
-            SizedBox(height: 16),
-            _PlayersSectionTitle(),
-            SizedBox(height: 16),
-            _PlayerList(),
+          children: [
+            _TopBar(teamName: teamName, logoUrl: logoUrl),
+            const SizedBox(height: 16),
+            const _StatsSummaryRow(),
+            const SizedBox(height: 16),
+            const _PlayersSectionTitle(),
+            const SizedBox(height: 16),
+            const _PlayerList(),
           ],
         ),
       ),
@@ -887,8 +1032,14 @@ class _LabeledText extends StatelessWidget {
 
 /// Tab displaying pending join requests for the team.
 class _JoinRequestsTab extends StatelessWidget {
-  /// Creates a const [_JoinRequestsTab].
-  const _JoinRequestsTab();
+  /// Team name for the [_TopBar].
+  final String? teamName;
+
+  /// Logo URL for the [_TopBar].
+  final String? logoUrl;
+
+  /// Creates a [_JoinRequestsTab].
+  const _JoinRequestsTab({this.teamName, this.logoUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -917,7 +1068,7 @@ class _JoinRequestsTab extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const _TopBar(),
+            _TopBar(teamName: teamName, logoUrl: logoUrl),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1064,8 +1215,14 @@ class _JoinRequestCard extends StatelessWidget {
 
 /// Tab displaying transfer requests with actions for pending ones.
 class _TransferRequestsTab extends StatelessWidget {
-  /// Creates a const [_TransferRequestsTab].
-  const _TransferRequestsTab();
+  /// Team name for the [_TopBar].
+  final String? teamName;
+
+  /// Logo URL for the [_TopBar].
+  final String? logoUrl;
+
+  /// Creates a [_TransferRequestsTab].
+  const _TransferRequestsTab({this.teamName, this.logoUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -1094,7 +1251,7 @@ class _TransferRequestsTab extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const _TopBar(),
+            _TopBar(teamName: teamName, logoUrl: logoUrl),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1243,8 +1400,14 @@ class _TransferRequestCard extends StatelessWidget {
 
 /// Chat tab displaying a simple team chat UI with a list of messages.
 class _ChatTab extends StatelessWidget {
-  /// Creates a const [_ChatTab].
-  const _ChatTab();
+  /// Team name used in the [_TopBar].
+  final String? teamName;
+
+  /// Logo URL used in the [_TopBar].
+  final String? logoUrl;
+
+  /// Creates a [_ChatTab].
+  const _ChatTab({this.teamName, this.logoUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -1268,7 +1431,7 @@ class _ChatTab extends StatelessWidget {
       textDirection: TextDirection.rtl,
       child: Column(
         children: [
-          const _TopBar(),
+          _TopBar(teamName: teamName, logoUrl: logoUrl),
           Container(
             color: const Color(0xFFF2F2F2),
             padding: const EdgeInsets.all(12),
