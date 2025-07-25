@@ -8,10 +8,7 @@ import '../../../../core/utils/utils.dart';
 import '../../../../shared/widgets/network_image.dart';
 
 /// Finds a member with the given [role] inside the provided [users] list.
-Map<String, dynamic>? _findMemberByRole(
-  List<dynamic> users,
-  String role,
-) {
+Map<String, dynamic>? _findMemberByRole(List<dynamic> users, String role) {
   for (final u in users) {
     if (u is Map<String, dynamic> && u['role'] == role) {
       return u;
@@ -80,16 +77,10 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
         final subLeader = _findMemberByRole(users, 'subLeader');
         team['leader'] = leader == null
             ? null
-            : {
-                'name': leader['name'],
-                'phone': leader['mobile'],
-              };
+            : {'name': leader['name'], 'phone': leader['mobile']};
         team['sub_leader'] = subLeader == null
             ? null
-            : {
-                'name': subLeader['name'],
-                'phone': subLeader['mobile'],
-              };
+            : {'name': subLeader['name'], 'phone': subLeader['mobile']};
         setState(() {
           _teamData = team;
         });
@@ -134,10 +125,14 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                     _HonorsAchievementsSection(),
                     SizedBox(height: 16),
                     _TechnicalStaffSummary(
-                      leaderName: (_teamData?['leader'] as Map<String, dynamic>?)?['name'] as String?,
-                      leaderPhone: (_teamData?['leader'] as Map<String, dynamic>?)?['phone'] as String?,
-                      subLeaderName: (_teamData?['sub_leader'] as Map<String, dynamic>?)?['name'] as String?,
-                      subLeaderPhone: (_teamData?['sub_leader'] as Map<String, dynamic>?)?['phone'] as String?,
+                      leaderName: (_teamData?['leader']
+                          as Map<String, dynamic>?)?['name'] as String?,
+                      leaderPhone: (_teamData?['leader']
+                          as Map<String, dynamic>?)?['phone'] as String?,
+                      subLeaderName: (_teamData?['sub_leader']
+                          as Map<String, dynamic>?)?['name'] as String?,
+                      subLeaderPhone: (_teamData?['sub_leader']
+                          as Map<String, dynamic>?)?['phone'] as String?,
                     ),
                     SizedBox(height: 16),
                     _InviteSettingsSection(),
@@ -288,15 +283,22 @@ class _TeamSummaryCard extends StatelessWidget {
       child: Column(
         children: [
           if (logo != null && logo.isNotEmpty)
-            NetworkImagesWidgets(logo,
-                width: 40, height: 40, fit: BoxFit.cover, radius: 20)
+            NetworkImagesWidgets(
+              logo,
+              width: 40,
+              height: 40,
+              fit: BoxFit.cover,
+              radius: 20,
+            )
           else
             const Icon(Icons.sports_soccer, color: Colors.white, size: 40),
           const SizedBox(height: 8),
           Text(
             name,
-            style:
-                const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 4),
           Text(
@@ -688,10 +690,7 @@ class _TechnicalStaffSummary extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 8),
-              _LabeledText(
-                label: 'المدرب:',
-                value: leaderName ?? 'غاري',
-              ),
+              _LabeledText(label: 'المدرب:', value: leaderName ?? 'غاري'),
               _LabeledText(
                 label: 'هاتف المدرب:',
                 value: leaderPhone != null
@@ -911,11 +910,12 @@ class _PlayerList extends StatelessWidget {
       separatorBuilder: (_, __) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
         final p = players[index] as Map<String, dynamic>;
-        return _PlayerCard(
+        return PlayerCard(
           number: (p['num'] ?? index + 1) as int,
           name: p['name'] as String? ?? '',
           shirt: (p['shirt'] ?? p['shirt_number'] ?? 0) as int,
           phone: obfuscatePhone((p['phone'] ?? p['mobile'] ?? '') as String),
+          isActive: p['active'] == true,
         );
       },
     );
@@ -923,7 +923,7 @@ class _PlayerList extends StatelessWidget {
 }
 
 /// Card widget displaying basic player info.
-class _PlayerCard extends StatelessWidget {
+class PlayerCard extends StatelessWidget {
   /// Player number for badge.
   final int number;
 
@@ -936,12 +936,16 @@ class _PlayerCard extends StatelessWidget {
   /// Obfuscated phone number.
   final String phone;
 
-  /// Creates a const [_PlayerCard].
-  const _PlayerCard({
+  /// Whether the player is currently active.
+  final bool isActive;
+
+  /// Creates a const [PlayerCard].
+  const PlayerCard({
     required this.number,
     required this.name,
     required this.shirt,
     required this.phone,
+    required this.isActive,
   });
 
   @override
@@ -999,12 +1003,14 @@ class _PlayerCard extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             decoration: BoxDecoration(
-              color: Colors.green,
+              color: isActive ? Colors.green : Colors.red,
               borderRadius: BorderRadius.circular(4),
             ),
-            child: const Text(
-              'نشط',
-              style: TextStyle(color: Colors.white, fontSize: 10),
+            child: Text(
+              isActive
+                  ? LocaleKeys.player_active.tr()
+                  : LocaleKeys.player_inactive.tr(),
+              style: const TextStyle(color: Colors.white, fontSize: 10),
             ),
           ),
         ),

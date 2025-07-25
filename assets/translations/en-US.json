@@ -239,5 +239,7 @@
   "team_details_members": "Members",
   "team_details_join": "Join",
   "team_details_transfer": "Transfer",
-  "team_details_chat": "Chat"
+  "team_details_chat": "Chat",
+  "player_active": "Active",
+  "player_inactive": "Inactive"
 }
