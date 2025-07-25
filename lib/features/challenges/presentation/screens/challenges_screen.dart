@@ -9,10 +9,17 @@ import 'package:remontada/shared/widgets/customtext.dart';
 import '../widgets/championship_card.dart';
 import 'create_team_page.dart';
 import 'team_details_page.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../../../../core/config/key.dart';
+import '../../../../core/utils/utils.dart';
 
 /// Placeholder screen shown for the upcoming Challenges feature.
 class ChallengesScreen extends StatefulWidget {
-  const ChallengesScreen({super.key});
+  /// Optional flag indicating whether the current player already belongs to a team.
+  final bool? hasTeam;
+
+  const ChallengesScreen({super.key, this.hasTeam});
 
   @override
   State<ChallengesScreen> createState() => _ChallengesScreenState();
@@ -85,11 +92,53 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     },
   ];
   int _currentSlideIndex = 0;
+  bool? _hasTeam;
+
+  /// Retrieves the list of teams the current user belongs to.
+  ///
+  /// This makes a GET request to `/team/user-teams` and expects a response in
+  /// the following form:
+  /// ```json
+  /// {
+  ///   "status": true,
+  ///   "message": "تم التحميل بنجاح",
+  ///   "data": [
+  ///     {"id": 25, "name": "test team", ...},
+  ///     {"id": 26, "name": "123test team", ...}
+  ///   ]
+  /// }
+  /// ```
+  /// When the returned `data` list is not empty, [_hasTeam] becomes `true`.
+  Future<void> _fetchUserTeams() async {
+    try {
+      final res = await http.get(
+        Uri.parse('${ConstKeys.baseUrl}/team/user-teams'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Utils.token}',
+        },
+      );
+      if (res.statusCode < 400) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        if (data['status'] == true) {
+          final teams = data['data'] as List<dynamic>;
+          setState(() => _hasTeam = teams.isNotEmpty);
+          return;
+        }
+      }
+    } catch (_) {}
+    setState(() => _hasTeam = false);
+  }
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    if (widget.hasTeam != null) {
+      _hasTeam = widget.hasTeam;
+    } else {
+      _fetchUserTeams();
+    }
   }
 
   @override
@@ -801,7 +850,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
               ),
               const SizedBox(height: 16),
               _buildCarousel(),
-              _manageTeamRow(),
+              if (_hasTeam ?? false) _manageTeamRow(),
               18.ph,
               Directionality(
                 textDirection: TextDirection.rtl,
@@ -840,8 +889,10 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                       child: Column(
                         children: [
                           const SizedBox(height: 12),
-                          _createChallengeButton(),
-                          const SizedBox(height: 12),
+                          if (_hasTeam ?? false) ...[
+                            _createChallengeButton(),
+                            const SizedBox(height: 12),
+                          ],
                           _completedChallengeCard(),
                           const SizedBox(height: 12),
                           _joinChallengeCard(),
