@@ -17,7 +17,8 @@ void main() async {
       tester.binding.window.clearPhysicalSizeTestValue();
       tester.binding.window.clearDevicePixelRatioTestValue();
     });
-    await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
+    await tester.pumpWidget(
+        const MaterialApp(home: ChallengesScreen(hasTeam: true)));
     await tester.pumpAndSettle();
     expect(find.byIcon(Icons.group), findsOneWidget);
     expect(find.byIcon(Icons.more_horiz), findsOneWidget);
@@ -30,7 +31,8 @@ void main() async {
       tester.binding.window.clearPhysicalSizeTestValue();
       tester.binding.window.clearDevicePixelRatioTestValue();
     });
-    await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
+    await tester.pumpWidget(
+        const MaterialApp(home: ChallengesScreen(hasTeam: true)));
     await tester.pumpAndSettle();
     expect(find.byType(CarouselSlider), findsOneWidget);
   });
@@ -42,7 +44,8 @@ void main() async {
       tester.binding.window.clearPhysicalSizeTestValue();
       tester.binding.window.clearDevicePixelRatioTestValue();
     });
-    await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
+    await tester.pumpWidget(
+        const MaterialApp(home: ChallengesScreen(hasTeam: true)));
     await tester.pumpAndSettle();
     expect(
       find.widgetWithText(ElevatedButton, 'manage_your_team'),
@@ -57,6 +60,20 @@ void main() async {
     expect(find.byIcon(Icons.groups), findsOneWidget);
   });
 
+  testWidgets('team widgets hidden when user has no team', (tester) async {
+    tester.binding.window.physicalSizeTestValue = const Size(1200, 800);
+    tester.binding.window.devicePixelRatioTestValue = 1.0;
+    addTearDown(() {
+      tester.binding.window.clearPhysicalSizeTestValue();
+      tester.binding.window.clearDevicePixelRatioTestValue();
+    });
+    await tester.pumpWidget(
+        const MaterialApp(home: ChallengesScreen(hasTeam: false)));
+    await tester.pumpAndSettle();
+    expect(find.widgetWithText(ElevatedButton, 'manage_your_team'), findsNothing);
+    expect(find.text('challenge_create_challenge'), findsNothing);
+  });
+
   testWidgets('first tab shows challenge cards', (tester) async {
     tester.binding.window.physicalSizeTestValue = const Size(1200, 800);
     tester.binding.window.devicePixelRatioTestValue = 1.0;
@@ -64,7 +81,8 @@ void main() async {
       tester.binding.window.clearPhysicalSizeTestValue();
       tester.binding.window.clearDevicePixelRatioTestValue();
     });
-    await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
+    await tester.pumpWidget(
+        const MaterialApp(home: ChallengesScreen(hasTeam: true)));
     await tester.pumpAndSettle();
     expect(find.text('challenge_create_challenge'), findsOneWidget);
     expect(find.text('انضم للتحدي - اليوم 7:30 م'), findsOneWidget);
@@ -79,7 +97,8 @@ void main() async {
       tester.binding.window.clearPhysicalSizeTestValue();
       tester.binding.window.clearDevicePixelRatioTestValue();
     });
-    await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
+    await tester.pumpWidget(
+        const MaterialApp(home: ChallengesScreen(hasTeam: true)));
     await tester.pumpAndSettle();
     await tester.tap(find.byType(Tab).at(2));
     await tester.pumpAndSettle();
@@ -95,7 +114,8 @@ void main() async {
       tester.binding.window.clearPhysicalSizeTestValue();
       tester.binding.window.clearDevicePixelRatioTestValue();
     });
-    await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
+    await tester.pumpWidget(
+        const MaterialApp(home: ChallengesScreen(hasTeam: true)));
     await tester.pumpAndSettle();
     await tester.tap(find.byType(Tab).at(1));
     await tester.pumpAndSettle();
@@ -110,7 +130,8 @@ void main() async {
       tester.binding.window.clearPhysicalSizeTestValue();
       tester.binding.window.clearDevicePixelRatioTestValue();
     });
-    await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
+    await tester.pumpWidget(
+        const MaterialApp(home: ChallengesScreen(hasTeam: true)));
     await tester.pumpAndSettle();
     await tester.tap(find.byType(Tab).at(1));
     await tester.pumpAndSettle();
@@ -127,7 +148,8 @@ void main() async {
       tester.binding.window.clearPhysicalSizeTestValue();
       tester.binding.window.clearDevicePixelRatioTestValue();
     });
-    await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
+    await tester.pumpWidget(
+        const MaterialApp(home: ChallengesScreen(hasTeam: true)));
     await tester.pumpAndSettle();
 
     final tabBar = tester.widget<TabBar>(find.byType(TabBar));
@@ -151,7 +173,8 @@ void main() async {
       tester.binding.window.clearPhysicalSizeTestValue();
       tester.binding.window.clearDevicePixelRatioTestValue();
     });
-    await tester.pumpWidget(const MaterialApp(home: ChallengesScreen()));
+    await tester.pumpWidget(
+        const MaterialApp(home: ChallengesScreen(hasTeam: true)));
     await tester.pumpAndSettle();
     await tester.tap(find.byIcon(Icons.group));
     await tester.pumpAndSettle();
@@ -175,7 +198,7 @@ void main() async {
             locale: context.locale,
             localizationsDelegates: context.localizationDelegates,
             supportedLocales: context.supportedLocales,
-            home: const ChallengesScreen(),
+            home: const ChallengesScreen(hasTeam: true),
           ),
         ),
       ),
