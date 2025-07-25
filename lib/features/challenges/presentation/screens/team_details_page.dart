@@ -28,6 +28,17 @@ String obfuscatePhone(String phone) {
   return '$first........$last';
 }
 
+/// Counts how many users in [users] are marked as active.
+int _countActivePlayers(List<dynamic> users) {
+  var count = 0;
+  for (final u in users) {
+    if (u is Map<String, dynamic> && u['active'] == true) {
+      count++;
+    }
+  }
+  return count;
+}
+
 /// Displays detailed information about a team using a tab bar styled as a
 /// bottom navigation bar.
 class TeamDetailsPage extends StatefulWidget {
@@ -136,6 +147,8 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
               _MembersTab(
                 teamName: _teamData?['name'] as String?,
                 logoUrl: _teamData?['logo_url'] as String?,
+                users: _teamData?['users'] as List<dynamic>?,
+                membersCount: _teamData?['members_count'] as int?,
               ),
               _JoinRequestsTab(
                 teamName: _teamData?['name'] as String?,
@@ -751,8 +764,19 @@ class _MembersTab extends StatelessWidget {
   /// Logo URL to pass to [_TopBar].
   final String? logoUrl;
 
+  /// Full list of users in the team.
+  final List<dynamic>? users;
+
+  /// Total members count for the team.
+  final int? membersCount;
+
   /// Creates a [_MembersTab].
-  const _MembersTab({this.teamName, this.logoUrl});
+  const _MembersTab({
+    this.teamName,
+    this.logoUrl,
+    this.users,
+    this.membersCount,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -765,11 +789,14 @@ class _MembersTab extends StatelessWidget {
           children: [
             _TopBar(teamName: teamName, logoUrl: logoUrl),
             const SizedBox(height: 16),
-            const _StatsSummaryRow(),
+            _StatsSummaryRow(
+              activePlayers: _countActivePlayers(users ?? []),
+              totalPlayers: membersCount ?? (users?.length ?? 0),
+            ),
             const SizedBox(height: 16),
             const _PlayersSectionTitle(),
             const SizedBox(height: 16),
-            const _PlayerList(),
+            _PlayerList(players: users ?? const []),
           ],
         ),
       ),
@@ -779,8 +806,17 @@ class _MembersTab extends StatelessWidget {
 
 /// Row showing active and total players stats.
 class _StatsSummaryRow extends StatelessWidget {
+  /// Number of active players in the team.
+  final int activePlayers;
+
+  /// Total number of players in the team.
+  final int totalPlayers;
+
   /// Creates a const [_StatsSummaryRow].
-  const _StatsSummaryRow();
+  const _StatsSummaryRow({
+    required this.activePlayers,
+    required this.totalPlayers,
+  });
 
   Widget _buildBox({
     required String label,
@@ -819,16 +855,16 @@ class _StatsSummaryRow extends StatelessWidget {
       children: [
         _buildBox(
           label: 'اللاعبين النشطين',
-          value: '10',
+          value: activePlayers.toString(),
           valueColor: Colors.green,
           bgColor: const Color(0xFFE1F3E2),
         ),
         const SizedBox(width: 8),
         _buildBox(
           label: 'إجمالي اللاعبين',
-          value: '10',
+          value: totalPlayers.toString(),
           valueColor: Colors.grey,
-          bgColor: Color(0xFFF0F0F0),
+          bgColor: const Color(0xFFF0F0F0),
         ),
       ],
     );
@@ -860,28 +896,26 @@ class _PlayersSectionTitle extends StatelessWidget {
 
 /// List of player cards.
 class _PlayerList extends StatelessWidget {
+  /// List of players to display.
+  final List<dynamic> players;
+
   /// Creates a const [_PlayerList].
-  const _PlayerList();
+  const _PlayerList({required this.players});
 
   @override
   Widget build(BuildContext context) {
-    final players = [
-      {'num': 3, 'name': 'فهد', 'shirt': 3, 'phone': '٠........٥'},
-      {'num': 10, 'name': 'عمر', 'shirt': 10, 'phone': '٠........٥'},
-      {'num': 8, 'name': 'سالم', 'shirt': 8, 'phone': '٠........٥'},
-    ];
     return ListView.separated(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: players.length,
       separatorBuilder: (_, __) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
-        final p = players[index];
+        final p = players[index] as Map<String, dynamic>;
         return _PlayerCard(
-          number: p['num'] as int,
-          name: p['name'] as String,
-          shirt: p['shirt'] as int,
-          phone: p['phone'] as String,
+          number: (p['num'] ?? index + 1) as int,
+          name: p['name'] as String? ?? '',
+          shirt: (p['shirt'] ?? p['shirt_number'] ?? 0) as int,
+          phone: obfuscatePhone((p['phone'] ?? p['mobile'] ?? '') as String),
         );
       },
     );
