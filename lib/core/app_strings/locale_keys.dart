@@ -296,4 +296,6 @@ abstract class LocaleKeys {
   static const team_details_join = 'team_details_join';
   static const team_details_transfer = 'team_details_transfer';
   static const team_details_chat = 'team_details_chat';
+  static const player_active = 'player_active';
+  static const player_inactive = 'player_inactive';
 }

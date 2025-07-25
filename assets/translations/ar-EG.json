@@ -249,5 +249,7 @@
 "team_details_members":"الأعضاء",
 "team_details_join":"الانضمام",
 "team_details_transfer":"الانتقال",
-"team_details_chat":"الدردشة"
+"team_details_chat":"الدردشة",
+"player_active":"نشط",
+"player_inactive":"غير نشط"
 }
