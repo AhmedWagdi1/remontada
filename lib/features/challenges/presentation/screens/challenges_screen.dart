@@ -805,7 +805,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    GestureDetector(
+                    if (_hasTeam == false) GestureDetector(
                       onTap: () {
                         Navigator.push(
                           context,
