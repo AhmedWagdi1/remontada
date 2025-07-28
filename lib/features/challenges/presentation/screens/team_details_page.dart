@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import '../../../../core/app_strings/locale_keys.dart';
 import '../../../../core/config/key.dart';
 import '../../../../core/utils/utils.dart';
+import '../../../../core/utils/extentions.dart';
 import '../../../../shared/widgets/network_image.dart';
 
 /// Finds a member with the given [role] inside the provided [users] list.
@@ -81,6 +82,9 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
         team['sub_leader'] = subLeader == null
             ? null
             : {'name': subLeader['name'], 'phone': subLeader['mobile']};
+
+        final rankings = team['rankings'] as Map<String, dynamic>?;
+        team['competitive'] = rankings?['competitive'] as Map<String, dynamic>?;
         setState(() {
           _teamData = team;
         });
@@ -116,11 +120,16 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                       bio: _teamData?['bio'] as String?,
                       membersCount: _teamData?['members_count'] as int?,
                       logoUrl: _teamData?['logo_url'] as String?,
+                      ranking: _teamData?['competitive'] as Map<String, dynamic>?,
                     ),
                     SizedBox(height: 16),
-                    _AchievementsSection(),
+                    _AchievementsSection(
+                      ranking: _teamData?['competitive'] as Map<String, dynamic>?,
+                    ),
                     SizedBox(height: 16),
-                    _DetailedStatsSection(),
+                    _DetailedStatsSection(
+                      ranking: _teamData?['competitive'] as Map<String, dynamic>?,
+                    ),
                     SizedBox(height: 16),
                     _HonorsAchievementsSection(),
                     SizedBox(height: 16),
@@ -259,12 +268,16 @@ class _TeamSummaryCard extends StatelessWidget {
   /// Optional logo URL for the team.
   final String? logoUrl;
 
+  /// Competitive ranking information for stats.
+  final Map<String, dynamic>? ranking;
+
   /// Creates a [_TeamSummaryCard] with optional details.
   const _TeamSummaryCard({
     this.teamName,
     this.bio,
     this.membersCount,
     this.logoUrl,
+    this.ranking,
   });
 
   @override
@@ -311,8 +324,14 @@ class _TeamSummaryCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _TeamStatItem(number: members, label: 'اللاعبين'),
-              const _TeamStatItem(number: '15', label: 'المباريات'),
-              const _TeamStatItem(number: '12', label: 'الانتصارات'),
+              _TeamStatItem(
+                number: (ranking?['match_count'] ?? 0).toString(),
+                label: 'المباريات',
+              ),
+              _TeamStatItem(
+                number: (ranking?['wins'] ?? 0).toString(),
+                label: 'الانتصارات',
+              ),
             ],
           ),
         ],
@@ -351,8 +370,11 @@ class _TeamStatItem extends StatelessWidget {
 
 /// Section showing the achievements and badges for the team.
 class _AchievementsSection extends StatelessWidget {
+  /// Competitive ranking information from the backend.
+  final Map<String, dynamic>? ranking;
+
   /// Creates a const [_AchievementsSection].
-  const _AchievementsSection();
+  const _AchievementsSection({this.ranking});
 
   @override
   Widget build(BuildContext context) {
@@ -376,42 +398,22 @@ class _AchievementsSection extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 8),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: const [
-            _Badge(
-              label: 'ذهبي',
-              color: Colors.amber,
-              count: '5x',
-              icon: Icons.emoji_events,
-            ),
-            _Badge(
-              label: 'فضي',
-              color: Colors.grey,
-              count: '3x',
-              icon: Icons.emoji_events,
-            ),
-            _Badge(
-              label: 'برونزي',
-              color: Colors.brown,
-              count: '2x',
-              icon: Icons.emoji_events,
-            ),
-            _Badge(
-              label: 'أسطوري',
-              color: Colors.deepPurple,
-              count: '1x',
-              icon: Icons.emoji_events,
-            ),
-            _Badge(
-              label: 'بلاتيني',
-              color: Colors.blueGrey,
-              count: '1x',
-              icon: Icons.emoji_events,
-            ),
-          ],
-        ),
+        if (ranking != null)
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _Badge(
+                label: ranking!['level']?.toString() ?? '',
+                color: (ranking!['level_color'] as String?)?.toColor() ??
+                    Colors.grey,
+                count: '',
+                icon: Icons.emoji_events,
+              ),
+            ],
+          )
+        else
+          const Text('لا يوجد اوسمة و انجازات بعد'),
       ],
     );
   }
@@ -453,8 +455,10 @@ class _Badge extends StatelessWidget {
           Icon(icon, size: 16, color: Colors.white),
           const SizedBox(width: 4),
           Text(label, style: const TextStyle(color: Colors.white)),
-          const SizedBox(width: 4),
-          Text(count, style: const TextStyle(color: Colors.white)),
+          if (count.isNotEmpty) ...[
+            const SizedBox(width: 4),
+            Text(count, style: const TextStyle(color: Colors.white)),
+          ],
         ],
       ),
     );
@@ -463,8 +467,11 @@ class _Badge extends StatelessWidget {
 
 /// Section showing detailed statistics in a 2x2 grid.
 class _DetailedStatsSection extends StatelessWidget {
+  /// Competitive ranking information from the backend.
+  final Map<String, dynamic>? ranking;
+
   /// Creates a const [_DetailedStatsSection].
-  const _DetailedStatsSection();
+  const _DetailedStatsSection({this.ranking});
 
   @override
   Widget build(BuildContext context) {
@@ -496,33 +503,33 @@ class _DetailedStatsSection extends StatelessWidget {
               crossAxisCount: 2,
               physics: const NeverScrollableScrollPhysics(),
               childAspectRatio: 1.3,
-              children: const [
+              children: [
                 _StatTile(
                   icon: Icons.emoji_events,
-                  value: '12',
+                  value: (ranking?['wins'] ?? 0).toString(),
                   label: 'الانتصارات',
-                  backgroundColor: Color(0xFFE1F3E2),
+                  backgroundColor: const Color(0xFFE1F3E2),
                   textColor: Colors.green,
                 ),
                 _StatTile(
                   icon: Icons.sports_soccer,
-                  value: '15',
+                  value: (ranking?['match_count'] ?? 0).toString(),
                   label: 'المباريات',
-                  backgroundColor: Color(0xFFE1F0FB),
+                  backgroundColor: const Color(0xFFE1F0FB),
                   textColor: Colors.blue,
                 ),
                 _StatTile(
                   icon: Icons.trending_down,
-                  value: '1',
+                  value: (ranking?['losses'] ?? 0).toString(),
                   label: 'الهزائم',
-                  backgroundColor: Color(0xFFFDEAEA),
+                  backgroundColor: const Color(0xFFFDEAEA),
                   textColor: Colors.red,
                 ),
                 _StatTile(
                   icon: Icons.swap_horiz,
-                  value: '2',
+                  value: (ranking?['draws'] ?? 0).toString(),
                   label: 'التعادل',
-                  backgroundColor: Color(0xFFFFF4D9),
+                  backgroundColor: const Color(0xFFFFF4D9),
                   textColor: Colors.orange,
                 ),
               ],
