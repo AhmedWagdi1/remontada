@@ -25,6 +25,8 @@ class Utils {
   static User user = User();
   static bool fromNotification = false;
 
+  static String get userId => user.user?.id?.toString() ?? '';
+
   // static UserModel userModel = UserModel();
   static GlobalKey<NavigatorState> navigatorKey() =>
       locator<GlobalKey<NavigatorState>>();

@@ -1,12 +1,18 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:http/http.dart' as http;
 import '../../../../core/app_strings/locale_keys.dart';
 import '../../../../core/config/key.dart';
 import '../../../../core/utils/utils.dart';
 import '../../../../core/utils/extentions.dart';
+import '../../../../core/utils/Locator.dart';
 import '../../../../shared/widgets/network_image.dart';
+import '../../../chat/cubit/chat_cubit.dart';
+import '../../../chat/cubit/chat_states.dart';
+import '../../../chat/domain/repository/chat_repository.dart';
+import '../../../chat/domain/request/send_message_request.dart';
 
 /// Finds a member with the given [role] inside the provided [users] list.
 Map<String, dynamic>? _findMemberByRole(List<dynamic> users, String role) {
@@ -164,6 +170,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
               ),
               // Chat tab for messaging within the team.
               _ChatTab(
+                teamId: widget.teamId.toString(),
                 teamName: _teamData?['name'] as String?,
                 logoUrl: _teamData?['logo_url'] as String?,
               ),
@@ -1445,8 +1452,11 @@ class _TransferRequestCard extends StatelessWidget {
   }
 }
 
-/// Chat tab displaying a simple team chat UI with a list of messages.
-class _ChatTab extends StatelessWidget {
+/// Chat tab displaying real team chat functionality.
+class _ChatTab extends StatefulWidget {
+  /// Team ID for the chat.
+  final String teamId;
+
   /// Team name used in the [_TopBar].
   final String? teamName;
 
@@ -1454,77 +1464,274 @@ class _ChatTab extends StatelessWidget {
   final String? logoUrl;
 
   /// Creates a [_ChatTab].
-  const _ChatTab({this.teamName, this.logoUrl});
+  const _ChatTab({
+    required this.teamId,
+    this.teamName, 
+    this.logoUrl,
+  });
+
+  @override
+  State<_ChatTab> createState() => _ChatTabState();
+}
+
+class _ChatTabState extends State<_ChatTab> {
+  final TextEditingController _messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  late TeamMessagesCubit _messagesCubit;
+  late SendMessageCubit _sendMessageCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize cubits with the actual team ID using service locator
+    _messagesCubit = TeamMessagesCubit(
+      locator<ChatRepository>(), 
+      widget.teamId
+    );
+    _sendMessageCubit = SendMessageCubit(
+      locator<ChatRepository>()
+    );
+    
+    _messagesCubit.loadMessages(refresh: true);
+    
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >= 
+          _scrollController.position.maxScrollExtent - 200) {
+        _messagesCubit.loadMoreMessages();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    _scrollController.dispose();
+    _messagesCubit.close();
+    _sendMessageCubit.close();
+    super.dispose();
+  }
+
+  void _sendMessage() {
+    final message = _messageController.text.trim();
+    if (message.isNotEmpty) {
+      _sendMessageCubit.sendMessage(
+        SendMessageRequest(
+          teamId: widget.teamId,
+          message: message,
+        ),
+      );
+      _messageController.clear();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
-    final messages = [
-      {
-        'sender': 'حسن',
-        'text': 'مرحبا شباب',
-        'time': '10:00',
-        'isSender': true,
-      },
-      {
-        'sender': 'محمود',
-        'text': 'أهلا بك',
-        'time': '10:05',
-        'isSender': false,
-      },
-    ];
-
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Column(
-        children: [
-          _TopBar(teamName: teamName, logoUrl: logoUrl),
-          Container(
-            color: const Color(0xFFF2F2F2),
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Row(
-                  children: [
-                    Icon(Icons.wifi, color: Colors.green, size: 16),
-                    SizedBox(width: 4),
-                    Text('متصل', style: TextStyle(color: Colors.green)),
-                  ],
-                ),
-                Text(
-                  'دردشة الفريق',
-                  style: TextStyle(
-                    color: darkBlue,
-                    fontWeight: FontWeight.bold,
+    
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: _messagesCubit),
+        BlocProvider.value(value: _sendMessageCubit),
+      ],
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Column(
+          children: [
+            _TopBar(teamName: widget.teamName, logoUrl: widget.logoUrl),
+            Container(
+              color: const Color(0xFFF2F2F2),
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  Row(
+                    children: [
+                      Icon(Icons.wifi, color: Colors.green, size: 16),
+                      SizedBox(width: 4),
+                      Text('متصل', style: TextStyle(color: Colors.green)),
+                    ],
                   ),
+                  Text(
+                    'دردشة الفريق',
+                    style: TextStyle(
+                      color: darkBlue,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Icon(Icons.chat_bubble, color: darkBlue),
+                ],
+              ),
+            ),
+            Expanded(
+              child: BlocBuilder<TeamMessagesCubit, TeamMessagesState>(
+                builder: (context, state) {
+                  if (state is TeamMessagesLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  
+                  if (state is TeamMessagesError) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.error_outline, size: 64, color: Colors.grey),
+                          const SizedBox(height: 16),
+                          Text(state.message),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () => _messagesCubit.loadMessages(refresh: true),
+                            child: const Text('إعادة المحاولة'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  
+                  if (state is TeamMessagesLoaded) {
+                    if (state.messages.isEmpty) {
+                      return const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.chat_bubble_outline, size: 64, color: Colors.grey),
+                            SizedBox(height: 16),
+                            Text('لا توجد رسائل بعد'),
+                            SizedBox(height: 8),
+                            Text('ابدأ المحادثة!', style: TextStyle(color: Colors.grey)),
+                          ],
+                        ),
+                      );
+                    }
+                    
+                    return ListView.builder(
+                      controller: _scrollController,
+                      reverse: true,
+                      padding: const EdgeInsets.all(12),
+                      itemCount: state.messages.length + (state.isLoadingMore ? 1 : 0),
+                      itemBuilder: (context, index) {
+                        if (index == state.messages.length) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+                        
+                        final message = state.messages[index];
+                        final isMyMessage = message.senderId == Utils.userId;
+                        
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: _MessageBubble(
+                            sender: message.senderName,
+                            message: message.message,
+                            time: _formatTime(message.timestamp),
+                            isSender: isMyMessage,
+                            onDelete: isMyMessage ? () => _messagesCubit.deleteMessage(message.id) : null,
+                          ),
+                        );
+                      },
+                    );
+                  }
+                  
+                  return const SizedBox.shrink();
+                },
+              ),
+            ),
+            BlocListener<SendMessageCubit, SendMessageState>(
+              listener: (context, state) {
+                if (state is SendMessageError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              },
+              child: _buildMessageInput(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMessageInput() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(top: BorderSide(color: Colors.grey, width: 0.5)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: TextField(
+                controller: _messageController,
+                maxLines: null,
+                textInputAction: TextInputAction.newline,
+                decoration: const InputDecoration(
+                  hintText: 'اكتب رسالة...',
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 ),
-                Icon(Icons.chat_bubble, color: darkBlue),
-              ],
+                onSubmitted: (_) => _sendMessage(),
+              ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              reverse: true,
-              padding: const EdgeInsets.all(12),
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                final msg = messages[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: _MessageBubble(
-                    sender: msg['sender'] as String,
-                    message: msg['text'] as String,
-                    time: msg['time'] as String,
-                    isSender: msg['isSender'] as bool,
+          const SizedBox(width: 8),
+          BlocBuilder<SendMessageCubit, SendMessageState>(
+            builder: (context, state) {
+              final isLoading = state is SendMessageLoading;
+              return GestureDetector(
+                onTap: isLoading ? null : _sendMessage,
+                child: Container(
+                  width: 48,
+                  height: 48,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF23425F),
+                    shape: BoxShape.circle,
                   ),
-                );
-              },
-            ),
+                  child: isLoading
+                      ? const Padding(
+                          padding: EdgeInsets.all(12),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : const Icon(Icons.send, color: Colors.white, size: 20),
+                ),
+              );
+            },
           ),
         ],
       ),
     );
+  }
+
+  String _formatTime(DateTime dateTime) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final messageDate = DateTime(dateTime.year, dateTime.month, dateTime.day);
+
+    if (messageDate == today) {
+      return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+    } else if (now.difference(messageDate).inDays == 1) {
+      return 'أمس';
+    } else if (now.difference(messageDate).inDays < 7) {
+      const weekdays = ['الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت', 'الأحد'];
+      return weekdays[dateTime.weekday - 1];
+    } else {
+      return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+    }
   }
 }
 
@@ -1542,58 +1749,124 @@ class _MessageBubble extends StatelessWidget {
   /// Whether the current user is the sender.
   final bool isSender;
 
+  /// Optional callback for deleting the message (only for sender's messages).
+  final VoidCallback? onDelete;
+
   /// Creates a const [_MessageBubble].
   const _MessageBubble({
     required this.sender,
     required this.message,
     required this.time,
     required this.isSender,
+    this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
-    final bubbleColor = isSender ? const Color(0xFFF2F2F2) : Colors.white;
+    const darkBlue = Color(0xFF23425F);
+    final bubbleColor = isSender ? darkBlue : Colors.white;
+    final textColor = isSender ? Colors.white : Colors.black87;
     final mainAxis = isSender ? MainAxisAlignment.end : MainAxisAlignment.start;
-    return Column(
-      crossAxisAlignment:
-          isSender ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-      children: [
-        Text(time, style: const TextStyle(fontSize: 10, color: Colors.grey)),
-        const SizedBox(height: 2),
-        Text(sender, style: const TextStyle(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 4),
-        Row(
-          mainAxisAlignment: mainAxis,
-          children: [
-            if (isSender) ...[
-              const Icon(Icons.person_outline),
-              const SizedBox(width: 4),
-            ],
-            Flexible(
+    
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: mainAxis,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          if (!isSender) ...[
+            const CircleAvatar(
+              radius: 16,
+              child: Icon(Icons.person, size: 16),
+            ),
+            const SizedBox(width: 8),
+          ],
+          Flexible(
+            child: GestureDetector(
+              onLongPress: onDelete != null ? () => _showDeleteDialog(context) : null,
               child: Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
                   color: bubbleColor,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.only(
+                    topLeft: const Radius.circular(16),
+                    topRight: const Radius.circular(16),
+                    bottomLeft: isSender ? const Radius.circular(16) : const Radius.circular(4),
+                    bottomRight: isSender ? const Radius.circular(4) : const Radius.circular(16),
+                  ),
                   boxShadow: [
-                    if (!isSender)
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
                   ],
                 ),
-                child: Text(message),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (!isSender)
+                      Text(
+                        sender,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: darkBlue,
+                        ),
+                      ),
+                    if (!isSender) const SizedBox(height: 2),
+                    Text(
+                      message,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: textColor,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      time,
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: isSender ? Colors.white70 : Colors.grey[600],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            if (!isSender) ...[
-              const SizedBox(width: 4),
-              const Icon(Icons.person_outline),
-            ],
+          ),
+          if (isSender) ...[
+            const SizedBox(width: 8),
+            const CircleAvatar(
+              radius: 16,
+              child: Icon(Icons.person, size: 16),
+            ),
           ],
-        ),
-      ],
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('حذف الرسالة'),
+        content: const Text('هل أنت متأكد من حذف هذه الرسالة؟'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('إلغاء'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              onDelete?.call();
+            },
+            child: const Text('حذف', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
     );
   }
 }

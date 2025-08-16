@@ -13,6 +13,11 @@ import 'package:remontada/features/profile/presentation/screens/edit_profile.scr
 import 'package:remontada/features/splash/cubit/splash_cubit.dart';
 import 'package:remontada/features/splash/presentation/screens/splash/update_app.dart';
 import 'package:remontada/features/staticScreens/presentation/screens/privacy_policy_screen.dart';
+import 'package:remontada/features/chat/presentation/screens/team_chats_screen.dart';
+import 'package:remontada/features/chat/presentation/screens/team_messages_screen.dart';
+import 'package:remontada/features/chat/cubit/chat_cubit.dart';
+import 'package:remontada/features/chat/domain/repository/chat_repository.dart';
+import 'package:remontada/core/utils/Locator.dart';
 
 import '../../features/auth/presentation/screens/login/login_screen.dart';
 import '../../features/auth/presentation/screens/otp/otp_screen.dart';
@@ -48,6 +53,8 @@ class Routes {
   static const String PlayersScreenSupervisor = "/PlayersScreenSupervisor";
   static const String challengesScreen = "/ChallengesScreen";
   static const String UpdateAppScreen = "/UpdateAppScreen";
+  static const String TeamChatsScreen = "/TeamChatsScreen";
+  static const String TeamMessagesScreen = "/TeamMessagesScreen";
 }
 
 class RouteGenerator {
@@ -228,12 +235,39 @@ class RouteGenerator {
             return const ChallengesScreen();
           },
         );
-      // case Routes.SplashScreen:
-      //   return CupertinoPageRoute(
-      //       settings: routeSettings,
-      //       builder: (_) {
-      //         return const SplashScreen();
-      //       });
+      case Routes.TeamChatsScreen:
+        return CupertinoPageRoute(
+          settings: routeSettings,
+          builder: (_) {
+            return BlocProvider(
+              create: (context) => ChatCubit(locator<ChatRepository>()),
+              child: const TeamChatsScreen(),
+            );
+          },
+        );
+      case Routes.TeamMessagesScreen:
+        return CupertinoPageRoute(
+          settings: routeSettings,
+          builder: (_) {
+            final args = routeSettings.arguments as Map<String, dynamic>;
+            
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => TeamMessagesCubit(locator<ChatRepository>(), args['teamId']),
+                ),
+                BlocProvider(
+                  create: (context) => SendMessageCubit(locator<ChatRepository>()),
+                ),
+              ],
+              child: TeamMessagesScreen(
+                teamId: args['teamId'],
+                teamName: args['teamName'],
+                teamAvatar: args['teamAvatar'],
+              ),
+            );
+          },
+        );
 
       default:
         return unDefinedRoute();
