@@ -393,6 +393,18 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     );
   }
 
+  /// Displays a placeholder message when the player does not belong to a team.
+  Widget _noTeamPlaceholder() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 24),
+      child: Text(
+        'You need a team to participate in challenges',
+        textAlign: TextAlign.center,
+        style: TextStyle(color: Colors.grey),
+      ),
+    );
+  }
+
   /// Builds a button allowing a user to initiate a new challenge.
   Widget _createChallengeButton() {
     const darkBlue = Color(0xFF23425F);
@@ -958,8 +970,13 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                           ],
                           _completedChallengeCard(),
                           const SizedBox(height: 12),
-                          _joinChallengeCard(),
-                          const SizedBox(height: 12),
+                          if (_hasTeam ?? false) ...[
+                            _joinChallengeCard(),
+                            const SizedBox(height: 12),
+                          ] else ...[
+                            _noTeamPlaceholder(),
+                            const SizedBox(height: 12),
+                          ],
                           _howChallengesWorkCard(),
                         ],
                       ),
