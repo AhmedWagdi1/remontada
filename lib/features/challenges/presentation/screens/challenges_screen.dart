@@ -14,6 +14,51 @@ import 'package:http/http.dart' as http;
 import '../../../../core/config/key.dart';
 import '../../../../core/utils/utils.dart';
 
+/// A single entry in the league standings table.
+class Standing {
+  final int rank;
+  final String name;
+  final String logo;
+  final int played;
+  final int won;
+  final int drawn;
+  final int lost;
+  final int goalsFor;
+  final int goalsAgainst;
+  final int goalDiff;
+  final int points;
+
+  Standing({
+    required this.rank,
+    required this.name,
+    required this.logo,
+    required this.played,
+    required this.won,
+    required this.drawn,
+    required this.lost,
+    required this.goalsFor,
+    required this.goalsAgainst,
+    required this.goalDiff,
+    required this.points,
+  });
+
+  factory Standing.fromJson(Map<String, dynamic> json) {
+    return Standing(
+      rank: json['rank'] as int? ?? 0,
+      name: json['name'] as String? ?? '',
+      logo: json['logo'] as String? ?? '',
+      played: json['played'] as int? ?? 0,
+      won: json['won'] as int? ?? 0,
+      drawn: json['drawn'] as int? ?? 0,
+      lost: json['lost'] as int? ?? 0,
+      goalsFor: json['gf'] as int? ?? 0,
+      goalsAgainst: json['ga'] as int? ?? 0,
+      goalDiff: json['gd'] as int? ?? 0,
+      points: json['pts'] as int? ?? 0,
+    );
+  }
+}
+
 /// Placeholder screen shown for the upcoming Challenges feature.
 class ChallengesScreen extends StatefulWidget {
   /// Optional flag indicating whether the current player already belongs to a team.
@@ -35,62 +80,9 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     'assets/images/slider.png',
     'assets/images/slider.png',
   ];
-
-  /// Dummy league standings used in the league table widget.
-  final List<Map<String, dynamic>> _standings = [
-    {
-      'rank': 1,
-      'name': 'الفهود',
-      'logo': 'assets/images/profile_image.png',
-      'played': 5,
-      'won': 4,
-      'drawn': 1,
-      'lost': 0,
-      'gf': 12,
-      'ga': 3,
-      'gd': 9,
-      'pts': 13,
-    },
-    {
-      'rank': 2,
-      'name': 'النسور',
-      'logo': 'assets/images/profile_image.png',
-      'played': 5,
-      'won': 3,
-      'drawn': 1,
-      'lost': 1,
-      'gf': 9,
-      'ga': 6,
-      'gd': 3,
-      'pts': 10,
-    },
-    {
-      'rank': 3,
-      'name': 'الصقور',
-      'logo': 'assets/images/profile_image.png',
-      'played': 5,
-      'won': 2,
-      'drawn': 2,
-      'lost': 1,
-      'gf': 7,
-      'ga': 5,
-      'gd': 2,
-      'pts': 8,
-    },
-    {
-      'rank': 4,
-      'name': 'الابطال',
-      'logo': 'assets/images/profile_image.png',
-      'played': 5,
-      'won': 1,
-      'drawn': 1,
-      'lost': 3,
-      'gf': 5,
-      'ga': 10,
-      'gd': -5,
-      'pts': 4,
-    },
-  ];
+  List<Standing> _standings = [];
+  bool _loadingStandings = false;
+  String? _standingsError;
   int _currentSlideIndex = 0;
   bool? _hasTeam;
 
@@ -130,6 +122,45 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     setState(() => _hasTeam = false);
   }
 
+  /// Retrieves league standings from the backend API.
+  ///
+  /// Sends a GET request to `/league/standings` and expects:
+  /// `{ "status": true, "data": [ { "rank": 1, "name": "...", ... } ] }`.
+  Future<void> _fetchStandings() async {
+    setState(() {
+      _loadingStandings = true;
+      _standingsError = null;
+    });
+    try {
+      final res = await http.get(
+        Uri.parse('${ConstKeys.baseUrl}/league/standings'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Utils.token}',
+        },
+      );
+      if (res.statusCode < 400) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        if (data['status'] == true) {
+          final list = (data['data'] as List<dynamic>)
+              .map((e) => Standing.fromJson(e as Map<String, dynamic>))
+              .toList();
+          setState(() => _standings = list);
+        } else {
+          _standingsError = 'Failed to load standings';
+        }
+      } else {
+        _standingsError = 'Failed to load standings';
+      }
+    } catch (_) {
+      _standingsError = 'Failed to load standings';
+    } finally {
+      if (mounted) {
+        setState(() => _loadingStandings = false);
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -139,6 +170,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     } else {
       _fetchUserTeams();
     }
+    _fetchStandings();
   }
 
   @override
@@ -601,6 +633,16 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     const headingStyle = TextStyle(fontSize: 12, fontWeight: FontWeight.bold);
     const dataStyle = TextStyle(fontSize: 12);
 
+    if (_loadingStandings) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_standingsError != null) {
+      return Center(child: Text(_standingsError!));
+    }
+    if (_standings.isEmpty) {
+      return const Center(child: Text('No standings available'));
+    }
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Container(
@@ -661,28 +703,30 @@ class _ChallengesScreenState extends State<ChallengesScreen>
               ),
             ],
             rows: _standings.map((team) {
-              final int gd = team['gd'] as int;
+              final int gd = team.goalDiff;
               return DataRow(
                 cells: [
-                  DataCell(Text(team['rank'].toString(), style: dataStyle)),
+                  DataCell(Text(team.rank.toString(), style: dataStyle)),
                   DataCell(
                     Row(
                       children: [
                         CircleAvatar(
                           radius: 12,
-                          backgroundImage: AssetImage(team['logo'] as String),
+                          backgroundImage: team.logo.startsWith('http')
+                              ? NetworkImage(team.logo)
+                              : AssetImage(team.logo) as ImageProvider,
                         ),
                         const SizedBox(width: 4),
-                        Text(team['name'] as String, style: headingStyle),
+                        Text(team.name, style: headingStyle),
                       ],
                     ),
                   ),
-                  DataCell(Text(team['played'].toString(), style: dataStyle)),
-                  DataCell(Text(team['won'].toString(), style: dataStyle)),
-                  DataCell(Text(team['drawn'].toString(), style: dataStyle)),
-                  DataCell(Text(team['lost'].toString(), style: dataStyle)),
-                  DataCell(Text(team['gf'].toString(), style: dataStyle)),
-                  DataCell(Text(team['ga'].toString(), style: dataStyle)),
+                  DataCell(Text(team.played.toString(), style: dataStyle)),
+                  DataCell(Text(team.won.toString(), style: dataStyle)),
+                  DataCell(Text(team.drawn.toString(), style: dataStyle)),
+                  DataCell(Text(team.lost.toString(), style: dataStyle)),
+                  DataCell(Text(team.goalsFor.toString(), style: dataStyle)),
+                  DataCell(Text(team.goalsAgainst.toString(), style: dataStyle)),
                   DataCell(
                     Text(
                       gd.toString(),
@@ -691,7 +735,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                       ),
                     ),
                   ),
-                  DataCell(Text(team['pts'].toString(), style: dataStyle)),
+                  DataCell(Text(team.points.toString(), style: dataStyle)),
                 ],
               );
             }).toList(),
@@ -949,7 +993,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                     labelStyle: const TextStyle(fontWeight: FontWeight.bold),
                     tabs: [
                       Tab(text: LocaleKeys.challenges_nav.tr()),
-                      Tab(text: LocaleKeys.league_schedule.tr()),
+                      Tab(text: LocaleKeys.league_results.tr()),
                       Tab(text: LocaleKeys.championships.tr()),
                     ],
                   ),
