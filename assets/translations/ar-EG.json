@@ -251,5 +251,32 @@
 "team_details_transfer":"الانتقال",
 "team_details_chat":"الدردشة",
 "player_active":"نشط",
-"player_inactive":"غير نشط"
+"player_inactive":"غير نشط",
+
+"chat": {
+  "team_chats": "دردشات الفرق",
+  "no_teams": "لا توجد فرق متاحة",
+  "no_teams_available": "لا توجد دردشات فرق متاحة",
+  "error_loading": "فشل في تحميل البيانات",
+  "retry": "إعادة المحاولة",
+  "no_messages": "لا توجد رسائل بعد",
+  "start_conversation": "ابدأ المحادثة!",
+  "type_message": "اكتب رسالة...",
+  "connected": "متصل",
+  "team_chat_title": "دردشة الفريق",
+  "delete_message": "حذف الرسالة",
+  "delete_message_confirm": "هل أنت متأكد من حذف هذه الرسالة؟",
+  "cancel": "إلغاء",
+  "delete": "حذف",
+  "failed_to_send": "فشل في إرسال الرسالة",
+  "failed_to_load": "فشل في تحميل الرسائل",
+  "yesterday": "أمس",
+  "monday": "الإثنين",
+  "tuesday": "الثلاثاء",
+  "wednesday": "الأربعاء",
+  "thursday": "الخميس",
+  "friday": "الجمعة",
+  "saturday": "السبت",
+  "sunday": "الأحد"
+}
 }

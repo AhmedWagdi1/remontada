@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 
+import '../../../../core/app_strings/locale_keys.dart';
 import '../../domain/model/team_chat.dart';
 
 class TeamChatItem extends StatelessWidget {
@@ -47,7 +49,7 @@ class TeamChatItem extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               )
             : Text(
-                'No messages yet',
+                LocaleKeys.chat_no_messages.tr(),
                 style: TextStyle(
                   fontSize: 14.sp,
                   color: Colors.grey[500],

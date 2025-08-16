@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../core/utils/utils.dart';
+import '../../../../core/app_strings/locale_keys.dart';
 import '../../domain/model/chat_message.dart';
 
 class MessageItem extends StatelessWidget {
@@ -141,9 +143,17 @@ class MessageItem extends StatelessWidget {
     if (messageDate == today) {
       return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
     } else if (now.difference(messageDate).inDays == 1) {
-      return 'Yesterday';
+      return LocaleKeys.chat_yesterday.tr();
     } else if (now.difference(messageDate).inDays < 7) {
-      const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      final weekdays = [
+        LocaleKeys.chat_monday.tr(),
+        LocaleKeys.chat_tuesday.tr(),
+        LocaleKeys.chat_wednesday.tr(),
+        LocaleKeys.chat_thursday.tr(),
+        LocaleKeys.chat_friday.tr(),
+        LocaleKeys.chat_saturday.tr(),
+        LocaleKeys.chat_sunday.tr(),
+      ];
       return weekdays[dateTime.weekday - 1];
     } else {
       return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
@@ -154,21 +164,21 @@ class MessageItem extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Message'),
-        content: const Text('Are you sure you want to delete this message?'),
+        title: Text(LocaleKeys.chat_delete_message.tr()),
+        content: Text(LocaleKeys.chat_delete_message_confirm.tr()),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(LocaleKeys.chat_cancel.tr()),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               onDelete(message.id);
             },
-            child: const Text(
-              'Delete',
-              style: TextStyle(color: Colors.red),
+            child: Text(
+              LocaleKeys.chat_delete.tr(),
+              style: const TextStyle(color: Colors.red),
             ),
           ),
         ],

@@ -8,6 +8,7 @@ import '../../../../core/config/key.dart';
 import '../../../../core/utils/utils.dart';
 import '../../../../core/utils/extentions.dart';
 import '../../../../core/utils/Locator.dart';
+import '../../../../core/app_strings/locale_keys.dart';
 import '../../../../shared/widgets/network_image.dart';
 import '../../../chat/cubit/chat_cubit.dart';
 import '../../../chat/cubit/chat_states.dart';
@@ -1548,11 +1549,11 @@ class _ChatTabState extends State<_ChatTab> {
                     children: [
                       Icon(Icons.wifi, color: Colors.green, size: 16),
                       SizedBox(width: 4),
-                      Text('متصل', style: TextStyle(color: Colors.green)),
+                      Text(LocaleKeys.chat_connected.tr(), style: TextStyle(color: Colors.green)),
                     ],
                   ),
                   Text(
-                    'دردشة الفريق',
+                    LocaleKeys.chat_team_chat_title.tr(),
                     style: TextStyle(
                       color: darkBlue,
                       fontWeight: FontWeight.bold,
@@ -1580,7 +1581,7 @@ class _ChatTabState extends State<_ChatTab> {
                           const SizedBox(height: 16),
                           ElevatedButton(
                             onPressed: () => _messagesCubit.loadMessages(refresh: true),
-                            child: const Text('إعادة المحاولة'),
+                            child: Text(LocaleKeys.chat_retry.tr()),
                           ),
                         ],
                       ),
@@ -1595,9 +1596,9 @@ class _ChatTabState extends State<_ChatTab> {
                           children: [
                             Icon(Icons.chat_bubble_outline, size: 64, color: Colors.grey),
                             SizedBox(height: 16),
-                            Text('لا توجد رسائل بعد'),
+                            Text(LocaleKeys.chat_no_messages.tr()),
                             SizedBox(height: 8),
-                            Text('ابدأ المحادثة!', style: TextStyle(color: Colors.grey)),
+                            Text(LocaleKeys.chat_start_conversation.tr(), style: TextStyle(color: Colors.grey)),
                           ],
                         ),
                       );
@@ -1644,7 +1645,7 @@ class _ChatTabState extends State<_ChatTab> {
                 if (state is SendMessageError) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(state.message),
+                      content: Text(LocaleKeys.chat_failed_to_send.tr()),
                       backgroundColor: Colors.red,
                     ),
                   );
@@ -1678,7 +1679,7 @@ class _ChatTabState extends State<_ChatTab> {
                 maxLines: null,
                 textInputAction: TextInputAction.newline,
                 decoration: const InputDecoration(
-                  hintText: 'اكتب رسالة...',
+                  hintText: LocaleKeys.chat_type_message.tr(),
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 ),
@@ -1851,19 +1852,19 @@ class _MessageBubble extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('حذف الرسالة'),
-        content: const Text('هل أنت متأكد من حذف هذه الرسالة؟'),
+        title: Text(LocaleKeys.chat_delete_message.tr()),
+        content: Text(LocaleKeys.chat_delete_message_confirm.tr()),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('إلغاء'),
+            child: Text(LocaleKeys.chat_cancel.tr()),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               onDelete?.call();
             },
-            child: const Text('حذف', style: TextStyle(color: Colors.red)),
+            child: Text(LocaleKeys.chat_delete.tr(), style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),

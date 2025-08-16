@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
 
-
+import '../../../../core/app_strings/locale_keys.dart';
 import '../../cubit/chat_cubit.dart';
 import '../../cubit/chat_states.dart';
 import '../../domain/request/send_message_request.dart';
@@ -109,7 +110,7 @@ class _TeamMessagesScreenState extends State<TeamMessagesScreen> {
                         ),
                         SizedBox(height: 16.h),
                         Text(
-                          state.message,
+                          LocaleKeys.chat_failed_to_load.tr(),
                           style: TextStyle(
                             fontSize: 16.sp,
                             color: Colors.grey[600],
@@ -121,7 +122,7 @@ class _TeamMessagesScreenState extends State<TeamMessagesScreen> {
                           onPressed: () {
                             _messagesCubit.loadMessages(refresh: true);
                           },
-                          child: const Text('Retry'),
+                          child: Text(LocaleKeys.chat_retry.tr()),
                         ),
                       ],
                     ),
@@ -141,7 +142,7 @@ class _TeamMessagesScreenState extends State<TeamMessagesScreen> {
                           ),
                           SizedBox(height: 16.h),
                           Text(
-                            'No messages yet',
+                            LocaleKeys.chat_no_messages.tr(),
                             style: TextStyle(
                               fontSize: 16.sp,
                               color: Colors.grey[600],
@@ -149,7 +150,7 @@ class _TeamMessagesScreenState extends State<TeamMessagesScreen> {
                           ),
                           SizedBox(height: 8.h),
                           Text(
-                            'Start the conversation!',
+                            LocaleKeys.chat_start_conversation.tr(),
                             style: TextStyle(
                               fontSize: 14.sp,
                               color: Colors.grey[500],
@@ -200,7 +201,7 @@ class _TeamMessagesScreenState extends State<TeamMessagesScreen> {
               if (state is SendMessageError) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(state.message),
+                    content: Text(LocaleKeys.chat_failed_to_send.tr()),
                     backgroundColor: Colors.red,
                   ),
                 );

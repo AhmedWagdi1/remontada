@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
+
+import '../../../../core/app_strings/locale_keys.dart';
 
 class MessageInput extends StatelessWidget {
   final TextEditingController controller;
@@ -40,7 +43,7 @@ class MessageInput extends StatelessWidget {
                   maxLines: null,
                   textInputAction: TextInputAction.newline,
                   decoration: InputDecoration(
-                    hintText: 'Type a message...',
+                    hintText: LocaleKeys.chat_type_message.tr(),
                     hintStyle: TextStyle(
                       fontSize: 14.sp,
                       color: Colors.grey[600],

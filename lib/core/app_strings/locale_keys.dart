@@ -298,4 +298,30 @@ abstract class LocaleKeys {
   static const team_details_chat = 'team_details_chat';
   static const player_active = 'player_active';
   static const player_inactive = 'player_inactive';
+
+  // Chat keys
+  static const chat_team_chats = 'chat.team_chats';
+  static const chat_no_teams = 'chat.no_teams';
+  static const chat_no_teams_available = 'chat.no_teams_available';
+  static const chat_error_loading = 'chat.error_loading';
+  static const chat_retry = 'chat.retry';
+  static const chat_no_messages = 'chat.no_messages';
+  static const chat_start_conversation = 'chat.start_conversation';
+  static const chat_type_message = 'chat.type_message';
+  static const chat_connected = 'chat.connected';
+  static const chat_team_chat_title = 'chat.team_chat_title';
+  static const chat_delete_message = 'chat.delete_message';
+  static const chat_delete_message_confirm = 'chat.delete_message_confirm';
+  static const chat_cancel = 'chat.cancel';
+  static const chat_delete = 'chat.delete';
+  static const chat_failed_to_send = 'chat.failed_to_send';
+  static const chat_failed_to_load = 'chat.failed_to_load';
+  static const chat_yesterday = 'chat.yesterday';
+  static const chat_monday = 'chat.monday';
+  static const chat_tuesday = 'chat.tuesday';
+  static const chat_wednesday = 'chat.wednesday';
+  static const chat_thursday = 'chat.thursday';
+  static const chat_friday = 'chat.friday';
+  static const chat_saturday = 'chat.saturday';
+  static const chat_sunday = 'chat.sunday';
 }

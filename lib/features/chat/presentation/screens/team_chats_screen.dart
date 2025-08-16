@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../core/Router/Router.dart';
-
+import '../../../../core/app_strings/locale_keys.dart';
 import '../../cubit/chat_cubit.dart';
 import '../../cubit/chat_states.dart';
 import '../widgets/team_chat_item.dart';
@@ -26,7 +27,7 @@ class _TeamChatsScreenState extends State<TeamChatsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Team Chats'),
+        title: Text(LocaleKeys.chat_team_chats.tr()),
         centerTitle: true,
       ),
       body: RefreshIndicator(
@@ -53,7 +54,7 @@ class _TeamChatsScreenState extends State<TeamChatsScreen> {
                     ),
                     SizedBox(height: 16.h),
                     Text(
-                      state.message,
+                      LocaleKeys.chat_error_loading.tr(),
                       style: TextStyle(
                         fontSize: 16.sp,
                         color: Colors.grey[600],
@@ -65,7 +66,7 @@ class _TeamChatsScreenState extends State<TeamChatsScreen> {
                       onPressed: () {
                         context.read<ChatCubit>().loadTeamChats();
                       },
-                      child: const Text('Retry'),
+                      child: Text(LocaleKeys.chat_retry.tr()),
                     ),
                   ],
                 ),
@@ -85,7 +86,7 @@ class _TeamChatsScreenState extends State<TeamChatsScreen> {
                       ),
                       SizedBox(height: 16.h),
                       Text(
-                        'No team chats available',
+                        LocaleKeys.chat_no_teams_available.tr(),
                         style: TextStyle(
                           fontSize: 16.sp,
                           color: Colors.grey[600],
