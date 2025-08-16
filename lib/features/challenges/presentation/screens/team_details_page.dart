@@ -1544,22 +1544,25 @@ class _ChatTabState extends State<_ChatTab> {
               padding: const EdgeInsets.all(12),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
+                children: [
                   Row(
                     children: [
-                      Icon(Icons.wifi, color: Colors.green, size: 16),
-                      SizedBox(width: 4),
-                      Text(LocaleKeys.chat_connected.tr(), style: TextStyle(color: Colors.green)),
+                      const Icon(Icons.wifi, color: Colors.green, size: 16),
+                      const SizedBox(width: 4),
+                      Text(
+                        LocaleKeys.chat_connected.tr(),
+                        style: const TextStyle(color: Colors.green),
+                      ),
                     ],
                   ),
                   Text(
                     LocaleKeys.chat_team_chat_title.tr(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: darkBlue,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Icon(Icons.chat_bubble, color: darkBlue),
+                  const Icon(Icons.chat_bubble, color: darkBlue),
                 ],
               ),
             ),
@@ -1590,15 +1593,18 @@ class _ChatTabState extends State<_ChatTab> {
                   
                   if (state is TeamMessagesLoaded) {
                     if (state.messages.isEmpty) {
-                      return const Center(
+                      return Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.chat_bubble_outline, size: 64, color: Colors.grey),
-                            SizedBox(height: 16),
+                            const Icon(Icons.chat_bubble_outline, size: 64, color: Colors.grey),
+                            const SizedBox(height: 16),
                             Text(LocaleKeys.chat_no_messages.tr()),
-                            SizedBox(height: 8),
-                            Text(LocaleKeys.chat_start_conversation.tr(), style: TextStyle(color: Colors.grey)),
+                            const SizedBox(height: 8),
+                            Text(
+                              LocaleKeys.chat_start_conversation.tr(),
+                              style: const TextStyle(color: Colors.grey),
+                            ),
                           ],
                         ),
                       );
@@ -1678,10 +1684,10 @@ class _ChatTabState extends State<_ChatTab> {
                 controller: _messageController,
                 maxLines: null,
                 textInputAction: TextInputAction.newline,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: LocaleKeys.chat_type_message.tr(),
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 ),
                 onSubmitted: (_) => _sendMessage(),
               ),
