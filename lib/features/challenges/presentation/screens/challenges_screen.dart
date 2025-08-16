@@ -13,51 +13,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../../../core/config/key.dart';
 import '../../../../core/utils/utils.dart';
+import '../../domain/model/challenge_overview_model.dart';
+import '../../data/challenges_repository_impl.dart';
 
-/// A single entry in the league standings table.
-class Standing {
-  final int rank;
-  final String name;
-  final String logo;
-  final int played;
-  final int won;
-  final int drawn;
-  final int lost;
-  final int goalsFor;
-  final int goalsAgainst;
-  final int goalDiff;
-  final int points;
 
-  Standing({
-    required this.rank,
-    required this.name,
-    required this.logo,
-    required this.played,
-    required this.won,
-    required this.drawn,
-    required this.lost,
-    required this.goalsFor,
-    required this.goalsAgainst,
-    required this.goalDiff,
-    required this.points,
-  });
-
-  factory Standing.fromJson(Map<String, dynamic> json) {
-    return Standing(
-      rank: json['rank'] as int? ?? 0,
-      name: json['name'] as String? ?? '',
-      logo: json['logo'] as String? ?? '',
-      played: json['played'] as int? ?? 0,
-      won: json['won'] as int? ?? 0,
-      drawn: json['drawn'] as int? ?? 0,
-      lost: json['lost'] as int? ?? 0,
-      goalsFor: json['gf'] as int? ?? 0,
-      goalsAgainst: json['ga'] as int? ?? 0,
-      goalDiff: json['gd'] as int? ?? 0,
-      points: json['pts'] as int? ?? 0,
-    );
-  }
-}
 
 /// Placeholder screen shown for the upcoming Challenges feature.
 class ChallengesScreen extends StatefulWidget {
@@ -80,9 +39,9 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     'assets/images/slider.png',
     'assets/images/slider.png',
   ];
-  List<Standing> _standings = [];
-  bool _loadingStandings = false;
-  String? _standingsError;
+  List<ChallengeOverviewModel> _challengesOverview = [];
+  bool _loadingChallengesOverview = false;
+  String? _challengesOverviewError;
   int _currentSlideIndex = 0;
   bool? _hasTeam;
 
@@ -122,41 +81,24 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     setState(() => _hasTeam = false);
   }
 
-  /// Retrieves league standings from the backend API.
+  /// Retrieves challenges overview from the backend API.
   ///
-  /// Sends a GET request to `/league/standings` and expects:
-  /// `{ "status": true, "data": [ { "rank": 1, "name": "...", ... } ] }`.
-  Future<void> _fetchStandings() async {
+  /// Sends a GET request to `/challenge/challenges-overview` and expects:
+  /// `{ "status": true, "data": [ { "id": 1, "name": "...", "ranking": {...} } ] }`.
+  Future<void> _fetchChallengesOverview() async {
     setState(() {
-      _loadingStandings = true;
-      _standingsError = null;
+      _loadingChallengesOverview = true;
+      _challengesOverviewError = null;
     });
     try {
-      final res = await http.get(
-        Uri.parse('${ConstKeys.baseUrl}/league/standings'),
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ${Utils.token}',
-        },
-      );
-      if (res.statusCode < 400) {
-        final data = jsonDecode(res.body) as Map<String, dynamic>;
-        if (data['status'] == true) {
-          final list = (data['data'] as List<dynamic>)
-              .map((e) => Standing.fromJson(e as Map<String, dynamic>))
-              .toList();
-          setState(() => _standings = list);
-        } else {
-          _standingsError = 'Failed to load standings';
-        }
-      } else {
-        _standingsError = 'Failed to load standings';
-      }
-    } catch (_) {
-      _standingsError = 'Failed to load standings';
+      final repository = ChallengesRepositoryImpl();
+      final challenges = await repository.getChallengesOverview();
+      setState(() => _challengesOverview = challenges);
+    } catch (e) {
+      _challengesOverviewError = 'Failed to load challenges overview: $e';
     } finally {
       if (mounted) {
-        setState(() => _loadingStandings = false);
+        setState(() => _loadingChallengesOverview = false);
       }
     }
   }
@@ -170,7 +112,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     } else {
       _fetchUserTeams();
     }
-    _fetchStandings();
+    _fetchChallengesOverview();
   }
 
   @override
@@ -633,15 +575,21 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     const headingStyle = TextStyle(fontSize: 12, fontWeight: FontWeight.bold);
     const dataStyle = TextStyle(fontSize: 12);
 
-    if (_loadingStandings) {
+    if (_loadingChallengesOverview) {
       return const Center(child: CircularProgressIndicator());
     }
-    if (_standingsError != null) {
-      return Center(child: Text(_standingsError!));
+    if (_challengesOverviewError != null) {
+      return Center(child: Text(_challengesOverviewError!));
     }
-    if (_standings.isEmpty) {
-      return const Center(child: Text('No standings available'));
+    if (_challengesOverview.isEmpty) {
+      return const Center(child: Text('No challenges overview available'));
     }
+
+    // Filter teams that have ranking data and sort by points
+    final teamsWithRanking = _challengesOverview
+        .where((team) => team.ranking != null)
+        .toList()
+      ..sort((a, b) => (b.ranking?.points ?? 0).compareTo(a.ranking?.points ?? 0));
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -660,7 +608,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
             columnSpacing: 10,
             horizontalMargin: 8,
             headingRowHeight: 32,
-            dataRowHeight: 32,
+            dataRowMinHeight: 32,
+            dataRowMaxHeight: 32,
             columns: [
               DataColumn(
                 label: Text(LocaleKeys.league_rank.tr(), style: headingStyle),
@@ -702,31 +651,46 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                 label: Text(LocaleKeys.league_points.tr(), style: headingStyle),
               ),
             ],
-            rows: _standings.map((team) {
-              final int gd = team.goalDiff;
+            rows: teamsWithRanking.asMap().entries.map((entry) {
+              final index = entry.key;
+              final team = entry.value;
+              final ranking = team.ranking!;
+              final int gd = ranking.goalDifference;
+              final rank = index + 1;
+              
               return DataRow(
                 cells: [
-                  DataCell(Text(team.rank.toString(), style: dataStyle)),
+                  DataCell(Text(rank.toString(), style: dataStyle)),
                   DataCell(
                     Row(
                       children: [
                         CircleAvatar(
                           radius: 12,
-                          backgroundImage: team.logo.startsWith('http')
-                              ? NetworkImage(team.logo)
-                              : AssetImage(team.logo) as ImageProvider,
+                          backgroundColor: Colors.grey.shade300,
+                          backgroundImage: team.logo != null && team.logo!.isNotEmpty
+                              ? NetworkImage('${ConstKeys.baseUrl}/storage/$team.logo')
+                              : null,
+                          child: team.logo == null || team.logo!.isEmpty
+                              ? const Icon(Icons.sports_soccer, color: Colors.grey)
+                              : null,
                         ),
                         const SizedBox(width: 4),
-                        Text(team.name, style: headingStyle),
+                        Expanded(
+                          child: Text(
+                            team.name,
+                            style: headingStyle,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                  DataCell(Text(team.played.toString(), style: dataStyle)),
-                  DataCell(Text(team.won.toString(), style: dataStyle)),
-                  DataCell(Text(team.drawn.toString(), style: dataStyle)),
-                  DataCell(Text(team.lost.toString(), style: dataStyle)),
-                  DataCell(Text(team.goalsFor.toString(), style: dataStyle)),
-                  DataCell(Text(team.goalsAgainst.toString(), style: dataStyle)),
+                  DataCell(Text(ranking.played.toString(), style: dataStyle)),
+                  DataCell(Text(ranking.wins.toString(), style: dataStyle)),
+                  DataCell(Text(ranking.draws.toString(), style: dataStyle)),
+                  DataCell(Text(ranking.losses.toString(), style: dataStyle)),
+                  DataCell(Text(ranking.owns.toString(), style: dataStyle)),
+                  DataCell(Text(ranking.againsts.toString(), style: dataStyle)),
                   DataCell(
                     Text(
                       gd.toString(),
@@ -735,7 +699,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                       ),
                     ),
                   ),
-                  DataCell(Text(team.points.toString(), style: dataStyle)),
+                  DataCell(Text(ranking.points.toString(), style: dataStyle)),
                 ],
               );
             }).toList(),
