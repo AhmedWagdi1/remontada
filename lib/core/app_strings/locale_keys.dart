@@ -218,7 +218,7 @@ abstract class LocaleKeys {
   static const challenge_create_team = 'challenge_create_team';
   static const manage_your_team = 'manage_your_team';
   static const challenge_create_challenge = 'challenge_create_challenge';
-  static const league_schedule = 'league_schedule';
+  static const league_results = 'league_results';
   static const championships = 'championships';
   static const super_remontada_championship =
       'super_remontada_championship';
