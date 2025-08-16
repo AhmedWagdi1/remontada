@@ -76,6 +76,9 @@
   "no_matches": "لا توجد مباريات",
   "havnot_matches": "لم تقم بالمشاركة بأي مباراة",
 
+  "language": "اللغة",
+  "change_language": "تغيير اللغة",
+
 "match_details" : {
   "match_details_title" : "تفاصيل المباراة",
   "match_details_subtitle" : "عرض لجميع تفاصيل المباراة",
