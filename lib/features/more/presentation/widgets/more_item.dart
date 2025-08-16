@@ -78,6 +78,13 @@ class _MoreItemState extends State<MoreItem> {
       final page = await widget.cubit?.getAbout();
       if (page != null) _page = page;
       Navigator.pushNamed(context, Routes.aboutscreen, arguments: _page);
+    } else if (widget.title == LocaleKeys.change_language.tr()) {
+      final currentCode = context.locale.languageCode;
+      await context.setLocale(
+        currentCode == 'ar'
+            ? const Locale('en', 'US')
+            : const Locale('ar', 'EG'),
+      );
     } else if (widget.title == LocaleKeys.privacy_policy.tr()) {
       final page = await widget.cubit?.getpolicy();
       if (page != null) _page = page;

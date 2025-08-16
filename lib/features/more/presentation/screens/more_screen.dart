@@ -26,29 +26,6 @@ class MoreScreen extends StatefulWidget {
 }
 
 class _MoreScreenState extends State<MoreScreen> {
-  List titles = [
-    LocaleKeys.profile.tr(),
-    if (Utils.isSuperVisor == false) LocaleKeys.captain_request.tr(),
-    LocaleKeys.notification.tr(),
-    "enableLocation".tr(),
-    LocaleKeys.contact_us.tr(),
-    LocaleKeys.about.tr(),
-    LocaleKeys.share.tr(),
-    LocaleKeys.privacy_policy.tr(),
-    LocaleKeys.logout.tr(),
-  ];
-
-  List icons = [
-    Assets.icons.name,
-    if (Utils.isSuperVisor == false) Assets.icons.whistle,
-    Assets.icons.notify,
-    "location".svg(),
-    Assets.icons.calling,
-    Assets.icons.information,
-    Assets.icons.share,
-    Assets.icons.policy_privacy,
-    Assets.icons.log_out
-  ];
   String coaching = "";
 
   @override
@@ -65,6 +42,30 @@ class _MoreScreenState extends State<MoreScreen> {
         },
         builder: (context, state) {
           final cubit = MoreCubit.get(context);
+          final titles = [
+            LocaleKeys.profile.tr(),
+            if (Utils.isSuperVisor == false) LocaleKeys.captain_request.tr(),
+            LocaleKeys.notification.tr(),
+            "enableLocation".tr(),
+            LocaleKeys.contact_us.tr(),
+            LocaleKeys.about.tr(),
+            LocaleKeys.change_language.tr(),
+            LocaleKeys.share.tr(),
+            LocaleKeys.privacy_policy.tr(),
+            LocaleKeys.logout.tr(),
+          ];
+          final icons = [
+            Assets.icons.name,
+            if (Utils.isSuperVisor == false) Assets.icons.whistle,
+            Assets.icons.notify,
+            "location".svg(),
+            Assets.icons.calling,
+            Assets.icons.information,
+            Assets.icons.flag,
+            Assets.icons.share,
+            Assets.icons.policy_privacy,
+            Assets.icons.log_out
+          ];
           return Scaffold(
             // appBar :  AppBar(
             //     leading: SizedBox(),
