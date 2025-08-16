@@ -18,7 +18,7 @@ void main() async {
       tester.binding.window.clearDevicePixelRatioTestValue();
     });
     await tester.pumpWidget(
-        const MaterialApp(home: ChallengesScreen(hasTeam: true)));
+        const MaterialApp(home: ChallengesScreen(hasTeam: false)));
     await tester.pumpAndSettle();
     expect(find.byIcon(Icons.group), findsOneWidget);
     expect(find.byIcon(Icons.more_horiz), findsOneWidget);
@@ -72,6 +72,8 @@ void main() async {
     await tester.pumpAndSettle();
     expect(find.widgetWithText(ElevatedButton, 'manage_your_team'), findsNothing);
     expect(find.text('challenge_create_challenge'), findsNothing);
+    expect(find.widgetWithText(ElevatedButton, 'challenge_create_team'),
+        findsOneWidget);
   });
 
   testWidgets('first tab shows challenge cards', (tester) async {
@@ -174,9 +176,10 @@ void main() async {
       tester.binding.window.clearDevicePixelRatioTestValue();
     });
     await tester.pumpWidget(
-        const MaterialApp(home: ChallengesScreen(hasTeam: true)));
+        const MaterialApp(home: ChallengesScreen(hasTeam: false)));
     await tester.pumpAndSettle();
-    await tester.tap(find.byIcon(Icons.group));
+    await tester.tap(
+        find.widgetWithText(ElevatedButton, 'challenge_create_team'));
     await tester.pumpAndSettle();
     expect(find.text('create_team_title'), findsOneWidget);
   });

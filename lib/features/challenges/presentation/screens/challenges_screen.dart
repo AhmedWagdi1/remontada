@@ -790,6 +790,69 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     );
   }
 
+  /// Builds a banner prompting users without a team to create one.
+  ///
+  /// Displays an icon, a short message and a button that navigates to
+  /// [CreateTeamPage] when pressed.
+  Widget _buildCreateTeamBanner() {
+    const darkBlue = Color(0xFF23425F);
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        color: const Color(0xFFF2F2F2),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              backgroundColor: darkBlue,
+              child: const Icon(Icons.group, color: Colors.white),
+            ),
+            Expanded(
+              child: Center(
+                child: Text(
+                  LocaleKeys.challenge_create_team.tr(),
+                  style: const TextStyle(
+                    color: darkBlue,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 36,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const CreateTeamPage()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: darkBlue,
+                  minimumSize: const Size(120, 36),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  LocaleKeys.challenge_create_team.tr(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
@@ -850,7 +913,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
               ),
               const SizedBox(height: 16),
               _buildCarousel(),
-              if (_hasTeam ?? false) _manageTeamRow(),
+              (_hasTeam ?? false) ? _manageTeamRow() : _buildCreateTeamBanner(),
               18.ph,
               Directionality(
                 textDirection: TextDirection.rtl,
