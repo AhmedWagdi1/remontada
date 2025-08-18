@@ -218,6 +218,15 @@ abstract class LocaleKeys {
   static const challenge_create_team = 'challenge_create_team';
   static const manage_your_team = 'manage_your_team';
   static const challenge_create_challenge = 'challenge_create_challenge';
+  static const challenge_team_id = 'challenge_team_id';
+  static const challenge_match_id = 'challenge_match_id';
+  static const challenge_competitive_match = 'challenge_competitive_match';
+  static const challenge_competitive_description = 'challenge_competitive_description';
+  static const challenge_friendly_description = 'challenge_friendly_description';
+  static const challenge_creating = 'challenge_creating';
+  static const challenge_team_id_required = 'challenge_team_id_required';
+  static const challenge_match_id_required = 'challenge_match_id_required';
+  static const challenge_invalid_number = 'challenge_invalid_number';
   static const league_results = 'league_results';
   static const championships = 'championships';
   static const super_remontada_championship =
@@ -324,4 +333,8 @@ abstract class LocaleKeys {
   static const chat_friday = 'chat.friday';
   static const chat_saturday = 'chat.saturday';
   static const chat_sunday = 'chat.sunday';
+
+  // Challenge keys
+  static const String challenge_no_matches_available = 'challenge_no_matches_available';
+  static const String challenge_error_loading_matches = 'challenge_error_loading_matches';
 }

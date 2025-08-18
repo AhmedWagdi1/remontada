@@ -9,6 +9,7 @@ import 'package:remontada/shared/widgets/customtext.dart';
 import '../widgets/championship_card.dart';
 import 'create_team_page.dart';
 import 'team_details_page.dart';
+import 'create_challenge_page.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../../../core/config/key.dart';
@@ -386,7 +387,14 @@ class _ChallengesScreenState extends State<ChallengesScreen>
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const CreateChallengePage(),
+            ),
+          );
+        },
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 16),

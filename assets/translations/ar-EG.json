@@ -188,6 +188,17 @@
   "challenge_create_team": "إنشاء فريق",
   "manage_your_team": "إدارة فريقك",
   "challenge_create_challenge": "إنشاء تحدي جديد",
+  "challenge_team_id": "معرف الفريق",
+  "challenge_match_id": "معرف المباراة",
+  "challenge_competitive_match": "مباراة تنافسية",
+  "challenge_competitive_description": "ستكون هذه مباراة تنافسية مع نقاط ترتيب",
+  "challenge_friendly_description": "ستكون هذه مباراة ودية بدون نقاط ترتيب",
+  "challenge_creating": "جاري إنشاء التحدي...",
+  "challenge_team_id_required": "معرف الفريق مطلوب",
+  "challenge_match_id_required": "معرف المباراة مطلوب",
+  "challenge_invalid_number": "يرجى إدخال رقم صحيح",
+  "challenge_no_matches_available": "لا توجد مباريات متاحة للحجز",
+  "challenge_error_loading_matches": "خطأ في تحميل المباريات",
   "league_results": "نتائج الدوري",
   "championships": "البطولات",
   "under_construction": "🚧 تحت الإنشاء",
