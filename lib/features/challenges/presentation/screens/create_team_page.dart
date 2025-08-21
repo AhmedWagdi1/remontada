@@ -12,7 +12,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import '../../../../core/config/key.dart';
 import '../../../../core/utils/utils.dart';
-import 'team_details_page.dart';
+import '../../../../core/Router/Router.dart';
 
 /// Converts the dynamic value returned from the API into a valid team id.
 ///
@@ -202,10 +202,9 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('تم إنشاء الفريق بنجاح!')),
       );
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => TeamDetailsPage(teamId: teamId),
-        ),
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        Routes.challengesScreen,
+        (route) => false,
       );
     } catch (e) {
       await _showError(e.toString());
