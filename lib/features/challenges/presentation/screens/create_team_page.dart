@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/app_strings/locale_keys.dart';
 import '../../../../core/services/media/my_media.dart';
+import '../../../../core/services/media/alert_of_media.dart';
 import '../../../../shared/widgets/customtext.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -230,12 +231,27 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
     );
   }
 
-  /// Picks an image from the gallery and updates the logo state.
-  Future<void> _pickLogo() async {
-    final image = await MyMedia.pickImageFromGallery();
-    if (image != null) {
-      setState(() => _logo = image);
-    }
+  /// Shows a dialog to choose between camera and gallery for logo selection.
+  Future<void> _showLogoSourceDialog() async {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => AlertOfMedia(
+        cameraTap: () async {
+          Navigator.pop(context);
+          final image = await MyMedia.pickImageFromCamera();
+          if (image != null) {
+            setState(() => _logo = image);
+          }
+        },
+        galleryTap: () async {
+          Navigator.pop(context);
+          final image = await MyMedia.pickImageFromGallery();
+          if (image != null) {
+            setState(() => _logo = image);
+          }
+        },
+      ),
+    );
   }
 
   /// Builds a single player card for entering a player's phone number.
@@ -380,7 +396,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                 ),
                 const SizedBox(height: 8),
                 GestureDetector(
-                  onTap: _pickLogo,
+                  onTap: _showLogoSourceDialog,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -395,11 +411,11 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                             ? ClipOval(
                                 child: Image.file(_logo!, fit: BoxFit.cover),
                               )
-                            : const Icon(Icons.camera_alt, color: darkBlue),
+                            : const Icon(Icons.add_a_photo, color: darkBlue),
                       ),
                       const SizedBox(height: 8),
                       CustomText(
-                        LocaleKeys.team_add_image.tr(),
+                        '${LocaleKeys.team_add_image.tr()} (Camera/Gallery)',
                         color: darkBlue,
                       ),
                     ],
