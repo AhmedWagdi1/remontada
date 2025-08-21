@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:http/http.dart' as http;
-import '../../../../core/app_strings/locale_keys.dart';
 import '../../../../core/config/key.dart';
 import '../../../../core/utils/utils.dart';
 import '../../../../core/utils/extentions.dart';
@@ -16,7 +15,7 @@ import '../../../chat/domain/repository/chat_repository.dart';
 import '../../../chat/domain/request/send_message_request.dart';
 
 /// Finds a member with the given [role] inside the provided [users] list.
-Map<String, dynamic>? _findMemberByRole(List<dynamic> users, String role) {
+Map<String, dynamic>? findMemberByRole(List<dynamic> users, String role) {
   for (final u in users) {
     if (u is Map<String, dynamic> && u['role'] == role) {
       return u;
@@ -81,8 +80,8 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
       if (data['status'] == true) {
         final team = data['data'] as Map<String, dynamic>;
         final users = team['users'] as List<dynamic>? ?? [];
-        final leader = _findMemberByRole(users, 'leader');
-        final subLeader = _findMemberByRole(users, 'subLeader');
+        final leader = findMemberByRole(users, 'leader');
+        final subLeader = findMemberByRole(users, 'subLeader');
         team['leader'] = leader == null
             ? null
             : {'name': leader['name'], 'phone': leader['mobile']};

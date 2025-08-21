@@ -8,7 +8,7 @@ void main() {
         {'name': 'A', 'mobile': '1', 'role': 'leader'},
         {'name': 'B', 'mobile': '2', 'role': 'member'},
       ];
-      final res = _findMemberByRole(users, 'leader');
+      final res = findMemberByRole(users, 'leader');
       expect(res?['name'], 'A');
     });
 
@@ -16,7 +16,7 @@ void main() {
       final users = [
         {'name': 'A', 'mobile': '1', 'role': 'member'},
       ];
-      final res = _findMemberByRole(users, 'leader');
+      final res = findMemberByRole(users, 'leader');
       expect(res, isNull);
     });
   });
