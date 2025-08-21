@@ -1,0 +1,3626 @@
+{
+	"info": {
+		"_postman_id": "96e46f6f-0865-4208-9add-e711526a93ae",
+		"name": "Remuntada",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7103350",
+		"_collection_link": "https://warped-equinox-217788.postman.co/workspace/My-Workspace~da9410c1-9342-4fe1-8aa4-58bf8e7cad0e/collection/7103350-96e46f6f-0865-4208-9add-e711526a93ae?action=share&source=collection_link&creator=7103350"
+	},
+	"item": [
+		{
+			"name": "Team",
+			"item": [
+				{
+					"name": "Team Members",
+					"item": [
+						{
+							"name": "Add Member",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{remo_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"phone_number\": \"0531359265\",\r\n    \"team_id\":21\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{remo_test}}/team/add-member",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"team",
+										"add-member"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "FAIL",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"phone_number\": \"0531359265\",\r\n    \"team_id\":21\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{remo_test}}/team/add-member",
+											"host": [
+												"{{remo_test}}"
+											],
+											"path": [
+												"team",
+												"add-member"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "nginx/1.25.2"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "PHP/8.2.28"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, private"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 15 Jul 2025 13:32:40 GMT"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "http://rmontada.test"
+										},
+										{
+											"key": "Access-Control-Allow-Credentials",
+											"value": "true"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": false,\n    \"message\": \"This user is already a member of this team\",\n    \"data\": null\n}"
+								},
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"phone_number\": \"0537159993\",\r\n    \"team_id\": 21\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{remo_test}}/team/add-member",
+											"host": [
+												"{{remo_test}}"
+											],
+											"path": [
+												"team",
+												"add-member"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "nginx/1.25.2"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Vary",
+											"value": "Accept-Encoding"
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "PHP/8.2.28"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, private"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 15 Jul 2025 13:34:07 GMT"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "http://rmontada.test"
+										},
+										{
+											"key": "Access-Control-Allow-Credentials",
+											"value": "true"
+										},
+										{
+											"key": "Content-Encoding",
+											"value": "gzip"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": true,\n    \"message\": \"User has been added to the team successfully\",\n    \"data\": null\n}"
+								}
+							]
+						},
+						{
+							"name": "Remove member",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{remo_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"phone_number\": \"0537159993\",\r\n    \"team_id\": 21\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{remo_test}}/team/remove-member",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"team",
+										"remove-member"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "FAIL",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"phone_number\": \"0531359265\",\r\n    \"team_id\": 21\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{remo_test}}/team/remove-member",
+											"host": [
+												"{{remo_test}}"
+											],
+											"path": [
+												"team",
+												"remove-member"
+											]
+										}
+									},
+									"status": "Forbidden",
+									"code": 403,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "nginx/1.25.2"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Vary",
+											"value": "Accept-Encoding"
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "PHP/8.2.28"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, private"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 15 Jul 2025 13:50:20 GMT"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "http://rmontada.test"
+										},
+										{
+											"key": "Access-Control-Allow-Credentials",
+											"value": "true"
+										},
+										{
+											"key": "Content-Encoding",
+											"value": "gzip"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": false,\n    \"message\": \"You do not have permission to remove members\",\n    \"data\": null\n}"
+								},
+								{
+									"name": "FAIL",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"phone_number\": \"0555555554\",\r\n    \"team_id\": 21\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{remo_test}}/team/remove-member",
+											"host": [
+												"{{remo_test}}"
+											],
+											"path": [
+												"team",
+												"remove-member"
+											]
+										}
+									},
+									"status": "Forbidden",
+									"code": 403,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "nginx/1.25.2"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Vary",
+											"value": "Accept-Encoding"
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "PHP/8.2.28"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, private"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 15 Jul 2025 13:51:29 GMT"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "http://rmontada.test"
+										},
+										{
+											"key": "Access-Control-Allow-Credentials",
+											"value": "true"
+										},
+										{
+											"key": "Content-Encoding",
+											"value": "gzip"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": false,\n    \"message\": \"You cannot remove yourself\",\n    \"data\": null\n}"
+								},
+								{
+									"name": "SUCCESS",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"phone_number\": \"0537159993\",\r\n    \"team_id\": 21\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{remo_test}}/team/remove-member",
+											"host": [
+												"{{remo_test}}"
+											],
+											"path": [
+												"team",
+												"remove-member"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "nginx/1.25.2"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Vary",
+											"value": "Accept-Encoding"
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "PHP/8.2.28"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, private"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 15 Jul 2025 13:51:57 GMT"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "http://rmontada.test"
+										},
+										{
+											"key": "Access-Control-Allow-Credentials",
+											"value": "true"
+										},
+										{
+											"key": "Content-Encoding",
+											"value": "gzip"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": true,\n    \"message\": \"User has been removed from the team successfully\",\n    \"data\": null\n}"
+								}
+							]
+						},
+						{
+							"name": "User Roles",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{remo_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"phone_number\": \"0537159993\",\r\n    \"team_id\": 21,\r\n    \"role\": \"member\" // allowed member and subleader only\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{remo_test}}/team/member-role",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"team",
+										"member-role"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "SUCCESS",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"phone_number\": \"0537159993\",\r\n    \"team_id\": 16,\r\n    \"role\": \"subleader\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{remo_test}}/team/member-role",
+											"host": [
+												"{{remo_test}}"
+											],
+											"path": [
+												"team",
+												"member-role"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "nginx/1.25.2"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "PHP/8.2.28"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, private"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 15 Jul 2025 14:09:41 GMT"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "http://rmontada.test"
+										},
+										{
+											"key": "Access-Control-Allow-Credentials",
+											"value": "true"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": false,\n    \"message\": \"هذا المستخدم ليس عضوًا في هذا الفريق\",\n    \"data\": null\n}"
+								},
+								{
+									"name": "SUCCESS",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"phone_number\": \"0537159993\",\r\n    \"team_id\": 21,\r\n    \"role\": \"member\" // allowed member and subleader only\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{remo_test}}/team/member-role",
+											"host": [
+												"{{remo_test}}"
+											],
+											"path": [
+												"team",
+												"member-role"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "nginx/1.25.2"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Vary",
+											"value": "Accept-Encoding"
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "PHP/8.2.28"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, private"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 15 Jul 2025 14:11:07 GMT"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "http://rmontada.test"
+										},
+										{
+											"key": "Access-Control-Allow-Credentials",
+											"value": "true"
+										},
+										{
+											"key": "Content-Encoding",
+											"value": "gzip"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": true,\n    \"message\": \"teams.user_role_updated_success\",\n    \"data\": null\n}"
+								}
+							]
+						},
+						{
+							"name": "Leave Team (id in request is the team id)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{remo_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{remo_test}}/team/leave/21",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"team",
+										"leave",
+										"21"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "FAIL",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "",
+												"value": "",
+												"type": "text",
+												"disabled": true
+											}
+										],
+										"url": {
+											"raw": "{{remo_test}}/team/leave/16",
+											"host": [
+												"{{remo_test}}"
+											],
+											"path": [
+												"team",
+												"leave",
+												"16"
+											]
+										}
+									},
+									"status": "Forbidden",
+									"code": 403,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "nginx/1.25.2"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Vary",
+											"value": "Accept-Encoding"
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "PHP/8.2.28"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, private"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 15 Jul 2025 14:20:35 GMT"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "http://rmontada.test"
+										},
+										{
+											"key": "Access-Control-Allow-Credentials",
+											"value": "true"
+										},
+										{
+											"key": "Content-Encoding",
+											"value": "gzip"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": false,\n    \"message\": \"لا يمكنك إزالة نفسك\",\n    \"data\": null\n}"
+								},
+								{
+									"name": "SUCCESS",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "",
+												"value": "",
+												"type": "text",
+												"disabled": true
+											}
+										],
+										"url": {
+											"raw": "{{remo_test}}/team/leave/21",
+											"host": [
+												"{{remo_test}}"
+											],
+											"path": [
+												"team",
+												"leave",
+												"21"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "nginx/1.25.2"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Vary",
+											"value": "Accept-Encoding"
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "PHP/8.2.28"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, private"
+										},
+										{
+											"key": "Date",
+											"value": "Tue, 15 Jul 2025 14:21:57 GMT"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "http://rmontada.test"
+										},
+										{
+											"key": "Access-Control-Allow-Credentials",
+											"value": "true"
+										},
+										{
+											"key": "Content-Encoding",
+											"value": "gzip"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": true,\n    \"message\": \"لقد غادرت الفريق بنجاح\",\n    \"data\": null\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "User Teams",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{remo_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{remo_test}}/team/user-teams",
+							"host": [
+								"{{remo_test}}"
+							],
+							"path": [
+								"team",
+								"user-teams"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "SUCCESS",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{remo_test}}/team/user-teams",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"team",
+										"user-teams"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 15 Jul 2025 10:25:38 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": true,\n    \"message\": \"تم التحميل بنجاح\",\n    \"data\": [\n        {\n            \"id\": 15,\n            \"name\": \"Test\",\n            \"status\": true,\n            \"logo_url\": \"http://rmontada.test/storage/teams/66b81349-73d5-4a58-9f22-fa50998121b5.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"points\": 0,\n            \"level\": \"Bronze1\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"created_at\": \"2025-07-15T09:01:19.000000Z\",\n            \"updated_at\": \"2025-07-15T09:01:19.000000Z\"\n        },\n        {\n            \"id\": 16,\n            \"name\": \"Testds\",\n            \"status\": true,\n            \"logo_url\": \"http://rmontada.test/storage/teams/6f2b7607-62d0-4ca2-ab4b-e4410b773dc9.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"points\": 0,\n            \"level\": \"Bronze1\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"created_at\": \"2025-07-15T09:02:37.000000Z\",\n            \"updated_at\": \"2025-07-15T09:02:37.000000Z\"\n        },\n        {\n            \"id\": 17,\n            \"name\": \"Testdss\",\n            \"status\": true,\n            \"logo_url\": \"http://rmontada.test/storage/teams/25a45ff0-acb8-4700-878d-ecb747e6c491.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"points\": 0,\n            \"level\": \"Bronze1\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"created_at\": \"2025-07-15T09:02:40.000000Z\",\n            \"updated_at\": \"2025-07-15T09:02:40.000000Z\"\n        },\n        {\n            \"id\": 18,\n            \"name\": \"Testdssewe\",\n            \"status\": true,\n            \"logo_url\": null,\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"points\": 0,\n            \"level\": \"Bronze1\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"created_at\": \"2025-07-15T09:03:43.000000Z\",\n            \"updated_at\": \"2025-07-15T09:03:43.000000Z\"\n        },\n        {\n            \"id\": 21,\n            \"name\": \"sauedss1\",\n            \"status\": true,\n            \"logo_url\": \"http://rmontada.test/storage/teams/ccac45c8-9173-4151-bcce-a6ec62a223ba.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"sauedss1\",\n            \"points\": 0,\n            \"level\": \"Bronze1\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"created_at\": \"2025-07-15T09:08:54.000000Z\",\n            \"updated_at\": \"2025-07-15T09:27:30.000000Z\"\n        }\n    ]\n}"
+						},
+						{
+							"name": "SUCCESS - Latest",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{remo_test}}/team/user-teams",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"team",
+										"user-teams"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 16 Jul 2025 09:20:13 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": true,\n    \"message\": \"تم التحميل بنجاح\",\n    \"data\": [\n        {\n            \"id\": 22,\n            \"name\": \"Testdssewewqessw\",\n            \"status\": true,\n            \"logo_url\": null,\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"points\": 0,\n            \"level\": \"Bronze1\",\n            \"wins\": 0,\n            \"draws\": 0,\n            \"losses\": 0,\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"created_at\": \"2025-07-16T09:19:38.000000Z\",\n            \"updated_at\": \"2025-07-16T09:19:38.000000Z\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Team",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{remo_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "area_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "bio",
+									"value": "The best team ever",
+									"type": "text"
+								},
+								{
+									"key": "logo",
+									"type": "file",
+									"src": "/C:/Users/ahmedgamal/Downloads/2057e0eecf792fb.jpg"
+								},
+								{
+									"key": "name",
+									"value": "Testdssewewqessw",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{remo_test}}/team/store",
+							"host": [
+								"{{remo_test}}"
+							],
+							"path": [
+								"team",
+								"store"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "SUCCESS",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "area_id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "bio",
+											"value": "The best team ever",
+											"type": "text"
+										},
+										{
+											"key": "logo",
+											"type": "file",
+											"src": "/C:/Users/ahmedgamal/Downloads/2057e0eecf792fb.jpg",
+											"disabled": true
+										},
+										{
+											"key": "name",
+											"value": "Testdssewe",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{remo_test}}/team/store",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"team",
+										"store"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 15 Jul 2025 09:03:43 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": true,\n    \"message\": \"تم اضافة الطلب بنجاح\",\n    \"data\": {\n        \"id\": 18,\n        \"name\": \"Testdssewe\",\n        \"status\": true,\n        \"logo_url\": null,\n        \"area_id\": 1,\n        \"bio\": \"The best team ever\",\n        \"points\": 0,\n        \"level\": \"Bronze1\",\n        \"trophies\": {\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"total\": 0\n        },\n        \"created_at\": \"2025-07-15T09:03:43.000000Z\",\n        \"updated_at\": \"2025-07-15T09:03:43.000000Z\"\n    }\n}"
+						},
+						{
+							"name": "FAIL",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "area_id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "bio",
+											"value": "The best team ever",
+											"type": "text"
+										},
+										{
+											"key": "logo",
+											"type": "file",
+											"src": "/C:/Users/ahmedgamal/Downloads/2057e0eecf792fb.jpg"
+										},
+										{
+											"key": "name",
+											"value": "Testdssewewqe",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{remo_test}}/team/store",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"team",
+										"store"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 15 Jul 2025 09:04:02 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": false,\n    \"message\": \"قيمة حقل الاسم مُستخدمة من قبل.\",\n    \"data\": null\n}"
+						},
+						{
+							"name": "SUCCESS",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "area_id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "bio",
+											"value": "The best team ever",
+											"type": "text"
+										},
+										{
+											"key": "logo",
+											"type": "file",
+											"src": "/C:/Users/ahmedgamal/Downloads/2057e0eecf792fb.jpg"
+										},
+										{
+											"key": "name",
+											"value": "Testdssewewqes",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{remo_test}}/team/store",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"team",
+										"store"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 15 Jul 2025 09:04:20 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": true,\n    \"message\": \"تم اضافة الطلب بنجاح\",\n    \"data\": {\n        \"id\": 19,\n        \"name\": \"Testdssewewqes\",\n        \"status\": true,\n        \"logo_url\": \"http://rmontada.test/storage/teams/3a9bde3e-cfdd-4034-b05b-9c2be46b2532.jpg\",\n        \"area_id\": 1,\n        \"bio\": \"The best team ever\",\n        \"points\": 0,\n        \"level\": \"Bronze1\",\n        \"trophies\": {\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"total\": 0\n        },\n        \"created_at\": \"2025-07-15T09:04:20.000000Z\",\n        \"updated_at\": \"2025-07-15T09:04:20.000000Z\"\n    }\n}"
+						},
+						{
+							"name": "SUCESS - Latest",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "area_id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "bio",
+											"value": "The best team ever",
+											"type": "text"
+										},
+										{
+											"key": "logo",
+											"type": "file",
+											"src": "/C:/Users/ahmedgamal/Downloads/2057e0eecf792fb.jpg"
+										},
+										{
+											"key": "name",
+											"value": "Testdssewewqessw",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{remo_test}}/team/store",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"team",
+										"store"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 16 Jul 2025 09:19:46 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": true,\n    \"message\": \"تم اضافة الطلب بنجاح\",\n    \"data\": {\n        \"id\": 22,\n        \"name\": \"Testdssewewqessw\",\n        \"status\": true,\n        \"logo_url\": null,\n        \"area_id\": 1,\n        \"bio\": \"The best team ever\",\n        \"points\": 0,\n        \"level\": \"Bronze1\",\n        \"wins\": 0,\n        \"draws\": 0,\n        \"losses\": 0,\n        \"trophies\": {\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"total\": 0\n        },\n        \"created_at\": \"2025-07-16T09:19:38.000000Z\",\n        \"updated_at\": \"2025-07-16T09:19:38.000000Z\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{remo_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{remo_test}}/team/20",
+							"host": [
+								"{{remo_test}}"
+							],
+							"path": [
+								"team",
+								"20"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "FAIL",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{remo_test}}/team/12",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"team",
+										"12"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 15 Jul 2025 09:06:45 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": false,\n    \"message\": \"Only the team leader can delete the team\",\n    \"data\": null\n}"
+						},
+						{
+							"name": "SUCCESS",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{remo_test}}/team/20",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"team",
+										"20"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 15 Jul 2025 09:08:35 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Deleted Successfully\",\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "UPDATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{remo_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "bio",
+									"value": "sauedss1",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "sauedss1",
+									"type": "text"
+								},
+								{
+									"key": "logo",
+									"type": "file",
+									"src": "/C:/Users/ahmedgamal/Downloads/2057e0eecf792fb.jpg"
+								},
+								{
+									"key": "area_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{remo_test}}/team/update/21",
+							"host": [
+								"{{remo_test}}"
+							],
+							"path": [
+								"team",
+								"update",
+								"21"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "SUCCESS",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "bio",
+											"value": "sauedss1",
+											"type": "text"
+										},
+										{
+											"key": "name",
+											"value": "sauedss1",
+											"type": "text"
+										},
+										{
+											"key": "logo",
+											"type": "file",
+											"src": "/C:/Users/ahmedgamal/Downloads/2057e0eecf792fb.jpg"
+										},
+										{
+											"key": "area_id",
+											"value": "1",
+											"type": "text"
+										}
+									],
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{remo_test}}/team/21",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"team",
+										"21"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 15 Jul 2025 09:27:30 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": true,\n    \"message\": \"تم التحديث بنجاح\",\n    \"data\": {\n        \"id\": 21,\n        \"name\": \"sauedss1\",\n        \"status\": true,\n        \"logo_url\": \"http://rmontada.test/storage/teams/ccac45c8-9173-4151-bcce-a6ec62a223ba.jpg\",\n        \"area_id\": 1,\n        \"bio\": \"sauedss1\",\n        \"points\": 0,\n        \"level\": \"Bronze1\",\n        \"trophies\": {\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"total\": 0\n        },\n        \"created_at\": \"2025-07-15T09:08:54.000000Z\",\n        \"updated_at\": \"2025-07-15T09:27:30.000000Z\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "All Active teams (Paginated)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{remo_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{remo_test}}/team/all-active",
+							"host": [
+								"{{remo_test}}"
+							],
+							"path": [
+								"team",
+								"all-active"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "SUCCESS",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{remo_test}}/team/all-active",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"team",
+										"all-active"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 22 Jul 2025 11:48:58 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": true,\n    \"message\": \"تم التحميل بنجاح\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"Team Alpha\",\n            \"status\": true,\n            \"logo_url\": null,\n            \"area_id\": 1,\n            \"bio\": null,\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"created_at\": \"2025-07-20T11:11:23.000000Z\",\n            \"updated_at\": \"2025-07-20T11:05:55.000000Z\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Team Betasssssssssssssssssssddd\",\n            \"status\": true,\n            \"logo_url\": \"http://rmontada.test/storage/teams/31ab4ccf-5dbe-408c-ab7f-256cfe2e9bd5.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"Team Betasssssssssssssssssss\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"created_at\": \"2025-07-20T11:11:23.000000Z\",\n            \"updated_at\": \"2025-07-20T11:44:11.000000Z\"\n        },\n        {\n            \"id\": 7,\n            \"name\": \"testpic\",\n            \"status\": true,\n            \"logo_url\": \"http://rmontada.test/storage/teams/9fb15453-f9ab-4133-9a36-8e38e9b1b78e.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"created_at\": \"2025-07-15T07:48:11.000000Z\",\n            \"updated_at\": \"2025-07-20T12:14:48.000000Z\"\n        },\n        {\n            \"id\": 8,\n            \"name\": \"menss7sssw\",\n            \"status\": true,\n            \"logo_url\": null,\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"created_at\": \"2025-07-15T07:49:07.000000Z\",\n            \"updated_at\": \"2025-07-15T07:49:07.000000Z\"\n        },\n        {\n            \"id\": 9,\n            \"name\": \"menss7ssswds\",\n            \"status\": true,\n            \"logo_url\": null,\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"created_at\": \"2025-07-15T07:49:34.000000Z\",\n            \"updated_at\": \"2025-07-15T07:49:34.000000Z\"\n        },\n        {\n            \"id\": 10,\n            \"name\": \"menss7ssswdsds\",\n            \"status\": true,\n            \"logo_url\": null,\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"created_at\": \"2025-07-15T07:50:18.000000Z\",\n            \"updated_at\": \"2025-07-15T07:50:18.000000Z\"\n        },\n        {\n            \"id\": 11,\n            \"name\": \"menss7ssswdsdsds\",\n            \"status\": true,\n            \"logo_url\": \"http://rmontada.test/storage/teams/a5f0e462-2762-45f1-a1cb-fe50bd9e3154.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"created_at\": \"2025-07-15T07:52:46.000000Z\",\n            \"updated_at\": \"2025-07-20T10:38:40.000000Z\"\n        },\n        {\n            \"id\": 12,\n            \"name\": \"menss7ssswdsdsdsdsds\",\n            \"status\": true,\n            \"logo_url\": \"http://rmontada.test/storage/teams/3bf80382-b6c4-45ed-b671-f1b98d4b5d0c.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"created_at\": \"2025-07-15T08:07:05.000000Z\",\n            \"updated_at\": \"2025-07-15T08:07:05.000000Z\"\n        },\n        {\n            \"id\": 13,\n            \"name\": \"menss7ssswdsdsdsdsdss\",\n            \"status\": true,\n            \"logo_url\": \"http://rmontada.test/storage/teams/47ba2247-7aa8-4704-98a8-1bca3af8110f.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"created_at\": \"2025-07-15T08:08:33.000000Z\",\n            \"updated_at\": \"2025-07-15T08:08:33.000000Z\"\n        },\n        {\n            \"id\": 15,\n            \"name\": \"Test\",\n            \"status\": true,\n            \"logo_url\": \"http://rmontada.test/storage/teams/66b81349-73d5-4a58-9f22-fa50998121b5.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"created_at\": \"2025-07-15T09:01:19.000000Z\",\n            \"updated_at\": \"2025-07-15T09:01:19.000000Z\"\n        }\n    ],\n    \"pagination\": {\n        \"total\": 16,\n        \"lastPage\": 2,\n        \"total_pages\": 2,\n        \"perPage\": 10,\n        \"currentPage\": 1,\n        \"next_page_url\": \"https://rmontada.test/api/team/all-active?page=2&\",\n        \"prev_page_url\": null\n    }\n}"
+						},
+						{
+							"name": "SUCCESS - Latest",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{remo_test}}/team/all-active",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"team",
+										"all-active"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 27 Jul 2025 08:03:21 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": true,\n    \"message\": \"تم التحميل بنجاح\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"Team Alpha\",\n            \"status\": true,\n            \"logo_url\": null,\n            \"area_id\": 1,\n            \"bio\": null,\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"rankings\": {\n                \"competitive\": {\n                    \"wins\": 0,\n                    \"draws\": 0,\n                    \"losses\": 1,\n                    \"owns\": 5,\n                    \"match_count\": 1,\n                    \"againsts\": 9,\n                    \"points\": 0,\n                    \"level\": \"برونز 1\",\n                    \"is_competitive\": true\n                },\n                \"friendly\": {\n                    \"wins\": 0,\n                    \"draws\": 0,\n                    \"losses\": 0,\n                    \"match_count\": 0,\n                    \"owns\": 0,\n                    \"againsts\": 0,\n                    \"points\": 0,\n                    \"is_competitive\": false\n                }\n            },\n            \"created_at\": \"2025-07-20T11:11:23.000000Z\",\n            \"updated_at\": \"2025-07-20T11:05:55.000000Z\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Team Betasssssssssssssssssssddd\",\n            \"status\": true,\n            \"logo_url\": \"http://rmontada.test/storage/teams/31ab4ccf-5dbe-408c-ab7f-256cfe2e9bd5.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"Team Betasssssssssssssssssss\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"rankings\": {\n                \"competitive\": {\n                    \"wins\": 0,\n                    \"draws\": 0,\n                    \"losses\": 1,\n                    \"owns\": 100,\n                    \"match_count\": 1,\n                    \"againsts\": 50000,\n                    \"points\": 0,\n                    \"level\": \"برونز 1\",\n                    \"is_competitive\": true\n                },\n                \"friendly\": {\n                    \"wins\": 0,\n                    \"draws\": 0,\n                    \"losses\": 0,\n                    \"match_count\": 0,\n                    \"owns\": 0,\n                    \"againsts\": 0,\n                    \"points\": 0,\n                    \"is_competitive\": false\n                }\n            },\n            \"created_at\": \"2025-07-20T11:11:23.000000Z\",\n            \"updated_at\": \"2025-07-20T11:44:11.000000Z\"\n        },\n        {\n            \"id\": 7,\n            \"name\": \"testpic\",\n            \"status\": true,\n            \"logo_url\": \"http://rmontada.test/storage/teams/9fb15453-f9ab-4133-9a36-8e38e9b1b78e.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"rankings\": {\n                \"competitive\": null,\n                \"friendly\": null\n            },\n            \"created_at\": \"2025-07-15T07:48:11.000000Z\",\n            \"updated_at\": \"2025-07-20T12:14:48.000000Z\"\n        },\n        {\n            \"id\": 8,\n            \"name\": \"menss7sssw\",\n            \"status\": true,\n            \"logo_url\": null,\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"rankings\": {\n                \"competitive\": null,\n                \"friendly\": null\n            },\n            \"created_at\": \"2025-07-15T07:49:07.000000Z\",\n            \"updated_at\": \"2025-07-15T07:49:07.000000Z\"\n        },\n        {\n            \"id\": 9,\n            \"name\": \"menss7ssswds\",\n            \"status\": true,\n            \"logo_url\": null,\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"rankings\": {\n                \"competitive\": null,\n                \"friendly\": null\n            },\n            \"created_at\": \"2025-07-15T07:49:34.000000Z\",\n            \"updated_at\": \"2025-07-15T07:49:34.000000Z\"\n        },\n        {\n            \"id\": 10,\n            \"name\": \"menss7ssswdsds\",\n            \"status\": true,\n            \"logo_url\": null,\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"rankings\": {\n                \"competitive\": null,\n                \"friendly\": null\n            },\n            \"created_at\": \"2025-07-15T07:50:18.000000Z\",\n            \"updated_at\": \"2025-07-15T07:50:18.000000Z\"\n        },\n        {\n            \"id\": 11,\n            \"name\": \"menss7ssswdsdsds\",\n            \"status\": true,\n            \"logo_url\": \"http://rmontada.test/storage/teams/a5f0e462-2762-45f1-a1cb-fe50bd9e3154.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"rankings\": {\n                \"competitive\": {\n                    \"wins\": 1,\n                    \"draws\": 0,\n                    \"losses\": 0,\n                    \"owns\": 10,\n                    \"match_count\": 1,\n                    \"againsts\": 5,\n                    \"points\": 3,\n                    \"level\": \"برونز 1\",\n                    \"is_competitive\": true\n                },\n                \"friendly\": {\n                    \"wins\": 0,\n                    \"draws\": 0,\n                    \"losses\": 0,\n                    \"match_count\": 0,\n                    \"owns\": 0,\n                    \"againsts\": 0,\n                    \"points\": 0,\n                    \"is_competitive\": false\n                }\n            },\n            \"created_at\": \"2025-07-15T07:52:46.000000Z\",\n            \"updated_at\": \"2025-07-20T10:38:40.000000Z\"\n        },\n        {\n            \"id\": 12,\n            \"name\": \"menss7ssswdsdsdsdsds\",\n            \"status\": true,\n            \"logo_url\": \"http://rmontada.test/storage/teams/3bf80382-b6c4-45ed-b671-f1b98d4b5d0c.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"rankings\": {\n                \"competitive\": null,\n                \"friendly\": null\n            },\n            \"created_at\": \"2025-07-15T08:07:05.000000Z\",\n            \"updated_at\": \"2025-07-15T08:07:05.000000Z\"\n        },\n        {\n            \"id\": 13,\n            \"name\": \"menss7ssswdsdsdsdsdss\",\n            \"status\": true,\n            \"logo_url\": \"http://rmontada.test/storage/teams/47ba2247-7aa8-4704-98a8-1bca3af8110f.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"rankings\": {\n                \"competitive\": null,\n                \"friendly\": null\n            },\n            \"created_at\": \"2025-07-15T08:08:33.000000Z\",\n            \"updated_at\": \"2025-07-15T08:08:33.000000Z\"\n        },\n        {\n            \"id\": 15,\n            \"name\": \"Test\",\n            \"status\": true,\n            \"logo_url\": \"http://rmontada.test/storage/teams/66b81349-73d5-4a58-9f22-fa50998121b5.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"trophies\": {\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"total\": 0\n            },\n            \"rankings\": {\n                \"competitive\": null,\n                \"friendly\": null\n            },\n            \"created_at\": \"2025-07-15T09:01:19.000000Z\",\n            \"updated_at\": \"2025-07-15T09:01:19.000000Z\"\n        }\n    ],\n    \"pagination\": {\n        \"total\": 16,\n        \"lastPage\": 2,\n        \"total_pages\": 2,\n        \"perPage\": 10,\n        \"currentPage\": 1,\n        \"next_page_url\": \"https://rmontada.test/api/team/all-active?page=2&\",\n        \"prev_page_url\": null\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Show Team",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{remo_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{remo_test}}/team/show/23",
+							"host": [
+								"{{remo_test}}"
+							],
+							"path": [
+								"team",
+								"show",
+								"23"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "SUCCESS",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{remo_test}}/team/show/21",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"team",
+										"show",
+										"21"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 15 Jul 2025 10:30:21 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": true,\n    \"message\": \"تم التحميل بنجاح\",\n    \"data\": {\n        \"id\": 21,\n        \"name\": \"sauedss1\",\n        \"status\": true,\n        \"logo_url\": \"http://rmontada.test/storage/teams/ccac45c8-9173-4151-bcce-a6ec62a223ba.jpg\",\n        \"area_id\": 1,\n        \"bio\": \"sauedss1\",\n        \"points\": 0,\n        \"level\": \"Bronze1\",\n        \"trophies\": {\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"total\": 0\n        },\n        \"members_count\": 2,\n        \"users\": [\n            {\n                \"id\": 41,\n                \"name\": \"zahy\",\n                \"mobile\": \"0555555554\",\n                \"email\": \"zahy@email.com\",\n                \"image\": \"http://rmontada.test/storage/58/scaled_c7a584a1-4c6c-45e3-9739-ff4043eb78ec5384833431322790503.jpg\",\n                \"notify\": true,\n                \"lang\": \"ar\",\n                \"banned\": false,\n                \"active\": true,\n                \"type\": \"client\",\n                \"location_id\": 1,\n                \"location\": \"مهاجم\",\n                \"area_id\": 1,\n                \"area\": \"الرياض\",\n                \"coaching\": \"\",\n                \"role\": \"leader\"\n            },\n            {\n                \"id\": 50,\n                \"name\": \"Mohammad\",\n                \"mobile\": \"0556362596\",\n                \"email\": \"Moh.otaibi2012@gmail.com\",\n                \"image\": \"https://rmontada.test/placeholders/user.png\",\n                \"notify\": true,\n                \"lang\": \"ar\",\n                \"banned\": false,\n                \"active\": true,\n                \"type\": \"client\",\n                \"location_id\": 5,\n                \"location\": \"وسط\",\n                \"area_id\": 1,\n                \"area\": \"الرياض\",\n                \"coaching\": \"\",\n                \"role\": \"subLeader\"\n            }\n        ],\n        \"created_at\": \"2025-07-15T09:08:54.000000Z\",\n        \"updated_at\": \"2025-07-15T09:27:30.000000Z\"\n    }\n}"
+						},
+						{
+							"name": "Show Team - Level translated",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{remo_test}}/team/show/1",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"team",
+										"show",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 27 Jul 2025 08:02:59 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": true,\n    \"message\": \"تم التحميل بنجاح\",\n    \"data\": {\n        \"id\": 1,\n        \"name\": \"Team Alpha\",\n        \"status\": true,\n        \"logo_url\": null,\n        \"area_id\": 1,\n        \"bio\": null,\n        \"trophies\": {\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"total\": 0\n        },\n        \"members_count\": 2,\n        \"users\": [\n            {\n                \"id\": 35,\n                \"name\": \"Ali\",\n                \"mobile\": \"0505750350\",\n                \"email\": \"pb24ep@gmail.com\",\n                \"image\": \"https://rmontada.test/placeholders/user.png\",\n                \"notify\": true,\n                \"lang\": \"ar\",\n                \"banned\": false,\n                \"active\": false,\n                \"type\": \"client\",\n                \"location_id\": 2,\n                \"location\": \"مدافع\",\n                \"area_id\": 3,\n                \"area\": \"مكة\",\n                \"coaching\": \"\",\n                \"role\": \"subLeader\"\n            },\n            {\n                \"id\": 2754,\n                \"name\": \"محمد جمال\",\n                \"mobile\": \"0503461531\",\n                \"email\": \"mg823777@gmail.com\",\n                \"image\": \"https://rmontada.test/placeholders/user.png\",\n                \"notify\": true,\n                \"lang\": \"ar\",\n                \"banned\": false,\n                \"active\": false,\n                \"type\": \"client\",\n                \"location_id\": 1,\n                \"location\": \"مهاجم\",\n                \"area_id\": 1,\n                \"area\": \"الرياض\",\n                \"coaching\": \"\",\n                \"role\": \"leader\"\n            }\n        ],\n        \"rankings\": {\n            \"competitive\": {\n                \"wins\": 0,\n                \"draws\": 0,\n                \"losses\": 1,\n                \"owns\": 5,\n                \"match_count\": 1,\n                \"againsts\": 9,\n                \"points\": 0,\n                \"level\": \"برونز 1\",\n                \"is_competitive\": true\n            },\n            \"friendly\": {\n                \"wins\": 0,\n                \"draws\": 0,\n                \"losses\": 0,\n                \"match_count\": 0,\n                \"owns\": 0,\n                \"againsts\": 0,\n                \"points\": 0,\n                \"is_competitive\": false\n            }\n        },\n        \"created_at\": \"2025-07-20T11:11:23.000000Z\",\n        \"updated_at\": \"2025-07-20T11:05:55.000000Z\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Match",
+			"item": [
+				{
+					"name": "Match Results",
+					"item": [
+						{
+							"name": "Set or update match results",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{remo_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"match_id\": 202,\r\n  \"results\": [\r\n    { \"team_id\": 1, \"goals\": 3 },\r\n    { \"team_id\": 2, \"goals\": 4 }\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{remo_test}}/challenge/set-team-match-result",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"challenge",
+										"set-team-match-result"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Team Match Results",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{remo_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{remo_test}}/challenge/get-team-match-results/474",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"challenge",
+										"get-team-match-results",
+										"474"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "SUCCESS",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{remo_test}}/challenge/get-team-match-results/474",
+											"host": [
+												"{{remo_test}}"
+											],
+											"path": [
+												"challenge",
+												"get-team-match-results",
+												"474"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Server",
+											"value": "nginx/1.25.2"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Vary",
+											"value": "Accept-Encoding"
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "PHP/8.2.28"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, private"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 17 Jul 2025 11:39:57 GMT"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "http://rmontada.test"
+										},
+										{
+											"key": "Access-Control-Allow-Credentials",
+											"value": "true"
+										},
+										{
+											"key": "Content-Encoding",
+											"value": "gzip"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": true,\n    \"message\": \"Results fetched successfully\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"match_id\": 474,\n            \"team_id\": 6,\n            \"goals\": 5,\n            \"created_at\": \"2025-07-17T11:29:15.000000Z\",\n            \"updated_at\": \"2025-07-17T11:29:32.000000Z\",\n            \"team\": {\n                \"id\": 6,\n                \"name\": \"menss7s\",\n                \"status\": 1,\n                \"logo\": null,\n                \"area_id\": 1,\n                \"bio\": \"The best team ever\",\n                \"points\": 0,\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"level\": \"Bronze1\",\n                \"losses\": 0,\n                \"draws\": 0,\n                \"wins\": 0,\n                \"created_at\": \"2025-07-15T07:47:46.000000Z\",\n                \"updated_at\": \"2025-07-15T07:47:46.000000Z\",\n                \"deleted_at\": null\n            }\n        },\n        {\n            \"id\": 2,\n            \"match_id\": 474,\n            \"team_id\": 22,\n            \"goals\": 4,\n            \"created_at\": \"2025-07-17T11:29:15.000000Z\",\n            \"updated_at\": \"2025-07-17T11:29:32.000000Z\",\n            \"team\": {\n                \"id\": 22,\n                \"name\": \"Testdssewewqessw\",\n                \"status\": 1,\n                \"logo\": null,\n                \"area_id\": 1,\n                \"bio\": \"The best team ever\",\n                \"points\": 0,\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"level\": \"Bronze1\",\n                \"losses\": 0,\n                \"draws\": 0,\n                \"wins\": 0,\n                \"created_at\": \"2025-07-16T09:19:38.000000Z\",\n                \"updated_at\": \"2025-07-16T09:19:38.000000Z\",\n                \"deleted_at\": null\n            }\n        }\n    ]\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Add Match (used for testing onlyyyyy))",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{remo_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"playground_id\": 11,\r\n    \"supervisor_id\": 1,\r\n    \"subscribers_qty\": 10,\r\n    \"date\": \"2025-07-17\",\r\n    \"start_time\": \"14:00:00\",\r\n    \"durations\": 60,\r\n    \"durations_text\": \"1 hour match\",\r\n    \"details\": \"Friendly football match at Central Park\",\r\n    \"amount\": 50.00,\r\n    \"type\": \"challenge\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{remo_test}}/matches",
+							"host": [
+								"{{remo_test}}"
+							],
+							"path": [
+								"matches"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "SUCCESS",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"playground_id\": 11,\r\n    \"supervisor_id\": 1,\r\n    \"subscribers_qty\": 10,\r\n    \"date\": \"2025-07-17\",\r\n    \"start_time\": \"14:00:00\",\r\n    \"durations\": 60,\r\n    \"durations_text\": \"1 hour match\",\r\n    \"details\": \"Friendly football match at Central Park\",\r\n    \"amount\": 50.00,\r\n    \"type\": \"challenge\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{remo_test}}/matches",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"matches"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 16 Jul 2025 13:45:06 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": true,\n    \"message\": \"تم اضافة الطلب بنجاح\",\n    \"data\": null\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Challenges",
+			"item": [
+				{
+					"name": "Book Team Match",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{remo_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"team_id\": 22,\r\n  \"match_id\": 474,\r\n  \"is_competitive\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{remo_test}}/challenge/book-match",
+							"host": [
+								"{{remo_test}}"
+							],
+							"path": [
+								"challenge",
+								"book-match"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "FAIL",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"team_id\": 22,\r\n  \"match_id\": 474,\r\n  \"is_competitive\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{remo_test}}/challenge/book-match",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"challenge",
+										"book-match"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 17 Jul 2025 07:17:22 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": false,\n    \"message\": \"يجب أن يكون عدد لاعبي الفريق أكثر من 10 لاعبين.\",\n    \"data\": null\n}"
+						},
+						{
+							"name": "SUCCESS",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"team_id\": 22,\r\n  \"match_id\": 474,\r\n  \"is_competitive\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{remo_test}}/challenge/book-match",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"challenge",
+										"book-match"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 17 Jul 2025 07:51:06 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Match booked and players subscribed successfully.\",\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Withdraw from match",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{remo_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"team_id\": 22,\r\n  \"match_id\": 474\r\n}\r\n// what happens is that if team 1 is the one cancelling the subscribers of both teams will be removed.\r\n// if team 2 is the only one cancelling the subs of team 2 are the only subs who will be removed.",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{remo_test}}/challenge/withdraw-team-match",
+							"host": [
+								"{{remo_test}}"
+							],
+							"path": [
+								"challenge",
+								"withdraw-team-match"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "FAIL",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"team_id\": 22,\r\n  \"match_id\": 474\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{remo_test}}/challenge/withdraw-team-match",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"challenge",
+										"withdraw-team-match"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 17 Jul 2025 07:49:10 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": false,\n    \"message\": \"حقل match id مطلوب.\",\n    \"data\": null\n}"
+						},
+						{
+							"name": "SUCCESS",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"team_id\": 22,\r\n  \"match_id\": 474\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{remo_test}}/challenge/withdraw-team-match",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"challenge",
+										"withdraw-team-match"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 17 Jul 2025 07:49:40 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Team withdrawn from match and subscribers removed successfully.\",\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Send Team Match request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{remo_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"match_id\": 474,\r\n  \"invited_team_id\": 22\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{remo_test}}/challenge/send-team-match-request",
+							"host": [
+								"{{remo_test}}"
+							],
+							"path": [
+								"challenge",
+								"send-team-match-request"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "FAIL",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"match_id\": 474,\r\n  \"invited_team_id\": 6\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{remo_test}}/challenge/send-team-match-request",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"challenge",
+										"send-team-match-request"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 17 Jul 2025 08:42:08 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": false,\n    \"message\": \"يجب أن يكون عدد لاعبي الفريق أكثر من 10 لاعبين.\",\n    \"data\": null\n}"
+						},
+						{
+							"name": "SUCCESS",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"match_id\": 474,\r\n  \"invited_team_id\": 6\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{remo_test}}/challenge/send-team-match-request",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"challenge",
+										"send-team-match-request"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 17 Jul 2025 08:43:20 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Team match request sent successfully.\",\n    \"data\": null\n}"
+						},
+						{
+							"name": "FAIL",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"match_id\": 474,\r\n  \"invited_team_id\": 22\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{remo_test}}/challenge/send-team-match-request",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"challenge",
+										"send-team-match-request"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 17 Jul 2025 09:41:42 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": false,\n    \"message\": \"A team cannot invite itself to a match.\",\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Respond To Team Match Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{remo_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"request_id\": 7,         // ID of the team match request\r\n  \"action\": \"accept\"       // or \"reject\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{remo_test}}/challenge/respond-team-match-request",
+							"host": [
+								"{{remo_test}}"
+							],
+							"path": [
+								"challenge",
+								"respond-team-match-request"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "SUCCESS",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"request_id\": 3,         // ID of the team match request\r\n  \"action\": \"accept\"       // or \"reject\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{remo_test}}/challenge/respond-team-match-request",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"challenge",
+										"respond-team-match-request"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 17 Jul 2025 09:43:42 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Team match request accepted. Team added to match and members subscribed.\",\n    \"data\": null\n}"
+						},
+						{
+							"name": "FAIL",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"request_id\": 6,         // ID of the team match request\r\n  \"action\": \"accept\"       // or \"reject\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{remo_test}}/challenge/respond-team-match-request",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"challenge",
+										"respond-team-match-request"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 17 Jul 2025 09:50:25 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": false,\n    \"message\": \"This request has already been responded to.\",\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Get all request user is part of (Paginated)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{remo_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{remo_test}}/challenge/team-match-invites",
+							"host": [
+								"{{remo_test}}"
+							],
+							"path": [
+								"challenge",
+								"team-match-invites"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "SUCCESS",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{remo_test}}/challenge/team-match-invites",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"challenge",
+										"team-match-invites"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 17 Jul 2025 10:06:38 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": true,\n    \"message\": \"تم جلب دعوات وطلبات المباريات بنجاح.\",\n    \"data\": [\n        {\n            \"id\": 7,\n            \"match_id\": 474,\n            \"requester_team_id\": 22,\n            \"invited_team_id\": 6,\n            \"status\": \"accepted\",\n            \"initiated_by\": \"invited\",\n            \"created_at\": \"2025-07-17T09:50:16.000000Z\",\n            \"updated_at\": \"2025-07-17T09:51:12.000000Z\",\n            \"match\": {\n                \"id\": 474,\n                \"playground_id\": 11,\n                \"date\": \"2025-07-17\",\n                \"start_time\": \"14:00:00\",\n                \"end_time\": \"15:00:00\",\n                \"durations\": 60,\n                \"durations_text\": \"1 hour match\",\n                \"amount\": \"50.00\",\n                \"subscribers_qty\": 10,\n                \"details\": \"Friendly football match at Central Park\",\n                \"status\": 1,\n                \"is_competitive\": 1,\n                \"created_at\": \"2025-07-16T13:45:06.000000Z\",\n                \"updated_at\": \"2025-07-17T09:51:12.000000Z\",\n                \"deleted_at\": null,\n                \"type\": \"challenge\",\n                \"user_id\": null,\n                \"team1_id\": 22,\n                \"team2_id\": 6,\n                \"supervisor_id\": 41,\n                \"revision\": 0\n            },\n            \"requester_team\": {\n                \"id\": 22,\n                \"name\": \"Testdssewewqessw\",\n                \"status\": 1,\n                \"logo\": null,\n                \"area_id\": 1,\n                \"bio\": \"The best team ever\",\n                \"points\": 0,\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"level\": \"Bronze1\",\n                \"losses\": 0,\n                \"draws\": 0,\n                \"wins\": 0,\n                \"created_at\": \"2025-07-16T09:19:38.000000Z\",\n                \"updated_at\": \"2025-07-16T09:19:38.000000Z\",\n                \"deleted_at\": null\n            },\n            \"invited_team\": {\n                \"id\": 6,\n                \"name\": \"menss7s\",\n                \"status\": 1,\n                \"logo\": null,\n                \"area_id\": 1,\n                \"bio\": \"The best team ever\",\n                \"points\": 0,\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"level\": \"Bronze1\",\n                \"losses\": 0,\n                \"draws\": 0,\n                \"wins\": 0,\n                \"created_at\": \"2025-07-15T07:47:46.000000Z\",\n                \"updated_at\": \"2025-07-15T07:47:46.000000Z\",\n                \"deleted_at\": null\n            }\n        },\n        {\n            \"id\": 6,\n            \"match_id\": 474,\n            \"requester_team_id\": 22,\n            \"invited_team_id\": 6,\n            \"status\": \"accepted\",\n            \"initiated_by\": \"requester\",\n            \"created_at\": \"2025-07-17T09:48:34.000000Z\",\n            \"updated_at\": \"2025-07-17T09:49:18.000000Z\",\n            \"match\": {\n                \"id\": 474,\n                \"playground_id\": 11,\n                \"date\": \"2025-07-17\",\n                \"start_time\": \"14:00:00\",\n                \"end_time\": \"15:00:00\",\n                \"durations\": 60,\n                \"durations_text\": \"1 hour match\",\n                \"amount\": \"50.00\",\n                \"subscribers_qty\": 10,\n                \"details\": \"Friendly football match at Central Park\",\n                \"status\": 1,\n                \"is_competitive\": 1,\n                \"created_at\": \"2025-07-16T13:45:06.000000Z\",\n                \"updated_at\": \"2025-07-17T09:51:12.000000Z\",\n                \"deleted_at\": null,\n                \"type\": \"challenge\",\n                \"user_id\": null,\n                \"team1_id\": 22,\n                \"team2_id\": 6,\n                \"supervisor_id\": 41,\n                \"revision\": 0\n            },\n            \"requester_team\": {\n                \"id\": 22,\n                \"name\": \"Testdssewewqessw\",\n                \"status\": 1,\n                \"logo\": null,\n                \"area_id\": 1,\n                \"bio\": \"The best team ever\",\n                \"points\": 0,\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"level\": \"Bronze1\",\n                \"losses\": 0,\n                \"draws\": 0,\n                \"wins\": 0,\n                \"created_at\": \"2025-07-16T09:19:38.000000Z\",\n                \"updated_at\": \"2025-07-16T09:19:38.000000Z\",\n                \"deleted_at\": null\n            },\n            \"invited_team\": {\n                \"id\": 6,\n                \"name\": \"menss7s\",\n                \"status\": 1,\n                \"logo\": null,\n                \"area_id\": 1,\n                \"bio\": \"The best team ever\",\n                \"points\": 0,\n                \"remuntada_challenge_league\": 0,\n                \"remuntada_elite_cup\": 0,\n                \"remuntada_super_cup\": 0,\n                \"level\": \"Bronze1\",\n                \"losses\": 0,\n                \"draws\": 0,\n                \"wins\": 0,\n                \"created_at\": \"2025-07-15T07:47:46.000000Z\",\n                \"updated_at\": \"2025-07-15T07:47:46.000000Z\",\n                \"deleted_at\": null\n            }\n        }\n    ],\n    \"pagination\": {\n        \"total\": 2,\n        \"lastPage\": 1,\n        \"total_pages\": 1,\n        \"perPage\": 10,\n        \"currentPage\": 1,\n        \"next_page_url\": null,\n        \"prev_page_url\": null\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "challenges overview",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{remo_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{remo_test}}/challenge/challenges-overview",
+							"host": [
+								"{{remo_test}}"
+							],
+							"path": [
+								"challenge",
+								"challenges-overview"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "SUCCESS",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{remo_test}}/challenge/challenges-overview",
+									"host": [
+										"{{remo_test}}"
+									],
+									"path": [
+										"challenge",
+										"challenges-overview"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "nginx/1.25.2"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.28"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 20 Jul 2025 08:25:41 GMT"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://rmontada.test"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "gzip"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": true,\n    \"message\": \"Challenges overview fetched successfully\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"Team Alpha\",\n            \"status\": 1,\n            \"logo\": null,\n            \"area_id\": 0,\n            \"bio\": null,\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"created_at\": \"2025-07-20T11:11:23.000000Z\",\n            \"updated_at\": \"2025-07-20T11:11:23.000000Z\",\n            \"deleted_at\": null,\n            \"ranking\": {\n                \"id\": 1,\n                \"team_id\": 1,\n                \"wins\": 2,\n                \"draws\": 1,\n                \"losses\": 3,\n                \"owns\": 40,\n                \"againsts\": 906,\n                \"level\": \"Bronze2\",\n                \"points\": 7,\n                \"is_competitive\": 1,\n                \"created_at\": \"2025-07-20T08:15:27.000000Z\",\n                \"updated_at\": \"2025-07-20T08:17:36.000000Z\"\n            }\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Team Beta\",\n            \"status\": 1,\n            \"logo\": null,\n            \"area_id\": 0,\n            \"bio\": null,\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"created_at\": \"2025-07-20T11:11:23.000000Z\",\n            \"updated_at\": \"2025-07-20T11:11:23.000000Z\",\n            \"deleted_at\": null,\n            \"ranking\": {\n                \"id\": 3,\n                \"team_id\": 2,\n                \"wins\": 3,\n                \"draws\": 1,\n                \"losses\": 2,\n                \"owns\": 906,\n                \"againsts\": 40,\n                \"level\": \"Bronze2\",\n                \"points\": 10,\n                \"is_competitive\": 1,\n                \"created_at\": \"2025-07-20T08:15:27.000000Z\",\n                \"updated_at\": \"2025-07-20T08:17:36.000000Z\"\n            }\n        },\n        {\n            \"id\": 6,\n            \"name\": \"menss7s\",\n            \"status\": 1,\n            \"logo\": null,\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"created_at\": \"2025-07-15T07:47:46.000000Z\",\n            \"updated_at\": \"2025-07-15T07:47:46.000000Z\",\n            \"deleted_at\": null,\n            \"ranking\": null\n        },\n        {\n            \"id\": 7,\n            \"name\": \"menss7sss\",\n            \"status\": 1,\n            \"logo\": null,\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"created_at\": \"2025-07-15T07:48:11.000000Z\",\n            \"updated_at\": \"2025-07-15T07:48:11.000000Z\",\n            \"deleted_at\": null,\n            \"ranking\": null\n        },\n        {\n            \"id\": 8,\n            \"name\": \"menss7sssw\",\n            \"status\": 1,\n            \"logo\": null,\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"created_at\": \"2025-07-15T07:49:07.000000Z\",\n            \"updated_at\": \"2025-07-15T07:49:07.000000Z\",\n            \"deleted_at\": null,\n            \"ranking\": null\n        },\n        {\n            \"id\": 9,\n            \"name\": \"menss7ssswds\",\n            \"status\": 1,\n            \"logo\": null,\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"created_at\": \"2025-07-15T07:49:34.000000Z\",\n            \"updated_at\": \"2025-07-15T07:49:34.000000Z\",\n            \"deleted_at\": null,\n            \"ranking\": null\n        },\n        {\n            \"id\": 10,\n            \"name\": \"menss7ssswdsds\",\n            \"status\": 1,\n            \"logo\": null,\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"created_at\": \"2025-07-15T07:50:18.000000Z\",\n            \"updated_at\": \"2025-07-15T07:50:18.000000Z\",\n            \"deleted_at\": null,\n            \"ranking\": null\n        },\n        {\n            \"id\": 11,\n            \"name\": \"menss7ssswdsdsds\",\n            \"status\": 1,\n            \"logo\": \"teams/a5f0e462-2762-45f1-a1cb-fe50bd9e3154.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"created_at\": \"2025-07-15T07:52:46.000000Z\",\n            \"updated_at\": \"2025-07-15T07:52:46.000000Z\",\n            \"deleted_at\": null,\n            \"ranking\": null\n        },\n        {\n            \"id\": 12,\n            \"name\": \"menss7ssswdsdsdsdsds\",\n            \"status\": 1,\n            \"logo\": \"teams/3bf80382-b6c4-45ed-b671-f1b98d4b5d0c.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"created_at\": \"2025-07-15T08:07:05.000000Z\",\n            \"updated_at\": \"2025-07-15T08:07:05.000000Z\",\n            \"deleted_at\": null,\n            \"ranking\": null\n        },\n        {\n            \"id\": 13,\n            \"name\": \"menss7ssswdsdsdsdsdss\",\n            \"status\": 1,\n            \"logo\": \"teams/47ba2247-7aa8-4704-98a8-1bca3af8110f.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"created_at\": \"2025-07-15T08:08:33.000000Z\",\n            \"updated_at\": \"2025-07-15T08:08:33.000000Z\",\n            \"deleted_at\": null,\n            \"ranking\": null\n        },\n        {\n            \"id\": 14,\n            \"name\": \"menss7ssswdsdsdsdsdssg\",\n            \"status\": 1,\n            \"logo\": \"teams/32a4a261-2103-4d77-afaf-126e300f13e6.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"created_at\": \"2025-07-15T08:09:42.000000Z\",\n            \"updated_at\": \"2025-07-15T08:09:42.000000Z\",\n            \"deleted_at\": null,\n            \"ranking\": null\n        },\n        {\n            \"id\": 15,\n            \"name\": \"Test\",\n            \"status\": 1,\n            \"logo\": \"teams/66b81349-73d5-4a58-9f22-fa50998121b5.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"created_at\": \"2025-07-15T09:01:19.000000Z\",\n            \"updated_at\": \"2025-07-15T09:01:19.000000Z\",\n            \"deleted_at\": null,\n            \"ranking\": null\n        },\n        {\n            \"id\": 16,\n            \"name\": \"Testds\",\n            \"status\": 1,\n            \"logo\": \"teams/6f2b7607-62d0-4ca2-ab4b-e4410b773dc9.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"created_at\": \"2025-07-15T09:02:37.000000Z\",\n            \"updated_at\": \"2025-07-15T09:02:37.000000Z\",\n            \"deleted_at\": null,\n            \"ranking\": null\n        },\n        {\n            \"id\": 17,\n            \"name\": \"Testdss\",\n            \"status\": 1,\n            \"logo\": \"teams/25a45ff0-acb8-4700-878d-ecb747e6c491.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"created_at\": \"2025-07-15T09:02:40.000000Z\",\n            \"updated_at\": \"2025-07-15T09:02:40.000000Z\",\n            \"deleted_at\": null,\n            \"ranking\": null\n        },\n        {\n            \"id\": 18,\n            \"name\": \"Testdssewe\",\n            \"status\": 1,\n            \"logo\": null,\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"created_at\": \"2025-07-15T09:03:43.000000Z\",\n            \"updated_at\": \"2025-07-15T09:03:43.000000Z\",\n            \"deleted_at\": null,\n            \"ranking\": null\n        },\n        {\n            \"id\": 21,\n            \"name\": \"sauedss1\",\n            \"status\": 1,\n            \"logo\": \"teams/ccac45c8-9173-4151-bcce-a6ec62a223ba.jpg\",\n            \"area_id\": 1,\n            \"bio\": \"sauedss1\",\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"created_at\": \"2025-07-15T09:08:54.000000Z\",\n            \"updated_at\": \"2025-07-15T09:27:30.000000Z\",\n            \"deleted_at\": null,\n            \"ranking\": null\n        },\n        {\n            \"id\": 22,\n            \"name\": \"Testdssewewqessw\",\n            \"status\": 1,\n            \"logo\": null,\n            \"area_id\": 1,\n            \"bio\": \"The best team ever\",\n            \"remuntada_challenge_league\": 0,\n            \"remuntada_elite_cup\": 0,\n            \"remuntada_super_cup\": 0,\n            \"created_at\": \"2025-07-16T09:19:38.000000Z\",\n            \"updated_at\": \"2025-07-16T09:19:38.000000Z\",\n            \"deleted_at\": null,\n            \"ranking\": null\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Parse the JSON response\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"// Check if the access_token exists in the response\r",
+							"if (response.data && response.data.access_token) {\r",
+							"    // Save the access_token to an environment variable\r",
+							"    pm.globals.set(\"remo_token\", response.data.access_token);\r",
+							"    console.log(\"Access token saved: \" + response.data.access_token);\r",
+							"} else {\r",
+							"    console.log(\"Access token not found in the response\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mobile\": \"500123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{remo_test}}/login",
+					"host": [
+						"{{remo_test}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "remo_test",
+			"value": "https://pre-montada.gostcode.com/public/api",
+			"type": "default"
+		}
+	]
+}
