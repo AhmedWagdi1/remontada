@@ -58,15 +58,22 @@ class FBMessging {
   @pragma('vm:entry-point')
   static Future<void> initUniLink() async {
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-    await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      sound: true,
-      carPlay: false,
-      criticalAlert: false,
-      badge: true,
-      provisional: false,
-    );
+    
+    // Request permissions with error handling
+    try {
+      await messaging.requestPermission(
+        alert: true,
+        announcement: false,
+        sound: true,
+        carPlay: false,
+        criticalAlert: false,
+        badge: true,
+        provisional: false,
+      );
+    } catch (e) {
+      print('Error requesting notification permissions: $e');
+      // Continue without permissions - user can grant them later
+    }
 
     AndroidNotificationChannel channel = androidChannel();
     FlutterLocalNotificationsPlugin plugin = FlutterLocalNotificationsPlugin();
@@ -278,17 +285,30 @@ class FBMessging {
   // }
 
   static getToken() async {
-    if (Firebase.apps.isEmpty) {
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
+    try {
+      if (Firebase.apps.isEmpty) {
+        await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
+      }
+      
+      // Wait for Firebase to be fully initialized
+      await Future.delayed(const Duration(seconds: 2));
+      
+      // Check if messaging is available
+      if (messaging != null) {
+        final tokenFcm = await messaging.getToken();
+        print('FCM Token: $tokenFcm');
+        Utils.FCMToken = tokenFcm ?? '';
+      } else {
+        print('Firebase Messaging not available');
+        Utils.FCMToken = '';
+      }
+    } catch (e) {
+      print('Error getting FCM token: $e');
+      Utils.FCMToken = '';
+      // Don't rethrow - allow app to continue without FCM
     }
-    await Future.delayed(const Duration(seconds: 1));
-    await messaging.getToken().then((tokenFcm) {
-      print(tokenFcm);
-      Utils.FCMToken = tokenFcm ?? '';
-      // print(Utils.FCMToken);
-    });
   }
 
   static Future revokeToken() async {

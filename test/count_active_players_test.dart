@@ -9,11 +9,11 @@ void main() {
         {'name': 'B', 'active': false},
         {'name': 'C', 'active': true},
       ];
-      expect(_countActivePlayers(users), 2);
+      expect(countActivePlayers(users), 2);
     });
 
     test('returns zero when list empty', () {
-      expect(_countActivePlayers([]), 0);
+      expect(countActivePlayers([]), 0);
     });
   });
-}
+} 

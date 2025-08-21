@@ -34,7 +34,7 @@ String obfuscatePhone(String phone) {
 }
 
 /// Counts how many users in [users] are marked as active.
-int _countActivePlayers(List<dynamic> users) {
+int countActivePlayers(List<dynamic> users) {
   var count = 0;
   for (final u in users) {
     if (u is Map<String, dynamic> && u['active'] == true) {
@@ -804,7 +804,7 @@ class _MembersTab extends StatelessWidget {
             _TopBar(teamName: teamName, logoUrl: logoUrl),
             const SizedBox(height: 16),
             _StatsSummaryRow(
-              activePlayers: _countActivePlayers(users ?? []),
+              activePlayers: countActivePlayers(users ?? []),
               totalPlayers: membersCount ?? (users?.length ?? 0),
             ),
             const SizedBox(height: 16),
