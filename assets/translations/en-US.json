@@ -347,5 +347,21 @@
   },
   "SubscribeNow": "Subscribe now",
   "Subscribedone": "Your subscription has been confirmed",
-  "Subscribedone_des": "Your subscription and joining the match successfully confirmed"
+  "Subscribedone_des": "Your subscription and joining the match successfully confirmed",
+  "create_match": {
+    "title": "Create Match",
+    "subscribers_qty": "Subscribers quantity",
+    "date": "Date",
+    "time": "Time",
+    "durations": "Duration",
+    "durations_text": "Duration description",
+    "details": "Details",
+    "amount": "Amount",
+    "type": "Match type",
+    "challenge": "Challenge",
+    "friendly": "Friendly",
+    "submit": "Create Match",
+    "success": "Match request added successfully",
+    "error": "Failed to add match"
+  }
 }

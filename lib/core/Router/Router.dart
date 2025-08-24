@@ -6,8 +6,11 @@ import 'package:remontada/features/home/presentation/screens/webview.dart';
 import 'package:remontada/features/layout/presentation/screens/layout_screen.dart';
 import 'package:remontada/features/matchdetails/presentaion/screens/matchDetails_screen.dart';
 import 'package:remontada/features/more/domain/contact_request.dart';
-import 'package:remontada/features/my_matches/presentation/screens/create_match_screen.dart';
+import 'package:remontada/features/my_matches/presentation/screens/create_match_screen.dart'
+    as my_matches;
 import 'package:remontada/features/challenges/presentation/screens/challenges_screen.dart';
+import 'package:remontada/features/challenges/presentation/screens/create_match_screen.dart'
+    as challenges;
 import 'package:remontada/features/player_details/presentation/screens/player_details.dart';
 import 'package:remontada/features/profile/presentation/screens/edit_profile.screen.dart';
 import 'package:remontada/features/splash/cubit/splash_cubit.dart';
@@ -50,6 +53,7 @@ class Routes {
   static const String contactScreen = "/contactScreen";
   static const String webPage = "/webPage";
   static const String CreateMatchScreen = "/CreateMatchScreen";
+  static const String createMatch = "/createMatch";
   static const String PlayersScreenSupervisor = "/PlayersScreenSupervisor";
   static const String challengesScreen = "/ChallengesScreen";
   static const String UpdateAppScreen = "/UpdateAppScreen";
@@ -211,10 +215,16 @@ class RouteGenerator {
         return CupertinoPageRoute(
           settings: routeSettings,
           builder: (_) {
-            return CreateMatchScreen(
+            return my_matches.CreateMatchScreen(
               id: routeSettings.arguments as String?,
-              // uri: routeSettings.arguments as String,
             );
+          },
+        );
+      case Routes.createMatch:
+        return CupertinoPageRoute(
+          settings: routeSettings,
+          builder: (_) {
+            return const challenges.CreateMatchScreen();
           },
         );
       case Routes.PlayersScreenSupervisor:

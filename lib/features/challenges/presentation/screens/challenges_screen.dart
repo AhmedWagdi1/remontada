@@ -14,6 +14,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../../../core/config/key.dart';
 import '../../../../core/utils/utils.dart';
+import '../../../../core/Router/Router.dart';
 import '../../domain/model/challenge_overview_model.dart';
 import '../../data/challenges_repository_impl.dart';
 
@@ -885,6 +886,14 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
     return Scaffold(
+      floatingActionButton: Utils.isSuperVisor == true
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.pushNamed(context, Routes.createMatch);
+              },
+              child: const Icon(Icons.add),
+            )
+          : null,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
