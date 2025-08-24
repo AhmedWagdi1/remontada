@@ -886,7 +886,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
     return Scaffold(
-      floatingActionButton: Utils.isSuperVisor == true
+      floatingActionButton: (Utils.isSuperVisor ?? false)
           ? FloatingActionButton(
               onPressed: () {
                 Navigator.pushNamed(context, Routes.createMatch);

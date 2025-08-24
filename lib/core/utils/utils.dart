@@ -36,16 +36,18 @@ class Utils {
   static DataManager get dataManager => locator<DataManager>();
 
   static saveUserInHive(Map<String, dynamic> response) async {
-    // user = User.fromMap(response);
-
     user = User.fromMap(response);
     token = user.token ?? '';
-    isSuperVisor = user.user?.type == "supervisor";
+    isSuperVisor = response['type'] == 'supervisor';
     FBMessging.subscripeAllUsers();
     await user.type == "client"
         ? FBMessging.subscripeAllclients()
         : FBMessging.subscripeAllcouches();
     await Utils.dataManager.saveUser(Map<String, dynamic>.from(response));
+    final context = navigatorKey().currentContext;
+    if (context != null) {
+      rebuildAllChildren(context);
+    }
   }
 
   static deleteUserData() async {
