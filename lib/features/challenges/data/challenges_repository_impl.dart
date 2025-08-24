@@ -8,6 +8,7 @@ import '../domain/model/create_challenge_response.dart';
 import '../domain/model/user_team_model.dart';
 import '../domain/model/match_model.dart';
 import '../domain/repository/challenges_repository.dart';
+import '../domain/request/create_match_request.dart';
 
 class ChallengesRepositoryImpl implements ChallengesRepository {
   @override
@@ -163,5 +164,19 @@ class ChallengesRepositoryImpl implements ChallengesRepository {
     
     // If all endpoints fail, throw a generic error
     throw Exception('No matches available at the moment. Please check back later or contact support if the issue persists.');
+  }
+
+  @override
+  Future<http.Response> createMatch(CreateMatchRequest request) async {
+    final response = await http.post(
+      Uri.parse('${ConstKeys.baseUrl}/matches'),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${Utils.token}',
+      },
+      body: jsonEncode(request.toMap()),
+    );
+    return response;
   }
 }

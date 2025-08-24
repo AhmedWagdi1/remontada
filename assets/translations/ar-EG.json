@@ -347,5 +347,21 @@
   "have_an_account": "هل لديك حساب؟",
   "signUp": "اشتراك",
   "confirm_password": "تأكيد كلمة المرور",
-  "change_password": "تغيير كلمة المرور"
+  "change_password": "تغيير كلمة المرور",
+  "create_match": {
+    "title": "إنشاء مباراة",
+    "subscribers_qty": "عدد المشتركين",
+    "date": "التاريخ",
+    "time": "الوقت",
+    "durations": "المدة",
+    "durations_text": "وصف المدة",
+    "details": "التفاصيل",
+    "amount": "المبلغ",
+    "type": "نوع المباراة",
+    "challenge": "تحدي",
+    "friendly": "ودي",
+    "submit": "إنشاء المباراة",
+    "success": "تم اضافة الطلب بنجاح",
+    "error": "فشل في اضافة المباراة"
+  }
 }

@@ -337,4 +337,18 @@ abstract class LocaleKeys {
   // Challenge keys
   static const String challenge_no_matches_available = 'challenge_no_matches_available';
   static const String challenge_error_loading_matches = 'challenge_error_loading_matches';
+  static const create_match_title = 'create_match.title';
+  static const create_match_subscribers_qty = 'create_match.subscribers_qty';
+  static const create_match_date = 'create_match.date';
+  static const create_match_time = 'create_match.time';
+  static const create_match_durations = 'create_match.durations';
+  static const create_match_durations_text = 'create_match.durations_text';
+  static const create_match_details = 'create_match.details';
+  static const create_match_amount = 'create_match.amount';
+  static const create_match_type = 'create_match.type';
+  static const create_match_challenge = 'create_match.challenge';
+  static const create_match_friendly = 'create_match.friendly';
+  static const create_match_submit = 'create_match.submit';
+  static const create_match_success = 'create_match.success';
+  static const create_match_error = 'create_match.error';
 }
