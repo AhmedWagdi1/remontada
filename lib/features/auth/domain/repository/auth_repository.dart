@@ -73,14 +73,23 @@ class AuthRepository {
   }
 
   registerRequest(AuthRequest user) async {
+    print('RegisterRequest: Sending data:');
+    print(user.register());
     final response = await dioService.postData(
         isForm: true,
         url: AuthEndPoints.register,
         body: user.register(),
         loading: true);
+    print('RegisterRequest: Raw response:');
+    print(response.response?.data);
+    print('RegisterRequest: isError: ${response.isError}');
     if (response.isError == false) {
+      print('RegisterRequest: Success, data:');
+      print(response.response?.data['data']);
       return response.response?.data['data'];
     } else {
+      print('RegisterRequest: Error, message:');
+      print(response.response?.data['message']);
       return null;
     }
   }
