@@ -810,6 +810,12 @@ class _MembersTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Group users by role
+    final allUsers = users ?? [];
+    final captain = allUsers.where((u) => u['role'] == 'leader').toList();
+    final subCaptain = allUsers.where((u) => u['role'] == 'subLeader').toList();
+    final members = allUsers.where((u) => u['role'] != 'leader' && u['role'] != 'subLeader').toList();
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: SingleChildScrollView(
@@ -820,13 +826,36 @@ class _MembersTab extends StatelessWidget {
             _TopBar(teamName: teamName, logoUrl: logoUrl),
             const SizedBox(height: 16),
             _StatsSummaryRow(
-              activePlayers: countActivePlayers(users ?? []),
-              totalPlayers: membersCount ?? (users?.length ?? 0),
+              activePlayers: countActivePlayers(allUsers),
+              totalPlayers: membersCount ?? allUsers.length,
             ),
             const SizedBox(height: 16),
-            const _PlayersSectionTitle(),
-            const SizedBox(height: 16),
-            _PlayerList(players: users ?? const []),
+            // Captain Section
+            if (captain.isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.only(right: 16, bottom: 8),
+                child: Text('الكابتن', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 16)),
+              ),
+              _PlayerList(players: captain),
+              const SizedBox(height: 16),
+            ],
+            // Sub Captain Section
+            if (subCaptain.isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.only(right: 16, bottom: 8),
+                child: Text('المساعد أو نائب الكابتن', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 16)),
+              ),
+              _PlayerList(players: subCaptain),
+              const SizedBox(height: 16),
+            ],
+            // Members Section
+            if (members.isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.only(right: 16, bottom: 8),
+                child: Text('الأعضاء', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 16)),
+              ),
+              _PlayerList(players: members),
+            ],
           ],
         ),
       ),
