@@ -46,6 +46,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   String? _challengesOverviewError;
   int _currentSlideIndex = 0;
   bool? _hasTeam;
+  List<dynamic> _userTeams = [];
 
   /// Retrieves the list of teams the current user belongs to.
   ///
@@ -75,7 +76,10 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         final data = jsonDecode(res.body) as Map<String, dynamic>;
         if (data['status'] == true) {
           final teams = data['data'] as List<dynamic>;
-          setState(() => _hasTeam = teams.isNotEmpty);
+          setState(() {
+            _userTeams = teams;
+            _hasTeam = teams.isNotEmpty;
+          });
           return;
         }
       }
@@ -761,6 +765,12 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   /// row is placed inside scrollable containers with unconstrained widths.
   Widget _manageTeamRow() {
     const darkBlue = Color(0xFF23425F);
+    // Assume you have a field: List<dynamic> _userTeams; (add it to the class)
+    // And you fetch it in _fetchUserTeams and store the result
+    // We'll use the first team as the user's team for navigation
+    final userTeamId = (_userTeams != null && _userTeams.isNotEmpty)
+        ? (_userTeams.first['id'] as int)
+        : null;
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Container(
@@ -788,14 +798,16 @@ class _ChallengesScreenState extends State<ChallengesScreen>
             SizedBox(
               height: 36,
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const TeamDetailsPage(teamId: 23),
-                    ),
-                  );
-                },
+                onPressed: userTeamId != null
+                    ? () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => TeamDetailsPage(teamId: userTeamId),
+                          ),
+                        );
+                      }
+                    : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: darkBlue,
                   minimumSize: const Size(120, 36),

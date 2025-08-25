@@ -292,7 +292,7 @@ class _TeamSummaryCard extends StatelessWidget {
     const darkBlue = Color(0xFF23425F);
     final name = teamName ?? 'ريـمونتادا';
     final description = bio ?? 'فريق يبحث عن التحديات و الصراعات الكوراوويه';
-    final members = membersCount?.toString() ?? '10';
+  final members = membersCount != null ? membersCount.toString() : '0';
     final logo = logoUrl;
     return Container(
       padding: const EdgeInsets.all(16),
@@ -405,22 +405,39 @@ class _AchievementsSection extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 8),
-        if (ranking != null)
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              _Badge(
-                label: ranking!['level']?.toString() ?? '',
-                color: (ranking!['level_color'] as String?)?.toColor() ??
-                    Colors.grey,
-                count: '',
-                icon: Icons.emoji_events,
-              ),
-            ],
-          )
-        else
-          const Text('لا يوجد اوسمة و انجازات بعد'),
+          if (ranking != null && ranking!['trophies'] != null)
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _Badge(
+                  label: 'دوري ريمونتادا',
+                  color: Colors.amber,
+                  count: ranking!['trophies']['remuntada_challenge_league'].toString(),
+                  icon: Icons.emoji_events,
+                ),
+                _Badge(
+                  label: 'كأس النخبة',
+                  color: Colors.blue,
+                  count: ranking!['trophies']['remuntada_elite_cup'].toString(),
+                  icon: Icons.emoji_events,
+                ),
+                _Badge(
+                  label: 'كأس السوبر',
+                  color: Colors.red,
+                  count: ranking!['trophies']['remuntada_super_cup'].toString(),
+                  icon: Icons.emoji_events,
+                ),
+                _Badge(
+                  label: 'إجمالي البطولات',
+                  color: Colors.green,
+                  count: ranking!['trophies']['total'].toString(),
+                  icon: Icons.emoji_events,
+                ),
+              ],
+            )
+          else
+            const Text('لا يوجد اوسمة و انجازات بعد'),
       ],
     );
   }
