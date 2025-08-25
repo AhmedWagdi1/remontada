@@ -248,43 +248,27 @@ class _CreateChallengePageState extends State<CreateChallengePage> {
                         border: Border.all(color: Colors.grey.shade300),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<UserTeamModel>(
-                          value: _selectedTeam,
-                          isExpanded: true,
-                          hint: Text(LocaleKeys.challenge_team_id.tr()),
-                          items: _userTeams.map((team) {
-                            return DropdownMenuItem<UserTeamModel>(
-                              value: team,
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 16,
-                                    backgroundColor: Colors.grey.shade300,
-                                    backgroundImage: team.logo != null && team.logo!.isNotEmpty
-                                        ? NetworkImage('${ConstKeys.baseUrl}/storage/${team.logo}')
-                                        : null,
-                                    child: team.logo == null || team.logo!.isEmpty
-                                        ? const Icon(Icons.sports_soccer, color: Colors.grey)
-                                        : null,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      team.name,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (UserTeamModel? newValue) {
-                            setState(() {
-                              _selectedTeam = newValue;
-                            });
-                          },
-                        ),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 16,
+                            backgroundColor: Colors.grey.shade300,
+                            backgroundImage: _selectedTeam?.logo != null && _selectedTeam!.logo!.isNotEmpty
+                                ? NetworkImage('${ConstKeys.baseUrl}/storage/${_selectedTeam!.logo}')
+                                : null,
+                            child: _selectedTeam?.logo == null || _selectedTeam!.logo!.isEmpty
+                                ? const Icon(Icons.sports_soccer, color: Colors.grey)
+                                : null,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              _selectedTeam?.name ?? '',
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   const SizedBox(height: 16),
@@ -375,32 +359,40 @@ class _CreateChallengePageState extends State<CreateChallengePage> {
                         hint: Text(LocaleKeys.challenge_match_id.tr()),
                         isExpanded: true,
                         underline: const SizedBox(),
+                        itemHeight: 80, // Increased height for better readability
                         items: _availableMatches.map((match) {
                           return DropdownMenuItem<MatchModel>(
                             value: match,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  'Match #${match.id} - ${match.date}',
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  '${match.startTime} - ${match.endTime} (${match.durationsText})',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey[600],
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: 80, // Match the itemHeight
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Match #${match.id} - ${match.date}',
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                ),
-                                Text(
-                                  'Amount: ${match.amount} SAR',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey[600],
+                                  Text(
+                                    '${match.startTime} - ${match.endTime} (${match.durationsText})',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey[600],
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                ),
-                              ],
+                                  Text(
+                                    'Amount: ${match.amount} SAR',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey[600],
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
                             ),
                           );
                         }).toList(),
