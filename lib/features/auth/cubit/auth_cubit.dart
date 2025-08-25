@@ -103,10 +103,20 @@ class AuthCubit extends Cubit<AuthStates> {
     if (Utils.FCMToken.isEmpty) {
       await FBMessging.getToken();
     }
+    print('OTP Activation Request:');
+    print({
+      'mobile': phone,
+      'code': code,
+      'device_token': Utils.FCMToken,
+      'device_type': Utils.deviceType,
+      'uuid': Utils.uuid,
+    });
     final response = await authRepository.sendCodeRequest(
       phone: phone,
       code: code,
     );
+    print('OTP Activation Response:');
+    print(response);
     if (response != null) {
       codeId = response['code'].toString();
       await Utils.saveUserInHive(response);

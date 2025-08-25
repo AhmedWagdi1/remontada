@@ -291,19 +291,12 @@ class FBMessging {
           options: DefaultFirebaseOptions.currentPlatform,
         );
       }
-      
       // Wait for Firebase to be fully initialized
       await Future.delayed(const Duration(seconds: 2));
-      
-      // Check if messaging is available
-      if (messaging != null) {
-        final tokenFcm = await messaging.getToken();
-        print('FCM Token: $tokenFcm');
-        Utils.FCMToken = tokenFcm ?? '';
-      } else {
-        print('Firebase Messaging not available');
-        Utils.FCMToken = '';
-      }
+  final tokenFcm = await messaging.getToken();
+  print('FCM Token (fetched): $tokenFcm');
+  Utils.FCMToken = tokenFcm ?? '';
+  print('Utils.FCMToken (set): ${Utils.FCMToken}');
     } catch (e) {
       print('Error getting FCM token: $e');
       Utils.FCMToken = '';
