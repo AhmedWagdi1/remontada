@@ -56,6 +56,11 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
     TextEditingController(),
   ];
 
+  final List<TextEditingController> _playerNameControllers = [
+    TextEditingController(),
+    TextEditingController(),
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -105,12 +110,35 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
     for (final c in _playerPhoneControllers) {
       c.dispose();
     }
+    for (final c in _playerNameControllers) {
+      c.dispose();
+    }
     super.dispose();
   }
 
 
   /// Handles the multi-step create team flow as described in the docs.
   Future<void> _submitForm() async {
+    // Check team name uniqueness among existing teams (client-side, if possible)
+    // If you have a list of existing team names, you can check here. Otherwise, skip or do server-side only.
+
+    // Check player names uniqueness in the form
+    final List<String> playerNames = _playerNameControllers.map((c) => c.text.trim()).where((n) => n.isNotEmpty).toList();
+    
+    final subName = _assistantNameController.text.trim();
+    if (playerNames.contains(subName)) {
+      await _showError('اسم المساعد مُستخدم كاسم لاعب. يرجى اختيار اسم مختلف.');
+      setState(() => _isSubmitting = false);
+      return;
+    }
+    final Set<String> uniqueNames = {};
+    for (final name in [subName, ...playerNames]) {
+      if (!uniqueNames.add(name)) {
+        await _showError('قيمة حقل الاسم "$name" مُستخدمة أكثر من مرة. يرجى اختيار أسماء فريدة لكل لاعب.');
+        setState(() => _isSubmitting = false);
+        return;
+      }
+    }
     if (_isSubmitting) return;
     setState(() => _isSubmitting = true);
 
@@ -185,6 +213,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
       // Step 2: add 9 members (subleader + first 8 members)
       // Ensure subleader is added as a member first
       final List<String> phonesToAdd = [subPhone, ...memberPhones.take(8)];
+      List<String> addedPhones = [];
       for (final phone in phonesToAdd) {
         final playerRes = await http.post(
           Uri.parse('${ConstKeys.baseUrl}/team/add-member'),
@@ -200,7 +229,23 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
         );
         final playerData = jsonDecode(playerRes.body);
         if (playerRes.statusCode >= 400 || playerData['status'] != true) {
-          // Rollback: delete the created team to avoid partial state
+          // Rollback: remove added members, then delete the team
+          for (final addedPhone in addedPhones) {
+            try {
+              await http.post(
+                Uri.parse('${ConstKeys.baseUrl}/team/remove-member'),
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ${Utils.token}',
+                },
+                body: jsonEncode({
+                  'phone_number': addedPhone,
+                  'team_id': teamId,
+                }),
+              );
+            } catch (_) {}
+          }
           try {
             await http.delete(
               Uri.parse('${ConstKeys.baseUrl}/team/$teamId'),
@@ -213,6 +258,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
           await _showError(playerData['message'] ?? 'خطأ في إضافة اللاعب ذو الرقم $phone');
           setState(() => _isSubmitting = false);
           return;
+        } else {
+          addedPhones.add(phone);
         }
       }
 
@@ -232,7 +279,23 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
       );
       final subData = jsonDecode(subRes.body);
       if (subRes.statusCode >= 400 || subData['status'] != true) {
-        // Rollback: delete the created team to avoid partial state
+        // Rollback: remove added members, then delete the team
+        for (final addedPhone in phonesToAdd) {
+          try {
+            await http.post(
+              Uri.parse('${ConstKeys.baseUrl}/team/remove-member'),
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ${Utils.token}',
+              },
+              body: jsonEncode({
+                'phone_number': addedPhone,
+                'team_id': teamId,
+              }),
+            );
+          } catch (_) {}
+        }
         try {
           await http.delete(
             Uri.parse('${ConstKeys.baseUrl}/team/$teamId'),
@@ -303,7 +366,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
   }
 
   /// Builds a single player card for entering a player's phone number.
-  Widget _buildPlayerCard(int index, TextEditingController phoneController) {
+  Widget _buildPlayerCard(int index, TextEditingController phoneController, TextEditingController nameController) {
     const darkBlue = Color(0xFF23425F);
     return Stack(
       children: [
@@ -341,6 +404,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
               ),
               const SizedBox(height: 12),
               TextFormField(
+                controller: nameController,
+                enabled: !_isSubmitting,
                 decoration: InputDecoration(
                   labelText: LocaleKeys.player_name_label.tr(),
                   hintText: LocaleKeys.player_name_hint.tr(),
@@ -722,7 +787,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                 ),
                 const SizedBox(height: 12),
                 for (int i = 0; i < _playerPhoneControllers.length; i++)
-                  _buildPlayerCard(i + 1, _playerPhoneControllers[i]),
+                  _buildPlayerCard(i + 1, _playerPhoneControllers[i], _playerNameControllers[i]),
                 const SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
@@ -731,8 +796,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                         ? null
                         : () {
                             setState(() {
-                              _playerPhoneControllers
-                                  .add(TextEditingController());
+                              _playerPhoneControllers.add(TextEditingController());
+                              _playerNameControllers.add(TextEditingController());
                             });
                           },
                     icon: const Icon(Icons.add, color: darkBlue),
