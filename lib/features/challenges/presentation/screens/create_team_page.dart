@@ -141,7 +141,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
       final allPhones = <String>[subPhone, ...memberPhones.take(8)];
       for (final phone in allPhones) {
         if (!(Validation.isValidSaudiPhoneNumber(phone) ?? false)) {
-          await _showError('رقم الجوال "$phone" غير صالح. يرجى إدخال رقم يبدأ بـ 5 مكون من 9 أرقام.');
+          await _showError('رقم الجوال "$phone" غير صالح. يجب أن يبدأ بـ 0 ويتكون من 10 أرقام.');
           setState(() => _isSubmitting = false);
           return;
         }
