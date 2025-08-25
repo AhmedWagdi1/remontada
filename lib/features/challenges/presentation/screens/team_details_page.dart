@@ -14,6 +14,9 @@ import '../../../chat/cubit/chat_states.dart';
 import '../../../chat/domain/repository/chat_repository.dart';
 import '../../../chat/domain/request/send_message_request.dart';
 
+  late TabController _tabController;
+
+
 /// Finds a member with the given [role] inside the provided [users] list.
 Map<String, dynamic>? findMemberByRole(List<dynamic> users, String role) {
   for (final u in users) {
@@ -56,17 +59,24 @@ class TeamDetailsPage extends StatefulWidget {
   State<TeamDetailsPage> createState() => _TeamDetailsPageState();
 }
 
-class _TeamDetailsPageState extends State<TeamDetailsPage> {
+class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderStateMixin {
   Map<String, dynamic>? _teamData;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 5, vsync: this);
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) return;
+      _fetchTeamData();
+    });
     _fetchTeamData();
   }
 
   /// Fetches the team information from the backend and stores it in [_teamData].
   Future<void> _fetchTeamData() async {
+    // Debug log for team id
+    debugPrint('Fetching team data for teamId: ${widget.teamId}');
     final url = '${ConstKeys.baseUrl}/team/show/${widget.teamId}';
     final res = await http.get(
       Uri.parse(url),
@@ -101,14 +111,45 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
   @override
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
-    return DefaultTabController(
-      length: 5,
-      child: Directionality(
-        textDirection: TextDirection.rtl,
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: DefaultTabController(
+        length: 5,
         child: Scaffold(
-          appBar: AppBar(title: Text(LocaleKeys.manage_your_team.tr())),
+          appBar: AppBar(
+            title: Text(LocaleKeys.manage_your_team.tr()),
+            bottom: TabBar(
+              controller: _tabController,
+              indicatorColor: darkBlue,
+              labelColor: darkBlue,
+              unselectedLabelColor: Colors.grey,
+              indicatorWeight: 3,
+              tabs: [
+                Tab(
+                  icon: const Icon(Icons.info),
+                  text: LocaleKeys.team_details_info.tr(),
+                ),
+                Tab(
+                  icon: const Icon(Icons.groups),
+                  text: LocaleKeys.team_details_members.tr(),
+                ),
+                Tab(
+                  icon: const Icon(Icons.person_add),
+                  text: LocaleKeys.team_details_join.tr(),
+                ),
+                Tab(
+                  icon: const Icon(Icons.transfer_within_a_station),
+                  text: LocaleKeys.team_details_transfer.tr(),
+                ),
+                Tab(
+                  icon: const Icon(Icons.chat),
+                  text: LocaleKeys.team_details_chat.tr(),
+                ),
+              ],
+            ),
+          ),
           body: TabBarView(
-            physics: const NeverScrollableScrollPhysics(),
+            controller: _tabController,
             children: [
               // Info tab content.
               SingleChildScrollView(
@@ -163,6 +204,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
               _JoinRequestsTab(
                 teamName: _teamData?['name'] as String?,
                 logoUrl: _teamData?['logo_url'] as String?,
+                teamId: widget.teamId, // <-- Pass teamId here
               ),
               _TransferRequestsTab(
                 teamName: _teamData?['name'] as String?,
@@ -175,39 +217,6 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                 logoUrl: _teamData?['logo_url'] as String?,
               ),
             ],
-          ),
-          bottomNavigationBar: Container(
-            decoration: const BoxDecoration(
-              border: Border(top: BorderSide(color: Colors.grey)),
-            ),
-            child: TabBar(
-              indicatorColor: darkBlue,
-              labelColor: darkBlue,
-              unselectedLabelColor: Colors.grey,
-              indicatorWeight: 3,
-              tabs: [
-                Tab(
-                  icon: const Icon(Icons.info),
-                  text: LocaleKeys.team_details_info.tr(),
-                ),
-                Tab(
-                  icon: const Icon(Icons.groups),
-                  text: LocaleKeys.team_details_members.tr(),
-                ),
-                Tab(
-                  icon: const Icon(Icons.person_add),
-                  text: LocaleKeys.team_details_join.tr(),
-                ),
-                Tab(
-                  icon: const Icon(Icons.transfer_within_a_station),
-                  text: LocaleKeys.team_details_transfer.tr(),
-                ),
-                Tab(
-                  icon: const Icon(Icons.chat),
-                  text: LocaleKeys.team_details_chat.tr(),
-                ),
-              ],
-            ),
           ),
         ),
       ),
@@ -1131,15 +1140,153 @@ class _LabeledText extends StatelessWidget {
 }
 
 /// Tab displaying pending join requests for the team.
-class _JoinRequestsTab extends StatelessWidget {
-  /// Team name for the [_TopBar].
+class _JoinRequestsTab extends StatefulWidget {
   final String? teamName;
-
-  /// Logo URL for the [_TopBar].
   final String? logoUrl;
+  final int teamId; // <-- Add this
 
-  /// Creates a [_JoinRequestsTab].
-  const _JoinRequestsTab({this.teamName, this.logoUrl});
+  const _JoinRequestsTab({this.teamName, this.logoUrl, required this.teamId}); // <-- Update constructor
+
+  @override
+  State<_JoinRequestsTab> createState() => _JoinRequestsTabState();
+}
+
+class _JoinRequestsTabState extends State<_JoinRequestsTab> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _phoneController = TextEditingController();
+  String _selectedRole = 'member';
+  bool _isSubmitting = false;
+  String? _error;
+
+  Future<bool> _isPhoneRegistered(String phone) async {
+    final res = await http.post(
+      Uri.parse('https://pre-montada.gostcode.com/api/login'),
+      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+      body: jsonEncode({'mobile': phone}),
+    );
+    final data = jsonDecode(res.body);
+    return res.statusCode < 400 && data['status'] == true;
+  }
+
+  Future<bool> _isMemberInOtherTeam(String phone) async {
+    final res = await http.get(
+      Uri.parse('${ConstKeys.baseUrl}/team/user-teams'),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${Utils.token}',
+      },
+    );
+    final data = jsonDecode(res.body);
+    if (res.statusCode < 400 && data['status'] == true) {
+      final teams = data['data'] as List<dynamic>;
+      for (final team in teams) {
+        if ((team['users'] as List<dynamic>?)?.any((u) => u['mobile'] == phone) ?? false) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  Future<bool> _hasSubLeader() async {
+    // Check if current team already has a sub leader
+    final res = await http.get(
+      Uri.parse('${ConstKeys.baseUrl}/team/show/${widget.teamId}'),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${Utils.token}',
+      },
+    );
+    final data = jsonDecode(res.body);
+    if (res.statusCode < 400 && data['status'] == true) {
+      final users = data['data']['users'] as List<dynamic>;
+      return users.any((u) => u['role'] == 'subLeader');
+    }
+    return false;
+  }
+
+  Future<void> _addMember() async {
+    setState(() {
+      _isSubmitting = true;
+      _error = null;
+    });
+    final phone = _phoneController.text.trim();
+    if (!await _isPhoneRegistered(phone)) {
+      setState(() {
+        _error = 'رقم الجوال غير مسجل في النظام.';
+        _isSubmitting = false;
+      });
+      return;
+    }
+    if (await _isMemberInOtherTeam(phone)) {
+      setState(() {
+        _error = 'هذا العضو بالفعل ضمن فريق آخر.';
+        _isSubmitting = false;
+      });
+      return;
+    }
+    if (_selectedRole == 'subLeader' && await _hasSubLeader()) {
+      setState(() {
+        _error = 'لا يمكن إضافة أكثر من مساعد واحد للفريق.';
+        _isSubmitting = false;
+      });
+      return;
+    }
+    // Add member
+    final addRes = await http.post(
+      Uri.parse('${ConstKeys.baseUrl}/team/add-member'),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${Utils.token}',
+      },
+      body: jsonEncode({
+        'phone_number': phone,
+        'team_id': widget.teamId, // <-- use widget.teamId
+      }),
+    );
+    final addData = jsonDecode(addRes.body);
+    if (addRes.statusCode >= 400 || addData['status'] != true) {
+      setState(() {
+        _error = addData['message'] ?? 'خطأ في إضافة العضو.';
+        _isSubmitting = false;
+      });
+      return;
+    }
+    // Assign role if subLeader
+    if (_selectedRole == 'subLeader') {
+      final roleRes = await http.post(
+        Uri.parse('${ConstKeys.baseUrl}/team/member-role'),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${Utils.token}',
+        },
+        body: jsonEncode({
+          'phone_number': phone,
+          'team_id': widget.teamId, // <-- use widget.teamId
+          'role': 'subLeader',
+        }),
+      );
+      final roleData = jsonDecode(roleRes.body);
+      if (roleRes.statusCode >= 400 || roleData['status'] != true) {
+        setState(() {
+          _error = roleData['message'] ?? 'خطأ في تعيين الدور للمساعد.';
+          _isSubmitting = false;
+        });
+        return;
+      }
+    }
+    setState(() {
+      _isSubmitting = false;
+      _error = null;
+      _phoneController.clear();
+      _selectedRole = 'member';
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('تم إضافة العضو بنجاح!'), backgroundColor: Colors.green),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1168,8 +1315,54 @@ class _JoinRequestsTab extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _TopBar(teamName: teamName, logoUrl: logoUrl),
+            _TopBar(teamName: widget.teamName, logoUrl: widget.logoUrl),
             const SizedBox(height: 16),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _phoneController,
+                    decoration: const InputDecoration(
+                      labelText: 'رقم الجوال',
+                      prefixIcon: Icon(Icons.phone),
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.phone,
+                    validator: (v) => v == null || v.isEmpty ? 'يرجى إدخال رقم الجوال' : null,
+                  ),
+                  const SizedBox(height: 12),
+                  DropdownButtonFormField<String>(
+                    value: _selectedRole,
+                    items: const [
+                      DropdownMenuItem(value: 'member', child: Text('عضو')),
+                      DropdownMenuItem(value: 'subLeader', child: Text('مساعد')),
+                    ],
+                    onChanged: (v) => setState(() => _selectedRole = v ?? 'member'),
+                    decoration: const InputDecoration(
+                      labelText: 'الدور المطلوب',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  if (_error != null)
+                    Text(_error!, style: const TextStyle(color: Colors.red)),
+                  ElevatedButton(
+                    onPressed: _isSubmitting
+                        ? null
+                        : () {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              _addMember();
+                            }
+                          },
+                    child: _isSubmitting
+                        ? const CircularProgressIndicator()
+                        : const Text('إضافة عضو جديد'),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
