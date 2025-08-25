@@ -119,67 +119,117 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
 
   /// Handles the multi-step create team flow as described in the docs.
   Future<void> _submitForm() async {
-    // Check team name uniqueness among existing teams (client-side, if possible)
-    // If you have a list of existing team names, you can check here. Otherwise, skip or do server-side only.
-
-    // Check player names uniqueness in the form
-    final List<String> playerNames = _playerNameControllers.map((c) => c.text.trim()).where((n) => n.isNotEmpty).toList();
-    
-    final subName = _assistantNameController.text.trim();
-    if (playerNames.contains(subName)) {
-      await _showError('اسم المساعد مُستخدم كاسم لاعب. يرجى اختيار اسم مختلف.');
-      setState(() => _isSubmitting = false);
-      return;
-    }
-    final Set<String> uniqueNames = {};
-    for (final name in [subName, ...playerNames]) {
-      if (!uniqueNames.add(name)) {
-        await _showError('قيمة حقل الاسم "$name" مُستخدمة أكثر من مرة. يرجى اختيار أسماء فريدة لكل لاعب.');
-        setState(() => _isSubmitting = false);
-        return;
-      }
-    }
     if (_isSubmitting) return;
     setState(() => _isSubmitting = true);
-
     try {
-      // Pre-checks: require 1 subleader and at least 8 member phone numbers
+      // Only require captain and subleader
+      final captainName = _coachNameController.text.trim();
+      final captainPhone = _coachPhoneController.text.trim();
       final subName = _assistantNameController.text.trim();
       final subPhone = _assistantPhoneController.text.trim();
+      final teamName = _teamNameController.text.trim();
+      // --- VALIDATION & CHECKS FIRST ---
+      if (teamName.isEmpty) {
+        await _showError('يرجى إدخال اسم الفريق.');
+        setState(() => _isSubmitting = false);
+        return;
+      }
+      if (captainName.isEmpty || captainPhone.isEmpty) {
+        await _showError('يرجى إدخال بيانات الكابتن (الاسم ورقم الجوال).');
+        setState(() => _isSubmitting = false);
+        return;
+      }
       if (subName.isEmpty || subPhone.isEmpty) {
-        await _showError('يرجى إضافة بيانات المساعد (الاسم ورقم الجوال) قبل إنشاء الفريق.');
+        await _showError('يرجى إدخال بيانات المساعد (الاسم ورقم الجوال).');
         setState(() => _isSubmitting = false);
         return;
       }
-
-      // Collect member phones (non-empty)
-      final List<String> memberPhones = _playerPhoneControllers
-          .map((c) => c.text.trim())
-          .where((p) => p.isNotEmpty)
-          .toList();
-
-      if (memberPhones.length < 8) {
-        await _showError('يجب إضافة 8 لاعبين على الأقل قبل إنشاء الفريق.');
+      // Validate phone formats
+      if (!(Validation.isValidSaudiPhoneNumber(captainPhone) ?? false)) {
+        await _showError('رقم جوال الكابتن غير صالح. يجب أن يبدأ بـ 0 ويتكون من 10 أرقام.');
         setState(() => _isSubmitting = false);
         return;
       }
-
-      // Validate phone formats and uniqueness across all 9 phones (sub + 8 members)
-      final Set<String> uniquePhones = {};
-      final allPhones = <String>[subPhone, ...memberPhones.take(8)];
-      for (final phone in allPhones) {
-        if (!(Validation.isValidSaudiPhoneNumber(phone) ?? false)) {
-          await _showError('رقم الجوال "$phone" غير صالح. يجب أن يبدأ بـ 0 ويتكون من 10 أرقام.');
-          setState(() => _isSubmitting = false);
-          return;
-        }
-        if (!uniquePhones.add(phone)) {
-          await _showError('رقم الجوال "$phone" مُكرر. يرجى إدخال أرقام مختلفة لكل لاعب.');
-          setState(() => _isSubmitting = false);
-          return;
+      if (!(Validation.isValidSaudiPhoneNumber(subPhone) ?? false)) {
+        await _showError('رقم جوال المساعد غير صالح. يجب أن يبدأ بـ 0 ويتكون من 10 أرقام.');
+        setState(() => _isSubmitting = false);
+        return;
+      }
+      if (captainPhone == subPhone) {
+        await _showError('رقم جوال الكابتن والمساعد متطابقان. يرجى إدخال رقمين مختلفين.');
+        setState(() => _isSubmitting = false);
+        return;
+      }
+      // 1. Check team name uniqueness
+      final allTeamsRes = await http.get(
+        Uri.parse('${ConstKeys.baseUrl}/team/all-active'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Utils.token}',
+        },
+      );
+      final allTeamsData = jsonDecode(allTeamsRes.body);
+      if (allTeamsRes.statusCode >= 400 || allTeamsData['status'] != true) {
+        await _showError('تعذر التحقق من أسماء الفرق.');
+        setState(() => _isSubmitting = false);
+        return;
+      }
+      final List<dynamic> teams = allTeamsData['data'] ?? [];
+  final teamNames = teams.map((t) => t['name'].toString().trim()).toSet();
+      if (teamNames.contains(teamName)) {
+        await _showError('اسم الفريق مستخدم بالفعل. يرجى اختيار اسم آخر.');
+        setState(() => _isSubmitting = false);
+        return;
+      }
+      // 2. Check subleader is not in other teams (captain can create and join his own team)
+      bool subleaderInTeam = false;
+      for (final team in teams) {
+        final teamId = team['id'];
+        final teamShowRes = await http.get(
+          Uri.parse('${ConstKeys.baseUrl}/team/show/$teamId'),
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Utils.token}',
+          },
+        );
+        final teamShowData = jsonDecode(teamShowRes.body);
+        if (teamShowRes.statusCode >= 400 || teamShowData['status'] != true) continue;
+        final List<dynamic> users = teamShowData['data']['users'] ?? [];
+        for (final user in users) {
+          final mobile = user['mobile'].toString().trim();
+          if (mobile == subPhone) subleaderInTeam = true;
         }
       }
-
+      if (subleaderInTeam) {
+        await _showError('المساعد بالفعل عضو في فريق آخر. يرجى اختيار مساعد آخر.');
+        setState(() => _isSubmitting = false);
+        return;
+      }
+      // 3. Check both phones are registered
+      Future<bool> isPhoneRegistered(String phone) async {
+        final loginRes = await http.post(
+          Uri.parse('${ConstKeys.baseUrl}/login'),
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode({'mobile': phone}),
+        );
+        final loginData = jsonDecode(loginRes.body);
+        // If status is true, phone is registered
+        return loginRes.statusCode < 400 && loginData['status'] == true;
+      }
+      if (!await isPhoneRegistered(captainPhone)) {
+        await _showError('رقم جوال الكابتن غير مسجل في النظام.');
+        setState(() => _isSubmitting = false);
+        return;
+      }
+      if (!await isPhoneRegistered(subPhone)) {
+        await _showError('رقم جوال المساعد غير مسجل في النظام.');
+        setState(() => _isSubmitting = false);
+        return;
+      }
+      // --- END VALIDATION & CHECKS ---
       // Step 1: create the team
       final request = http.MultipartRequest(
         'POST',
@@ -187,17 +237,14 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
       )
         ..headers['Accept'] = 'application/json'
         ..headers['Authorization'] = 'Bearer ${Utils.token}'
-        ..fields['area_id'] =
-            (Utils.user.user?.cityId ?? '').toString()
+        ..fields['area_id'] = (Utils.user.user?.cityId ?? '').toString()
         ..fields['bio'] = _bioController.text
-        ..fields['name'] = _teamNameController.text;
-
+        ..fields['name'] = teamName;
       if (_logo != null) {
         request.files.add(
           await http.MultipartFile.fromPath('logo', _logo!.path),
         );
       }
-
       final streamed = await request.send();
       final res = await http.Response.fromStream(streamed);
       final data = jsonDecode(res.body);
@@ -206,16 +253,46 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
         setState(() => _isSubmitting = false);
         return;
       }
-
       final dynamic teamIdRaw = data['data']['id'];
       final teamId = parseTeamId(teamIdRaw);
-
-      // Step 2: add 9 members (subleader + first 8 members)
-      // Ensure subleader is added as a member first
-      final List<String> phonesToAdd = [subPhone, ...memberPhones.take(8)];
+      // Step 2: add subleader and normal members as members
       List<String> addedPhones = [];
-      for (final phone in phonesToAdd) {
-        final playerRes = await http.post(
+      // Add subleader as member
+      final subRes = await http.post(
+        Uri.parse('${ConstKeys.baseUrl}/team/add-member'),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${Utils.token}',
+        },
+        body: jsonEncode({
+          'phone_number': subPhone,
+          'team_id': teamId,
+        }),
+      );
+      final subData = jsonDecode(subRes.body);
+      if (subRes.statusCode >= 400 || subData['status'] != true) {
+        // Rollback: delete the team
+        try {
+          await http.delete(
+            Uri.parse('${ConstKeys.baseUrl}/team/$teamId'),
+            headers: {
+              'Accept': 'application/json',
+              'Authorization': 'Bearer ${Utils.token}',
+            },
+          );
+        } catch (_) {}
+        await _showError(subData['message'] ?? 'خطأ في إضافة المساعد كعضو.');
+        setState(() => _isSubmitting = false);
+        return;
+      } else {
+        addedPhones.add(subPhone);
+      }
+      // Add normal members if any (from player phone controllers)
+      final List<String> memberPhones = _playerPhoneControllers.map((c) => c.text.trim()).where((p) => p.isNotEmpty).toList();
+      for (final phone in memberPhones) {
+        if (phone == captainPhone || phone == subPhone) continue; // skip captain and subleader
+        final memberRes = await http.post(
           Uri.parse('${ConstKeys.baseUrl}/team/add-member'),
           headers: {
             'Accept': 'application/json',
@@ -227,8 +304,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
             'team_id': teamId,
           }),
         );
-        final playerData = jsonDecode(playerRes.body);
-        if (playerRes.statusCode >= 400 || playerData['status'] != true) {
+        final memberData = jsonDecode(memberRes.body);
+        if (memberRes.statusCode >= 400 || memberData['status'] != true) {
           // Rollback: remove added members, then delete the team
           for (final addedPhone in addedPhones) {
             try {
@@ -255,16 +332,15 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
               },
             );
           } catch (_) {}
-          await _showError(playerData['message'] ?? 'خطأ في إضافة اللاعب ذو الرقم $phone');
+          await _showError(memberData['message'] ?? 'خطأ في إضافة العضو ذو الرقم $phone');
           setState(() => _isSubmitting = false);
           return;
         } else {
           addedPhones.add(phone);
         }
       }
-
-      // Step 3: change subleader role
-      final subRes = await http.post(
+      // Step 3: assign subleader role
+      final roleRes = await http.post(
         Uri.parse('${ConstKeys.baseUrl}/team/member-role'),
         headers: {
           'Accept': 'application/json',
@@ -277,10 +353,10 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
           'role': 'subleader',
         }),
       );
-      final subData = jsonDecode(subRes.body);
-      if (subRes.statusCode >= 400 || subData['status'] != true) {
+      final roleData = jsonDecode(roleRes.body);
+      if (roleRes.statusCode >= 400 || roleData['status'] != true) {
         // Rollback: remove added members, then delete the team
-        for (final addedPhone in phonesToAdd) {
+        for (final addedPhone in addedPhones) {
           try {
             await http.post(
               Uri.parse('${ConstKeys.baseUrl}/team/remove-member'),
@@ -305,11 +381,10 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
             },
           );
         } catch (_) {}
-        await _showError(subData['message'] ?? 'تعذر تعيين المساعد.');
+        await _showError(roleData['message'] ?? 'تعذر تعيين الدور للمساعد.');
         setState(() => _isSubmitting = false);
         return;
       }
-
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('تم إنشاء الفريق بنجاح!')),
