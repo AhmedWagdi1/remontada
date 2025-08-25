@@ -824,6 +824,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   /// Displays an icon, a short message and a button that navigates to
   /// [CreateTeamPage] when pressed.
   Widget _buildCreateTeamBanner() {
+    if (Utils.isSuperVisor ?? false) return const SizedBox.shrink();
     const darkBlue = Color(0xFF23425F);
     return Directionality(
       textDirection: TextDirection.rtl,
