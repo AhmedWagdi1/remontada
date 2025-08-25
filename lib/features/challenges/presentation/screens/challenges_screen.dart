@@ -906,27 +906,28 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    if (_hasTeam == false) GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const CreateTeamPage()),
-                        );
-                      },
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.group, color: darkBlue),
-                          const SizedBox(height: 4),
-                          CustomText(
-                            LocaleKeys.challenge_create_team.tr(),
-                            color: darkBlue,
-                            weight: FontWeight.bold,
-                          ),
-                        ],
+                    if (_hasTeam == false && !(Utils.isSuperVisor ?? false))
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const CreateTeamPage()),
+                          );
+                        },
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.group, color: darkBlue),
+                            const SizedBox(height: 4),
+                            CustomText(
+                              LocaleKeys.challenge_create_team.tr(),
+                              color: darkBlue,
+                              weight: FontWeight.bold,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
 
                     CustomText(
                       LocaleKeys.challenge_updates.tr(),
