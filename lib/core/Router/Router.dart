@@ -131,7 +131,8 @@ class RouteGenerator {
         return CupertinoPageRoute(
             settings: routeSettings,
             builder: (_) {
-              return LayoutScreen();
+              final index = routeSettings.arguments as int?;
+              return LayoutScreen(index: index);
             });
 
       case Routes.matchDetails:

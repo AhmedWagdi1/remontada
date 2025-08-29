@@ -390,8 +390,9 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
         const SnackBar(content: Text('تم إنشاء الفريق بنجاح!')),
       );
       Navigator.of(context).pushNamedAndRemoveUntil(
-        Routes.challengesScreen,
+        Routes.LayoutScreen,
         (route) => false,
+        arguments: 2, // Navigate to challenges tab (index 2)
       );
     } catch (e) {
       await _showError(e.toString());
