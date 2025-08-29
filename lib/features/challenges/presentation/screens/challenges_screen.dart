@@ -47,6 +47,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   int _currentSlideIndex = 0;
   bool? _hasTeam;
   List<dynamic> _userTeams = [];
+  String? _userRole;
 
   /// Retrieves the list of teams the current user belongs to.
   ///
@@ -80,16 +81,60 @@ class _ChallengesScreenState extends State<ChallengesScreen>
             _userTeams = teams;
             _hasTeam = teams.isNotEmpty;
           });
+          // Fetch user role if they have teams
+          if (teams.isNotEmpty) {
+            _fetchUserRole();
+          }
           return;
         }
       }
     } catch (_) {}
     setState(() => _hasTeam = false);
   }
+  /// Retrieves the current user's role in their team.
+  ///
+  /// This makes a GET request to `/team/show/{teamId}` to get detailed team information
+  /// and finds the current user's role among the team members.
+  Future<void> _fetchUserRole() async {
+    if (_userTeams.isEmpty) {
+      setState(() => _userRole = null);
+      return;
+    }
+
+    try {
+      // Get the first team (assuming user can only be in one team at a time)
+      final teamId = _userTeams[0]['id'];
+      final res = await http.get(
+        Uri.parse('${ConstKeys.baseUrl}/team/show/$teamId'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Utils.token}',
+        },
+      );
+
+      if (res.statusCode < 400) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        if (data['status'] == true) {
+          final teamData = data['data'] as Map<String, dynamic>;
+          final users = teamData['users'] as List<dynamic>? ?? [];
+
+          // Find current user's role
+          final currentUserPhone = Utils.user.user?.phone;
+          if (currentUserPhone != null) {
+            for (final user in users) {
+              if (user is Map<String, dynamic> && user['mobile'] == currentUserPhone) {
+                setState(() => _userRole = user['role'] as String?);
+                return;
+              }
+            }
+          }
+        }
+      }
+    } catch (_) {}
+    setState(() => _userRole = null);
+  }
 
   /// Retrieves challenges overview from the backend API.
-  ///
-  /// Sends a GET request to `/challenge/challenges-overview` and expects:
   /// `{ "status": true, "data": [ { "id": 1, "name": "...", "ranking": {...} } ] }`.
   Future<void> _fetchChallengesOverview() async {
     setState(() {
@@ -115,8 +160,12 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     _tabController = TabController(length: 3, vsync: this);
     if (widget.hasTeam != null) {
       _hasTeam = widget.hasTeam;
+      // If we know the user has a team, fetch their role
+      if (_hasTeam == true) {
+        _fetchUserTeams().then((_) => _fetchUserRole());
+      }
     } else {
-      _fetchUserTeams();
+      _fetchUserTeams().then((_) => _fetchUserRole());
     }
     _fetchChallengesOverview();
   }
@@ -768,7 +817,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     // Assume you have a field: List<dynamic> _userTeams; (add it to the class)
     // And you fetch it in _fetchUserTeams and store the result
     // We'll use the first team as the user's team for navigation
-    final userTeamId = (_userTeams != null && _userTeams.isNotEmpty)
+    final userTeamId = _userTeams.isNotEmpty
         ? (_userTeams.first['id'] as int)
         : null;
     return Directionality(
@@ -1121,7 +1170,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                       child: Column(
                         children: [
                           const SizedBox(height: 12),
-                          if (_hasTeam ?? false) ...[
+                          if ((_hasTeam ?? false) && _userRole == 'leader') ...[
                             _createChallengeButton(),
                             const SizedBox(height: 12),
                           ],
