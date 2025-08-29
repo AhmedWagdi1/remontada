@@ -947,18 +947,6 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                       weight: FontWeight.bold,
                       fontSize: 20,
                     ),
-                                     Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.more_horiz, color: darkBlue),
-                        const SizedBox(height: 4),
-                        CustomText(
-                          LocaleKeys.challenge_more.tr(),
-                          color: darkBlue,
-                          weight: FontWeight.bold,
-                        ),
-                      ],
-                    ),
                   ],
                 ),
               ),
