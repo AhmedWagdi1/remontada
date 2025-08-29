@@ -219,6 +219,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
         logoUrl: _teamData?['logo_url'] as String?,
         teamId: widget.teamId,
         currentUserRole: _currentUserRole,
+        onMemberAdded: _fetchTeamData,
       ),
       _TransferRequestsTab(
         teamName: _teamData?['name'] as String?,
@@ -1179,12 +1180,14 @@ class _JoinRequestsTab extends StatefulWidget {
   final String? logoUrl;
   final int teamId;
   final String? currentUserRole;
+  final VoidCallback? onMemberAdded;
 
   const _JoinRequestsTab({
     this.teamName,
     this.logoUrl,
     required this.teamId,
     this.currentUserRole,
+    this.onMemberAdded,
   });
 
   @override
@@ -1323,6 +1326,10 @@ class _JoinRequestsTabState extends State<_JoinRequestsTab> {
       _phoneController.clear();
       _selectedRole = 'member';
     });
+    
+    // Refresh team data to show the new member in members tab
+    widget.onMemberAdded?.call();
+    
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('تم إضافة العضو بنجاح!'), backgroundColor: Colors.green),
     );
