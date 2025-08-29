@@ -27,6 +27,19 @@ Map<String, dynamic>? findMemberByRole(List<dynamic> users, String role) {
   return null;
 }
 
+/// Finds the current user's role in the team
+String? findCurrentUserRole(List<dynamic> users) {
+  final currentUserPhone = Utils.user.user?.phone;
+  if (currentUserPhone == null) return null;
+
+  for (final u in users) {
+    if (u is Map<String, dynamic> && u['mobile'] == currentUserPhone) {
+      return u['role'] as String?;
+    }
+  }
+  return null;
+}
+
 /// Hides middle digits of a phone number with dots for privacy.
 String obfuscatePhone(String phone) {
   if (phone.length <= 2) return phone;
@@ -61,11 +74,12 @@ class TeamDetailsPage extends StatefulWidget {
 
 class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderStateMixin {
   Map<String, dynamic>? _teamData;
+  String? _currentUserRole;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: 5, vsync: this); // Default to 5, will be updated in build
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) return;
       _fetchTeamData();
@@ -92,6 +106,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
         final users = team['users'] as List<dynamic>? ?? [];
         final leader = findMemberByRole(users, 'leader');
         final subLeader = findMemberByRole(users, 'subLeader');
+        final currentUserRole = findCurrentUserRole(users);
         team['leader'] = leader == null
             ? null
             : {'name': leader['name'], 'phone': leader['mobile']};
@@ -103,6 +118,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
         team['competitive'] = rankings?['competitive'] as Map<String, dynamic>?;
         setState(() {
           _teamData = team;
+          _currentUserRole = currentUserRole;
         });
       }
     }
@@ -111,10 +127,115 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
   @override
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
+
+    // Determine if user can see joining tab (captain or subleader)
+    final canManageMembers = _currentUserRole == 'leader' || _currentUserRole == 'subLeader';
+
+    // Update TabController length if needed
+    final tabCount = canManageMembers ? 5 : 4;
+    if (_tabController.length != tabCount) {
+      _tabController.dispose();
+      _tabController = TabController(length: tabCount, vsync: this);
+    }
+
+    // Create dynamic tabs based on user role
+    final tabs = <Tab>[
+      Tab(
+        icon: const Icon(Icons.info),
+        text: LocaleKeys.team_details_info.tr(),
+      ),
+      Tab(
+        icon: const Icon(Icons.groups),
+        text: LocaleKeys.team_details_members.tr(),
+      ),
+      if (canManageMembers) Tab(
+        icon: const Icon(Icons.person_add),
+        text: LocaleKeys.team_details_join.tr(),
+      ),
+      Tab(
+        icon: const Icon(Icons.transfer_within_a_station),
+        text: LocaleKeys.team_details_transfer.tr(),
+      ),
+      Tab(
+        icon: const Icon(Icons.chat),
+        text: LocaleKeys.team_details_chat.tr(),
+      ),
+    ];
+
+    // Create dynamic children based on user role
+    final children = <Widget>[
+      // Info tab content.
+      SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _TopBar(
+              teamName: _teamData?['name'] as String?,
+              logoUrl: _teamData?['logo_url'] as String?,
+            ),
+            const SizedBox(height: 16),
+            _TeamSummaryCard(
+              teamName: _teamData?['name'] as String?,
+              bio: _teamData?['bio'] as String?,
+              membersCount: _teamData?['members_count'] as int?,
+              logoUrl: _teamData?['logo_url'] as String?,
+              ranking: _teamData?['competitive'] as Map<String, dynamic>?,
+            ),
+            SizedBox(height: 16),
+            _AchievementsSection(
+              ranking: _teamData?['competitive'] as Map<String, dynamic>?,
+            ),
+            SizedBox(height: 16),
+            _DetailedStatsSection(
+              ranking: _teamData?['competitive'] as Map<String, dynamic>?,
+            ),
+            SizedBox(height: 16),
+            _HonorsAchievementsSection(),
+            SizedBox(height: 16),
+            _TechnicalStaffSummary(
+              leaderName: (_teamData?['leader']
+                  as Map<String, dynamic>?)?['name'] as String?,
+              leaderPhone: (_teamData?['leader']
+                  as Map<String, dynamic>?)?['phone'] as String?,
+              subLeaderName: (_teamData?['sub_leader']
+                  as Map<String, dynamic>?)?['name'] as String?,
+              subLeaderPhone: (_teamData?['sub_leader']
+                  as Map<String, dynamic>?)?['phone'] as String?,
+            ),
+            SizedBox(height: 16),
+            _InviteSettingsSection(),
+          ],
+        ),
+      ),
+      _MembersTab(
+        teamName: _teamData?['name'] as String?,
+        logoUrl: _teamData?['logo_url'] as String?,
+        users: _teamData?['users'] as List<dynamic>?,
+        membersCount: _teamData?['members_count'] as int?,
+      ),
+      if (canManageMembers) _JoinRequestsTab(
+        teamName: _teamData?['name'] as String?,
+        logoUrl: _teamData?['logo_url'] as String?,
+        teamId: widget.teamId,
+        currentUserRole: _currentUserRole,
+      ),
+      _TransferRequestsTab(
+        teamName: _teamData?['name'] as String?,
+        logoUrl: _teamData?['logo_url'] as String?,
+      ),
+      // Chat tab for messaging within the team.
+      _ChatTab(
+        teamId: widget.teamId.toString(),
+        teamName: _teamData?['name'] as String?,
+        logoUrl: _teamData?['logo_url'] as String?,
+      ),
+    ];
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: DefaultTabController(
-        length: 5,
+        length: tabCount,
         child: Scaffold(
           appBar: AppBar(
             title: Text(LocaleKeys.manage_your_team.tr()),
@@ -124,99 +245,12 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
               labelColor: darkBlue,
               unselectedLabelColor: Colors.grey,
               indicatorWeight: 3,
-              tabs: [
-                Tab(
-                  icon: const Icon(Icons.info),
-                  text: LocaleKeys.team_details_info.tr(),
-                ),
-                Tab(
-                  icon: const Icon(Icons.groups),
-                  text: LocaleKeys.team_details_members.tr(),
-                ),
-                Tab(
-                  icon: const Icon(Icons.person_add),
-                  text: LocaleKeys.team_details_join.tr(),
-                ),
-                Tab(
-                  icon: const Icon(Icons.transfer_within_a_station),
-                  text: LocaleKeys.team_details_transfer.tr(),
-                ),
-                Tab(
-                  icon: const Icon(Icons.chat),
-                  text: LocaleKeys.team_details_chat.tr(),
-                ),
-              ],
+              tabs: tabs,
             ),
           ),
           body: TabBarView(
             controller: _tabController,
-            children: [
-              // Info tab content.
-              SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _TopBar(
-                      teamName: _teamData?['name'] as String?,
-                      logoUrl: _teamData?['logo_url'] as String?,
-                    ),
-                    const SizedBox(height: 16),
-                    _TeamSummaryCard(
-                      teamName: _teamData?['name'] as String?,
-                      bio: _teamData?['bio'] as String?,
-                      membersCount: _teamData?['members_count'] as int?,
-                      logoUrl: _teamData?['logo_url'] as String?,
-                      ranking: _teamData?['competitive'] as Map<String, dynamic>?,
-                    ),
-                    SizedBox(height: 16),
-                    _AchievementsSection(
-                      ranking: _teamData?['competitive'] as Map<String, dynamic>?,
-                    ),
-                    SizedBox(height: 16),
-                    _DetailedStatsSection(
-                      ranking: _teamData?['competitive'] as Map<String, dynamic>?,
-                    ),
-                    SizedBox(height: 16),
-                    _HonorsAchievementsSection(),
-                    SizedBox(height: 16),
-                    _TechnicalStaffSummary(
-                      leaderName: (_teamData?['leader']
-                          as Map<String, dynamic>?)?['name'] as String?,
-                      leaderPhone: (_teamData?['leader']
-                          as Map<String, dynamic>?)?['phone'] as String?,
-                      subLeaderName: (_teamData?['sub_leader']
-                          as Map<String, dynamic>?)?['name'] as String?,
-                      subLeaderPhone: (_teamData?['sub_leader']
-                          as Map<String, dynamic>?)?['phone'] as String?,
-                    ),
-                    SizedBox(height: 16),
-                    _InviteSettingsSection(),
-                  ],
-                ),
-              ),
-              _MembersTab(
-                teamName: _teamData?['name'] as String?,
-                logoUrl: _teamData?['logo_url'] as String?,
-                users: _teamData?['users'] as List<dynamic>?,
-                membersCount: _teamData?['members_count'] as int?,
-              ),
-              _JoinRequestsTab(
-                teamName: _teamData?['name'] as String?,
-                logoUrl: _teamData?['logo_url'] as String?,
-                teamId: widget.teamId, // <-- Pass teamId here
-              ),
-              _TransferRequestsTab(
-                teamName: _teamData?['name'] as String?,
-                logoUrl: _teamData?['logo_url'] as String?,
-              ),
-              // Chat tab for messaging within the team.
-              _ChatTab(
-                teamId: widget.teamId.toString(),
-                teamName: _teamData?['name'] as String?,
-                logoUrl: _teamData?['logo_url'] as String?,
-              ),
-            ],
+            children: children,
           ),
         ),
       ),
@@ -1143,9 +1177,15 @@ class _LabeledText extends StatelessWidget {
 class _JoinRequestsTab extends StatefulWidget {
   final String? teamName;
   final String? logoUrl;
-  final int teamId; // <-- Add this
+  final int teamId;
+  final String? currentUserRole;
 
-  const _JoinRequestsTab({this.teamName, this.logoUrl, required this.teamId}); // <-- Update constructor
+  const _JoinRequestsTab({
+    this.teamName,
+    this.logoUrl,
+    required this.teamId,
+    this.currentUserRole,
+  });
 
   @override
   State<_JoinRequestsTab> createState() => _JoinRequestsTabState();
@@ -1319,47 +1359,83 @@ class _JoinRequestsTabState extends State<_JoinRequestsTab> {
             const SizedBox(height: 16),
             Form(
               key: _formKey,
-              child: Column(
-                children: [
-                  TextFormField(
-                    controller: _phoneController,
-                    decoration: const InputDecoration(
-                      labelText: 'رقم الجوال',
-                      prefixIcon: Icon(Icons.phone),
-                      border: OutlineInputBorder(),
-                    ),
-                    keyboardType: TextInputType.phone,
-                    validator: (v) => v == null || v.isEmpty ? 'يرجى إدخال رقم الجوال' : null,
-                  ),
-                  const SizedBox(height: 12),
-                  DropdownButtonFormField<String>(
-                    value: _selectedRole,
-                    items: const [
-                      DropdownMenuItem(value: 'member', child: Text('عضو')),
-                      DropdownMenuItem(value: 'subLeader', child: Text('مساعد')),
+              child: AbsorbPointer(
+                absorbing: _isSubmitting,
+                child: Opacity(
+                  opacity: _isSubmitting ? 0.6 : 1.0,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: _phoneController,
+                        decoration: const InputDecoration(
+                          labelText: 'رقم الجوال',
+                          prefixIcon: Icon(Icons.phone),
+                          border: OutlineInputBorder(),
+                        ),
+                        keyboardType: TextInputType.phone,
+                        validator: (v) => v == null || v.isEmpty ? 'يرجى إدخال رقم الجوال' : null,
+                        enabled: !_isSubmitting,
+                      ),
+                      const SizedBox(height: 12),
+                      DropdownButtonFormField<String>(
+                        value: _selectedRole,
+                        items: widget.currentUserRole == 'leader'
+                            ? const [
+                                DropdownMenuItem(value: 'member', child: Text('عضو')),
+                                DropdownMenuItem(value: 'subLeader', child: Text('مساعد')),
+                              ]
+                            : const [
+                                DropdownMenuItem(value: 'member', child: Text('عضو')),
+                              ],
+                        onChanged: _isSubmitting ? null : (v) => setState(() => _selectedRole = v ?? 'member'),
+                        decoration: const InputDecoration(
+                          labelText: 'الدور المطلوب',
+                          border: OutlineInputBorder(),
+                        ),
+                        disabledHint: const Text('الدور المطلوب'),
+                      ),
+                      const SizedBox(height: 12),
+                      if (_error != null)
+                        Text(_error!, style: const TextStyle(color: Colors.red)),
+                      const SizedBox(height: 12),
+                      AbsorbPointer(
+                        absorbing: _isSubmitting,
+                        child: ElevatedButton(
+                          onPressed: _isSubmitting
+                              ? null
+                              : () {
+                                  if (_formKey.currentState?.validate() ?? false) {
+                                    _addMember();
+                                  }
+                                },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _isSubmitting ? Colors.grey : null,
+                            foregroundColor: _isSubmitting ? Colors.white : null,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            minimumSize: const Size(double.infinity, 48),
+                          ),
+                          child: _isSubmitting
+                              ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                      ),
+                                    ),
+                                    SizedBox(width: 12),
+                                    Text('جاري الإضافة...'),
+                                  ],
+                                )
+                              : const Text('إضافة عضو جديد'),
+                        ),
+                      ),
                     ],
-                    onChanged: (v) => setState(() => _selectedRole = v ?? 'member'),
-                    decoration: const InputDecoration(
-                      labelText: 'الدور المطلوب',
-                      border: OutlineInputBorder(),
-                    ),
                   ),
-                  const SizedBox(height: 12),
-                  if (_error != null)
-                    Text(_error!, style: const TextStyle(color: Colors.red)),
-                  ElevatedButton(
-                    onPressed: _isSubmitting
-                        ? null
-                        : () {
-                            if (_formKey.currentState?.validate() ?? false) {
-                              _addMember();
-                            }
-                          },
-                    child: _isSubmitting
-                        ? const CircularProgressIndicator()
-                        : const Text('إضافة عضو جديد'),
-                  ),
-                ],
+                ),
               ),
             ),
             const SizedBox(height: 24),
