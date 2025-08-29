@@ -48,6 +48,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   bool? _hasTeam;
   List<dynamic> _userTeams = [];
   String? _userRole;
+  bool _isValidatingTeam = false;
 
   /// Retrieves the list of teams the current user belongs to.
   ///
@@ -132,6 +133,138 @@ class _ChallengesScreenState extends State<ChallengesScreen>
       }
     } catch (_) {}
     setState(() => _userRole = null);
+  }
+
+  /// Shows a warning dialog when team doesn't have enough members.
+  void _showTeamSizeWarning(int currentCount) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Row(
+            children: [
+              Icon(
+                Icons.warning_amber_rounded,
+                color: Colors.orange,
+                size: 28,
+              ),
+              const SizedBox(width: 12),
+              Text(
+                'تحذير',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'لا يمكنك إنشاء تحدي جديد',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'يجب أن يحتوي الفريق على 10 أعضاء على الأقل لإنشاء تحدي.\n\nعدد الأعضاء الحالي: $currentCount',
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFF23425F),
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              child: const Text('موافق'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// Handles the create challenge button tap with team validation.
+  Future<void> _onCreateChallengeTap() async {
+    if (_isValidatingTeam) return; // Prevent multiple taps
+
+    setState(() => _isValidatingTeam = true);
+
+    try {
+      // Get current team member count
+      final teamId = _userTeams[0]['id'];
+      final res = await http.get(
+        Uri.parse('${ConstKeys.baseUrl}/team/show/$teamId'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Utils.token}',
+        },
+      );
+
+      if (res.statusCode < 400) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        if (data['status'] == true) {
+          final teamData = data['data'] as Map<String, dynamic>;
+          final users = teamData['users'] as List<dynamic>? ?? [];
+
+          // Count active players
+          int activeCount = 0;
+          for (final user in users) {
+            if (user is Map<String, dynamic> && user['active'] == true) {
+              activeCount++;
+            }
+          }
+
+          if (activeCount >= 10) {
+            // Team has enough members, navigate to create challenge page
+            if (mounted) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const CreateChallengePage(),
+                ),
+              );
+            }
+          } else {
+            // Show warning dialog
+            if (mounted) {
+              _showTeamSizeWarning(activeCount);
+            }
+          }
+        }
+      }
+    } catch (_) {
+      // Show error if something went wrong
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('حدث خطأ في التحقق من بيانات الفريق'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isValidatingTeam = false);
+      }
+    }
   }
 
   /// Retrieves challenges overview from the backend API.
@@ -441,14 +574,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const CreateChallengePage(),
-            ),
-          );
-        },
+        onTap: _isValidatingTeam ? null : _onCreateChallengeTap,
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -459,20 +585,29 @@ class _ChallengesScreenState extends State<ChallengesScreen>
             border: Border.all(color: darkBlue),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.add, color: darkBlue),
-              const SizedBox(height: 4),
-              Text(
-                LocaleKeys.challenge_create_challenge.tr(),
-                style: const TextStyle(
-                  color: darkBlue,
-                  fontWeight: FontWeight.bold,
+          child: _isValidatingTeam
+              ? const SizedBox(
+                  height: 24,
+                  width: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF23425F)),
+                  ),
+                )
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.add, color: darkBlue),
+                    const SizedBox(height: 4),
+                    Text(
+                      LocaleKeys.challenge_create_challenge.tr(),
+                      style: const TextStyle(
+                        color: darkBlue,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
         ),
       ),
     );
