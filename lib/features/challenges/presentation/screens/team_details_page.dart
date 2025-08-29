@@ -1675,48 +1675,94 @@ class _TransferRequestsTab extends StatelessWidget {
       textDirection: TextDirection.rtl,
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: Stack(
           children: [
-            _TopBar(teamName: teamName, logoUrl: logoUrl),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'طلبات الانتقال',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: darkBlue,
-                  ),
+            // Original content (dimmed)
+            Opacity(
+              opacity: 0.4,
+              child: AbsorbPointer(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _TopBar(teamName: teamName, logoUrl: logoUrl),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'طلبات الانتقال',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: darkBlue,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.lightBlue,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            '${requests.length} طلب',
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    for (var r in requests) ...[
+                      _TransferRequestCard(
+                        name: r['name'] as String,
+                        toTeam: r['toTeam'] as String,
+                        reason: r['reason'] as String,
+                        date: r['date'] as String,
+                        status: r['status'] as String,
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  ],
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.lightBlue,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    '${requests.length} طلب',
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            for (var r in requests) ...[
-              _TransferRequestCard(
-                name: r['name'] as String,
-                toTeam: r['toTeam'] as String,
-                reason: r['reason'] as String,
-                date: r['date'] as String,
-                status: r['status'] as String,
               ),
-              const SizedBox(height: 16),
-            ],
+            ),
+            // Under Development Overlay
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: const Text(
+                      'الميزة لاتزال تحت الانشاء',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
