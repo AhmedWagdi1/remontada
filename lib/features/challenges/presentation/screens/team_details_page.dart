@@ -128,11 +128,11 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
 
-    // Determine if user can see joining tab (captain or subleader)
+    // Determine if user can manage members (captain or subleader)
     final canManageMembers = _currentUserRole == 'leader' || _currentUserRole == 'subLeader';
 
     // Update TabController length if needed
-    final tabCount = canManageMembers ? 5 : 4;
+    final tabCount = canManageMembers ? 5 : 3;
     if (_tabController.length != tabCount) {
       _tabController.dispose();
       _tabController = TabController(length: tabCount, vsync: this);
@@ -148,14 +148,16 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
         icon: const Icon(Icons.groups),
         text: LocaleKeys.team_details_members.tr(),
       ),
-      if (canManageMembers) Tab(
-        icon: const Icon(Icons.person_add),
-        text: LocaleKeys.team_details_join.tr(),
-      ),
-      Tab(
-        icon: const Icon(Icons.transfer_within_a_station),
-        text: LocaleKeys.team_details_transfer.tr(),
-      ),
+      if (canManageMembers) ...[
+        Tab(
+          icon: const Icon(Icons.person_add),
+          text: LocaleKeys.team_details_join.tr(),
+        ),
+        Tab(
+          icon: const Icon(Icons.transfer_within_a_station),
+          text: LocaleKeys.team_details_transfer.tr(),
+        ),
+      ],
       Tab(
         icon: const Icon(Icons.chat),
         text: LocaleKeys.team_details_chat.tr(),
@@ -214,17 +216,19 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
         users: _teamData?['users'] as List<dynamic>?,
         membersCount: _teamData?['members_count'] as int?,
       ),
-      if (canManageMembers) _JoinRequestsTab(
-        teamName: _teamData?['name'] as String?,
-        logoUrl: _teamData?['logo_url'] as String?,
-        teamId: widget.teamId,
-        currentUserRole: _currentUserRole,
-        onMemberAdded: _fetchTeamData,
-      ),
-      _TransferRequestsTab(
-        teamName: _teamData?['name'] as String?,
-        logoUrl: _teamData?['logo_url'] as String?,
-      ),
+      if (canManageMembers) ...[
+        _JoinRequestsTab(
+          teamName: _teamData?['name'] as String?,
+          logoUrl: _teamData?['logo_url'] as String?,
+          teamId: widget.teamId,
+          currentUserRole: _currentUserRole,
+          onMemberAdded: _fetchTeamData,
+        ),
+        _TransferRequestsTab(
+          teamName: _teamData?['name'] as String?,
+          logoUrl: _teamData?['logo_url'] as String?,
+        ),
+      ],
       // Chat tab for messaging within the team.
       _ChatTab(
         teamId: widget.teamId.toString(),
