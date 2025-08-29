@@ -1446,43 +1446,94 @@ class _JoinRequestsTabState extends State<_JoinRequestsTab> {
               ),
             ),
             const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // Join Requests Section with Under Development Overlay
+            Stack(
               children: [
-                const Text(
-                  'طلبات الانضمام',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: darkBlue,
+                // Original content (dimmed)
+                Opacity(
+                  opacity: 0.4,
+                  child: AbsorbPointer(
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'طلبات الانضمام',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: darkBlue,
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.orange,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                '${requests.length} طلب',
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        for (var r in requests) ...[
+                          _JoinRequestCard(
+                            name: r['name'] as String,
+                            position: r['position'] as String,
+                            age: r['age'] as int,
+                            date: r['date'] as String,
+                            note: r['note'] as String,
+                          ),
+                          const SizedBox(height: 12),
+                        ],
+                      ],
+                    ),
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.orange,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    '${requests.length} طلب',
-                    style: const TextStyle(color: Colors.white),
+                // Under Development Overlay
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Text(
+                          'الميزة لاتزال تحت الانشاء',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            for (var r in requests) ...[
-              _JoinRequestCard(
-                name: r['name'] as String,
-                position: r['position'] as String,
-                age: r['age'] as int,
-                date: r['date'] as String,
-                note: r['note'] as String,
-              ),
-              const SizedBox(height: 12),
-            ],
           ],
         ),
       ),
