@@ -586,12 +586,14 @@ class _ChallengesScreenState extends State<ChallengesScreen>
             borderRadius: BorderRadius.circular(12),
           ),
           child: _isValidatingTeam
-              ? const SizedBox(
-                  height: 24,
-                  width: 24,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF23425F)),
+              ? Center(
+                  child: SizedBox(
+                    height: 32,
+                    width: 32,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 3,
+                      valueColor: AlwaysStoppedAnimation<Color>(darkBlue),
+                    ),
                   ),
                 )
               : Column(
