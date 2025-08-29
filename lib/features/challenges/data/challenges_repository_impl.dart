@@ -44,19 +44,34 @@ class ChallengesRepositoryImpl implements ChallengesRepository {
   @override
   Future<CreateChallengeResponse> createChallenge(CreateChallengeRequest request) async {
     try {
+      final url = '${ConstKeys.baseUrl}/challenge/book-match';
+      final headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${Utils.token}',
+      };
+      final body = jsonEncode(request.toJson());
+
+      print('📡 API DEBUG: Creating Challenge');
+      print('📡 API DEBUG: URL: $url');
+      print('📡 API DEBUG: Method: POST');
+      print('📡 API DEBUG: Headers: $headers');
+      print('📡 API DEBUG: Request Body: $body');
+
       final response = await http.post(
-        Uri.parse('${ConstKeys.baseUrl}/challenge/book-match'),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${Utils.token}',
-        },
-        body: jsonEncode(request.toJson()),
+        Uri.parse(url),
+        headers: headers,
+        body: body,
       );
+
+      print('📡 API DEBUG: Response Status: ${response.statusCode}');
+      print('📡 API DEBUG: Response Headers: ${response.headers}');
+      print('📡 API DEBUG: Response Body: ${response.body}');
 
       final data = jsonDecode(response.body) as Map<String, dynamic>;
       return CreateChallengeResponse.fromJson(data);
     } catch (e) {
+      print('📡 API DEBUG: Error creating challenge: $e');
       throw Exception('Error creating challenge: $e');
     }
   }

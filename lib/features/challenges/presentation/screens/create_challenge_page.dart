@@ -137,8 +137,21 @@ class _CreateChallengePageState extends State<CreateChallengePage> {
         isCompetitive: _isCompetitive,
       );
 
+      print('🚀 DEBUG: Creating new challenge');
+      print('🚀 DEBUG: Request Data:');
+      print('🚀 DEBUG: - Team ID: ${_selectedTeam!.id}');
+      print('🚀 DEBUG: - Match ID: ${_selectedMatch!.id}');
+      print('🚀 DEBUG: - Is Competitive: $_isCompetitive');
+      print('🚀 DEBUG: - Full Request JSON: ${request.toJson()}');
+
       final repository = ChallengesRepositoryImpl();
       final response = await repository.createChallenge(request);
+
+      print('🚀 DEBUG: Challenge Creation Response:');
+      print('🚀 DEBUG: - Status: ${response.status}');
+      print('🚀 DEBUG: - Message: ${response.message}');
+      print('🚀 DEBUG: - Data: ${response.data}');
+      print('🚀 DEBUG: - Full Response Object: $response');
 
       if (mounted) {
         setState(() {

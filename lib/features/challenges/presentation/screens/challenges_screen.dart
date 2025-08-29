@@ -210,13 +210,23 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     try {
       // Get current team member count
       final teamId = _userTeams[0]['id'];
+      final requestUrl = '${ConstKeys.baseUrl}/team/show/$teamId';
+      final requestHeaders = {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${Utils.token}',
+      };
+
+      print('🔍 DEBUG: Fetching team data for validation');
+      print('🔍 DEBUG: Request URL: $requestUrl');
+      print('🔍 DEBUG: Request Headers: $requestHeaders');
+
       final res = await http.get(
-        Uri.parse('${ConstKeys.baseUrl}/team/show/$teamId'),
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ${Utils.token}',
-        },
+        Uri.parse(requestUrl),
+        headers: requestHeaders,
       );
+
+      print('🔍 DEBUG: Response Status Code: ${res.statusCode}');
+      print('🔍 DEBUG: Response Body: ${res.body}');
 
       if (res.statusCode < 400) {
         final data = jsonDecode(res.body) as Map<String, dynamic>;
@@ -234,6 +244,9 @@ class _ChallengesScreenState extends State<ChallengesScreen>
 
           if (activeCount >= 10) {
             // Team has enough members, navigate to create challenge page
+            print('✅ DEBUG: Team validation passed! Active members: $activeCount');
+            print('✅ DEBUG: Navigating to CreateChallengePage...');
+
             if (mounted) {
               Navigator.push(
                 context,
@@ -244,6 +257,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
             }
           } else {
             // Show warning dialog
+            print('❌ DEBUG: Team validation failed! Active members: $activeCount (minimum required: 10)');
+
             if (mounted) {
               _showTeamSizeWarning(activeCount);
             }
