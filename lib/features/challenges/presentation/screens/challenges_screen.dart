@@ -898,6 +898,136 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   @override
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
+
+    // Show loading state while fetching team data
+    if (_hasTeam == null) {
+      return Scaffold(
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CustomText(
+                        LocaleKeys.challenge_updates.tr(),
+                        color: darkBlue,
+                        weight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _buildCarousel(),
+                const SizedBox(height: 18),
+                // Loading indicator for team status
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 40),
+                  child: Column(
+                    children: [
+                      const CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF23425F)),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'جاري تحميل بيانات الفريق...',
+                        style: TextStyle(
+                          color: darkBlue,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Spacer(),
+                // Disabled tabs during loading
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF2F2F2).withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: AbsorbPointer(
+                      child: TabBar(
+                        controller: _tabController,
+                        isScrollable: false,
+                        indicatorSize: TabBarIndicatorSize.tab,
+                        indicatorPadding: const EdgeInsets.all(2),
+                        indicator: BoxDecoration(
+                          color: darkBlue.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        labelColor: Colors.white.withOpacity(0.7),
+                        unselectedLabelColor: Colors.grey.withOpacity(0.5),
+                        labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+                        tabs: [
+                          Tab(text: LocaleKeys.challenges_nav.tr()),
+                          Tab(text: LocaleKeys.league_results.tr()),
+                          Tab(text: LocaleKeys.championships.tr()),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 21),
+                // Disabled tab content during loading
+                Expanded(
+                  child: AbsorbPointer(
+                    child: Opacity(
+                      opacity: 0.5,
+                      child: TabBarView(
+                        controller: _tabController,
+                        children: [
+                          Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'جاري التحميل...',
+                              style: TextStyle(
+                                color: darkBlue.withOpacity(0.7),
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'جاري التحميل...',
+                              style: TextStyle(
+                                color: darkBlue.withOpacity(0.7),
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'جاري التحميل...',
+                              style: TextStyle(
+                                color: darkBlue.withOpacity(0.7),
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       floatingActionButton: (Utils.isSuperVisor ?? false)
           ? FloatingActionButton(
