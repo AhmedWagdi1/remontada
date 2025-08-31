@@ -63,9 +63,21 @@ class _CreateChallengePageState extends State<CreateChallengePage> {
     try {
       final repository = ChallengesRepositoryImpl();
       final matches = await repository.getAvailableMatches();
+      
+      // Debug: Log all matches before filtering
+      print('🎯 CHALLENGE DEBUG: Total matches received: ${matches.length}');
+      for (final match in matches) {
+        print('🎯 CHALLENGE DEBUG: Match ID: ${match.id}, Type: "${match.type}", Date: ${match.date}');
+      }
+      
+      // Since repository now only returns challenge matches, no additional filtering needed
+      final filteredMatches = matches;
+      
+      print('🎯 CHALLENGE DEBUG: Showing ${filteredMatches.length} challenge matches');
+      
       setState(() {
-        _availableMatches = matches;
-        _selectedMatch = matches.isNotEmpty ? matches.first : null;
+        _availableMatches = filteredMatches;
+        _selectedMatch = filteredMatches.isNotEmpty ? filteredMatches.first : null;
         _isLoadingMatches = false;
       });
     } catch (e) {
