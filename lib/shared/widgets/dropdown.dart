@@ -70,7 +70,7 @@ class _DropDownItemState<T> extends State<DropDownItem<T>> {
           //   horizontal: 40.3.w,
           // ),
           // menuMaxHeight: 65.h,
-          icon: SizedBox.shrink(),
+          // icon: SizedBox.shrink(),
           itemHeight: 65,
           validator: widget.validator,
           // hint: CustomText(

@@ -127,7 +127,7 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                           color: context.formFieldColor,
                           contentPadding: EdgeInsets.symmetric(
                             vertical: 18,
-                            horizontal: 40.3,
+                            horizontal: 20,
                           ),
                           hintColor: LightThemeColors.textPrimary,
                           itemAsString: (v) {
@@ -152,6 +152,7 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                             });
                           },
                         ),
+                        12.ph,
                         CustomAutoCompleteTextField<Location>(
                           controller: playgroundcontroller,
                           // contentPadding: EdgeInsets.only(
