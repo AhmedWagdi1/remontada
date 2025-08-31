@@ -56,14 +56,11 @@ class _DropDownItemState<T> extends State<DropDownItem<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final radius = widget.radius ?? 33.0;
     return Container(
-      // padding: EdgeInsets.symmetric(vertical: 22.h, horizontal: 40.3.w),
-      // height: 65.h,
       decoration: BoxDecoration(
         color: widget.color ?? context.background,
-        borderRadius: BorderRadius.circular(
-          33,
-        ),
+        borderRadius: BorderRadius.circular(radius),
       ),
 
       child: DropdownButtonFormField<T>(
@@ -90,8 +87,8 @@ class _DropDownItemState<T> extends State<DropDownItem<T>> {
             ),
             hintText: widget.hint,
             contentPadding: widget.contentPadding ??
-                EdgeInsets.symmetric(
-                  vertical: 22,
+                const EdgeInsets.symmetric(
+                  vertical: 18,
                   horizontal: 40.3,
                 ),
             constraints: BoxConstraints(
@@ -121,38 +118,27 @@ class _DropDownItemState<T> extends State<DropDownItem<T>> {
                 // ),
                 ),
             prefixIcon: Padding(
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                 right: 35,
                 left: 9.76,
               ),
               child: SvgPicture.asset(
-                width: 21.6,
-                height: 21.6,
+                width: 18.6,
+                height: 18.6,
                 widget.prefixIcon ?? "",
                 color: context.primaryColor,
               ),
-              //  widget.prefixIcon?.toSvg(
-              //   width: 21.6,
-              //   height: 21.6,
-
-              // ),
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(
-                10,
-              ),
+              borderRadius: BorderRadius.circular(radius),
               borderSide: getborderside(),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(
-                widget.radius ?? 10,
-              ),
+              borderRadius: BorderRadius.circular(radius),
               borderSide: getborderside(),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(
-                widget.radius ?? 10,
-              ),
+              borderRadius: BorderRadius.circular(radius),
               borderSide: getborderside(),
             ),
           ),

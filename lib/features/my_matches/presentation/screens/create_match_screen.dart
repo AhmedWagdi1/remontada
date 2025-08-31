@@ -16,8 +16,9 @@ import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/shared/widgets/loadinganderror.dart';
 
 import '../../../../core/Router/Router.dart';
-import '../../../../core/general/general_model.dart';
+// ...existing imports...
 import '../../../../shared/widgets/autocomplate.dart';
+import '../../../../shared/widgets/dropdown.dart';
 import '../../../../shared/widgets/edit_text_widget.dart';
 import '../../../auth/domain/model/auth_model.dart';
 import '../../../auth/domain/repository/auth_repository.dart';
@@ -69,7 +70,7 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
             MyMatchesCubit.get(context).request.type = matchModel.type;
             date.text = matchModel.dateDate?.date ?? "";
             number.text = matchModel.subscribers?.split("/").last ?? "";
-            peroid.text = matchModel.duration.toString() ?? "";
+            peroid.text = matchModel.duration?.toString() ?? "";
             text.text = matchModel.durations_text ?? "";
             price.text = (matchModel.amount ?? "").replaceAll(
               "ر.س",
@@ -117,41 +118,38 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                           color: LightThemeColors.textSecondary,
                         ),
                         40.ph,
-                        CustomAutoCompleteTextField<GeneralModel>(
-                          controller: matchType,
-                          // contentPadding: EdgeInsets.only(
-                          //   bottom: 20,
-                          // ),
-                          padding: EdgeInsets.only(
-                            bottom: 20,
+                        DropDownItem<String>(
+                          options: ['group', 'single', 'challenge'],
+                          inistialValue: cubit.request.type,
+                          hint: 'نوع المباراة',
+                          prefixIcon: 'playground_button',
+                          radius: 33,
+                          color: context.formFieldColor,
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: 18,
+                            horizontal: 40.3,
                           ),
-                          // controller: location,
-                          validator: Utils.valid.defaultValidation,
-
-                          prefixIcon: Padding(
-                            padding: const EdgeInsets.only(
-                              right: 35,
-                              left: 9.76,
-                            ),
-                            child: SvgPicture.asset(
-                              "playground_button".svg(),
-                            ),
-                          ),
-                          // c: context.primaryColor,
-                          hint: "نوع المباراة",
-                          function: (p0) => [
-                            GeneralModel(id: "group", value: "مباراة جماعية"),
-                            GeneralModel(id: "single", value: "مباراة فردية"),
-                          ],
-                          itemAsString: (p0) => p0.value ?? "",
-                          localData: true,
-                          showLabel: false,
-                          showSufix: true,
-                          // radius: 33,
-                          // options: List.generate(cubit.getlocations()., (index) => null),
+                          hintColor: LightThemeColors.textPrimary,
+                          itemAsString: (v) {
+                            switch (v) {
+                              case 'group':
+                                return 'مباراة جماعية';
+                              case 'single':
+                                return 'مباراة فردية';
+                              case 'challenge':
+                                return 'تحدي';
+                              default:
+                                return v.toString();
+                            }
+                          },
+                          validator: (v) => (v == null || v.isEmpty)
+                              ? LocaleKeys.valid_requiredField.tr()
+                              : null,
                           onChanged: (val) {
-                            cubit.request.type = val.id.toString();
-                            // edit.locationId = val.id;
+                            setState(() {
+                              matchType.text = val;
+                              cubit.request.type = val;
+                            });
                           },
                         ),
                         CustomAutoCompleteTextField<Location>(

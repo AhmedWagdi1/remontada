@@ -256,32 +256,53 @@ class _CreateChallengePageState extends State<CreateChallengePage> {
                     )
                   else
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey.shade300),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 16,
-                            backgroundColor: Colors.grey.shade300,
-                            backgroundImage: _selectedTeam?.logo != null && _selectedTeam!.logo!.isNotEmpty
-                                ? NetworkImage('${ConstKeys.baseUrl}/storage/${_selectedTeam!.logo}')
-                                : null,
-                            child: _selectedTeam?.logo == null || _selectedTeam!.logo!.isEmpty
-                                ? const Icon(Icons.sports_soccer, color: Colors.grey)
-                                : null,
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              _selectedTeam?.name ?? '',
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontWeight: FontWeight.bold),
+                      child: DropdownButton<UserTeamModel>(
+                        value: _selectedTeam,
+                        hint: Text(LocaleKeys.challenge_team_id.tr()),
+                        isExpanded: true,
+                        underline: const SizedBox(),
+                        itemHeight: 50,
+                        items: _userTeams.map((team) {
+                          return DropdownMenuItem<UserTeamModel>(
+                            value: team,
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: 50,
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 16,
+                                    backgroundColor: Colors.grey.shade300,
+                                    backgroundImage: team.logo != null && team.logo!.isNotEmpty
+                                        ? NetworkImage('${ConstKeys.baseUrl}/storage/${team.logo}')
+                                        : null,
+                                    child: team.logo == null || team.logo!.isEmpty
+                                        ? const Icon(Icons.sports_soccer, color: Colors.grey)
+                                        : null,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      team.name,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          );
+                        }).toList(),
+                        onChanged: (UserTeamModel? newValue) {
+                          setState(() {
+                            _selectedTeam = newValue;
+                          });
+                        },
                       ),
                     ),
                   const SizedBox(height: 16),
