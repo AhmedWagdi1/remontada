@@ -108,64 +108,90 @@ class ChallengesRepositoryImpl implements ChallengesRepository {
 
   @override
   Future<List<MatchModel>> getAvailableMatches() async {
-    print('🔍 DEBUG: Starting getAvailableMatches() - Fetching from new challenge matches API');
+    print('🔍 DEBUG: Starting getAvailableMatches() - Fetching from new challenge matches API with pagination support');
+    
+    List<MatchModel> allMatches = [];
     
     try {
-      final response = await http.get(
-        Uri.parse('https://pre-montada.gostcode.com/public/api/all-challange-Matches'),
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ${Utils.token}',
-        },
-      ).timeout(const Duration(seconds: 10));
-
-      print('🔍 DEBUG: Response status: ${response.statusCode}');
+      // Start with page 1
+      int currentPage = 1;
+      bool hasMorePages = true;
       
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body) as Map<String, dynamic>;
-        print('🔍 DEBUG: Response has status: ${data['status']}');
+      while (hasMorePages) {
+        final url = 'https://pre-montada.gostcode.com/public/api/all-challange-Matches?page=$currentPage';
+        print('🔍 DEBUG: Fetching page $currentPage from: $url');
         
-        if (data['status'] == true && data['data'] != null) {
-          final matchesData = data['data']['matches'] as List<dynamic>? ?? [];
-          print('🔍 DEBUG: Found ${matchesData.length} matches in data.matches');
+        final response = await http.get(
+          Uri.parse(url),
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Utils.token}',
+          },
+        ).timeout(const Duration(seconds: 10));
+
+        print('🔍 DEBUG: Response status: ${response.statusCode} for page $currentPage');
+        
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body) as Map<String, dynamic>;
+          print('🔍 DEBUG: Response has status: ${data['status']} for page $currentPage');
           
-          if (matchesData.isNotEmpty) {
-            print('🔍 DEBUG: Processing ${matchesData.length} matches...');
-            try {
-              final matches = matchesData
-                  .map((matchJson) => MatchModel.fromJson(matchJson as Map<String, dynamic>))
-                  .toList();
-              
-              print('🔍 DEBUG: Successfully parsed ${matches.length} matches');
-              
-              // Filter out reserved matches
-              final availableMatches = matches.where((match) => match.status == 0).toList();
-              
-              print('🔍 DEBUG: After filtering reserved matches, ${availableMatches.length} available matches remain');
-              
-              // Debug: Print each match's details
-              for (final match in availableMatches) {
-                print('🔍 DEBUG: Match ID: ${match.id}, Playground: ${match.details}, Date: ${match.date}, Time: ${match.startTime}, Amount: ${match.amount}');
+          if (data['status'] == true && data['data'] != null) {
+            final matchesData = data['data']['matches'] as List<dynamic>? ?? [];
+            print('🔍 DEBUG: Found ${matchesData.length} matches in page $currentPage');
+            
+            if (matchesData.isNotEmpty) {
+              print('🔍 DEBUG: Processing ${matchesData.length} matches from page $currentPage...');
+              try {
+                final matches = matchesData
+                    .map((matchJson) => MatchModel.fromJson(matchJson as Map<String, dynamic>))
+                    .toList();
+                
+                // Add matches from this page to the total list
+                allMatches.addAll(matches);
+                print('🔍 DEBUG: Added ${matches.length} matches from page $currentPage. Total so far: ${allMatches.length}');
+                
+              } catch (parseError) {
+                print('🔍 DEBUG: Parse error on page $currentPage: $parseError');
+                // Continue to next page even if parsing fails for some matches
               }
-              
-              return availableMatches;
-            } catch (parseError) {
-              print('🔍 DEBUG: Parse error: $parseError');
-              throw Exception('Failed to parse match data: $parseError');
+            }
+            
+            // Check pagination info
+            final pagination = data['pagination'] as Map<String, dynamic>? ?? {};
+            final totalPages = pagination['total_pages'] as int? ?? 1;
+            final nextPageUrl = pagination['next_page_url'];
+            
+            print('🔍 DEBUG: Pagination info - Current page: $currentPage, Total pages: $totalPages, Next page URL: $nextPageUrl');
+            
+            if (currentPage >= totalPages || nextPageUrl == null) {
+              hasMorePages = false;
+              print('🔍 DEBUG: No more pages to fetch');
+            } else {
+              currentPage++;
+              print('🔍 DEBUG: Moving to next page: $currentPage');
             }
           } else {
-            print('🔍 DEBUG: No matches data found in response');
-            throw Exception('No matches available at the moment.');
+            print('🔍 DEBUG: Response status is not true or data is null for page $currentPage. Status: ${data['status']}, Data: ${data['data']}');
+            hasMorePages = false;
           }
         } else {
-          print('🔍 DEBUG: Response status is not true or data is null. Status: ${data['status']}, Data: ${data['data']}');
-          throw Exception(data['message'] ?? 'Failed to fetch matches');
+          print('🔍 DEBUG: HTTP status code is not 200 for page $currentPage: ${response.statusCode}');
+          print('🔍 DEBUG: Error response: ${response.body}');
+          hasMorePages = false;
         }
-      } else {
-        print('🔍 DEBUG: HTTP status code is not 200: ${response.statusCode}');
-        print('🔍 DEBUG: Error response: ${response.body}');
-        throw Exception('Failed to fetch matches: ${response.statusCode}');
       }
+      
+      // Filter out reserved matches from all collected matches
+      final availableMatches = allMatches.where((match) => match.status == 0).toList();
+      
+      print('🔍 DEBUG: After filtering reserved matches, ${availableMatches.length} available matches remain out of ${allMatches.length} total');
+      
+      // Debug: Print each match's details
+      for (final match in availableMatches) {
+        print('🔍 DEBUG: Match ID: ${match.id}, Playground: ${match.details}, Date: ${match.date}, Time: ${match.startTime}, Amount: ${match.amount}');
+      }
+      
+      return availableMatches;
     } catch (e) {
       print('🔍 DEBUG: Error fetching matches: $e');
       throw Exception('Error fetching matches: $e');
