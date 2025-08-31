@@ -64,20 +64,15 @@ class _CreateChallengePageState extends State<CreateChallengePage> {
       final repository = ChallengesRepositoryImpl();
       final matches = await repository.getAvailableMatches();
       
-      // Debug: Log all matches before filtering
+      // Debug: Log all matches
       print('🎯 CHALLENGE DEBUG: Total matches received: ${matches.length}');
       for (final match in matches) {
-        print('🎯 CHALLENGE DEBUG: Match ID: ${match.id}, Type: "${match.type}", Date: ${match.date}');
+        print('🎯 CHALLENGE DEBUG: Match ID: ${match.id}, Playground: ${match.details}, Date: ${match.date}, Time: ${match.startTime}, Amount: ${match.amount}');
       }
       
-      // Since repository now only returns challenge matches, no additional filtering needed
-      final filteredMatches = matches;
-      
-      print('🎯 CHALLENGE DEBUG: Showing ${filteredMatches.length} challenge matches');
-      
       setState(() {
-        _availableMatches = filteredMatches;
-        _selectedMatch = filteredMatches.isNotEmpty ? filteredMatches.first : null;
+        _availableMatches = matches;
+        _selectedMatch = matches.isNotEmpty ? matches.first : null;
         _isLoadingMatches = false;
       });
     } catch (e) {
@@ -422,7 +417,7 @@ class _CreateChallengePageState extends State<CreateChallengePage> {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   Text(
-                                    '${match.startTime} - ${match.endTime} (${match.durationsText})',
+                                    '${match.startTime} - ${match.details}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.grey[600],
@@ -430,7 +425,7 @@ class _CreateChallengePageState extends State<CreateChallengePage> {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   Text(
-                                    'Amount: ${match.amount} SAR',
+                                    'Amount: ${match.amount}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.grey[600],

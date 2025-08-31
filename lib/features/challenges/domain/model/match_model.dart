@@ -41,26 +41,52 @@ class MatchModel {
 
   factory MatchModel.fromJson(Map<String, dynamic> json) {
     try {
-      return MatchModel(
-        id: _parseInt(json['id']),
-        playgroundId: _parseInt(json['playground_id']),
-        date: json['date'] as String? ?? '',
-        startTime: json['start_time'] as String? ?? '',
-        endTime: json['end_time'] as String? ?? '',
-        durations: _parseInt(json['durations']),
-        durationsText: json['durations_text'] as String? ?? '',
-        amount: json['amount']?.toString() ?? '0',
-        subscribersQty: _parseInt(json['subscribers_qty']),
-        details: json['details'] as String? ?? '',
-        status: _parseInt(json['status']),
-        isCompetitive: json['is_competitive'] == 1 || json['is_competitive'] == true,
-        type: json['type'] as String? ?? '',
-        team1Id: json['team1_id'] != null ? _parseInt(json['team1_id']) : null,
-        team2Id: json['team2_id'] != null ? _parseInt(json['team2_id']) : null,
-        supervisorId: _parseInt(json['supervisor_id']),
-        createdAt: json['created_at'] as String? ?? '',
-        updatedAt: json['updated_at'] as String? ?? '',
-      );
+      // Handle new API structure for challenge matches
+      if (json.containsKey('playground')) {
+        // New API structure
+        return MatchModel(
+          id: _parseInt(json['id']),
+          playgroundId: 0, // Not provided in new API
+          date: json['date'] as String? ?? '',
+          startTime: json['start_time'] as String? ?? '',
+          endTime: json['start_time'] as String? ?? '', // Use start_time as end_time if not provided
+          durations: 0, // Not provided
+          durationsText: '', // Not provided
+          amount: json['amount']?.toString() ?? '0',
+          subscribersQty: 0, // Not provided
+          details: json['playground'] as String? ?? '', // Use playground as details
+          status: json['is_reserved'] == true ? 1 : 0, // Map is_reserved to status
+          isCompetitive: false, // Default
+          type: 'challenge', // Assume challenge
+          team1Id: null,
+          team2Id: null,
+          supervisorId: 0, // Not provided
+          createdAt: '', // Not provided
+          updatedAt: '', // Not provided
+        );
+      } else {
+        // Original API structure
+        return MatchModel(
+          id: _parseInt(json['id']),
+          playgroundId: _parseInt(json['playground_id']),
+          date: json['date'] as String? ?? '',
+          startTime: json['start_time'] as String? ?? '',
+          endTime: json['end_time'] as String? ?? '',
+          durations: _parseInt(json['durations']),
+          durationsText: json['durations_text'] as String? ?? '',
+          amount: json['amount']?.toString() ?? '0',
+          subscribersQty: _parseInt(json['subscribers_qty']),
+          details: json['details'] as String? ?? '',
+          status: _parseInt(json['status']),
+          isCompetitive: json['is_competitive'] == 1 || json['is_competitive'] == true,
+          type: json['type'] as String? ?? '',
+          team1Id: json['team1_id'] != null ? _parseInt(json['team1_id']) : null,
+          team2Id: json['team2_id'] != null ? _parseInt(json['team2_id']) : null,
+          supervisorId: _parseInt(json['supervisor_id']),
+          createdAt: json['created_at'] as String? ?? '',
+          updatedAt: json['updated_at'] as String? ?? '',
+        );
+      }
     } catch (e) {
       throw Exception('Failed to parse match data: $e');
     }

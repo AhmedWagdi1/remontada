@@ -108,124 +108,68 @@ class ChallengesRepositoryImpl implements ChallengesRepository {
 
   @override
   Future<List<MatchModel>> getAvailableMatches() async {
-    print('🔍 DEBUG: Starting getAvailableMatches() - Looking for challenge matches');
+    print('🔍 DEBUG: Starting getAvailableMatches() - Fetching from new challenge matches API');
     
-    // Try multiple endpoints to get available matches
-    final endpoints = [
-      '/home',
-      '/group-matches',
-      '/matches',
-    ];
+    try {
+      final response = await http.get(
+        Uri.parse('https://pre-montada.gostcode.com/public/api/all-challange-Matches'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Utils.token}',
+        },
+      ).timeout(const Duration(seconds: 10));
 
-    for (final endpoint in endpoints) {
-      print('🔍 DEBUG: Trying endpoint: $endpoint');
-      try {
-        final fullUrl = '${ConstKeys.baseUrl}$endpoint';
-        print('🔍 DEBUG: Full URL: $fullUrl');
+      print('🔍 DEBUG: Response status: ${response.statusCode}');
+      
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        print('🔍 DEBUG: Response has status: ${data['status']}');
         
-        final response = await http.get(
-          Uri.parse(fullUrl),
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ${Utils.token}',
-          },
-        ).timeout(const Duration(seconds: 10));
-
-        print('🔍 DEBUG: Response status: ${response.statusCode}');
-        
-        if (response.statusCode == 200) {
-          final data = jsonDecode(response.body) as Map<String, dynamic>;
-          print('🔍 DEBUG: Response has status: ${data['status']}');
+        if (data['status'] == true && data['data'] != null) {
+          final matchesData = data['data']['matches'] as List<dynamic>? ?? [];
+          print('🔍 DEBUG: Found ${matchesData.length} matches in data.matches');
           
-          if (data['status'] == true && data['data'] != null) {
-            List<dynamic> matchesData = [];
-            
-            // Handle different response structures
-            if (endpoint == '/home') {
-              final homeData = data['data'] as Map<String, dynamic>;
-              matchesData = homeData['matches'] as List<dynamic>? ?? [];
-              print('🔍 DEBUG: Home endpoint - found ${matchesData.length} matches in data.matches');
-            } else if (endpoint == '/group-matches') {
-              final groupData = data['data'] as Map<String, dynamic>;
-              matchesData = groupData['matches'] as List<dynamic>? ?? [];
-              print('🔍 DEBUG: Group-matches endpoint - found ${matchesData.length} matches in data.matches');
-            } else {
-              // Direct matches endpoint
-              if (data['data'] is List) {
-                matchesData = data['data'] as List<dynamic>;
-                print('🔍 DEBUG: Matches endpoint - found ${matchesData.length} direct matches');
-              } else {
-                matchesData = [];
-                print('🔍 DEBUG: Matches endpoint - data is not a list, it\'s: ${data['data'].runtimeType}');
+          if (matchesData.isNotEmpty) {
+            print('🔍 DEBUG: Processing ${matchesData.length} matches...');
+            try {
+              final matches = matchesData
+                  .map((matchJson) => MatchModel.fromJson(matchJson as Map<String, dynamic>))
+                  .toList();
+              
+              print('🔍 DEBUG: Successfully parsed ${matches.length} matches');
+              
+              // Filter out reserved matches
+              final availableMatches = matches.where((match) => match.status == 0).toList();
+              
+              print('🔍 DEBUG: After filtering reserved matches, ${availableMatches.length} available matches remain');
+              
+              // Debug: Print each match's details
+              for (final match in availableMatches) {
+                print('🔍 DEBUG: Match ID: ${match.id}, Playground: ${match.details}, Date: ${match.date}, Time: ${match.startTime}, Amount: ${match.amount}');
               }
-            }
-            
-            // If we found matches, return them
-            if (matchesData.isNotEmpty) {
-              print('🔍 DEBUG: Processing ${matchesData.length} matches...');
-              try {
-                final matches = matchesData
-                    .map((matchJson) => MatchModel.fromJson(matchJson as Map<String, dynamic>))
-                    .toList();
-                
-                print('🔍 DEBUG: Successfully parsed ${matches.length} matches');
-                
-                // Filter out invalid matches
-                final validMatches = matches.where((match) => 
-                  match.id > 0 && 
-                  match.date.isNotEmpty && 
-                  match.startTime.isNotEmpty
-                ).toList();
-                
-                print('🔍 DEBUG: After validation, ${validMatches.length} valid matches remain');
-                
-                // Debug: Print all match types
-                final matchTypes = validMatches.map((m) => m.type).toSet();
-                print('🔍 DEBUG: Available match types: $matchTypes');
-                
-                // Debug: Print each match's details
-                for (final match in validMatches) {
-                  print('🔍 DEBUG: Match ID: ${match.id}, Type: "${match.type}", Date: ${match.date}, Time: ${match.startTime}');
-                }
-                
-                if (validMatches.isNotEmpty) {
-                  // For group-matches endpoint, treat all matches as challenges
-                  // since this endpoint specifically returns challenge matches
-                  if (endpoint == '/group-matches') {
-                    print('🔍 DEBUG: Group-matches endpoint - treating all matches as challenges');
-                    return validMatches;
-                  }
-                  
-                  print('🔍 DEBUG: Returning ${validMatches.length} matches from endpoint: $endpoint');
-                  return validMatches;
-                } else {
-                  print('🔍 DEBUG: No valid matches after filtering - all matches failed validation');
-                }
-              } catch (parseError) {
-                print('🔍 DEBUG: Parse error: $parseError');
-                // If parsing fails, continue to next endpoint
-                continue;
-              }
-            } else {
-              print('🔍 DEBUG: No matches data found in response from $endpoint');
+              
+              return availableMatches;
+            } catch (parseError) {
+              print('🔍 DEBUG: Parse error: $parseError');
+              throw Exception('Failed to parse match data: $parseError');
             }
           } else {
-            print('🔍 DEBUG: Response status is not true or data is null. Status: ${data['status']}, Data: ${data['data']}');
+            print('🔍 DEBUG: No matches data found in response');
+            throw Exception('No matches available at the moment.');
           }
         } else {
-          print('🔍 DEBUG: HTTP status code is not 200: ${response.statusCode}');
-          print('🔍 DEBUG: Error response: ${response.body}');
+          print('🔍 DEBUG: Response status is not true or data is null. Status: ${data['status']}, Data: ${data['data']}');
+          throw Exception(data['message'] ?? 'Failed to fetch matches');
         }
-      } catch (e) {
-        print('🔍 DEBUG: Error with endpoint $endpoint: $e');
-        // Continue to next endpoint if this one fails
-        continue;
+      } else {
+        print('🔍 DEBUG: HTTP status code is not 200: ${response.statusCode}');
+        print('🔍 DEBUG: Error response: ${response.body}');
+        throw Exception('Failed to fetch matches: ${response.statusCode}');
       }
+    } catch (e) {
+      print('🔍 DEBUG: Error fetching matches: $e');
+      throw Exception('Error fetching matches: $e');
     }
-    
-    print('🔍 DEBUG: All endpoints failed, throwing exception');
-    // If all endpoints fail, throw a generic error
-    throw Exception('No matches available at the moment. Please check back later or contact support if the issue persists.');
   }
 
   @override
