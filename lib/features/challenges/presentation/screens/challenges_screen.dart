@@ -604,7 +604,10 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                       ),
                       const SizedBox(height: 4),
                       InkWell(
-                        onTap: () => _showJoinChallengeDialog(match),
+                        onTap: () {
+                          print('👆 DEBUG: Join button tapped for match ID: ${match?.id}');
+                          _showJoinChallengeDialog(match);
+                        },
                         child: Container(
                           width: 40,
                           height: 40,
@@ -1437,7 +1440,12 @@ class _ChallengesScreenState extends State<ChallengesScreen>
 
   /// Shows a custom dialog for joining a challenge
   void _showJoinChallengeDialog(ChallengeMatch? match) {
+    print('🔍 DEBUG: Showing join challenge dialog');
+    print('📋 DEBUG: Match ID: ${match?.id}, Playground: ${match?.playground}, Date: ${match?.date}');
+    print('👥 DEBUG: Team1: ${match?.team1}, Team2: ${match?.team2}');
+
     if (_userTeams.isEmpty) {
+      print('❌ DEBUG: User has no teams - cannot join challenge');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('يجب أن تكون عضواً في فريق للانضمام للتحدي'),
@@ -1447,11 +1455,17 @@ class _ChallengesScreenState extends State<ChallengesScreen>
       return;
     }
 
+    print('✅ DEBUG: User has ${_userTeams.length} team(s)');
+    print('👤 DEBUG: Current user team: ${_userTeams[0]}');
+
     final team1Name = match?.team1?['name'] ?? 'الابطال';
     final team1Logo = match?.team1?['logo_url']?.toString();
     final playground = match?.playground ?? 'غير محدد';
     final date = match?.date ?? 'غير محدد';
     final startTime = match?.startTime ?? 'غير محدد';
+
+    print('🏟️ DEBUG: Challenge details - Playground: $playground, Date: $date, Time: $startTime');
+    print('👥 DEBUG: Opposing team: $team1Name');
 
     showDialog(
       context: context,
@@ -1576,6 +1590,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
               ),
               ElevatedButton(
                 onPressed: () {
+                  print('✅ DEBUG: User confirmed join request - proceeding to send API call');
                   Navigator.of(context).pop();
                   _sendJoinRequest(match);
                 },
@@ -1599,14 +1614,21 @@ class _ChallengesScreenState extends State<ChallengesScreen>
 
   /// Sends a join request to the challenge API
   Future<void> _sendJoinRequest(ChallengeMatch? match) async {
-    if (match == null || _userTeams.isEmpty) return;
+    if (match == null || _userTeams.isEmpty) {
+      print('🔍 DEBUG: Cannot send join request - match is null or user has no teams');
+      return;
+    }
 
     final matchId = match.id;
     final invitedTeamId = _userTeams[0]['id'];
+    final requestUrl = '${ConstKeys.baseUrl}/challenge/send-team-match-request';
+
+    print('🚀 DEBUG: Sending join request to: $requestUrl');
+    print('📤 DEBUG: Request body: {match_id: $matchId, invited_team_id: $invitedTeamId}');
 
     try {
       final response = await http.post(
-        Uri.parse('${ConstKeys.baseUrl}/challenge/send-team-match-request'),
+        Uri.parse(requestUrl),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
@@ -1617,9 +1639,13 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         }),
       );
 
+      print('📥 DEBUG: Response status code: ${response.statusCode}');
+      print('📥 DEBUG: Response body: ${response.body}');
+
       final responseData = jsonDecode(response.body);
 
       if (response.statusCode == 200 && responseData['status'] == true) {
+        print('✅ DEBUG: Join request sent successfully');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(responseData['message'] ?? 'تم إرسال طلب الانضمام بنجاح'),
@@ -1627,6 +1653,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
           ),
         );
       } else {
+        print('❌ DEBUG: Join request failed - Status: ${responseData['status']}, Message: ${responseData['message']}');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(responseData['message'] ?? 'فشل في إرسال طلب الانضمام'),
@@ -1635,6 +1662,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         );
       }
     } catch (e) {
+      print('💥 DEBUG: Error sending join request: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.'),
