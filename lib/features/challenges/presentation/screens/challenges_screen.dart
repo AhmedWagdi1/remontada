@@ -635,7 +635,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
 
   /// Helper function to get the appropriate image provider for a team logo.
   ImageProvider _getTeamLogoImage(String? logoUrl) {
-    if (logoUrl != null && logoUrl.isNotEmpty) {
+    if (logoUrl != null && logoUrl.isNotEmpty && logoUrl.startsWith('http')) {
       return NetworkImage(logoUrl);
     }
     return const AssetImage('assets/images/profile_image.png');
@@ -1212,7 +1212,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                   child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF2F2F2).withOpacity(0.5),
+                      color: const Color(0xFFF2F2F2).withValues(alpha: 0.5),
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: AbsorbPointer(
@@ -1222,11 +1222,11 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                         indicatorSize: TabBarIndicatorSize.tab,
                         indicatorPadding: const EdgeInsets.all(2),
                         indicator: BoxDecoration(
-                          color: darkBlue.withOpacity(0.5),
+                          color: darkBlue.withValues(alpha: 0.5),
                           borderRadius: BorderRadius.circular(30),
                         ),
-                        labelColor: Colors.white.withOpacity(0.7),
-                        unselectedLabelColor: Colors.grey.withOpacity(0.5),
+                        labelColor: Colors.white.withValues(alpha: 0.7),
+                        unselectedLabelColor: Colors.grey.withValues(alpha: 0.5),
                         labelStyle: const TextStyle(fontWeight: FontWeight.bold),
                         tabs: [
                           Tab(text: LocaleKeys.challenges_nav.tr()),
@@ -1251,7 +1251,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                             child: Text(
                               'جاري التحميل...',
                               style: TextStyle(
-                                color: darkBlue.withOpacity(0.7),
+                                color: darkBlue.withValues(alpha: 0.7),
                                 fontSize: 16,
                               ),
                             ),
@@ -1261,7 +1261,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                             child: Text(
                               'جاري التحميل...',
                               style: TextStyle(
-                                color: darkBlue.withOpacity(0.7),
+                                color: darkBlue.withValues(alpha: 0.7),
                                 fontSize: 16,
                               ),
                             ),
@@ -1271,7 +1271,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                             child: Text(
                               'جاري التحميل...',
                               style: TextStyle(
-                                color: darkBlue.withOpacity(0.7),
+                                color: darkBlue.withValues(alpha: 0.7),
                                 fontSize: 16,
                               ),
                             ),

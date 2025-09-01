@@ -87,9 +87,13 @@ class MatchDetailsPage extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 25,
-                          backgroundImage: (match.team1?['logo_url'] is String && (match.team1!['logo_url'] as String).isNotEmpty)
-                              ? NetworkImage(match.team1!['logo_url'] as String) as ImageProvider
-                              : AssetImage('assets/images/profile_image.png'),
+                          backgroundColor: Colors.grey.shade200,
+                          backgroundImage: _getTeamLogoImage(match.team1?['logo_url']),
+                          child: match.team1?['logo_url'] == null || 
+                                (match.team1!['logo_url'] is String && (match.team1!['logo_url'] as String).isEmpty) ||
+                                (match.team1!['logo_url'] is String && !(match.team1!['logo_url'] as String).startsWith('http'))
+                              ? const Icon(Icons.groups, color: Colors.grey, size: 20)
+                              : null,
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -137,9 +141,13 @@ class MatchDetailsPage extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 25,
-                          backgroundImage: (match.team2?['logo_url'] is String && (match.team2!['logo_url'] as String).isNotEmpty)
-                              ? NetworkImage(match.team2!['logo_url'] as String) as ImageProvider
-                              : AssetImage('assets/images/profile_image.png'),
+                          backgroundColor: Colors.grey.shade200,
+                          backgroundImage: _getTeamLogoImage(match.team2?['logo_url']),
+                          child: match.team2?['logo_url'] == null || 
+                                (match.team2!['logo_url'] is String && (match.team2!['logo_url'] as String).isEmpty) ||
+                                (match.team2!['logo_url'] is String && !(match.team2!['logo_url'] as String).startsWith('http'))
+                              ? const Icon(Icons.groups, color: Colors.grey, size: 20)
+                              : null,
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -282,5 +290,13 @@ class MatchDetailsPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Helper function to get the appropriate image provider for a team logo.
+  ImageProvider? _getTeamLogoImage(dynamic logoUrl) {
+    if (logoUrl is String && logoUrl.isNotEmpty && logoUrl.startsWith('http')) {
+      return NetworkImage(logoUrl);
+    }
+    return null; // Return null to use the child widget (icon)
   }
 }
