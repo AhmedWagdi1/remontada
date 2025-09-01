@@ -662,117 +662,9 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   Widget _buildMatchCard(ChallengeMatch match) {
     if (match.team1 != null && match.team2 != null) {
       return _completedChallengeCard(match);
-    } else if (match.team1 != null || match.team2 != null) {
-      return _joinChallengeCard(match);
     } else {
-      // Both teams null, show open challenge card
-      return _openChallengeCard(match);
+      return _joinChallengeCard(match);
     }
-  }
-
-  /// Builds a card for an open challenge with no teams.
-  Widget _openChallengeCard(ChallengeMatch match) {
-    const borderColor = Color(0xFFE0E0E0);
-    const badgeColor = Color(0xFFF0F0F0);
-    const highlightColor = Color(0xFF666666);
-
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 24),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: borderColor),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: badgeColor,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.add_circle_outline, color: highlightColor, size: 16),
-                      const SizedBox(width: 4),
-                      Text(
-                        'تحدي مفتوح - ${match.date} ${match.startTime}',
-                        style: TextStyle(
-                          color: highlightColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    children: const [
-                      Text(
-                        'فريق 1',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 4),
-                      CircleAvatar(
-                        radius: 20,
-                        backgroundColor: Colors.grey,
-                        child: Icon(Icons.group, color: Colors.white),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      const Text(
-                        'VS',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: highlightColor,
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 4),
-                        height: 2,
-                        width: 20,
-                        color: highlightColor,
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: const [
-                      Text(
-                        'فريق 2',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 4),
-                      CircleAvatar(
-                        radius: 20,
-                        backgroundColor: Colors.grey,
-                        child: Icon(Icons.group, color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(height: 15),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 
   /// Helper function to get the appropriate image provider for a team logo.
@@ -1535,7 +1427,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                             Center(child: Text(_matchesError!)),
                             const SizedBox(height: 12),
                           ] else ...[
-                            for (final match in _matches) ...[
+                            for (final match in _matches.where((m) => m.team1 != null || m.team2 != null)) ...[
                               _buildMatchCard(match),
                               const SizedBox(height: 12),
                             ],
