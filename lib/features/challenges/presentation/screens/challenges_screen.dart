@@ -18,6 +18,51 @@ import '../../../../core/Router/Router.dart';
 import '../../domain/model/challenge_overview_model.dart';
 import '../../data/challenges_repository_impl.dart';
 
+/// Model for challenge match data.
+class ChallengeMatch {
+  final int id;
+  final String playground;
+  final String date;
+  final String startTime;
+  final String amount;
+  final bool isReserved;
+  final Map<String, dynamic>? team1;
+  final Map<String, dynamic>? team2;
+
+  ChallengeMatch({
+    required this.id,
+    required this.playground,
+    required this.date,
+    required this.startTime,
+    required this.amount,
+    required this.isReserved,
+    this.team1,
+    this.team2,
+  });
+
+  factory ChallengeMatch.fromJson(Map<String, dynamic> json) {
+    return ChallengeMatch(
+      id: json['id'],
+      playground: json['playground'],
+      date: json['date'],
+      startTime: json['start_time'],
+      amount: json['amount'],
+      isReserved: json['is_reserved'],
+      team1: json['team1'],
+      team2: json['team2'],
+    );
+  }
+
+  /// Parses the date string to extract DateTime.
+  DateTime get parsedDate {
+    final datePart = date.split(' ')[1]; // Extract "2025-11-19"
+    return DateTime.parse(datePart);
+  }
+
+  /// Checks if the match is in the past.
+  bool get isPast => parsedDate.isBefore(DateTime.now());
+}
+
 
 
 /// Placeholder screen shown for the upcoming Challenges feature.
@@ -49,6 +94,9 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   List<dynamic> _userTeams = [];
   String? _userRole;
   bool _isValidatingTeam = false;
+  List<ChallengeMatch> _matches = [];
+  bool _loadingMatches = false;
+  String? _matchesError;
 
   /// Retrieves the list of teams the current user belongs to.
   ///
@@ -302,6 +350,37 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     }
   }
 
+  /// Fetches the list of challenges/matches from the API.
+  Future<void> _fetchMatches() async {
+    setState(() {
+      _loadingMatches = true;
+      _matchesError = null;
+    });
+    try {
+      final res = await http.get(
+        Uri.parse('${ConstKeys.baseUrl}/challenges-index'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Utils.token}',
+        },
+      );
+      if (res.statusCode < 400) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        if (data['status'] == true) {
+          final matchesData = data['data']['matches'] as List<dynamic>;
+          final matches = matchesData.map((m) => ChallengeMatch.fromJson(m)).toList();
+          setState(() => _matches = matches);
+        }
+      }
+    } catch (e) {
+      _matchesError = 'Failed to load matches: $e';
+    } finally {
+      if (mounted) {
+        setState(() => _loadingMatches = false);
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -316,6 +395,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
       _fetchUserTeams().then((_) => _fetchUserRole());
     }
     _fetchChallengesOverview();
+    _fetchMatches();
   }
 
   @override
@@ -325,11 +405,21 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   }
 
   /// Builds the card displaying a completed challenge summary.
-  Widget _completedChallengeCard() {
+  Widget _completedChallengeCard([ChallengeMatch? match]) {
     const borderColor = Color(0xFFD4EDDA);
     const badgeColor = Color(0xFFE6F4EA);
     const badgeTextColor = Color(0xFF28A745);
     const buttonColor = Color(0xFF23425F);
+
+    final team1Name = match?.team1?['name'] ?? 'الفهود';
+    final team2Name = match?.team2?['name'] ?? 'ابطال الخرج';
+    final dynamic team1LogoRaw = match?.team1?['logo_url'];
+    final dynamic team2LogoRaw = match?.team2?['logo_url'];
+    final String? team1Logo = team1LogoRaw is String ? team1LogoRaw : null;
+    final String? team2Logo = team2LogoRaw is String ? team2LogoRaw : null;
+    final badgeText = match != null
+        ? (match.isPast ? 'تحدي مكتمل - ${match.date} ${match.startTime}' : 'تحدي جاهز - ${match.date} ${match.startTime}')
+        : 'تحدي مكتمل - اليوم 8:00 م';
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -357,11 +447,11 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: const [
+                    children: [
                       Icon(Icons.check_circle, color: badgeTextColor, size: 16),
-                      SizedBox(width: 4),
+                      const SizedBox(width: 4),
                       Text(
-                        'تحدي مكتمل - اليوم 8:00 م',
+                        badgeText,
                         style: TextStyle(
                           color: badgeTextColor,
                           fontWeight: FontWeight.bold,
@@ -376,17 +466,15 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Column(
-                    children: const [
+                    children: [
                       Text(
-                        'الفهود',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        team1Name,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       CircleAvatar(
                         radius: 20,
-                        backgroundImage: AssetImage(
-                          'assets/images/profile_image.png',
-                        ),
+                        backgroundImage: _getTeamLogoImage(team1Logo),
                       ),
                     ],
                   ),
@@ -405,17 +493,15 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                     ],
                   ),
                   Column(
-                    children: const [
+                    children: [
                       Text(
-                        'ابطال الخرج',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        team2Name,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       CircleAvatar(
                         radius: 20,
-                        backgroundImage: AssetImage(
-                          'assets/images/profile_image.png',
-                        ),
+                        backgroundImage: _getTeamLogoImage(team2Logo),
                       ),
                     ],
                   ),
@@ -461,10 +547,14 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   }
 
   /// Builds the card allowing a user to join an upcoming challenge.
-  Widget _joinChallengeCard() {
+  Widget _joinChallengeCard([ChallengeMatch? match]) {
     const borderColor = Color(0xFFFEEBCB);
     const badgeColor = Color(0xFFFFF3E0);
     const highlightColor = Color(0xFFF9A825);
+
+    final team1Name = match?.team1?['name'] ?? 'الابطال';
+    final team1Logo = match?.team1?['logo_url']?.toString();
+    final badgeText = match != null ? 'انضم للتحدي - ${match.date} ${match.startTime}' : 'انضم للتحدي - اليوم 7:30 م';
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -492,11 +582,11 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: const [
+                    children: [
                       Icon(Icons.access_time, color: highlightColor, size: 16),
-                      SizedBox(width: 4),
+                      const SizedBox(width: 4),
                       Text(
-                        'انضم للتحدي - اليوم 7:30 م',
+                        badgeText,
                         style: TextStyle(
                           color: highlightColor,
                           fontWeight: FontWeight.bold,
@@ -511,17 +601,15 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Column(
-                    children: const [
+                    children: [
                       Text(
-                        'الابطال',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        team1Name,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 4),
                       CircleAvatar(
                         radius: 20,
-                        backgroundImage: AssetImage(
-                          'assets/images/profile_image.png',
-                        ),
+                        backgroundImage: _getTeamLogoImage(team1Logo),
                       ),
                     ],
                   ),
@@ -570,16 +658,129 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     );
   }
 
-  /// Displays a placeholder message when the player does not belong to a team.
-  Widget _noTeamPlaceholder() {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 24),
-      child: Text(
-        'You need a team to participate in challenges',
-        textAlign: TextAlign.center,
-        style: TextStyle(color: Colors.grey),
+  /// Builds a card for a challenge match based on its state.
+  Widget _buildMatchCard(ChallengeMatch match) {
+    if (match.team1 != null && match.team2 != null) {
+      return _completedChallengeCard(match);
+    } else if (match.team1 != null || match.team2 != null) {
+      return _joinChallengeCard(match);
+    } else {
+      // Both teams null, show open challenge card
+      return _openChallengeCard(match);
+    }
+  }
+
+  /// Builds a card for an open challenge with no teams.
+  Widget _openChallengeCard(ChallengeMatch match) {
+    const borderColor = Color(0xFFE0E0E0);
+    const badgeColor = Color(0xFFF0F0F0);
+    const highlightColor = Color(0xFF666666);
+
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 24),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: borderColor),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: badgeColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.add_circle_outline, color: highlightColor, size: 16),
+                      const SizedBox(width: 4),
+                      Text(
+                        'تحدي مفتوح - ${match.date} ${match.startTime}',
+                        style: TextStyle(
+                          color: highlightColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: const [
+                      Text(
+                        'فريق 1',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 4),
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Colors.grey,
+                        child: Icon(Icons.group, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      const Text(
+                        'VS',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: highlightColor,
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 4),
+                        height: 2,
+                        width: 20,
+                        color: highlightColor,
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: const [
+                      Text(
+                        'فريق 2',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 4),
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Colors.grey,
+                        child: Icon(Icons.group, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: 15),
+            ],
+          ),
+        ),
       ),
     );
+  }
+
+  /// Helper function to get the appropriate image provider for a team logo.
+  ImageProvider _getTeamLogoImage(String? logoUrl) {
+    if (logoUrl != null && logoUrl.isNotEmpty) {
+      return NetworkImage(logoUrl);
+    }
+    return const AssetImage('assets/images/profile_image.png');
   }
 
   /// Builds a button allowing a user to initiate a new challenge.
@@ -1326,14 +1527,18 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                             _createChallengeButton(),
                             const SizedBox(height: 12),
                           ],
-                          _completedChallengeCard(),
-                          const SizedBox(height: 12),
-                          if (_hasTeam ?? false) ...[
-                            _joinChallengeCard(),
+                          // Dynamic matches list
+                          if (_loadingMatches) ...[
+                            const Center(child: CircularProgressIndicator()),
+                            const SizedBox(height: 12),
+                          ] else if (_matchesError != null) ...[
+                            Center(child: Text(_matchesError!)),
                             const SizedBox(height: 12),
                           ] else ...[
-                            _noTeamPlaceholder(),
-                            const SizedBox(height: 12),
+                            for (final match in _matches) ...[
+                              _buildMatchCard(match),
+                              const SizedBox(height: 12),
+                            ],
                           ],
                           _howChallengesWorkCard(),
                         ],
