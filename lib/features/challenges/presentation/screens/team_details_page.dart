@@ -75,6 +75,7 @@ class TeamDetailsPage extends StatefulWidget {
 class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderStateMixin {
   Map<String, dynamic>? _teamData;
   String? _currentUserRole;
+  List<dynamic> _invites = [];
 
   @override
   void initState() {
@@ -85,6 +86,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
       _fetchTeamData();
     });
     _fetchTeamData();
+    _fetchInvites();
   }
 
   /// Fetches the team information from the backend and stores it in [_teamData].
@@ -120,8 +122,63 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
           _teamData = team;
           _currentUserRole = currentUserRole;
         });
+        await _fetchInvites();
       }
     }
+  }
+
+  /// Fetches the challenge invites for the team.
+  Future<void> _fetchInvites() async {
+    final url = '${ConstKeys.baseUrl}/challenge/team-match-invites';
+    final res = await http.get(
+      Uri.parse(url),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${Utils.token}',
+      },
+    );
+    if (res.statusCode < 400) {
+      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      if (data['status'] == true) {
+        final invites = data['data'] as List<dynamic>;
+        setState(() {
+          _invites = invites.where((invite) => invite['invited_team_id'] == widget.teamId && invite['status'] != 'accepted').toList();
+        });
+      }
+    }
+  }
+
+  /// Shows a dialog with the list of pending challenge invites.
+  void _showInvitesDialog(BuildContext context, List<dynamic> invites) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('طلبات التحديات'),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: invites.length,
+            itemBuilder: (context, index) {
+              final invite = invites[index] as Map<String, dynamic>;
+              final match = invite['match'] as Map<String, dynamic>;
+              final requester = invite['requester_team'] as Map<String, dynamic>;
+              return ListTile(
+                title: Text(requester['name']),
+                subtitle: Text('تاريخ: ${match['date']} - وقت: ${match['start_time']}'),
+                trailing: Text(invite['status']),
+              );
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('إغلاق'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -207,6 +264,10 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
             ),
             SizedBox(height: 16),
             _InviteSettingsSection(),
+            if (_currentUserRole == 'leader' && _invites.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              _ChallengeRequestsSection(invites: _invites, onPressed: () => _showInvitesDialog(context, _invites)),
+            ],
           ],
         ),
       ),
@@ -826,6 +887,56 @@ class _InviteSettingsSection extends StatelessWidget {
               ),
               SizedBox(height: 8),
               _LabeledText(label: 'الدعوة الاجتماعية:', value: 'مفعلة'),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Section showing challenge requests for the team captain.
+class _ChallengeRequestsSection extends StatelessWidget {
+  /// List of pending challenge invites.
+  final List<dynamic> invites;
+
+  /// Callback when the button is pressed.
+  final VoidCallback onPressed;
+
+  /// Creates a const [_ChallengeRequestsSection].
+  const _ChallengeRequestsSection({required this.invites, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    final count = invites.length;
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: const [
+                  Icon(Icons.notifications, color: Colors.orange),
+                  SizedBox(width: 8),
+                  Text(
+                    'طلبات التحديات',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text('لديك $count طلب تحدي جديد'),
+              const SizedBox(height: 12),
+              ElevatedButton(
+                onPressed: onPressed,
+                child: const Text('عرض الطلبات'),
+              ),
             ],
           ),
         ),
