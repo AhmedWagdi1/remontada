@@ -418,7 +418,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     final String? team1Logo = team1LogoRaw is String ? team1LogoRaw : null;
     final String? team2Logo = team2LogoRaw is String ? team2LogoRaw : null;
     final badgeText = match != null
-        ? (match.isPast ? 'تحدي مكتمل - ${match.date} ${match.startTime}' : 'تحدي جاهز - ${match.date} ${match.startTime}')
+        ? (match.isPast ? 'تحدي مكتمل - ${match.playground} - ${match.date} ${match.startTime}' : 'تحدي جاهز - ${match.playground} - ${match.date} ${match.startTime}')
         : 'تحدي مكتمل - اليوم 8:00 م';
 
     return Directionality(
@@ -554,7 +554,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
 
     final team1Name = match?.team1?['name'] ?? 'الابطال';
     final team1Logo = match?.team1?['logo_url']?.toString();
-    final badgeText = match != null ? 'انضم للتحدي - ${match.date} ${match.startTime}' : 'انضم للتحدي - اليوم 7:30 م';
+    final badgeText = match != null ? 'انضم للتحدي - ${match.playground} - ${match.date} ${match.startTime}' : 'انضم للتحدي - اليوم 7:30 م';
 
     return Directionality(
       textDirection: TextDirection.rtl,
