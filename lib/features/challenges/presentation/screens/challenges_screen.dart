@@ -17,51 +17,8 @@ import '../../../../core/utils/utils.dart';
 import '../../../../core/Router/Router.dart';
 import '../../domain/model/challenge_overview_model.dart';
 import '../../data/challenges_repository_impl.dart';
-
-/// Model for challenge match data.
-class ChallengeMatch {
-  final int id;
-  final String playground;
-  final String date;
-  final String startTime;
-  final String amount;
-  final bool isReserved;
-  final Map<String, dynamic>? team1;
-  final Map<String, dynamic>? team2;
-
-  ChallengeMatch({
-    required this.id,
-    required this.playground,
-    required this.date,
-    required this.startTime,
-    required this.amount,
-    required this.isReserved,
-    this.team1,
-    this.team2,
-  });
-
-  factory ChallengeMatch.fromJson(Map<String, dynamic> json) {
-    return ChallengeMatch(
-      id: json['id'],
-      playground: json['playground'],
-      date: json['date'],
-      startTime: json['start_time'],
-      amount: json['amount'],
-      isReserved: json['is_reserved'],
-      team1: json['team1'],
-      team2: json['team2'],
-    );
-  }
-
-  /// Parses the date string to extract DateTime.
-  DateTime get parsedDate {
-    final datePart = date.split(' ')[1]; // Extract "2025-11-19"
-    return DateTime.parse(datePart);
-  }
-
-  /// Checks if the match is in the past.
-  bool get isPast => parsedDate.isBefore(DateTime.now());
-}
+import '../../domain/model/challenge_match_model.dart';
+import 'match_details_page.dart';
 
 
 
@@ -528,7 +485,16 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                         ),
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      if (match != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => MatchDetailsPage(match: match),
+                          ),
+                        );
+                      }
+                    },
                     child: const Text(
                       'عرض التفاصيل',
                       style: TextStyle(
