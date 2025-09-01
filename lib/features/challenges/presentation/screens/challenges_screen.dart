@@ -1399,7 +1399,23 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                             Center(child: Text(_matchesError!)),
                             const SizedBox(height: 12),
                           ] else ...[
-                            for (final match in _matches.where((m) => m.team1 != null || m.team2 != null)) ...[
+                            for (final match in _matches.where((m) {
+                              // Show completed matches (both teams present) regardless of date
+                              final isCompleted = m.team1 != null && m.team2 != null;
+                              if (isCompleted) {
+                                print('🔍 DEBUG: Showing completed match ID: ${m.id}, Date: ${m.date}, Teams: ${m.team1?['name']} vs ${m.team2?['name']}');
+                                return true;
+                              }
+
+                              // For non-completed matches, only show if date is not in the past
+                              final shouldShow = !m.isPast;
+                              if (!shouldShow) {
+                                print('🚫 DEBUG: Hiding past non-completed match ID: ${m.id}, Date: ${m.date}, IsPast: ${m.isPast}');
+                              } else {
+                                print('✅ DEBUG: Showing future non-completed match ID: ${m.id}, Date: ${m.date}');
+                              }
+                              return shouldShow;
+                            })) ...[
                               _buildMatchCard(match),
                               const SizedBox(height: 12),
                             ],
