@@ -1625,6 +1625,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
 
     print('🚀 DEBUG: Sending join request to: $requestUrl');
     print('📤 DEBUG: Request body: {match_id: $matchId, invited_team_id: $invitedTeamId}');
+    print('🔑 DEBUG: Authorization header: Bearer ${Utils.token}');
 
     try {
       final response = await http.post(
@@ -1632,6 +1633,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${Utils.token}',
         },
         body: jsonEncode({
           'match_id': matchId,
