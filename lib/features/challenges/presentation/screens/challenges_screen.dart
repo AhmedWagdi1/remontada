@@ -603,14 +603,17 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 4),
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: const BoxDecoration(
-                          color: badgeColor,
-                          shape: BoxShape.circle,
+                      InkWell(
+                        onTap: () => _showJoinChallengeDialog(match),
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: const BoxDecoration(
+                            color: badgeColor,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.add, color: highlightColor),
                         ),
-                        child: const Icon(Icons.add, color: highlightColor),
                       ),
                     ],
                   ),
@@ -1430,5 +1433,214 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         ),
       ),
     );
+  }
+
+  /// Shows a custom dialog for joining a challenge
+  void _showJoinChallengeDialog(ChallengeMatch? match) {
+    if (_userTeams.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('يجب أن تكون عضواً في فريق للانضمام للتحدي'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    final team1Name = match?.team1?['name'] ?? 'الابطال';
+    final team1Logo = match?.team1?['logo_url']?.toString();
+    final playground = match?.playground ?? 'غير محدد';
+    final date = match?.date ?? 'غير محدد';
+    final startTime = match?.startTime ?? 'غير محدد';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            title: const Text(
+              'طلب الانضمام للتحدي',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF23425F),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Challenge details
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF8F9FA),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFE9ECEF)),
+                  ),
+                  child: Column(
+                    children: [
+                      const Text(
+                        'تفاصيل التحدي',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Color(0xFF23425F),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          const Icon(Icons.location_on, color: Color(0xFF6C757D), size: 20),
+                          const SizedBox(width: 8),
+                          Text('الملعب: $playground'),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const Icon(Icons.calendar_today, color: Color(0xFF6C757D), size: 20),
+                          const SizedBox(width: 8),
+                          Text('التاريخ: $date'),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const Icon(Icons.access_time, color: Color(0xFF6C757D), size: 20),
+                          const SizedBox(width: 8),
+                          Text('الوقت: $startTime'),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // Team information
+                const Text(
+                  'الفريق الخصم',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Color(0xFF23425F),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 25,
+                      backgroundImage: _getTeamLogoImage(team1Logo),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      team1Name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                // Confirmation message
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFF3CD),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFFFFEAA7)),
+                  ),
+                  child: const Text(
+                    'هل أنت متأكد من إرسال طلب الانضمام لهذا التحدي؟ سيتم إرسال الطلب إلى فريق الخصم للموافقة.',
+                    style: TextStyle(
+                      color: Color(0xFF856404),
+                      fontSize: 14,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text(
+                  'إلغاء',
+                  style: TextStyle(color: Color(0xFF6C757D)),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _sendJoinRequest(match);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF23425F),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text(
+                  'إرسال الطلب',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  /// Sends a join request to the challenge API
+  Future<void> _sendJoinRequest(ChallengeMatch? match) async {
+    if (match == null || _userTeams.isEmpty) return;
+
+    final matchId = match.id;
+    final invitedTeamId = _userTeams[0]['id'];
+
+    try {
+      final response = await http.post(
+        Uri.parse('${ConstKeys.baseUrl}/challenge/send-team-match-request'),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'match_id': matchId,
+          'invited_team_id': invitedTeamId,
+        }),
+      );
+
+      final responseData = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && responseData['status'] == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(responseData['message'] ?? 'تم إرسال طلب الانضمام بنجاح'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(responseData['message'] ?? 'فشل في إرسال طلب الانضمام'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 }
