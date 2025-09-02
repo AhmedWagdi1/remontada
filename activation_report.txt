@@ -1,0 +1,189 @@
+🔓 ACCOUNT ACTIVATION REPORT
+==================================================
+
+Total Accounts Processed: 30
+Successfully Activated: 27
+Failed to Activate: 3
+
+DETAILED RESULTS:
+--------------------------------------------------
+1. Ibrahim Al-Harbi
+   Phone: 0591010553
+   Email: ibrahim.al-harbi47@outlook.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+2. Mohammed Al-Harbi
+   Phone: 0532946702
+   Email: mohammed.al-harbi12@hotmail.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+3. Sultan Al-Saud
+   Phone: 0554779673
+   Email: sultan.al-saud11@yahoo.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+4. Omar Al-Thani
+   Phone: 0547080410
+   Email: omar.al-thani118@outlook.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+5. Mohammed Al-Mansouri
+   Phone: 0572316090
+   Email: mohammed.al-mansouri467@hotmail.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+6. Khaled Al-Thani
+   Phone: 0520302341
+   Email: khaled.al-thani461@gmail.com
+   Original Status: success
+   Activation Result: FAILED
+
+7. Ibrahim Al-Mansouri
+   Phone: 0548677232
+   Email: ibrahim.al-mansouri353@yahoo.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+8. Ali Al-Thani
+   Phone: 0554916459
+   Email: ali.al-thani230@gmail.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+9. Khaled Al-Thani
+   Phone: 0529372327
+   Email: khaled.al-thani938@outlook.com
+   Original Status: success
+   Activation Result: FAILED
+
+10. Youssef Al-Harbi
+   Phone: 0550432129
+   Email: youssef.al-harbi432@hotmail.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+11. Ali Al-Zahrani
+   Phone: 0509431838
+   Email: ali.al-zahrani656@yahoo.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+12. Hassan Al-Qasimi
+   Phone: 0512379740
+   Email: hassan.al-qasimi840@yahoo.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+13. Mohammed Al-Fahad
+   Phone: 0506178315
+   Email: mohammed.al-fahad46@yahoo.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+14. Youssef Al-Mansouri
+   Phone: 0536053159
+   Email: youssef.al-mansouri247@outlook.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+15. Sultan Al-Mahmoud
+   Phone: 0571922377
+   Email: sultan.al-mahmoud49@yahoo.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+16. Sultan Al-Qasimi
+   Phone: 0586758393
+   Email: sultan.al-qasimi123@gmail.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+17. Abdullah Al-Rashid
+   Phone: 0533320419
+   Email: abdullah.al-rashid106@hotmail.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+18. Khaled Al-Rashid
+   Phone: 0504711231
+   Email: khaled.al-rashid384@hotmail.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+19. Hassan Al-Naimi
+   Phone: 0541032847
+   Email: hassan.al-naimi122@outlook.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+20. Abdullah Al-Fahad
+   Phone: 0534680456
+   Email: abdullah.al-fahad416@gmail.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+21. Khaled Al-Harbi
+   Phone: 0597556218
+   Email: khaled.al-harbi235@hotmail.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+22. Ibrahim Al-Mansouri
+   Phone: 0553033375
+   Email: ibrahim.al-mansouri73@hotmail.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+23. Omar Al-Naimi
+   Phone: 0569307374
+   Email: omar.al-naimi557@gmail.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+24. Abdullah Al-Rashid
+   Phone: 0599926403
+   Email: abdullah.al-rashid5@outlook.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+25. Mohammed Al-Harbi
+   Phone: 0574559503
+   Email: mohammed.al-harbi72@gmail.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+26. Omar Al-Saud
+   Phone: 0558739608
+   Email: omar.al-saud906@outlook.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+27. Ahmed Al-Mansouri
+   Phone: 0549600033
+   Email: ahmed.al-mansouri0@yahoo.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+28. Ahmed Al-Rashid
+   Phone: 0537905956
+   Email: ahmed.al-rashid992@outlook.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+29. Ahmed Al-Thani
+   Phone: 0507867862
+   Email: ahmed.al-thani965@gmail.com
+   Original Status: redirect
+   Activation Result: SUCCESS
+
+30. Youssef Al-Mansouri
+   Phone: 0579683461
+   Email: youssef.al-mansouri662@hotmail.com
+   Original Status: success
+   Activation Result: FAILED
+
