@@ -26,6 +26,7 @@ import '../../../auth/domain/repository/auth_repository.dart';
 import '../widgets/clander_bottomsheet_body.dart';
 import '../widgets/homebody.dart';
 import 'supervisro_screen.dart';
+import '../widgets/challenge_notifications_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -452,6 +453,10 @@ class _HomeScreenState extends State<HomeScreen>
                                 ),
                               ],
                             ).SliverBox,
+                            10.ph.SliverBox,
+
+                            // Challenge Notifications Widget
+                            ChallengeNotificationsWidget().SliverBox,
                             10.ph.SliverBox,
 
                             [

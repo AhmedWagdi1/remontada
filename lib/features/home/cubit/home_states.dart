@@ -1,4 +1,5 @@
 import 'package:remontada/features/home/domain/model/home_model.dart';
+import 'package:remontada/features/home/domain/model/challenge_request_model.dart';
 import 'package:remontada/features/my_matches/domain/model/myMatches_Model.dart';
 
 abstract class HomeState {}
@@ -40,3 +41,15 @@ class GroupMatchesLoaded extends HomeState {
 }
 
 class GroupMatchesFailed extends HomeState {}
+
+class ChallengeRequestsLoading extends HomeState {}
+
+class ChallengeRequestsLoaded extends HomeState {
+  final List<ChallengeRequest> requests;
+  ChallengeRequestsLoaded(this.requests);
+}
+
+class ChallengeRequestsFailed extends HomeState {
+  final String error;
+  ChallengeRequestsFailed(this.error);
+}
