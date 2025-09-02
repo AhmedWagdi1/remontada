@@ -87,9 +87,7 @@ void main() async {
         const MaterialApp(home: ChallengesScreen(hasTeam: true)));
     await tester.pumpAndSettle();
     expect(find.text('challenge_create_challenge'), findsOneWidget);
-    expect(find.text('انضم للتحدي - اليوم 7:30 م'), findsOneWidget);
     expect(find.text('how_challenges_work_title'), findsOneWidget);
-    expect(find.text('تحدي مكتمل - اليوم 8:00 م'), findsOneWidget);
   });
 
   testWidgets('championship tab shows championship cards', (tester) async {

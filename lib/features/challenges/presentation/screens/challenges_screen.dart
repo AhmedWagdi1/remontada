@@ -368,15 +368,15 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     const badgeTextColor = Color(0xFF28A745);
     const buttonColor = Color(0xFF23425F);
 
-    final team1Name = match?.team1?['name'] ?? 'الفهود';
-    final team2Name = match?.team2?['name'] ?? 'ابطال الخرج';
+    final team1Name = match?.team1?['name'] ?? '';
+    final team2Name = match?.team2?['name'] ?? '';
     final dynamic team1LogoRaw = match?.team1?['logo_url'];
     final dynamic team2LogoRaw = match?.team2?['logo_url'];
     final String? team1Logo = team1LogoRaw is String ? team1LogoRaw : null;
     final String? team2Logo = team2LogoRaw is String ? team2LogoRaw : null;
     final badgeText = match != null
         ? (match.isPast ? 'تحدي مكتمل - ${match.playground} - ${match.date} ${match.startTime}' : 'تحدي جاهز - ${match.playground} - ${match.date} ${match.startTime}')
-        : 'تحدي مكتمل - اليوم 8:00 م';
+        : '';
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -518,9 +518,9 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     const badgeColor = Color(0xFFFFF3E0);
     const highlightColor = Color(0xFFF9A825);
 
-    final team1Name = match?.team1?['name'] ?? 'الابطال';
+    final team1Name = match?.team1?['name'] ?? '';
     final team1Logo = match?.team1?['logo_url']?.toString();
-    final badgeText = match != null ? 'انضم للتحدي - ${match.playground} - ${match.date} ${match.startTime}' : 'انضم للتحدي - اليوم 7:30 م';
+    final badgeText = match != null ? 'انضم للتحدي - ${match.playground} - ${match.date} ${match.startTime}' : '';
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -1037,6 +1037,9 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     final userTeamId = _userTeams.isNotEmpty
         ? (_userTeams.first['id'] as int)
         : null;
+    final userTeamName = _userTeams.isNotEmpty
+        ? (_userTeams.first['name'] as String?)
+        : null;
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Container(
@@ -1053,7 +1056,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
             Expanded(
               child: Center(
                 child: Text(
-                  'ريـمونتادا',
+                  userTeamName ?? 'ريـمونتادا',
                   style: const TextStyle(
                     color: darkBlue,
                     fontWeight: FontWeight.bold,
@@ -1400,6 +1403,12 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                             const SizedBox(height: 12),
                           ] else ...[
                             for (final match in _matches.where((m) {
+                              // Only show matches that have at least team1 data
+                              if (m.team1 == null) {
+                                print('🚫 DEBUG: Hiding match with null team1 ID: ${m.id}');
+                                return false;
+                              }
+                              
                               // Show completed matches (both teams present) regardless of date
                               final isCompleted = m.team1 != null && m.team2 != null;
                               if (isCompleted) {
@@ -1474,11 +1483,11 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     print('✅ DEBUG: User has ${_userTeams.length} team(s)');
     print('👤 DEBUG: Current user team: ${_userTeams[0]}');
 
-    final team1Name = match?.team1?['name'] ?? 'الابطال';
+    final team1Name = match?.team1?['name'] ?? '';
     final team1Logo = match?.team1?['logo_url']?.toString();
-    final playground = match?.playground ?? 'غير محدد';
-    final date = match?.date ?? 'غير محدد';
-    final startTime = match?.startTime ?? 'غير محدد';
+    final playground = match?.playground ?? '';
+    final date = match?.date ?? '';
+    final startTime = match?.startTime ?? '';
 
     print('🏟️ DEBUG: Challenge details - Playground: $playground, Date: $date, Time: $startTime');
     print('👥 DEBUG: Opposing team: $team1Name');
