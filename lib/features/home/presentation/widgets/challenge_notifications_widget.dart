@@ -196,7 +196,18 @@ class _ChallengeNotificationsWidgetState extends State<ChallengeNotificationsWid
   }
 
   void _navigateToChallenges() {
-    // Navigate to challenges screen
-    Navigator.pushNamed(context, Routes.challengesScreen);
+    final pendingRequests = _challengeRequests.where((request) => request.isPending).toList();
+
+    if (pendingRequests.length == 1) {
+      // If only one pending request, navigate directly to details
+      Navigator.pushNamed(
+        context,
+        Routes.challengeRequestDetailsScreen,
+        arguments: pendingRequests.first.id,
+      );
+    } else {
+      // If multiple or no pending requests, navigate to challenges screen
+      Navigator.pushNamed(context, Routes.challengesScreen);
+    }
   }
 }
