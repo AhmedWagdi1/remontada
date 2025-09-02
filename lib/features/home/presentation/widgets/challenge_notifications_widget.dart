@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/features/home/cubit/home_cubit.dart';
@@ -7,6 +8,7 @@ import 'package:remontada/features/home/cubit/home_states.dart';
 import 'package:remontada/features/home/domain/model/challenge_request_model.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/core/Router/Router.dart';
+import 'package:remontada/core/app_strings/locale_keys.dart';
 
 class ChallengeNotificationsWidget extends StatefulWidget {
   const ChallengeNotificationsWidget({super.key});
@@ -128,7 +130,7 @@ class _ChallengeNotificationsWidgetState extends State<ChallengeNotificationsWid
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomText(
-                  'Challenge Requests',
+                  LocaleKeys.challenge_requests.tr(),
                   style: TextStyle(
                     color: context.primaryColor,
                     fontSize: 16,
@@ -138,10 +140,10 @@ class _ChallengeNotificationsWidgetState extends State<ChallengeNotificationsWid
                 SizedBox(height: 4),
                 CustomText(
                   _isLoading
-                      ? 'Loading...'
+                      ? LocaleKeys.challenge_loading.tr()
                       : pendingCount == 1
-                          ? 'You have 1 pending challenge request'
-                          : 'You have $pendingCount pending challenge requests',
+                          ? LocaleKeys.challenge_single_request.tr()
+                          : LocaleKeys.challenge_multiple_requests.tr(args: [pendingCount.toString()]),
                   style: TextStyle(
                     color: LightThemeColors.secondaryText,
                     fontSize: 14,
@@ -150,7 +152,7 @@ class _ChallengeNotificationsWidgetState extends State<ChallengeNotificationsWid
                 if (_challengeRequests.isNotEmpty && !_isLoading) ...[
                   SizedBox(height: 8),
                   CustomText(
-                    'Latest: ${_getLatestRequestText()}',
+                    '${LocaleKeys.challenge_latest.tr()} ${_getLatestRequestText()}',
                     style: TextStyle(
                       color: LightThemeColors.surfaceSecondary,
                       fontSize: 12,
@@ -192,7 +194,7 @@ class _ChallengeNotificationsWidgetState extends State<ChallengeNotificationsWid
 
     if (latestRequest == null) return '';
 
-    return '${latestRequest.fromTeamName} challenged you ${latestRequest.formattedDate}';
+    return '${latestRequest.fromTeamName} ${LocaleKeys.challenge_challenged_you.tr(args: [latestRequest.formattedDate])}';
   }
 
   void _navigateToChallenges() {

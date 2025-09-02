@@ -351,4 +351,29 @@ abstract class LocaleKeys {
   static const create_match_submit = 'create_match.submit';
   static const create_match_success = 'create_match.success';
   static const create_match_error = 'create_match.error';
+
+  // start challenges
+  static const challenge_requests = 'challenges.requests';
+  static const challenge_request_details = 'challenges.request_details';
+  static const challenge_loading = 'challenges.loading';
+  static const challenge_single_request = 'challenges.single_request';
+  static const challenge_multiple_requests = 'challenges.multiple_requests';
+  static const challenge_latest = 'challenges.latest';
+  static const challenge_challenged_you = 'challenges.challenged_you';
+  static const challenge_teams = 'challenges.teams';
+  static const challenge_challenging_team = 'challenges.challenging_team';
+  static const challenge_your_team = 'challenges.your_team';
+  static const challenge_status = 'challenges.status';
+  static const challenge_pending = 'challenges.pending';
+  static const challenge_accepted = 'challenges.accepted';
+  static const challenge_rejected = 'challenges.rejected';
+  static const challenge_respond_to_challenge = 'challenges.respond_to_challenge';
+  static const challenge_accept = 'challenges.accept';
+  static const challenge_reject = 'challenges.reject';
+  static const challenge_response_sent = 'challenges.response_sent';
+  static const challenge_failed_to_load = 'challenges.failed_to_load';
+  static const challenge_error_loading = 'challenges.error_loading';
+  static const challenge_error_responding = 'challenges.error_responding';
+  static const challenge_retry = 'challenges.retry';
+  // end challenges
 }

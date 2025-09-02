@@ -178,7 +178,7 @@
   "challenge_match_id_required": "Match ID is required",
   "challenge_invalid_number": "Please enter a valid number",
   "challenge_no_matches_available": "No matches available for booking",
-  "challenge_error_loading_matches": "Error loading matches"
+  "challenge_error_loading_matches": "Error loading matches",
   "league_results": "League Results",
   "championships": "Championships",
   "under_construction": "🚧 Under Construction",
@@ -363,5 +363,29 @@
     "submit": "Create Match",
     "success": "Match request added successfully",
     "error": "Failed to add match"
+  },
+  "challenges": {
+    "requests": "Challenge Requests",
+    "request_details": "Challenge Request Details",
+    "loading": "Loading...",
+    "single_request": "You have 1 pending challenge request",
+    "multiple_requests": "You have {{count}} pending challenge requests",
+    "latest": "Latest:",
+    "challenged_you": "challenged you {{date}}",
+    "teams": "Teams",
+    "challenging_team": "Challenging Team",
+    "your_team": "Your Team",
+    "status": "Status:",
+    "pending": "Pending Response",
+    "accepted": "Accepted",
+    "rejected": "Rejected",
+    "respond_to_challenge": "Respond to Challenge",
+    "accept": "Accept Challenge",
+    "reject": "Reject Challenge",
+    "response_sent": "Response sent successfully",
+    "failed_to_load": "Failed to load challenge details",
+    "error_loading": "Error loading challenge details: {{error}}",
+    "error_responding": "Error responding to challenge: {{error}}",
+    "retry": "Retry"
   }
 }

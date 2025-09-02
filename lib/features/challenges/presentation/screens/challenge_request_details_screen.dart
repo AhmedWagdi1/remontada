@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/services/alerts.dart';
 import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/core/utils/utils.dart';
 import 'package:remontada/core/config/key.dart';
+import 'package:remontada/core/app_strings/locale_keys.dart';
 import '../../domain/model/challenge_request_details_model.dart';
 
 class ChallengeRequestDetailsScreen extends StatefulWidget {
@@ -65,15 +67,15 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
           }
         } else {
           setState(() => _isLoading = false);
-          _showError(data['message'] ?? 'Failed to load challenge details');
+          _showError(data['message'] ?? LocaleKeys.challenge_failed_to_load.tr());
         }
       } else {
         setState(() => _isLoading = false);
-        _showError('Failed to load challenge details');
+        _showError(LocaleKeys.challenge_failed_to_load.tr());
       }
     } catch (e) {
       setState(() => _isLoading = false);
-      _showError('Error loading challenge details: $e');
+      _showError(LocaleKeys.challenge_error_loading.tr(args: [e.toString()]));
     }
   }
 
@@ -99,14 +101,14 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
       final data = jsonDecode(response.body) as Map<String, dynamic>;
 
       if (data['status'] == true) {
-        _showSuccess(data['message'] ?? 'Response sent successfully');
+        _showSuccess(data['message'] ?? LocaleKeys.challenge_response_sent.tr());
         // Refresh the details to update the status
         await _loadChallengeDetails();
       } else {
-        _showError(data['message'] ?? 'Failed to respond to challenge');
+        _showError(data['message'] ?? LocaleKeys.challenge_error_responding.tr(args: ['']));
       }
     } catch (e) {
-      _showError('Error responding to challenge: $e');
+      _showError(LocaleKeys.challenge_error_responding.tr(args: [e.toString()]));
     } finally {
       setState(() => _isResponding = false);
     }
@@ -127,7 +129,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
       appBar: AppBar(
         backgroundColor: context.primaryColor,
         title: CustomText(
-          'Challenge Request Details',
+          LocaleKeys.challenge_request_details.tr(),
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -159,7 +161,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
           ),
           SizedBox(height: 16),
           CustomText(
-            'Failed to load challenge details',
+            LocaleKeys.challenge_failed_to_load.tr(),
             style: TextStyle(
               color: LightThemeColors.secondaryText,
               fontSize: 16,
@@ -168,7 +170,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
           SizedBox(height: 16),
           ElevatedButton(
             onPressed: _loadChallengeDetails,
-            child: CustomText('Retry'),
+            child: CustomText(LocaleKeys.challenge_retry.tr()),
           ),
         ],
       ),
@@ -274,7 +276,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomText(
-          'Teams',
+          LocaleKeys.challenge_teams.tr(),
           style: TextStyle(
             color: context.primaryColor,
             fontSize: 16,
@@ -285,7 +287,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
 
         // From Team
         _buildTeamCard(
-          'Challenging Team',
+          LocaleKeys.challenge_challenging_team.tr(),
           details.fromTeamName,
           details.fromTeam,
           Icons.arrow_upward,
@@ -296,7 +298,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
 
         // To Team
         _buildTeamCard(
-          'Your Team',
+          LocaleKeys.challenge_your_team.tr(),
           details.toTeamName,
           details.toTeam,
           Icons.arrow_downward,
@@ -357,15 +359,15 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
     switch (details.status.toLowerCase()) {
       case 'pending':
         statusColor = Colors.orange;
-        statusText = 'Pending Response';
+        statusText = LocaleKeys.challenge_pending.tr();
         break;
       case 'accepted':
         statusColor = Colors.green;
-        statusText = 'Accepted';
+        statusText = LocaleKeys.challenge_accepted.tr();
         break;
       case 'rejected':
         statusColor = Colors.red;
-        statusText = 'Rejected';
+        statusText = LocaleKeys.challenge_rejected.tr();
         break;
       default:
         statusColor = Colors.grey;
@@ -395,7 +397,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
           ),
           SizedBox(width: 12),
           CustomText(
-            'Status: $statusText',
+            '${LocaleKeys.challenge_status.tr()} $statusText',
             style: TextStyle(
               color: statusColor,
               fontSize: 16,
@@ -412,7 +414,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         CustomText(
-          'Respond to Challenge',
+          LocaleKeys.challenge_respond_to_challenge.tr(),
           style: TextStyle(
             color: context.primaryColor,
             fontSize: 16,
@@ -443,7 +445,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
                         ),
                       )
                     : CustomText(
-                        'Accept Challenge',
+                        LocaleKeys.challenge_accept.tr(),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -473,7 +475,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
                         ),
                       )
                     : CustomText(
-                        'Reject Challenge',
+                        LocaleKeys.challenge_reject.tr(),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,

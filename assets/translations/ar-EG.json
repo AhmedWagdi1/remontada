@@ -363,5 +363,29 @@
     "submit": "إنشاء المباراة",
     "success": "تم اضافة الطلب بنجاح",
     "error": "فشل في اضافة المباراة"
+  },
+  "challenges": {
+    "requests": "طلبات التحدي",
+    "request_details": "تفاصيل طلب التحدي",
+    "loading": "جارٍ التحميل...",
+    "single_request": "لديك طلب تحدي واحد معلق",
+    "multiple_requests": "لديك {{count}} طلب تحدي معلق",
+    "latest": "الأحدث:",
+    "challenged_you": "تحداك {{date}}",
+    "teams": "الفرق",
+    "challenging_team": "الفريق المتحدي",
+    "your_team": "فريقك",
+    "status": "الحالة:",
+    "pending": "في انتظار الرد",
+    "accepted": "مقبول",
+    "rejected": "مرفوض",
+    "respond_to_challenge": "الرد على التحدي",
+    "accept": "قبول التحدي",
+    "reject": "رفض التحدي",
+    "response_sent": "تم إرسال الرد بنجاح",
+    "failed_to_load": "فشل في تحميل تفاصيل التحدي",
+    "error_loading": "خطأ في تحميل تفاصيل التحدي: {{error}}",
+    "error_responding": "خطأ في الرد على التحدي: {{error}}",
+    "retry": "إعادة المحاولة"
   }
 }
