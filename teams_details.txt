@@ -1,0 +1,61 @@
+🏆 DEMO TEAMS CREATION REPORT
+==================================================
+
+TEAM 1: Demo Team Alpha
+Team ID: 42
+Total Members: 13
+
+👑 CAPTAIN:
+   Phone: 0591010553
+   Name: Ibrahim Al-Harbi
+   Email: ibrahim.al-harbi47@outlook.com
+
+🤝 SUB-LEADER:
+   Phone: 0532946702
+   Name: Mohammed Al-Harbi
+   Email: mohammed.al-harbi12@hotmail.com
+
+👥 MEMBERS (11):
+   1. Phone: 0554779673 | Name: Sultan Al-Saud | Email: sultan.al-saud11@yahoo.com
+   2. Phone: 0547080410 | Name: Omar Al-Thani | Email: omar.al-thani118@outlook.com
+   3. Phone: 0572316090 | Name: Mohammed Al-Mansouri | Email: mohammed.al-mansouri467@hotmail.com
+   4. Phone: 0520302341 | Name: Khaled Al-Thani | Email: khaled.al-thani461@gmail.com
+   5. Phone: 0548677232 | Name: Ibrahim Al-Mansouri | Email: ibrahim.al-mansouri353@yahoo.com
+   6. Phone: 0554916459 | Name: Ali Al-Thani | Email: ali.al-thani230@gmail.com
+   7. Phone: 0529372327 | Name: Khaled Al-Thani | Email: khaled.al-thani938@outlook.com
+   8. Phone: 0550432129 | Name: Youssef Al-Harbi | Email: youssef.al-harbi432@hotmail.com
+   9. Phone: 0509431838 | Name: Ali Al-Zahrani | Email: ali.al-zahrani656@yahoo.com
+   10. Phone: 0512379740 | Name: Hassan Al-Qasimi | Email: hassan.al-qasimi840@yahoo.com
+   11. Phone: 0506178315 | Name: Mohammed Al-Fahad | Email: mohammed.al-fahad46@yahoo.com
+
+--------------------------------------------------
+
+TEAM 2: Demo Team Beta
+Team ID: 43
+Total Members: 13
+
+👑 CAPTAIN:
+   Phone: 0536053159
+   Name: Youssef Al-Mansouri
+   Email: youssef.al-mansouri247@outlook.com
+
+🤝 SUB-LEADER:
+   Phone: 0571922377
+   Name: Sultan Al-Mahmoud
+   Email: sultan.al-mahmoud49@yahoo.com
+
+👥 MEMBERS (11):
+   1. Phone: 0586758393 | Name: Sultan Al-Qasimi | Email: sultan.al-qasimi123@gmail.com
+   2. Phone: 0533320419 | Name: Abdullah Al-Rashid | Email: abdullah.al-rashid106@hotmail.com
+   3. Phone: 0504711231 | Name: Khaled Al-Rashid | Email: khaled.al-rashid384@hotmail.com
+   4. Phone: 0541032847 | Name: Hassan Al-Naimi | Email: hassan.al-naimi122@outlook.com
+   5. Phone: 0534680456 | Name: Abdullah Al-Fahad | Email: abdullah.al-fahad416@gmail.com
+   6. Phone: 0597556218 | Name: Khaled Al-Harbi | Email: khaled.al-harbi235@hotmail.com
+   7. Phone: 0553033375 | Name: Ibrahim Al-Mansouri | Email: ibrahim.al-mansouri73@hotmail.com
+   8. Phone: 0569307374 | Name: Omar Al-Naimi | Email: omar.al-naimi557@gmail.com
+   9. Phone: 0599926403 | Name: Abdullah Al-Rashid | Email: abdullah.al-rashid5@outlook.com
+   10. Phone: 0574559503 | Name: Mohammed Al-Harbi | Email: mohammed.al-harbi72@gmail.com
+   11. Phone: 0558739608 | Name: Omar Al-Saud | Email: omar.al-saud906@outlook.com
+
+--------------------------------------------------
+
