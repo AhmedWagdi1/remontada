@@ -8,7 +8,7 @@ import 'package:remontada/core/theme/light_theme.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/core/utils/utils.dart';
 import 'package:remontada/core/config/key.dart';
-import 'package:remontada/core/app_strings/locale_keys.dart';
+import 'package:remontada/core/translations/locale_keys.g.dart';
 import '../../domain/model/challenge_request_details_model.dart';
 
 class ChallengeRequestDetailsScreen extends StatefulWidget {
@@ -67,15 +67,15 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
           }
         } else {
           setState(() => _isLoading = false);
-          _showError(data['message'] ?? LocaleKeys.challenge_failed_to_load.tr());
+          _showError(data['message'] ?? LocaleKeys.challenges_failed_to_load.tr());
         }
       } else {
         setState(() => _isLoading = false);
-        _showError(LocaleKeys.challenge_failed_to_load.tr());
+        _showError(LocaleKeys.challenges_failed_to_load.tr());
       }
     } catch (e) {
       setState(() => _isLoading = false);
-      _showError(LocaleKeys.challenge_error_loading.tr(args: [e.toString()]));
+      _showError(LocaleKeys.challenges_error_loading.tr(args: [e.toString()]));
     }
   }
 
@@ -101,14 +101,14 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
       final data = jsonDecode(response.body) as Map<String, dynamic>;
 
       if (data['status'] == true) {
-        _showSuccess(data['message'] ?? LocaleKeys.challenge_response_sent.tr());
+        _showSuccess(data['message'] ?? LocaleKeys.challenges_response_sent.tr());
         // Refresh the details to update the status
         await _loadChallengeDetails();
       } else {
-        _showError(data['message'] ?? LocaleKeys.challenge_error_responding.tr(args: ['']));
+        _showError(data['message'] ?? LocaleKeys.challenges_error_responding.tr(args: ['']));
       }
     } catch (e) {
-      _showError(LocaleKeys.challenge_error_responding.tr(args: [e.toString()]));
+      _showError(LocaleKeys.challenges_error_responding.tr(args: [e.toString()]));
     } finally {
       setState(() => _isResponding = false);
     }
@@ -129,7 +129,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
       appBar: AppBar(
         backgroundColor: context.primaryColor,
         title: CustomText(
-          LocaleKeys.challenge_request_details.tr(),
+          LocaleKeys.challenges_request_details.tr(),
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -161,7 +161,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
           ),
           SizedBox(height: 16),
           CustomText(
-            LocaleKeys.challenge_failed_to_load.tr(),
+            LocaleKeys.challenges_failed_to_load.tr(),
             style: TextStyle(
               color: LightThemeColors.secondaryText,
               fontSize: 16,
@@ -170,7 +170,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
           SizedBox(height: 16),
           ElevatedButton(
             onPressed: _loadChallengeDetails,
-            child: CustomText(LocaleKeys.challenge_retry.tr()),
+            child: CustomText(LocaleKeys.challenges_retry.tr()),
           ),
         ],
       ),
@@ -276,7 +276,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomText(
-          LocaleKeys.challenge_teams.tr(),
+          LocaleKeys.challenges_teams.tr(),
           style: TextStyle(
             color: context.primaryColor,
             fontSize: 16,
@@ -287,7 +287,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
 
         // From Team
         _buildTeamCard(
-          LocaleKeys.challenge_challenging_team.tr(),
+          LocaleKeys.challenges_challenging_team.tr(),
           details.fromTeamName,
           details.fromTeam,
           Icons.arrow_upward,
@@ -298,7 +298,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
 
         // To Team
         _buildTeamCard(
-          LocaleKeys.challenge_your_team.tr(),
+          LocaleKeys.challenges_your_team.tr(),
           details.toTeamName,
           details.toTeam,
           Icons.arrow_downward,
@@ -319,34 +319,102 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
           width: 1,
         ),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: iconColor, size: 20),
-          SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomText(
-                  label,
-                  style: TextStyle(
-                    color: LightThemeColors.secondaryText,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
+          Row(
+            children: [
+              Icon(icon, color: iconColor, size: 20),
+              SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomText(
+                      label,
+                      style: TextStyle(
+                        color: LightThemeColors.secondaryText,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    CustomText(
+                      teamName,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 4),
-                CustomText(
-                  teamName,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
+          if (teamData != null) ...[
+            SizedBox(height: 12),
+            Divider(height: 1, color: Colors.grey.shade300),
+            SizedBox(height: 8),
+
+            // Team Leader
+            if (teamData['leader'] != null) ...[
+              Row(
+                children: [
+                  Icon(Icons.person, color: LightThemeColors.secondaryText, size: 16),
+                  SizedBox(width: 8),
+                  CustomText(
+                    '${LocaleKeys.challenges_team_leader.tr()}: ${(teamData['leader'] as Map<String, dynamic>)['name'] ?? 'N/A'}',
+                    style: TextStyle(
+                      color: LightThemeColors.secondaryText,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 4),
+            ],
+
+            // Team Members Count
+            if (teamData['members_count'] != null) ...[
+              Row(
+                children: [
+                  Icon(Icons.group, color: LightThemeColors.secondaryText, size: 16),
+                  SizedBox(width: 8),
+                  CustomText(
+                    '${LocaleKeys.challenges_team_members.tr()}: ${teamData['members_count']}',
+                    style: TextStyle(
+                      color: LightThemeColors.secondaryText,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 4),
+            ],
+
+            // Team Bio
+            if (teamData['bio'] != null && teamData['bio'].toString().isNotEmpty) ...[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.info_outline, color: LightThemeColors.secondaryText, size: 16),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: CustomText(
+                      '${LocaleKeys.challenges_team_bio.tr()}: ${teamData['bio']}',
+                      style: TextStyle(
+                        color: LightThemeColors.secondaryText,
+                        fontSize: 14,
+                      ),
+                      maxLine: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ],
         ],
       ),
     );
@@ -359,15 +427,15 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
     switch (details.status.toLowerCase()) {
       case 'pending':
         statusColor = Colors.orange;
-        statusText = LocaleKeys.challenge_pending.tr();
+        statusText = LocaleKeys.challenges_pending.tr();
         break;
       case 'accepted':
         statusColor = Colors.green;
-        statusText = LocaleKeys.challenge_accepted.tr();
+        statusText = LocaleKeys.challenges_accepted.tr();
         break;
       case 'rejected':
         statusColor = Colors.red;
-        statusText = LocaleKeys.challenge_rejected.tr();
+        statusText = LocaleKeys.challenges_rejected.tr();
         break;
       default:
         statusColor = Colors.grey;
@@ -397,7 +465,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
           ),
           SizedBox(width: 12),
           CustomText(
-            '${LocaleKeys.challenge_status.tr()} $statusText',
+            '${LocaleKeys.challenges_status.tr()} $statusText',
             style: TextStyle(
               color: statusColor,
               fontSize: 16,
@@ -414,7 +482,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         CustomText(
-          LocaleKeys.challenge_respond_to_challenge.tr(),
+          LocaleKeys.challenges_respond_to_challenge.tr(),
           style: TextStyle(
             color: context.primaryColor,
             fontSize: 16,
@@ -445,7 +513,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
                         ),
                       )
                     : CustomText(
-                        LocaleKeys.challenge_accept.tr(),
+                        LocaleKeys.challenges_accept.tr(),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -475,7 +543,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
                         ),
                       )
                     : CustomText(
-                        LocaleKeys.challenge_reject.tr(),
+                        LocaleKeys.challenges_reject.tr(),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
