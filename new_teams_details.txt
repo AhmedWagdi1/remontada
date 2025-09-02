@@ -1,0 +1,60 @@
+🏆 NEW DEMO TEAMS CREATION REPORT
+==================================
+
+TEAM 1: Test Team Alpha 1756841948075
+Team ID: 46
+Total Members: 13
+
+👑 CAPTAIN:
+   Phone: 0554669853
+   Name: Ahmed Al-Khalidi
+   Email: ahmed.al-khalidi7906@hotmail.com
+
+🤝 SUB-LEADER:
+   Phone: 0533108141
+   Name: Omar Al-Fahad
+   Email: omar.al-fahad9856@gmail.com
+
+👥 MEMBERS (11):
+   1. Phone: 0539742858 | Name: Bandar Al-Muqrin | Email: bandar.al-muqrin5976@yahoo.com
+   2. Phone: 0596594144 | Name: Saad Al-Thani | Email: saad.al-thani9054@yahoo.com
+   3. Phone: 0559133638 | Name: Nasser Al-Rashid | Email: nasser.al-rashid6677@gmail.com
+   4. Phone: 0570913364 | Name: Sultan Al-Fahad | Email: sultan.al-fahad8759@hotmail.com
+   5. Phone: 0599940699 | Name: Hassan Al-Fahad | Email: hassan.al-fahad7406@outlook.com
+   6. Phone: 0563055014 | Name: Ibrahim Al-Qasimi | Email: ibrahim.al-qasimi8123@hotmail.com
+   7. Phone: 0578296502 | Name: Nasser Al-Thani | Email: nasser.al-thani7186@hotmail.com
+   8. Phone: 0554795200 | Name: Saad Al-Thani | Email: saad.al-thani640@hotmail.com
+   9. Phone: 0513015186 | Name: Bandar Al-Thani | Email: bandar.al-thani6581@outlook.com
+   10. Phone: 0553520987 | Name: Ali Al-Saud | Email: ali.al-saud9937@yahoo.com
+   11. Phone: 0561436236 | Name: Bandar Al-Sharif | Email: bandar.al-sharif3871@hotmail.com
+
+--------------------------------------------------
+
+TEAM 2: Test Team Beta 1756841948076
+Team ID: 47
+Total Members: 12
+
+👑 CAPTAIN:
+   Phone: 0518784557
+   Name: Saad Al-Naimi
+   Email: saad.al-naimi8501@gmail.com
+
+🤝 SUB-LEADER:
+   Phone: 0592434292
+   Name: Sultan Al-Rashid
+   Email: sultan.al-rashid2807@hotmail.com
+
+👥 MEMBERS (10):
+   1. Phone: 0566301553 | Name: Khaled Al-Saud | Email: khaled.al-saud8200@outlook.com
+   2. Phone: 0509209921 | Name: Youssef Al-Zahrani | Email: youssef.al-zahrani9558@hotmail.com
+   3. Phone: 0569665060 | Name: Mohammed Al-Saud | Email: mohammed.al-saud7330@gmail.com
+   4. Phone: 0542143738 | Name: Mohammed Al-Thani | Email: mohammed.al-thani9377@hotmail.com
+   5. Phone: 0541665184 | Name: Youssef Al-Zamil | Email: youssef.al-zamil8740@yahoo.com
+   6. Phone: 0591589931 | Name: Fahad Al-Saud | Email: fahad.al-saud2606@gmail.com
+   7. Phone: 0559107850 | Name: Ibrahim Al-Thani | Email: ibrahim.al-thani1924@hotmail.com
+   8. Phone: 0508086344 | Name: Nasser Al-Rashid | Email: nasser.al-rashid6647@yahoo.com
+   9. Phone: 0562880794 | Name: Ibrahim Al-Fahad | Email: ibrahim.al-fahad1083@hotmail.com
+   10. Phone: 0557151629 | Name: Saad Al-Ghamdi | Email: saad.al-ghamdi1413@yahoo.com
+
+--------------------------------------------------
+
