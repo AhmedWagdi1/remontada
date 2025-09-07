@@ -15,6 +15,14 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
+## Flutter Version (FVM)
+
+- This project uses FVM to manage the Flutter SDK.
+- Use the latest stable channel for this app: `fvm use stable`.
+- Run Flutter commands via FVM to ensure the correct SDK is used, for example:
+  - `fvm flutter pub get`
+  - `fvm flutter run`
+
 ### Example: `/team/user-teams` Response
 
 The challenges screen determines whether to show team management widgets based
