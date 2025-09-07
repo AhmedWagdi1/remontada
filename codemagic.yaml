@@ -1,0 +1,73 @@
+workflows:
+  ios_testflight:
+    name: iOS TestFlight (automatic signing)
+    max_build_duration: 120
+    instance_type: mac_mini_m1
+    environment:
+      flutter: stable
+      vars:
+        # REQUIRED: Replace with your app's bundle identifier
+        BUNDLE_ID: com.example.remontada
+
+        # REQUIRED: Provide these securely in Codemagic UI → Environment variables
+        # Add them as Secure variables with the exact names below (no quotes needed):
+        # - APP_STORE_CONNECT_ISSUER_ID
+        # - APP_STORE_CONNECT_KEY_IDENTIFIER
+        # - APP_STORE_CONNECT_PRIVATE_KEY  (paste full .p8 contents)
+        APP_STORE_CONNECT_ISSUER_ID: ""
+        APP_STORE_CONNECT_KEY_IDENTIFIER: ""
+        APP_STORE_CONNECT_PRIVATE_KEY: ""
+
+    triggering:
+      events:
+        - push
+        - manual
+      branch_patterns:
+        - pattern: main
+          include: true
+          source: true
+
+    scripts:
+      - name: Show Flutter & Xcode versions
+        script: |
+          flutter --version
+          xcodebuild -version
+
+      - name: Install dependencies
+        script: |
+          flutter pub get
+
+      - name: Prepare automatic code signing (fetch/create certs & profiles)
+        script: |
+          # Fetch or create signing assets for App Store distribution
+          app-store-connect fetch-signing-files \
+            --type IOS_APP_STORE \
+            --bundle-id "$BUNDLE_ID" \
+            --create
+
+          # Apply the fetched provisioning profiles to the Xcode project
+          xcode-project use-profiles
+
+      - name: Build iOS IPA (Release)
+        script: |
+          # Build a signed .ipa using Flutter
+          flutter build ipa --release
+
+      - name: Verify build artifacts
+        script: |
+          ls -la build/ios/ipa || true
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - build/ios/iphoneos/*.app
+
+    publishing:
+      app_store_connect:
+        api_key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        private_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        submit_to_testflight: true
+        # Optional: list of TestFlight beta groups to auto-assign
+        # beta_groups:
+        #   - Internal Testers
+
