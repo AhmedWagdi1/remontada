@@ -64,10 +64,10 @@ workflows:
 
     publishing:
       app_store_connect:
-  api_key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-  issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-  private_key: $APP_STORE_CONNECT_PRIVATE_KEY
-  submit_to_testflight: true
+        api_key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        private_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        submit_to_testflight: true
         # Optional: list of TestFlight beta groups to auto-assign
         # beta_groups:
         #   - Internal Testers
