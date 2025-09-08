@@ -44,6 +44,7 @@ workflows:
           app-store-connect fetch-signing-files \
             --type IOS_APP_STORE \
             --bundle-id "$BUNDLE_ID" \
+            --team-id "8Q82C9364G" \
             --create
 
           # Apply the fetched provisioning profiles to the Xcode project
