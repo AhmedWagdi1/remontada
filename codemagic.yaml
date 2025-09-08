@@ -7,7 +7,7 @@ workflows:
       flutter: stable
       vars:
         # REQUIRED: Replace with your app's bundle identifier
-        BUNDLE_ID: com.example.remontada
+        BUNDLE_ID: com.masader.remontada
 
         # REQUIRED: Provide these securely in Codemagic UI → Environment variables
         # Add them as Secure variables with the exact names below (no quotes needed):
@@ -15,7 +15,7 @@ workflows:
         # - APP_STORE_CONNECT_KEY_IDENTIFIER
         # - APP_STORE_CONNECT_PRIVATE_KEY  (paste full .p8 contents)
         APP_STORE_CONNECT_ISSUER_ID: ""
-        APP_STORE_CONNECT_KEY_IDENTIFIER: ""
+        APP_STORE_CONNECT_KEY_IDENTIFIER: "ZPPXRWNQ3C"
         APP_STORE_CONNECT_PRIVATE_KEY: ""
 
     triggering:
