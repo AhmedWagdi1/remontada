@@ -9,6 +9,17 @@ workflows:
         # REQUIRED: Replace with your app's bundle identifier
         BUNDLE_ID: com.masader.remontada
 
+        # App Store Connect credentials (required by Codemagic validator)
+        APP_STORE_CONNECT_ISSUER_ID: "0f0920a6-19c1-4f96-a66d-e3b868fcdfde"
+        APP_STORE_CONNECT_KEY_IDENTIFIER: "ZPPXRWNQ3C"
+        APP_STORE_CONNECT_PRIVATE_KEY: |-
+          -----BEGIN PRIVATE KEY-----
+          MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgPpFpFRLKnr/BPhBN
+          O/5Ngv1IJ4LkulhVhMFuVQxRf0OgCgYIKoZIzj0DAQehRANCAATDS8h9azww64Ao
+          wKJMRFkZIkLOarTpP4n96N3T+39mzS8jPHYuwO+6Nif58oVSTxRY66seoiP+6P3r
+          Av86xywb
+          -----END PRIVATE KEY-----
+
     triggering:
       events:
         - push
