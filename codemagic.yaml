@@ -64,15 +64,15 @@ workflows:
 
     publishing:
       app_store_connect:
-        api_key_id: "ZPPXRWNQ3C"
-        issuer_id: "0f0920a6-19c1-4f96-a66d-e3b868fcdfde"
-        private_key: |
+        api_key: |
           -----BEGIN PRIVATE KEY-----
           MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgPpFpFRLKnr/BPhBN
           O/5Ngv1IJ4LkulhVhMFuVQxRf0OgCgYIKoZIzj0DAQehRANCAATDS8h9azww64Ao
           wKJMRFkZIkLOarTpP4n96N3T+39mzS8jPHYuwO+6Nif58oVSTxRY66seoiP+6P3r
           Av86xywb
           -----END PRIVATE KEY-----
+        key_id: "ZPPXRWNQ3C"
+        issuer_id: "0f0920a6-19c1-4f96-a66d-e3b868fcdfde"
         submit_to_testflight: true
         # Optional: list of TestFlight beta groups to auto-assign
         # beta_groups:
