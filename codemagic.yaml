@@ -51,7 +51,7 @@ workflows:
           # Apply the fetched provisioning profiles to the Xcode project
           xcode-project use-profiles
 
-      - name: Debug: list provisioning profiles & signing identities
+  - name: "Debug: list provisioning profiles & signing identities"
         script: |
           echo "=== Provisioning profiles directory ==="
           ls -la /Users/builder/Library/MobileDevice/Provisioning\ Profiles || true
