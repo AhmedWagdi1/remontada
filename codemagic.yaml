@@ -45,10 +45,25 @@ workflows:
             --type IOS_APP_STORE \
             --bundle-id "$BUNDLE_ID" \
             --team-id "S6K828Z4DG" \
-            --create
+            --create \
+            --verbose
 
           # Apply the fetched provisioning profiles to the Xcode project
           xcode-project use-profiles
+
+      - name: Debug: list provisioning profiles & signing identities
+        script: |
+          echo "=== Provisioning profiles directory ==="
+          ls -la /Users/builder/Library/MobileDevice/Provisioning\ Profiles || true
+
+          echo "=== Profiles containing bundle id (${BUNDLE_ID}) ==="
+          grep -R --line-number "${BUNDLE_ID}" /Users/builder/Library/MobileDevice/Provisioning\ Profiles || true
+
+          echo "=== Installed code signing identities ==="
+          security find-identity -v -p codesigning || true
+
+          echo "=== Xcode build settings (Release) relevant to signing ==="
+          xcodebuild -showBuildSettings -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release | egrep 'CODE_SIGN_IDENTITY|PROVISIONING_PROFILE|DEVELOPMENT_TEAM' || true
 
       - name: Build iOS IPA (Release)
         script: |
