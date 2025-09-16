@@ -128,7 +128,9 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
       final subName = _assistantNameController.text.trim();
       final subPhone = _assistantPhoneController.text.trim();
       final teamName = _teamNameController.text.trim();
+
       // --- VALIDATION & CHECKS FIRST ---
+      // 1. Local validation
       if (teamName.isEmpty) {
         await _showError('يرجى إدخال اسم الفريق.');
         setState(() => _isSubmitting = false);
@@ -160,7 +162,9 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
         setState(() => _isSubmitting = false);
         return;
       }
-      // 1. Check team name uniqueness
+
+      // 2. Remote checks (all before team creation)
+      // a. Check team name uniqueness
       final allTeamsRes = await http.get(
         Uri.parse('${ConstKeys.baseUrl}/team/all-active'),
         headers: {
@@ -175,13 +179,14 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
         return;
       }
       final List<dynamic> teams = allTeamsData['data'] ?? [];
-  final teamNames = teams.map((t) => t['name'].toString().trim()).toSet();
+      final teamNames = teams.map((t) => t['name'].toString().trim()).toSet();
       if (teamNames.contains(teamName)) {
         await _showError('اسم الفريق مستخدم بالفعل. يرجى اختيار اسم آخر.');
         setState(() => _isSubmitting = false);
         return;
       }
-      // 2. Check subleader is not in other teams (captain can create and join his own team)
+
+      // b. Check subleader is not in other teams
       bool subleaderInTeam = false;
       for (final team in teams) {
         final teamId = team['id'];
@@ -205,7 +210,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
         setState(() => _isSubmitting = false);
         return;
       }
-      // 3. Check both phones are registered
+
+      // c. Check both phones are registered
       Future<bool> isPhoneRegistered(String phone) async {
         final loginRes = await http.post(
           Uri.parse('${ConstKeys.baseUrl}/login'),
@@ -229,8 +235,9 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
         setState(() => _isSubmitting = false);
         return;
       }
+
       // --- END VALIDATION & CHECKS ---
-      // Step 1: create the team
+      // All checks passed, now create the team
       final request = http.MultipartRequest(
         'POST',
         Uri.parse('${ConstKeys.baseUrl}/team/store'),
