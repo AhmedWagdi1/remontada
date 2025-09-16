@@ -13,6 +13,8 @@ import '../../../chat/cubit/chat_cubit.dart';
 import '../../../chat/cubit/chat_states.dart';
 import '../../../chat/domain/repository/chat_repository.dart';
 import '../../../chat/domain/request/send_message_request.dart';
+import 'package:remontada/features/home/presentation/widgets/challenge_notifications_widget.dart';
+import 'package:remontada/features/home/cubit/home_cubit.dart';
 
   late TabController _tabController;
 
@@ -229,6 +231,11 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            BlocProvider(
+              create: (context) => HomeCubit(),
+              child: const ChallengeNotificationsWidget(),
+            ),
+            SizedBox(height: 16),
             _TopBar(
               teamName: _teamData?['name'] as String?,
               logoUrl: _teamData?['logo_url'] as String?,

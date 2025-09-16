@@ -455,9 +455,7 @@ class _HomeScreenState extends State<HomeScreen>
                             ).SliverBox,
                             10.ph.SliverBox,
 
-                            // Challenge Notifications Widget
-                            ChallengeNotificationsWidget().SliverBox,
-                            10.ph.SliverBox,
+                            // ...existing code...
 
                             [
                               Homebody(
