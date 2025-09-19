@@ -1642,9 +1642,9 @@ class _JoinRequestsTabState extends State<_JoinRequestsTab> {
                             ),
                           ],
                         ),
-                        child: const Text(
-                          'الميزة لاتزال تحت الانشاء',
-                          style: TextStyle(
+                        child: Text(
+                          LocaleKeys.coming_soon.tr(),
+                          style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
@@ -1873,9 +1873,9 @@ class _TransferRequestsTab extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: const Text(
-                      'الميزة لاتزال تحت الانشاء',
-                      style: TextStyle(
+                    child: Text(
+                      LocaleKeys.coming_soon.tr(),
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 14,

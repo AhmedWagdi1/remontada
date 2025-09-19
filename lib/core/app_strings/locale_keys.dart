@@ -238,6 +238,7 @@ abstract class LocaleKeys {
   static const rounds_count = 'rounds_count';
   static const available_to_join = 'available_to_join';
   static const under_construction = 'under_construction';
+  static const coming_soon = 'coming_soon';
   static const how_challenges_work_title = 'how_challenges_work_title';
   static const how_challenges_step1_title = 'how_challenges_step1_title';
   static const how_challenges_step1_subtitle = 'how_challenges_step1_subtitle';
