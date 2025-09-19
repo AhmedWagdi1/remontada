@@ -2236,6 +2236,8 @@ class _ChatTabState extends State<_ChatTab> {
                     // log the returned message object (toJson)
                     debugPrint('SendMessageCubit: success - duration: $duration');
                     debugPrint('SendMessageCubit: response message: ${state.message.toJson()}');
+                    // Refresh messages after successful send
+                    _messagesCubit.loadMessages(refresh: true);
                   } catch (e) {
                     debugPrint('SendMessageCubit: success - but failed to dump message: $e');
                   }
@@ -2294,19 +2296,11 @@ class _ChatTabState extends State<_ChatTab> {
                 child: Container(
                   width: 48,
                   height: 48,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF23425F),
+                  decoration: BoxDecoration(
+                    color: isLoading ? Colors.grey : const Color(0xFF23425F),
                     shape: BoxShape.circle,
                   ),
-                  child: isLoading
-                      ? const Padding(
-                          padding: EdgeInsets.all(12),
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
-                        )
-                      : const Icon(Icons.send, color: Colors.white, size: 20),
+                  child: const Icon(Icons.send, color: Colors.white, size: 20),
                 ),
               );
             },
