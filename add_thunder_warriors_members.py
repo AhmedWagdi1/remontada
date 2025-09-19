@@ -1,251 +1,231 @@
 #!/usr/bin/env python3
 """
-add_thunder_warriors_members.py
+Script to add members to TEAM #1: THUNDER WARRIORS using Remuntada API
+Uses /team/add-member and /team/member-role endpoints
 
-Simple script to add missing members to Team #1 (THUNDER WARRIORS) using the test accounts
-provided in REMUNTADA_COMPLETE_TEST_DATA.txt.
-
-It logs in the leader (0536925874), activates the account (code=11111), then calls
-`/team/add-member` for each member phone number. If add-member fails with a permission
-or not-found error, it attempts `/team/member-role` as a fallback.
-
-Usage: python3 add_thunder_warriors_members.py [--dry-run] [--base-url URL]
-
-Note: This script is a lightweight helper for testing. It assumes the test API behaves
-like the sample in REMUNTADA_COMPLETE_TEST_DATA.txt and returns JSON responses with
-`status`/`message` and `data` fields.
+This script adds test members to the Thunder Warriors team (Team ID: 59)
 """
 
-import argparse
-import sys
-import time
-from typing import List
-
 import requests
+import json
+import time
+from typing import Dict, List, Optional
 
-
-LEADER_MOBILE = "0536925874"
-LEADER_VERIFY_CODE = "11111"
-LEADER_UUID = "550e8400-e29b-41d4-a716-446655440000"
-DEVICE_TOKEN = "dGhpc19pc19hX2RldmljZV90b2tlbl9leGFtcGxl"
-DEVICE_TYPE = "ios"
-TEAM_ID = 59
-
-# Default regular members for TEAM #1 (fallback)
-DEFAULT_THUNDER_WARRIORS_MEMBERS = [
-    "0536925877",
-    "0536925878",
-    "0536925879",
-    "0536925880",
-    "0536925881",
-    "0536925883",
-    "0536925884",
-    "0536925889",
-    "0536925890",
-    "0536925893",
-]
-
-
-def parse_members_from_testfile(path: str) -> List[str]:
-    """Parse REMUNTADA_COMPLETE_TEST_DATA.txt to extract Team #1 regular member mobiles.
-
-    Looks for the section labeled 'TEAM #1: THUNDER WARRIORS' and then the 'REGULAR MEMBERS'
-    list; extracts phone-like tokens (05xxxxxxxx).
-    """
-    members = []
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            text = f.read()
-    except Exception:
-        return []
-
-    # Find the TEAM #1 section
-    marker = "TEAM #1: THUNDER WARRIORS"
-    idx = text.find(marker)
-    if idx == -1:
-        return []
-
-    # Narrow to a reasonable slice after the marker
-    slice_text = text[idx: idx + 1000]
-
-    # Find the REGULAR MEMBERS block
-    rm_marker = "REGULAR MEMBERS"
-    rm_idx = slice_text.find(rm_marker)
-    if rm_idx == -1:
-        return []
-
-    rm_slice = slice_text[rm_idx: rm_idx + 400]
-    # Extract phone-like tokens (05 followed by 8+ digits)
-    import re
-
-    phones = re.findall(r"05\d{7,9}", rm_slice)
-    # Deduplicate and return
-    for p in phones:
-        if p not in members:
-            members.append(p)
-    return members
-
-
-def login_and_activate(base_url: str, mobile: str, verbose: bool = False) -> str:
-    s = requests.Session()
-    login_url = f"{base_url.rstrip('/')}/login"
-    activate_url = f"{base_url.rstrip('/')}/activate"
-
-    if verbose:
-        print(f"[+] Sending login request for {mobile} -> {login_url}")
-    r = s.post(login_url, json={"mobile": mobile})
-    if verbose:
-        print(f"    -> status: {r.status_code}, body: {r.text}")
-    # In test env, activation code is constant
-    if verbose:
-        print(f"[+] Activating {mobile}")
-    r = s.post(
-        activate_url,
-        json={
-            "code": LEADER_VERIFY_CODE,
-            "mobile": mobile,
-            "uuid": LEADER_UUID,
-            "device_token": DEVICE_TOKEN,
-            "device_type": DEVICE_TYPE,
-        },
-    )
-    if r.status_code not in (200, 201):
-        raise RuntimeError(f"Activation failed: {r.status_code} {r.text}")
-    data = r.json()
-    # Try common keys for token
-    token = None
-    if isinstance(data, dict):
-        token = data.get("access_token") or data.get("data", {}).get("access_token") or data.get("token")
-    if not token:
-        raise RuntimeError(f"Could not find access token in activation response: {data}")
-    if verbose:
-        print(f"[+] Obtained token: {token[:24]}...")
-    return token
-
-
-def add_member(base_url: str, token: str, member_mobile: str, verbose: bool = False) -> dict:
-    url = f"{base_url.rstrip('/')}/team/add-member"
-    headers = {"Authorization": f"Bearer {token}"}
-    payload = {"team_id": TEAM_ID, "mobile": member_mobile}
-    if verbose:
-        print(f"[+] POST {url} payload={payload}")
-    r = requests.post(url, json=payload, headers=headers)
-    try:
-        return {"status_code": r.status_code, "json": r.json(), "text": r.text}
-    except Exception:
-        return {"status_code": r.status_code, "json": None, "text": r.text}
-
-
-def member_role(base_url: str, token: str, member_mobile: str, role: str = "member", verbose: bool = False) -> dict:
-    url = f"{base_url.rstrip('/')}/team/member-role"
-    headers = {"Authorization": f"Bearer {token}"}
-    payload = {"team_id": TEAM_ID, "mobile": member_mobile, "role": role}
-    if verbose:
-        print(f"[+] POST {url} payload={payload}")
-    r = requests.post(url, json=payload, headers=headers)
-    try:
-        return {"status_code": r.status_code, "json": r.json(), "text": r.text}
-    except Exception:
-        return {"status_code": r.status_code, "json": None, "text": r.text}
-
-
-def main(argv: List[str]):
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--base-url", default="https://pre-montada.gostcode.com/api", help="API base URL")
-    parser.add_argument("--dry-run", action="store_true", help="Don't perform any POSTs; just print actions")
-    parser.add_argument("--verbose", action="store_true", help="Verbose output")
-    parser.add_argument("--show-team", action="store_true", help="Show team members via GET /team/show/{id} and exit")
-    parser.add_argument("--show-team-auth", action="store_true", help="Show team members via authenticated GET /team/show/{id} (logs in leader)")
-    parser.add_argument("--team-id", type=int, default=TEAM_ID, help="Team id to query for --show-team or --show-team-auth")
-    args = parser.parse_args(argv)
-
-    base_url = args.base_url
-    dry_run = args.dry_run
-    verbose = args.verbose
-
-    print("== Add THUNDER WARRIORS Members Helper ==")
-    print(f"Target team: {TEAM_ID}")
-    print(f"Leader mobile: {LEADER_MOBILE}")
-
-    try:
-        # If user asked to only show team members, call the endpoint and exit
-        if args.show_team:
-            show_url = f"{base_url.rstrip('/')}/team/show/{args.team_id}"
-            if verbose:
-                print(f"[+] GET {show_url}")
-            r = requests.get(show_url)
-            try:
-                print(r.json())
-            except Exception:
-                print(r.status_code, r.text)
-            return
-
-        if args.show_team_auth:
-            # login leader to obtain token
-            token = login_and_activate(base_url, LEADER_MOBILE, verbose=verbose)
-            show_url = f"{base_url.rstrip('/')}/team/show/{args.team_id}"
-            headers = {"Authorization": f"Bearer {token}"}
-            if verbose:
-                print(f"[+] GET {show_url} with Authorization")
-            r = requests.get(show_url, headers=headers)
-            try:
-                print(r.json())
-            except Exception:
-                print(r.status_code, r.text)
-            return
-        token = None
-        if not dry_run:
-            token = login_and_activate(base_url, LEADER_MOBILE, verbose=verbose)
-        else:
-            print("[DRY-RUN] Would login and activate leader to obtain token")
-
-        # Determine members list: try parsing the test data file, otherwise use defaults
-        members = parse_members_from_testfile("REMUNTADA_COMPLETE_TEST_DATA.txt") or DEFAULT_THUNDER_WARRIORS_MEMBERS
-        source = "REMUNTADA_COMPLETE_TEST_DATA.txt" if members and members != DEFAULT_THUNDER_WARRIORS_MEMBERS else "default list"
-        print(f"Members source: {source} (count={len(members)})")
-
-        results = []
-        for m in members:
-            print(f"\n--- Processing member {m} ---")
-            if dry_run:
-                print(f"[DRY-RUN] Would call /team/add-member for {m}")
-                results.append((m, "dry-run", None))
-                continue
-
-            # First try /team/add-member
-            resp = add_member(base_url, token, m, verbose=verbose)
-            sc = resp.get("status_code")
-            j = resp.get("json")
-            if sc in (200, 201) or (isinstance(j, dict) and j.get("status") in (True, "success", "ok")):
-                print(f"[OK] Added {m} via add-member (status {sc})")
-                results.append((m, "added", resp))
-                time.sleep(0.2)
-                continue
-
-            # If failed due to permission or other, try member-role
-            print(f"[WARN] add-member failed for {m} (status {sc}) - trying member-role")
-            resp2 = member_role(base_url, token, m, role="member", verbose=verbose)
-            sc2 = resp2.get("status_code")
-            j2 = resp2.get("json")
-            if sc2 in (200, 201) or (isinstance(j2, dict) and j2.get("status") in (True, "success", "ok")):
-                print(f"[OK] Assigned role for {m} via member-role (status {sc2})")
-                results.append((m, "role-assigned", resp2))
+class RemuntadaAPI:
+    def __init__(self, base_url: str):
+        self.base_url = base_url.rstrip('/')
+        self.session = requests.Session()
+        self.access_token = None
+    
+    def login(self, mobile: str) -> Dict:
+        """Login with mobile number"""
+        url = f"{self.base_url}/login"
+        data = {"mobile": mobile}
+        
+        print(f"🔑 Logging in with mobile: {mobile}")
+        response = self.session.post(url, json=data)
+        
+        try:
+            result = response.json()
+            if result.get('status'):
+                print(f"✅ Login successful: {result.get('message', 'Success')}")
+                return result
             else:
-                print(f"[FAIL] Could not add {m}. add-member status={sc}, member-role status={sc2}")
-                if verbose:
-                    print("    add-member response:", resp)
-                    print("    member-role response:", resp2)
-                results.append((m, "failed", {"add": resp, "role": resp2}))
+                print(f"❌ Login failed - API returned error: {result.get('message', 'Unknown error')}")
+                return {}
+        except:
+            print(f"❌ Login failed: {response.status_code} - {response.text}")
+            return {}
+    
+    def activate(self, mobile: str, code: str = "11111") -> Dict:
+        """Activate account with verification code"""
+        url = f"{self.base_url}/activate"
+        data = {
+            "code": code,
+            "mobile": mobile,
+            "uuid": "550e8400-e29b-41d4-a716-446655440000",
+            "device_token": "dGhpc19pc19hX2RldmljZV90b2tlbl9leGFtcGxl",
+            "device_type": "ios"
+        }
+        
+        print(f"🔐 Activating account for: {mobile}")
+        response = self.session.post(url, json=data)
+        
+        try:
+            result = response.json()
+            if result.get('status') and 'data' in result and 'access_token' in result['data']:
+                self.access_token = result['data']['access_token']
+                self.session.headers.update({'Authorization': f'Bearer {self.access_token}'})
+                print(f"✅ Account activated successfully")
+                return result
+        except:
+            pass
+        
+        print(f"❌ Activation failed: {response.status_code} - {response.text}")
+        return {}
+    
+    def add_member_to_team(self, phone_number: str, team_id: int) -> Dict:
+        """Add member to team using /team/add-member"""
+        url = f"{self.base_url}/team/add-member"
+        data = {
+            "phone_number": phone_number,
+            "team_id": team_id
+        }
+        
+        print(f"👥 Adding member {phone_number} to team {team_id}")
+        response = self.session.post(url, json=data)
+        
+        try:
+            result = response.json()
+            if result.get('status'):
+                print(f"✅ Member added successfully: {result.get('message', 'Success')}")
+                return result
+            else:
+                print(f"❌ Failed to add member - API error: {result.get('message', 'Unknown error')}")
+                return {}
+        except:
+            print(f"❌ Failed to add member: {response.status_code} - {response.text}")
+            return {}
+    
+    def set_member_role(self, phone_number: str, team_id: int, role: str) -> Dict:
+        """Set member role using /team/member-role"""
+        url = f"{self.base_url}/team/member-role"
+        data = {
+            "phone_number": phone_number,
+            "team_id": team_id,
+            "role": role  # "member", "subLeader", or "leader"
+        }
+        
+        print(f"🎖️ Setting role '{role}' for {phone_number} in team {team_id}")
+        response = self.session.post(url, json=data)
+        
+        try:
+            result = response.json()
+            if result.get('status'):
+                print(f"✅ Role set successfully: {result.get('message', 'Success')}")
+                return result
+            else:
+                print(f"❌ Failed to set role - API error: {result.get('message', 'Unknown error')}")
+                return {}
+        except:
+            print(f"❌ Failed to set role: {response.status_code} - {response.text}")
+            return {}
+    
+    def get_user_teams(self) -> Dict:
+        """Get user's teams"""
+        url = f"{self.base_url}/team/user-teams"
+        
+        response = self.session.get(url)
+        
+        try:
+            result = response.json()
+            if result.get('status'):
+                print(f"✅ Teams retrieved successfully")
+                return result
+            else:
+                print(f"❌ Failed to get teams - API error: {result.get('message', 'Unknown error')}")
+                return {}
+        except:
+            print(f"❌ Failed to get teams: {response.status_code} - {response.text}")
+            return {}
 
-        # Summary
-        print("\n== Summary ==")
-        for m, status, info in results:
-            print(f"{m}: {status}")
-
-    except Exception as e:
-        print("Error:", e)
-        sys.exit(1)
-
+def main():
+    # Configuration
+    API_BASE_URL = "https://pre-montada.gostcode.com/api"
+    THUNDER_WARRIORS_TEAM_ID = 59  # From team59.json
+    
+    # Team captain (will be used to add other members)
+    CAPTAIN_MOBILE = "0536925874"  # Ahmed Al-Saudi from the data
+    
+    # Members to add to Thunder Warriors (from test data)
+    MEMBERS_TO_ADD = [
+        {"phone": "0536925876", "name": "Abdullah Al-Mohammed", "role": "subLeader"},
+        {"phone": "0536925877", "name": "Ali Al-Abdullah", "role": "member"},
+        {"phone": "0536925878", "name": "Omar Al-Ali", "role": "member"},
+        {"phone": "0536925879", "name": "Khalid Al-Omar", "role": "member"},
+        {"phone": "0536925880", "name": "Fahd Al-Khalid", "role": "member"},
+        {"phone": "0536925881", "name": "Saud Al-Fahd", "role": "member"},
+        {"phone": "0536925883", "name": "Nasser Al-Faisal", "role": "member"},
+        {"phone": "0536925884", "name": "Abdulrahman Al-Nasser", "role": "member"},
+        {"phone": "0536925889", "name": "Rayan Al-Rayan", "role": "member"},
+        {"phone": "0536925890", "name": "Yazeed Al-Yazeed", "role": "member"},
+        {"phone": "0536925893", "name": "Zaid Al-Zaid", "role": "member"},
+    ]
+    
+    # Initialize API client
+    api = RemuntadaAPI(API_BASE_URL)
+    
+    print("🏆 THUNDER WARRIORS TEAM MEMBER ADDITION")
+    print("=" * 50)
+    print(f"Team ID: {THUNDER_WARRIORS_TEAM_ID}")
+    print(f"Captain Mobile: {CAPTAIN_MOBILE}")
+    print(f"Members to Add: {len(MEMBERS_TO_ADD)}")
+    print()
+    
+    # Step 1: Login as team captain
+    login_result = api.login(CAPTAIN_MOBILE)
+    if not login_result.get('status'):
+        print("❌ Failed to login as captain. Exiting...")
+        return
+    
+    # Step 2: Activate account
+    activate_result = api.activate(CAPTAIN_MOBILE)
+    if not activate_result.get('status'):
+        print("❌ Failed to activate captain account. Exiting...")
+        return
+    
+    print(f"🎯 Successfully authenticated as captain: {CAPTAIN_MOBILE}")
+    print()
+    
+    # Step 3: Add members to team
+    successful_additions = 0
+    failed_additions = 0
+    
+    for member in MEMBERS_TO_ADD:
+        print(f"Processing: {member['name']} ({member['phone']})")
+        
+        # Add member to team
+        add_result = api.add_member_to_team(member['phone'], THUNDER_WARRIORS_TEAM_ID)
+        
+        if add_result.get('status'):
+            # Set member role (if not default member)
+            if member['role'] != 'member':
+                role_result = api.set_member_role(member['phone'], THUNDER_WARRIORS_TEAM_ID, member['role'])
+                if role_result.get('status'):
+                    print(f"✅ {member['name']} added with role: {member['role']}")
+                else:
+                    print(f"⚠️ {member['name']} added but role setting failed")
+            else:
+                print(f"✅ {member['name']} added as member")
+            
+            successful_additions += 1
+        else:
+            print(f"❌ Failed to add {member['name']}")
+            failed_additions += 1
+        
+        print()
+        time.sleep(0.5)  # Small delay between requests
+    
+    # Step 4: Get final team status
+    print("📊 FINAL RESULTS")
+    print("=" * 30)
+    print(f"✅ Successful additions: {successful_additions}")
+    print(f"❌ Failed additions: {failed_additions}")
+    print()
+    
+    # Get updated team info
+    print("🔍 Fetching updated team information...")
+    teams_result = api.get_user_teams()
+    
+    if teams_result.get('status') and 'data' in teams_result:
+        for team in teams_result['data']:
+            if team.get('id') == THUNDER_WARRIORS_TEAM_ID:
+                print(f"🏆 Team: {team.get('name')}")
+                print(f"👥 Members Count: {team.get('members_count', 0)}")
+                print(f"📈 Status: {'Active' if team.get('status') else 'Inactive'}")
+                break
+    
+    print("\n🎉 Thunder Warriors team member addition completed!")
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main()
