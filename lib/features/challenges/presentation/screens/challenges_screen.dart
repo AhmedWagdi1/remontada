@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:carousel_slider/carousel_slider.dart';
+import 'dart:async';
 import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/utils/extentions.dart';
@@ -57,6 +58,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   List<ChallengeMatch> _matches = [];
   bool _loadingMatches = false;
   String? _matchesError;
+  bool _isRefreshingMatches = false;
 
   /// Retrieves the list of teams the current user belongs to.
   ///
@@ -228,8 +230,27 @@ class _ChallengesScreenState extends State<ChallengesScreen>
 
   void _onMatchesRefreshEvent() {
     // Re-fetch matches when an external event requests a refresh.
-    // Debounce not implemented — calls directly to keep behavior simple.
-    _fetchMatches();
+    // Backend may be eventually consistent, so retry a couple of times with short delays
+    // to increase chance the newly-created match appears immediately.
+    if (_isRefreshingMatches) return;
+    _isRefreshingMatches = true;
+
+    () async {
+      try {
+        // First immediate attempt
+        await _fetchMatches();
+
+        // If still not present, do up to 2 retries with a short delay
+        for (var attempt = 0; attempt < 2; attempt++) {
+          await Future.delayed(const Duration(seconds: 1));
+          await _fetchMatches();
+        }
+      } catch (_) {
+        // ignore
+      } finally {
+        _isRefreshingMatches = false;
+      }
+    }();
   }
 
   /// Builds the card displaying a completed challenge summary.
