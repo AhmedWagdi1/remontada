@@ -6,6 +6,7 @@ import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/features/home/presentation/widgets/custom_dots.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
+import '../../../../core/services/app_events.dart';
 
 import '../widgets/championship_card.dart';
 import 'create_team_page.dart';
@@ -210,12 +211,25 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     }
     _fetchChallengesOverview();
     _fetchMatches();
+    // Listen to global matches refresh events (e.g., when creating a match)
+    try {
+      AppEvents.matchesRefresh.addListener(_onMatchesRefreshEvent);
+    } catch (_) {}
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    try {
+      AppEvents.matchesRefresh.removeListener(_onMatchesRefreshEvent);
+    } catch (_) {}
     super.dispose();
+  }
+
+  void _onMatchesRefreshEvent() {
+    // Re-fetch matches when an external event requests a refresh.
+    // Debounce not implemented — calls directly to keep behavior simple.
+    _fetchMatches();
   }
 
   /// Builds the card displaying a completed challenge summary.
