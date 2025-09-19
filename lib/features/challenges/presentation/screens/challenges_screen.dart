@@ -19,7 +19,7 @@ import '../../domain/model/challenge_overview_model.dart';
 import '../../data/challenges_repository_impl.dart';
 import '../../domain/model/challenge_match_model.dart';
 import 'match_details_page.dart';
-
+import '../widgets/expandable_create_challenge.dart';
 
 
 /// Placeholder screen shown for the upcoming Challenges feature.
@@ -1391,7 +1391,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                         children: [
                           const SizedBox(height: 12),
                           if ((_hasTeam ?? false) && _userRole == 'leader') ...[
-                            _createChallengeButton(),
+                            ExpandableCreateChallenge(),
                             const SizedBox(height: 12),
                           ],
                           // Dynamic matches list
