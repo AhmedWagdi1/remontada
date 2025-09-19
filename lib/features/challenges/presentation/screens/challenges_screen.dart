@@ -6,10 +6,12 @@ import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/features/home/presentation/widgets/custom_dots.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
+
 import '../widgets/championship_card.dart';
 import 'create_team_page.dart';
 import 'team_details_page.dart';
-import 'create_challenge_page.dart';
+
+import '../widgets/create_challenge_match_sheet.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../../../core/config/key.dart';
@@ -50,7 +52,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   bool? _hasTeam;
   List<dynamic> _userTeams = [];
   String? _userRole;
-  bool _isValidatingTeam = false;
+
   List<ChallengeMatch> _matches = [];
   bool _loadingMatches = false;
   String? _matchesError;
@@ -140,152 +142,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     setState(() => _userRole = null);
   }
 
-  /// Shows a warning dialog when team doesn't have enough members.
-  void _showTeamSizeWarning(int currentCount) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: Row(
-            children: [
-              Icon(
-                Icons.warning_amber_rounded,
-                color: Colors.orange,
-                size: 28,
-              ),
-              const SizedBox(width: 12),
-              Text(
-                'تحذير',
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
-            ],
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'لا يمكنك إنشاء تحدي جديد',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'يجب أن يحتوي الفريق على 10 أعضاء على الأقل لإنشاء تحدي.\n\nعدد الأعضاء الحالي: $currentCount',
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                  height: 1.5,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              style: TextButton.styleFrom(
-                foregroundColor: const Color(0xFF23425F),
-                textStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              child: const Text('موافق'),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
-  /// Handles the create challenge button tap with team validation.
-  Future<void> _onCreateChallengeTap() async {
-    if (_isValidatingTeam) return; // Prevent multiple taps
-
-    setState(() => _isValidatingTeam = true);
-
-    try {
-      // Get current team member count
-      final teamId = _userTeams[0]['id'];
-      final requestUrl = '${ConstKeys.baseUrl}/team/show/$teamId';
-      final requestHeaders = {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ${Utils.token}',
-      };
-
-      print('🔍 DEBUG: Fetching team data for validation');
-      print('🔍 DEBUG: Request URL: $requestUrl');
-      print('🔍 DEBUG: Request Headers: $requestHeaders');
-
-      final res = await http.get(
-        Uri.parse(requestUrl),
-        headers: requestHeaders,
-      );
-
-      print('🔍 DEBUG: Response Status Code: ${res.statusCode}');
-      print('🔍 DEBUG: Response Body: ${res.body}');
-
-      if (res.statusCode < 400) {
-        final data = jsonDecode(res.body) as Map<String, dynamic>;
-        if (data['status'] == true) {
-          final teamData = data['data'] as Map<String, dynamic>;
-          final users = teamData['users'] as List<dynamic>? ?? [];
-
-          // Count active players
-          int activeCount = 0;
-          for (final user in users) {
-            if (user is Map<String, dynamic> && user['active'] == true) {
-              activeCount++;
-            }
-          }
-
-          if (activeCount >= 10) {
-            // Team has enough members, navigate to create challenge page
-            print('✅ DEBUG: Team validation passed! Active members: $activeCount');
-            print('✅ DEBUG: Navigating to CreateChallengePage...');
-
-            if (mounted) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const CreateChallengePage(),
-                ),
-              );
-            }
-          } else {
-            // Show warning dialog
-            print('❌ DEBUG: Team validation failed! Active members: $activeCount (minimum required: 10)');
-
-            if (mounted) {
-              _showTeamSizeWarning(activeCount);
-            }
-          }
-        }
-      }
-    } catch (_) {
-      // Show error if something went wrong
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('حدث خطأ في التحقق من بيانات الفريق'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isValidatingTeam = false);
-      }
-    }
-  }
 
   /// Retrieves challenges overview from the backend API.
   /// `{ "status": true, "data": [ { "id": 1, "name": "...", "ranking": {...} } ] }`.
@@ -647,53 +504,72 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     return const AssetImage('assets/images/profile_image.png');
   }
 
-  /// Builds a button allowing a user to initiate a new challenge.
-  Widget _createChallengeButton() {
+  /// Builds a button for supervisors to create challenge matches.
+  Widget _buildSupervisorChallengeMatchButton() {
     const darkBlue = Color(0xFF23425F);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: _isValidatingTeam ? null : _onCreateChallengeTap,
+        onTap: () {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (context) => const CreateChallengeMatchSheet(),
+          );
+        },
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [Colors.white, Color(0xFFF5F5F5)],
+              colors: [darkBlue, Color(0xFF1E3A54)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            border: Border.all(color: darkBlue),
             borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: darkBlue.withOpacity(0.3),
+                spreadRadius: 0,
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-          child: _isValidatingTeam
-              ? Center(
-                  child: SizedBox(
-                    height: 32,
-                    width: 32,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 3,
-                      valueColor: AlwaysStoppedAnimation<Color>(darkBlue),
-                    ),
-                  ),
-                )
-              : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.add, color: darkBlue),
-                    const SizedBox(height: 4),
-                    Text(
-                      LocaleKeys.challenge_create_challenge.tr(),
-                      style: const TextStyle(
-                        color: darkBlue,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(8),
                 ),
+                child: const Icon(
+                  Icons.sports_soccer,
+                  color: Colors.white,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                'إضافة فترة لماتش تحدى جديد',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+
+
 
   /// Builds a numbered step item for the how challenges work card.
   Widget _buildHowStep({
@@ -1390,6 +1266,11 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                       child: Column(
                         children: [
                           const SizedBox(height: 12),
+                          // Supervisor Challenge Match Button
+                          if (Utils.isSuperVisor == true) ...[
+                            _buildSupervisorChallengeMatchButton(),
+                            const SizedBox(height: 12),
+                          ],
                           if ((_hasTeam ?? false) && _userRole == 'leader') ...[
                             ExpandableCreateChallenge(),
                             const SizedBox(height: 12),

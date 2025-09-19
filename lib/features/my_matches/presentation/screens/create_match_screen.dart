@@ -399,12 +399,19 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                         ),
                         20.ph,
                         ButtonWidget(
-                          onTap: () {
+                            onTap: () {
                             if (cubit.formKey.currentState!.validate()) {
                               cubit.formKey.currentState?.save();
                               if (widget.id != null) {
                                 cubit.request.isUpdate = true;
                               }
+                              // Debug: print request before submission
+                              try {
+                                print('\n[CreateMatchScreen] Submitting request: ' + cubit.request.toMap().toString());
+                              } catch (_) {
+                                print('[CreateMatchScreen] Submitting request: ' + cubit.request.toString());
+                              }
+                              print('[CreateMatchScreen] Calling cubit.createMatches(id: ${matchModel.id})');
                               cubit.createMatches(
                                 id: matchModel.id.toString(),
                               );

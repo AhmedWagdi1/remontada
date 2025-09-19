@@ -45,15 +45,28 @@ class MyMatchesCubit extends Cubit<MyMatchesState> {
 
   getMymatches({bool? isCurrent, bool? isloading = true}) async {
     if (isloading == true) emit(MyMatchesLoading());
+    print('\n[MyMatchesCubit] getMymatches() called with isCurrent: $isCurrent, isloading: $isloading');
     final res = await myMatchesrepo.getMymatches(isCurrent: isCurrent);
+    print('[MyMatchesCubit] getMymatches() raw response: $res');
     if (res != null) {
-      emit(
-        MyMatchesLoaded(
-          MyMatches.fromMap(res),
-        ),
-      );
+      try {
+        final myMatches = MyMatches.fromMap(res);
+  final count = myMatches.matches?.length ?? 0;
+        print('[MyMatchesCubit] Parsed MyMatches count: $count');
+        emit(
+          MyMatchesLoaded(
+            myMatches,
+          ),
+        );
+      } catch (e, st) {
+        print('[MyMatchesCubit] Error parsing MyMatches.fromMap: $e');
+        print(st);
+        emit(MyMatchesFailed());
+        return null;
+      }
       return true;
     } else {
+      print('[MyMatchesCubit] getMymatches() returned null');
       emit(MyMatchesFailed());
       return null;
     }
@@ -66,10 +79,27 @@ class MyMatchesCubit extends Cubit<MyMatchesState> {
       request,
       id: id,
     );
+    // Debug: print request payload
+    print('\n[MyMatchesCubit] createMatches() called. id: ${id ?? "(new)"}');
+    try {
+      print('[MyMatchesCubit] request payload: ' + request.toMap().toString());
+    } catch (_) {
+      print('[MyMatchesCubit] request payload: (toMap unavailable) $request');
+    }
+
+    // Debug: print raw response
+    print('[MyMatchesCubit] createMatche() repository returned: $res');
+
     if (res != null) {
       emit(CreateMatchSuccess());
     } else {
       emit(CreateMatchFailed());
+    }
+    // Debug: print emitted state
+    if (res != null) {
+      print('[MyMatchesCubit] Emitted CreateMatchSuccess');
+    } else {
+      print('[MyMatchesCubit] Emitted CreateMatchFailed (null response)');
     }
   }
 

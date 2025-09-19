@@ -191,7 +191,11 @@ class _MatchesBodyState extends State<MatchesBody> {
     // super.build(context);
     return BlocConsumer<MyMatchesCubit, MyMatchesState>(
       listener: (context, state) {
-        if (state is MyMatchesLoaded) myMatches = state.mymatches;
+        if (state is MyMatchesLoaded) {
+          myMatches = state.mymatches;
+          final count = myMatches.matches?.length ?? 0;
+          print('\n[MatchesBody] MyMatchesLoaded with count: $count');
+        }
       },
       builder: (context, state) {
         final cubit = MyMatchesCubit.get(context);
