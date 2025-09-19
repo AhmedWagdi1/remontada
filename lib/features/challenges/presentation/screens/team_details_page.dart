@@ -5,7 +5,6 @@ import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:http/http.dart' as http;
 import '../../../../core/config/key.dart';
 import '../../../../core/utils/utils.dart';
-import '../../../../core/utils/extentions.dart';
 import '../../../../core/utils/Locator.dart';
 import '../../../../core/app_strings/locale_keys.dart';
 import '../../../../shared/widgets/network_image.dart';
@@ -15,6 +14,7 @@ import '../../../chat/domain/repository/chat_repository.dart';
 import '../../../chat/domain/request/send_message_request.dart';
 import 'package:remontada/features/home/presentation/widgets/challenge_notifications_widget.dart';
 import 'package:remontada/features/home/cubit/home_cubit.dart';
+import 'edit_team_page.dart';
 
   late TabController _tabController;
 
@@ -183,6 +183,23 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
     );
   }
 
+  /// Navigates to the edit team page and refreshes data on return.
+  Future<void> _navigateToEditTeam(BuildContext context) async {
+    if (_teamData == null) return;
+    
+    final result = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditTeamPage(teamData: _teamData!),
+      ),
+    );
+    
+    // If the team was successfully updated, refresh the team data
+    if (result == true) {
+      _fetchTeamData();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
@@ -241,6 +258,14 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
               logoUrl: _teamData?['logo_url'] as String?,
             ),
             const SizedBox(height: 16),
+            // Edit Team Button (Captain Only)
+            if (_currentUserRole == 'leader') ...[
+              _EditTeamButton(
+                onPressed: () => _navigateToEditTeam(context),
+                isEnabled: _teamData != null,
+              ),
+              const SizedBox(height: 16),
+            ],
             _TeamSummaryCard(
               teamName: _teamData?['name'] as String?,
               bio: _teamData?['bio'] as String?,
@@ -1092,29 +1117,6 @@ class _StatsSummaryRow extends StatelessWidget {
           bgColor: const Color(0xFFF0F0F0),
         ),
       ],
-    );
-  }
-}
-
-/// Section title for the players list.
-class _PlayersSectionTitle extends StatelessWidget {
-  /// Creates a const [_PlayersSectionTitle].
-  const _PlayersSectionTitle();
-
-  @override
-  Widget build(BuildContext context) {
-    const darkBlue = Color(0xFF23425F);
-    return Padding(
-      padding: const EdgeInsets.only(right: 16),
-      child: Text(
-        'قائمة اللاعبين',
-        style: const TextStyle(
-          color: darkBlue,
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
-        ),
-        textAlign: TextAlign.right,
-      ),
     );
   }
 }
@@ -2413,6 +2415,53 @@ class _MessageBubble extends StatelessWidget {
             child: Text(LocaleKeys.chat_delete.tr(), style: const TextStyle(color: Colors.red)),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Edit Team Button widget - only visible to team captain.
+class _EditTeamButton extends StatelessWidget {
+  /// Callback when the edit button is pressed.
+  final VoidCallback? onPressed;
+
+  /// Whether the button is enabled.
+  final bool isEnabled;
+
+  /// Creates an [_EditTeamButton].
+  const _EditTeamButton({
+    this.onPressed,
+    this.isEnabled = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const darkBlue = Color(0xFF23425F);
+    
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Container(
+        width: double.infinity,
+        child: ElevatedButton.icon(
+          onPressed: isEnabled ? onPressed : null,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: darkBlue,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            elevation: 2,
+          ),
+          icon: const Icon(Icons.edit, size: 18),
+          label: const Text(
+            'تعديل معلومات الفريق',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
       ),
     );
   }
