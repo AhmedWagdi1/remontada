@@ -120,6 +120,12 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
 
         final rankings = team['rankings'] as Map<String, dynamic>?;
         team['competitive'] = rankings?['competitive'] as Map<String, dynamic>?;
+        
+        // Debug: Print level data
+        debugPrint('Rankings: $rankings');
+        debugPrint('Competitive: ${team['competitive']}');
+        debugPrint('Level: ${team['competitive']?['level']}');
+        
         setState(() {
           _teamData = team;
           _currentUserRole = currentUserRole;
@@ -272,6 +278,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
               membersCount: _teamData?['members_count'] as int?,
               logoUrl: _teamData?['logo_url'] as String?,
               ranking: _teamData?['competitive'] as Map<String, dynamic>?,
+              level: (_teamData?['competitive'] as Map<String, dynamic>?)?['level'] as String?,
             ),
             SizedBox(height: 16),
             _AchievementsSection(
@@ -419,6 +426,9 @@ class _TeamSummaryCard extends StatelessWidget {
   /// Competitive ranking information for stats.
   final Map<String, dynamic>? ranking;
 
+  /// Optional team level/rank.
+  final String? level;
+
   /// Creates a [_TeamSummaryCard] with optional details.
   const _TeamSummaryCard({
     this.teamName,
@@ -426,6 +436,7 @@ class _TeamSummaryCard extends StatelessWidget {
     this.membersCount,
     this.logoUrl,
     this.ranking,
+    this.level,
   });
 
   @override
@@ -461,6 +472,9 @@ class _TeamSummaryCard extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
+          const SizedBox(height: 8),
+          // Always show a test badge for debugging
+          _RankBadge(level: level ?? 'برونز 1'),
           const SizedBox(height: 4),
           Text(
             description,
@@ -2413,6 +2427,148 @@ class _MessageBubble extends StatelessWidget {
               onDelete?.call();
             },
             child: Text(LocaleKeys.chat_delete.tr(), style: const TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Rank Badge widget displaying team level with appropriate colors.
+class _RankBadge extends StatelessWidget {
+  /// The level/rank name (e.g., 'bronze', 'silver', 'gold', etc.)
+  final String? level;
+
+  /// Creates a [_RankBadge].
+  const _RankBadge({this.level});
+
+  /// Returns the appropriate color based on the rank level
+  Color _getRankColor(String rank) {
+    // Extract the main rank name without numbers (e.g., "برونز 1" -> "برونز")
+    final mainRank = rank.toLowerCase().split(' ')[0];
+    
+    switch (mainRank) {
+      case 'bronze':
+      case 'برونز':
+      case 'برونزي':
+        return const Color(0xFFCD7F32); // Bronze color
+      case 'silver':
+      case 'فضة':
+      case 'فضي':
+        return const Color(0xFFC0C0C0); // Silver color
+      case 'gold':
+      case 'ذهب':
+      case 'ذهبي':
+        return const Color(0xFFFFD700); // Gold color
+      case 'platinum':
+      case 'بلاتين':
+      case 'بلاتيني':
+        return const Color(0xFFE5E4E2); // Platinum color
+      case 'diamond':
+      case 'الماس':
+        return const Color(0xFFB9F2FF); // Diamond color
+      case 'master':
+      case 'استاذ':
+        return const Color(0xFF9B59B6); // Purple for master
+      case 'grandmaster':
+      case 'استاذ_كبير':
+        return const Color(0xFFE74C3C); // Red for grandmaster
+      case 'rookie':
+      case 'مبتدئ':
+        return const Color(0xFF8D4004); // Brown for rookie
+      case 'amateur':
+      case 'هاوي':
+        return const Color(0xFF2ECC71); // Green for amateur
+      case 'professional':
+      case 'محترف':
+        return const Color(0xFF3498DB); // Blue for professional
+      default:
+        return const Color(0xFF95A5A6); // Default gray color
+    }
+  }
+
+  /// Returns the appropriate icon based on the rank level
+  IconData _getRankIcon(String rank) {
+    // Extract the main rank name without numbers (e.g., "برونز 1" -> "برونز")
+    final mainRank = rank.toLowerCase().split(' ')[0];
+    
+    switch (mainRank) {
+      case 'bronze':
+      case 'برونز':
+      case 'برونزي':
+      case 'silver':
+      case 'فضة':
+      case 'فضي':
+      case 'gold':
+      case 'ذهب':
+      case 'ذهبي':
+        return Icons.emoji_events; // Trophy icon for medal ranks
+      case 'platinum':
+      case 'بلاتين':
+      case 'بلاتيني':
+      case 'diamond':
+      case 'الماس':
+        return Icons.diamond; // Diamond icon for precious metal ranks
+      case 'master':
+      case 'استاذ':
+      case 'grandmaster':
+      case 'استاذ_كبير':
+        return Icons.star; // Star icon for master ranks
+      case 'rookie':
+      case 'مبتدئ':
+        return Icons.sports; // Sports icon for rookie
+      case 'amateur':
+      case 'هاوي':
+        return Icons.sports_soccer; // Soccer icon for amateur
+      case 'professional':
+      case 'محترف':
+        return Icons.workspace_premium; // Premium icon for professional
+      default:
+        return Icons.military_tech; // Default military tech icon
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    debugPrint('RankBadge level received: $level');
+    
+    if (level == null || level!.isEmpty) {
+      debugPrint('RankBadge: Level is null or empty, not showing badge');
+      return const SizedBox.shrink();
+    }
+
+    final rankColor = _getRankColor(level!);
+    final rankIcon = _getRankIcon(level!);
+    
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: rankColor,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: rankColor.withOpacity(0.3),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            rankIcon,
+            size: 16,
+            color: Colors.white,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            level!,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+            ),
           ),
         ],
       ),
