@@ -62,6 +62,11 @@ class _CreateChallengeMatchSheetState extends State<CreateChallengeMatchSheet> {
         },
         builder: (context, state) {
           final cubit = MyMatchesCubit.get(context);
+          // Ensure the request.type is set to 'challenge' by default so
+          // the user doesn't have to re-pick the dropdown for submission.
+          if (cubit.request.type == null || cubit.request.type!.isEmpty) {
+            cubit.request.type = 'challenge';
+          }
           
           return Container(
             height: MediaQuery.of(context).size.height * 0.8,
@@ -355,6 +360,10 @@ class _CreateChallengeMatchSheetState extends State<CreateChallengeMatchSheet> {
                                         print('[CreateChallengeMatchSheet] Submitting request: ' + cubit.request.toString());
                                       }
                                       print('[CreateChallengeMatchSheet] Calling cubit.createMatches()');
+                                      // Ensure type is present in the request payload just before sending
+                                      if (cubit.request.type == null || cubit.request.type!.isEmpty) {
+                                        cubit.request.type = 'challenge';
+                                      }
                                       cubit.createMatches();
                                     }
                                   },
