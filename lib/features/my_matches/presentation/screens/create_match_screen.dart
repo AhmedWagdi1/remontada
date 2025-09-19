@@ -118,40 +118,38 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                           color: LightThemeColors.textSecondary,
                         ),
                         40.ph,
-                        DropDownItem<String>(
-                          options: ['group', 'single', 'challenge'],
-                          inistialValue: cubit.request.type,
-                          hint: 'نوع المباراة',
-                          prefixIcon: 'playground_button',
-                          radius: 33,
-                          color: context.formFieldColor,
-                          contentPadding: EdgeInsets.symmetric(
-                            vertical: 18,
-                            horizontal: 20,
+                          DropDownItem<String>(
+                            options: ['group', 'single'],
+                            inistialValue: cubit.request.type,
+                            hint: 'نوع المباراة',
+                            prefixIcon: 'playground_button',
+                            radius: 33,
+                            color: context.formFieldColor,
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 18,
+                              horizontal: 20,
+                            ),
+                            hintColor: LightThemeColors.textPrimary,
+                            itemAsString: (v) {
+                              switch (v) {
+                                case 'group':
+                                  return 'مباراة جماعية';
+                                case 'single':
+                                  return 'مباراة فردية';
+                                default:
+                                  return v.toString();
+                              }
+                            },
+                            validator: (v) => (v == null || v.isEmpty)
+                                ? LocaleKeys.valid_requiredField.tr()
+                                : null,
+                            onChanged: (val) {
+                              setState(() {
+                                matchType.text = val;
+                                cubit.request.type = val;
+                              });
+                            },
                           ),
-                          hintColor: LightThemeColors.textPrimary,
-                          itemAsString: (v) {
-                            switch (v) {
-                              case 'group':
-                                return 'مباراة جماعية';
-                              case 'single':
-                                return 'مباراة فردية';
-                              case 'challenge':
-                                return 'تحدي';
-                              default:
-                                return v.toString();
-                            }
-                          },
-                          validator: (v) => (v == null || v.isEmpty)
-                              ? LocaleKeys.valid_requiredField.tr()
-                              : null,
-                          onChanged: (val) {
-                            setState(() {
-                              matchType.text = val;
-                              cubit.request.type = val;
-                            });
-                          },
-                        ),
                         12.ph,
                         CustomAutoCompleteTextField<Location>(
                           controller: playgroundcontroller,
