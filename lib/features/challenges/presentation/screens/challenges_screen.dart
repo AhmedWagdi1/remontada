@@ -1442,16 +1442,56 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                         ],
                       ),
                     ),
-                    SingleChildScrollView(
-                      child: Column(
-                        children: const [
-                          SuperRemontadaChampionshipCard(),
-                          SizedBox(height: 12),
-                          EliteRemontadaChampionshipCard(),
-                          SizedBox(height: 12),
-                          RemontadaChampionsLeagueCard(),
-                        ],
-                      ),
+                    Stack(
+                      children: [
+                        SingleChildScrollView(
+                          child: Column(
+                            children: const [
+                              SuperRemontadaChampionshipCard(),
+                              SizedBox(height: 12),
+                              EliteRemontadaChampionshipCard(),
+                              SizedBox(height: 12),
+                              RemontadaChampionsLeagueCard(),
+                            ],
+                          ),
+                        ),
+                        Positioned.fill(
+                          child: Container(
+                            color: Colors.black.withOpacity(0.5),
+                            child: Center(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(24),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black26,
+                                      blurRadius: 8,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.access_time, color: Colors.orange, size: 28),
+                                    const SizedBox(width: 12),
+                                    Text(
+                                      'قريباً',
+                                      style: TextStyle(
+                                        color: Colors.orange,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 22,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
