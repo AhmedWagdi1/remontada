@@ -2052,6 +2052,9 @@ class _ChatTabState extends State<_ChatTab> {
     
     _messagesCubit.loadMessages(refresh: true);
     
+    // Set the global refresh callback for notifications
+    Utils.refreshCurrentChat = () => _messagesCubit.loadMessages(refresh: true);
+    
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >= 
           _scrollController.position.maxScrollExtent - 200) {
@@ -2066,6 +2069,8 @@ class _ChatTabState extends State<_ChatTab> {
     _scrollController.dispose();
     _messagesCubit.close();
     _sendMessageCubit.close();
+    // Clear the global refresh callback
+    Utils.refreshCurrentChat = null;
     super.dispose();
   }
 

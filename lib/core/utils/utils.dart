@@ -35,6 +35,9 @@ class Utils {
   static Validation get valid => locator<Validation>();
   static DataManager get dataManager => locator<DataManager>();
 
+  // Callback to refresh the current open chat when a new message notification arrives
+  static Function? refreshCurrentChat;
+
   static saveUserInHive(Map<String, dynamic> response) async {
     user = User.fromMap(response);
     token = user.token ?? '';

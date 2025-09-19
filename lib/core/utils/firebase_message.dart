@@ -138,6 +138,12 @@ class FBMessging {
           } else {
             debugPrint('FBMessging: navigator context is null, cannot refresh messages');
           }
+          // Also try the global callback
+          try {
+            Utils.refreshCurrentChat?.call();
+          } catch (e) {
+            debugPrint('FBMessging: error calling Utils.refreshCurrentChat: $e');
+          }
         }
       } catch (e) {
         debugPrint('FBMessging: error handling chat notification: $e');
