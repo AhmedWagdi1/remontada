@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:remontada/core/Router/Router.dart';
 import 'package:remontada/core/utils/utils.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:remontada/features/chat/cubit/chat_cubit.dart';
 import 'package:remontada/firebase_options.dart';
 
 import '../../features/notifications/domain/model/notify_model.dart';
@@ -99,12 +101,8 @@ class FBMessging {
       settings,
       onDidReceiveNotificationResponse: (response) {
         log(response.payload ?? "aaaaaaaa");
-        NotificationModel notification =
-            NotificationModel.fromJson(response.payload ?? "");
-        // handleNotification(
-        //   notification,
-        //   appIsopened: true,
-        // );
+        // If needed, you can parse the payload here and handle it.
+        // final NotificationModel notification = NotificationModel.fromJson(response.payload ?? "");
       },
     );
 
@@ -118,11 +116,32 @@ class FBMessging {
       log('${event.data}');
       log('${event.data}');
 
-      RemoteNotification? notification = event.notification;
-      AndroidNotification? android = event.notification?.android;
-      AppleNotification? appl = event.notification?.apple;
-      NotificationModel notificationModel =
-          NotificationModel.fromMap(event.data);
+    RemoteNotification? notification = event.notification;
+    NotificationModel notificationModel =
+      NotificationModel.fromMap(event.data);
+      // If this is a chat message notification, attempt to refresh messages
+      // so that an already-open chat screen will show the new message.
+      try {
+        final nmType = notificationModel.type ?? notificationModel.data?.type;
+        final isChatNotification = (nmType == 'chat_message' || nmType == 'chat');
+        debugPrint('FBMessging.onMessage -> notificationModel.type: $nmType, isChat: $isChatNotification');
+        if (isChatNotification) {
+          final ctx = Utils.navigatorKey().currentContext;
+          if (ctx != null) {
+            try {
+              final teamMessagesCubit = BlocProvider.of<TeamMessagesCubit>(ctx, listen: false);
+              debugPrint('FBMessging: calling TeamMessagesCubit.loadMessages(refresh: true)');
+              teamMessagesCubit.loadMessages(refresh: true);
+            } catch (e) {
+              debugPrint('FBMessging: TeamMessagesCubit not found in current context or error calling loadMessages: $e');
+            }
+          } else {
+            debugPrint('FBMessging: navigator context is null, cannot refresh messages');
+          }
+        }
+      } catch (e) {
+        debugPrint('FBMessging: error handling chat notification: $e');
+      }
       // log('${notificationModel.modelId}', name: "notificationModel.modelId");
       // // log(Utils.room_id, name: " Utils.room_id");
       // log((notificationModel.modelId != Utils.room_id).toString(),
@@ -163,8 +182,7 @@ class FBMessging {
         log('onMessageOpenedApp no 666');
         log(message.toString());
         log(message.data.toString());
-        NotificationModel notification =
-            NotificationModel.fromMap(message.data);
+    // NotificationModel notification = NotificationModel.fromMap(message.data);
         // handleNotification(
         //   notification,
         //   appIsopened: false,
@@ -185,12 +203,8 @@ class FBMessging {
         log(message.toString());
         print(message?.data.toString());
         if (message != null) {
-          NotificationModel notification =
-              NotificationModel.fromMap(message.data);
-          // handleNotification(
-          //   notification,
-          //   appIsopened: false,
-          // );
+          // final NotificationModel notification = NotificationModel.fromMap(message.data);
+          // handleNotification(notification, appIsopened: false);
           log('getInitialMessage no 55');
           log(message.toString());
           log(message.data.toString());

@@ -2036,6 +2036,7 @@ class _ChatTabState extends State<_ChatTab> {
   final ScrollController _scrollController = ScrollController();
   late TeamMessagesCubit _messagesCubit;
   late SendMessageCubit _sendMessageCubit;
+  DateTime? _lastSendStart;
 
   @override
   void initState() {
@@ -2071,6 +2072,22 @@ class _ChatTabState extends State<_ChatTab> {
   void _sendMessage() {
     final message = _messageController.text.trim();
     if (message.isNotEmpty) {
+      // Build request details for debugging
+      final requestUrl = '${ConstKeys.baseUrl}/messages/send';
+      final requestBody = {
+        'team_id': int.tryParse(widget.teamId) ?? widget.teamId,
+        'content': message,
+      };
+      // Mask token a little to avoid printing full secret in logs (show last 6 chars)
+  final token = Utils.token;
+      final maskedToken = token.length > 6 ? '***' + token.substring(token.length - 6) : token;
+      debugPrint('CHAT SEND REQUEST -> url: $requestUrl');
+      debugPrint('CHAT SEND REQUEST -> headers: Authorization: Bearer $maskedToken');
+      debugPrint('CHAT SEND REQUEST -> body: ${jsonEncode(requestBody)}');
+
+      // record start time to calculate duration on response
+      _lastSendStart = DateTime.now();
+
       _sendMessageCubit.sendMessage(
         SendMessageRequest(
           teamId: widget.teamId,
@@ -2204,7 +2221,21 @@ class _ChatTabState extends State<_ChatTab> {
             ),
             BlocListener<SendMessageCubit, SendMessageState>(
               listener: (context, state) {
-                if (state is SendMessageError) {
+                if (state is SendMessageLoading) {
+                  debugPrint('SendMessageCubit: loading... started at: $_lastSendStart');
+                } else if (state is SendMessageSuccess) {
+                  try {
+                    final duration = _lastSendStart == null
+                        ? 'unknown'
+                        : '${DateTime.now().difference(_lastSendStart!).inMilliseconds} ms';
+                    // log the returned message object (toJson)
+                    debugPrint('SendMessageCubit: success - duration: $duration');
+                    debugPrint('SendMessageCubit: response message: ${state.message.toJson()}');
+                  } catch (e) {
+                    debugPrint('SendMessageCubit: success - but failed to dump message: $e');
+                  }
+                } else if (state is SendMessageError) {
+                  debugPrint('SendMessageCubit: error -> ${state.message}');
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(LocaleKeys.chat_failed_to_send.tr()),
