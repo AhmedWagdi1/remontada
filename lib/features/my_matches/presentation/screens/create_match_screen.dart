@@ -10,6 +10,7 @@ import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/core/utils/utils.dart';
 import 'package:remontada/features/my_matches/cubit/myMatches_cubit.dart';
 import 'package:remontada/features/my_matches/cubit/myMatches_states.dart';
+import '../../../../core/services/app_events.dart';
 import 'package:remontada/shared/back_widget.dart';
 import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
@@ -54,6 +55,10 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
       child: BlocConsumer<MyMatchesCubit, MyMatchesState>(
         listener: (context, state) {
           if (state is CreateMatchSuccess) {
+            // Notify other screens to refresh (matches listing)
+            try {
+              AppEvents.matchesRefresh.value++;
+            } catch (_) {}
             Navigator.pushNamedAndRemoveUntil(
               context,
               Routes.LayoutScreen,

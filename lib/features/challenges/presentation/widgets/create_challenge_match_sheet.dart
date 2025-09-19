@@ -8,6 +8,7 @@ import 'package:remontada/core/utils/extentions.dart';
 
 import 'package:remontada/features/my_matches/cubit/myMatches_cubit.dart';
 import 'package:remontada/features/my_matches/cubit/myMatches_states.dart';
+import '../../../../core/services/app_events.dart';
 import 'package:remontada/shared/widgets/button_widget.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/shared/widgets/dropdown.dart';
@@ -47,6 +48,10 @@ class _CreateChallengeMatchSheetState extends State<CreateChallengeMatchSheet> {
         listener: (context, state) {
           if (state is CreateMatchSuccess) {
             Navigator.pop(context);
+            // Notify other parts of the app to refresh matches listings
+            try {
+              AppEvents.matchesRefresh.value++;
+            } catch (_) {}
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('تم إنشاء مباراة التحدي بنجاح'),

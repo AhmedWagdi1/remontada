@@ -14,6 +14,7 @@ import 'package:remontada/shared/widgets/loadinganderror.dart';
 
 import '../../../../core/resources/gen/assets.gen.dart';
 import '../../domain/model/myMatches_Model.dart';
+import '../../../../core/services/app_events.dart';
 
 class SupervisormatchesScree extends StatefulWidget {
   const SupervisormatchesScree({super.key});
@@ -184,6 +185,25 @@ class MatchesSupervisorsBodyBody extends StatefulWidget {
 class _MatchesBodyState extends State<MatchesSupervisorsBodyBody>
     with AutomaticKeepAliveClientMixin {
   MyMatches myMatches = MyMatches();
+
+  @override
+  void initState() {
+    super.initState();
+    // Listen for global matches refresh events and reload when fired.
+    AppEvents.matchesRefresh.addListener(_onMatchesRefreshEvent);
+  }
+
+  @override
+  void dispose() {
+    AppEvents.matchesRefresh.removeListener(_onMatchesRefreshEvent);
+    super.dispose();
+  }
+
+  void _onMatchesRefreshEvent() {
+    try {
+      MyMatchesCubit.get(context).getMymatches(isloading: true);
+    } catch (_) {}
+  }
 
   @override
   Widget build(BuildContext context) {

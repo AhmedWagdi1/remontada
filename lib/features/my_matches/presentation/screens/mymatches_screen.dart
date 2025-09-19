@@ -15,6 +15,7 @@ import 'package:remontada/shared/widgets/loadinganderror.dart';
 
 import '../../../../core/resources/gen/assets.gen.dart';
 import '../../domain/model/myMatches_Model.dart';
+import '../../../../core/services/app_events.dart';
 
 class MyMatchesScreen extends StatefulWidget {
   const MyMatchesScreen({super.key});
@@ -25,8 +26,33 @@ class MyMatchesScreen extends StatefulWidget {
 
 class _MyMatchesScreenState extends State<MyMatchesScreen>
     with SingleTickerProviderStateMixin {
+  // Listen to global matches refresh events and trigger a reload when fired
+  @override
+  void initState() {
+    super.initState();
+    AppEvents.matchesRefresh.addListener(_onMatchesRefreshEvent);
+  }
+
+  @override
+  void dispose() {
+    AppEvents.matchesRefresh.removeListener(_onMatchesRefreshEvent);
+    super.dispose();
+  }
+
+  void _onMatchesRefreshEvent() {
+    // Find any MyMatchesCubit in the tree and trigger a refresh for both tabs
+    try {
+      final provider = MyMatchesCubit.get(context);
+      provider.getMymatches(isCurrent: true);
+      provider.getMymatches(isCurrent: false);
+    } catch (_) {
+      // If no cubit is available in this context, the default providers inside
+      // each tab will refresh when they become visible; ignore errors here.
+    }
+  }
   @override
   Widget build(BuildContext context) {
+    // No-op here: listing refreshes are handled via AppEvents.matchesRefresh.
     return Utils.isSuperVisor == true
         ? SupervisormatchesScree()
         : Scaffold(
