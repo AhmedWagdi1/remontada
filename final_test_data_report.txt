@@ -1,0 +1,50 @@
+REMUNTADA FINAL TEST DATA REPORT
+==================================================
+
+Generated on: 2025-09-19 20:11:28
+Total Users Available: 24
+Total Teams Created: 0
+
+ALL USERS QUICK REFERENCE:
+------------------------------
+ 1. 0536925874 - Ahmed Al-Saudi
+ 2. 0536925876 - Abdullah Al-Mohammed
+ 3. 0536925877 - Ali Al-Abdullah
+ 4. 0536925878 - Omar Al-Ali
+ 5. 0536925879 - Khalid Al-Omar
+ 6. 0536925880 - Fahd Al-Khalid
+ 7. 0536925881 - Saud Al-Fahd
+ 8. 0536925883 - Nasser Al-Faisal
+ 9. 0536925884 - Abdulrahman Al-Nasser
+10. 0536925889 - Rayan Al-Rayan
+11. 0536925890 - Yazeed Al-Yazeed
+12. 0536925893 - Zaid Al-Zaid
+13. 0536925894 - Hamad Al-Hamad
+14. 0536925895 - Nawaf Al-Nawaf
+15. 0536925896 - Tareq Al-Tareq
+16. 0536925897 - Yusuf Al-Yusuf
+17. 0536925974 - Mohammed Al-Ahmad
+18. 0536925975 - Faisal Al-Saud
+19. 0536925976 - Majed Al-Majed
+20. 0536925977 - Saad Al-Saad
+21. 0536925978 - Turki Al-Turki
+22. 0536925979 - Bandar Al-Bandar
+23. 0536925980 - Sultan Al-Sultan
+24. 0536925981 - Waleed Al-Waleed
+
+
+==================================================
+TEAMS DETAILS:
+--------------------
+
+
+==================================================
+TESTING GUIDE:
+---------------
+To test login for any user:
+1. POST /login with mobile number
+2. Use verification code: 11111
+3. POST /activate with code and mobile
+
+Sample requests already work for all phone numbers listed above.
+All users have password: TestPass123!

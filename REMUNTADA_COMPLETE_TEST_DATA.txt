@@ -1,0 +1,163 @@
+REMUNTADA - COMPLETE TEST DATA FOR FLOW TESTING
+============================================================
+
+Generated on: 2025-09-19 20:14:59
+Total Users: 24
+Total Teams: 2
+API Base URL: https://pre-montada.gostcode.com/api
+
+QUICK LOGIN INSTRUCTIONS:
+------------------------------
+For ANY user below:
+1. POST /login with mobile number
+2. Use verification code: 11111
+3. POST /activate with code and mobile number
+4. Password for all users: TestPass123!
+
+SAMPLE API REQUESTS:
+--------------------
+Login Request:
+POST /login
+{
+  "mobile": "0536925874"
+}
+
+Activate Request:
+POST /activate
+{
+  "code": "11111",
+  "mobile": "0536925874",
+  "uuid": "550e8400-e29b-41d4-a716-446655440000",
+  "device_token": "dGhpc19pc19hX2RldmljZV90b2tlbl9leGFtcGxl",
+  "device_type": "ios"
+}
+
+ALL 24 USERS (PHONE NUMBERS):
+-----------------------------------
+ 1. 0536925874 - Ahmed Al-Saudi
+ 2. 0536925876 - Abdullah Al-Mohammed
+ 3. 0536925877 - Ali Al-Abdullah
+ 4. 0536925878 - Omar Al-Ali
+ 5. 0536925879 - Khalid Al-Omar
+ 6. 0536925880 - Fahd Al-Khalid
+ 7. 0536925881 - Saud Al-Fahd
+ 8. 0536925883 - Nasser Al-Faisal
+ 9. 0536925884 - Abdulrahman Al-Nasser
+10. 0536925889 - Rayan Al-Rayan
+11. 0536925890 - Yazeed Al-Yazeed
+12. 0536925893 - Zaid Al-Zaid
+13. 0536925894 - Hamad Al-Hamad
+14. 0536925895 - Nawaf Al-Nawaf
+15. 0536925896 - Tareq Al-Tareq
+16. 0536925897 - Yusuf Al-Yusuf
+17. 0536925974 - Mohammed Al-Ahmad
+18. 0536925975 - Faisal Al-Saud
+19. 0536925976 - Majed Al-Majed
+20. 0536925977 - Saad Al-Saad
+21. 0536925978 - Turki Al-Turki
+22. 0536925979 - Bandar Al-Bandar
+23. 0536925980 - Sultan Al-Sultan
+24. 0536925981 - Waleed Al-Waleed
+
+============================================================
+TEAMS DETAILS:
+---------------
+
+TEAM #1: THUNDER WARRIORS
+Team ID: 59
+Total Members: 12
+
+LEADER:
+  Name: Ahmed Al-Saudi
+  Phone: 0536925874
+  Current Token: 2951|Y4ixND2Q322llkvb8oezPQc1X4IRHbE6qDPc1JEHa03f19a7
+
+SUB-LEADER:
+  Name: Abdullah Al-Mohammed
+  Phone: 0536925876
+
+REGULAR MEMBERS (10):
+   1. Ali Al-Abdullah - 0536925877
+   2. Omar Al-Ali - 0536925878
+   3. Khalid Al-Omar - 0536925879
+   4. Fahd Al-Khalid - 0536925880
+   5. Saud Al-Fahd - 0536925881
+   6. Nasser Al-Faisal - 0536925883
+   7. Abdulrahman Al-Nasser - 0536925884
+   8. Rayan Al-Rayan - 0536925889
+   9. Yazeed Al-Yazeed - 0536925890
+  10. Zaid Al-Zaid - 0536925893
+
+----------------------------------------
+
+TEAM #2: DESERT FALCONS
+Team ID: 60
+Total Members: 12
+
+LEADER:
+  Name: Hamad Al-Hamad
+  Phone: 0536925894
+  Current Token: 2952|uqsrEILaRnbiCfm51XWrcQ9Zyeyv2TWL7t3deIfZ830d5bc3
+
+SUB-LEADER:
+  Name: Nawaf Al-Nawaf
+  Phone: 0536925895
+
+REGULAR MEMBERS (10):
+   1. Tareq Al-Tareq - 0536925896
+   2. Yusuf Al-Yusuf - 0536925897
+   3. Mohammed Al-Ahmad - 0536925974
+   4. Faisal Al-Saud - 0536925975
+   5. Majed Al-Majed - 0536925976
+   6. Saad Al-Saad - 0536925977
+   7. Turki Al-Turki - 0536925978
+   8. Bandar Al-Bandar - 0536925979
+   9. Sultan Al-Sultan - 0536925980
+  10. Waleed Al-Waleed - 0536925981
+
+----------------------------------------
+
+============================================================
+COMPLETE FLOW TESTING GUIDE:
+------------------------------
+
+1. USER AUTHENTICATION FLOW:
+   - Pick any phone number from the list above
+   - Use login endpoint with mobile number
+   - Get verification code (always 11111 in test)
+   - Activate account with code
+   - Save the access_token for authenticated requests
+
+2. TEAM MANAGEMENT FLOW:
+   - Login as any team leader or sub-leader
+   - Use team management endpoints
+   - Test role-based permissions
+
+3. MEMBER TESTING:
+   - Login as regular members
+   - Test member-specific features
+   - Verify role restrictions
+
+4. CROSS-TEAM INTERACTIONS:
+   - Test challenges between teams
+   - Use different team members
+   - Verify team-specific data
+
+TECHNICAL DETAILS:
+--------------------
+- All users are fully activated and ready
+- Teams are created with proper role assignments
+- Phone numbers follow the required format (05 + 8 digits)
+- All accounts use the same password for consistency
+- Tokens are fresh and valid for immediate use
+
+NOTES:
+----------
+- Verification code is always 11111 in test environment
+- Tokens expire after some time, re-login when needed
+- All users are in Riyadh area (area_id: 1)
+- Teams have proper member distribution for testing
+
+Report generated at: 2025-09-19 20:14:59
+Ready for complete application flow testing!
+============================================================

@@ -1,0 +1,33 @@
+TEAMS STRUCTURE
+====================
+
+TEAM: Thunder Warriors (ID: 59)
+Leader: Ahmed Al-Saudi - 0536925874
+Sub-Leader: Abdullah Al-Mohammed - 0536925876
+Members:
+  - Ali Al-Abdullah - 0536925877
+  - Omar Al-Ali - 0536925878
+  - Khalid Al-Omar - 0536925879
+  - Fahd Al-Khalid - 0536925880
+  - Saud Al-Fahd - 0536925881
+  - Nasser Al-Faisal - 0536925883
+  - Abdulrahman Al-Nasser - 0536925884
+  - Rayan Al-Rayan - 0536925889
+  - Yazeed Al-Yazeed - 0536925890
+  - Zaid Al-Zaid - 0536925893
+
+TEAM: Desert Falcons (ID: 60)
+Leader: Hamad Al-Hamad - 0536925894
+Sub-Leader: Nawaf Al-Nawaf - 0536925895
+Members:
+  - Tareq Al-Tareq - 0536925896
+  - Yusuf Al-Yusuf - 0536925897
+  - Mohammed Al-Ahmad - 0536925974
+  - Faisal Al-Saud - 0536925975
+  - Majed Al-Majed - 0536925976
+  - Saad Al-Saad - 0536925977
+  - Turki Al-Turki - 0536925978
+  - Bandar Al-Bandar - 0536925979
+  - Sultan Al-Sultan - 0536925980
+  - Waleed Al-Waleed - 0536925981
+
