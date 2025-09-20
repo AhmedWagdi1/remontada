@@ -153,6 +153,7 @@ class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> with 
           ),
         ),
         body: _buildBody(),
+        ),
       ),
     );
   }
