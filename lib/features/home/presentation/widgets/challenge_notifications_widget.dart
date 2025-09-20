@@ -207,8 +207,11 @@ class _ChallengeNotificationsWidgetState extends State<ChallengeNotificationsWid
         Routes.challengeRequestDetailsScreen,
         arguments: pendingRequests.first.id,
       );
+    } else if (pendingRequests.length > 1) {
+      // If multiple pending requests, navigate to challenge requests list screen
+      Navigator.pushNamed(context, Routes.challengeRequestsScreen);
     } else {
-      // If multiple or no pending requests, navigate to challenges screen
+      // If no pending requests, navigate to general challenges screen
       Navigator.pushNamed(context, Routes.challengesScreen);
     }
   }

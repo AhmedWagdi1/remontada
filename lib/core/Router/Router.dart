@@ -12,6 +12,7 @@ import 'package:remontada/features/challenges/presentation/screens/challenges_sc
 import 'package:remontada/features/challenges/presentation/screens/create_match_screen.dart'
     as challenges;
 import 'package:remontada/features/challenges/presentation/screens/challenge_request_details_screen.dart';
+import 'package:remontada/features/challenges/presentation/screens/challenge_requests_screen.dart';
 import 'package:remontada/features/player_details/presentation/screens/player_details.dart';
 import 'package:remontada/features/profile/presentation/screens/edit_profile.screen.dart';
 import 'package:remontada/features/splash/cubit/splash_cubit.dart';
@@ -58,6 +59,7 @@ class Routes {
   static const String PlayersScreenSupervisor = "/PlayersScreenSupervisor";
   static const String challengesScreen = "/ChallengesScreen";
   static const String challengeRequestDetailsScreen = "/ChallengeRequestDetailsScreen";
+  static const String challengeRequestsScreen = "/ChallengeRequestsScreen";
   static const String UpdateAppScreen = "/UpdateAppScreen";
   static const String TeamChatsScreen = "/TeamChatsScreen";
   static const String TeamMessagesScreen = "/TeamMessagesScreen";
@@ -255,6 +257,13 @@ class RouteGenerator {
             return ChallengeRequestDetailsScreen(
               requestId: routeSettings.arguments as int,
             );
+          },
+        );
+      case Routes.challengeRequestsScreen:
+        return CupertinoPageRoute(
+          settings: routeSettings,
+          builder: (_) {
+            return const ChallengeRequestsScreen();
           },
         );
       case Routes.TeamChatsScreen:
