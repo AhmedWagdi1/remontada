@@ -29,7 +29,8 @@ class ChallengeRequestDetails {
       id: json['id'] ?? 0,
       fromTeamId: json['requester_team_id'] ?? json['from_team_id'] ?? 0,
       toTeamId: json['invited_team_id'] ?? json['to_team_id'] ?? 0,
-      fromTeamName: json['requester_team']?['name'] ?? json['from_team_name'] ?? '',
+      fromTeamName:
+          json['requester_team']?['name'] ?? json['from_team_name'] ?? '',
       toTeamName: json['invited_team']?['name'] ?? json['to_team_name'] ?? '',
       status: json['status'] ?? 'pending',
       createdAt: json['created_at'] ?? '',

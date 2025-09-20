@@ -45,13 +45,14 @@ class MyMatchesCubit extends Cubit<MyMatchesState> {
 
   getMymatches({bool? isCurrent, bool? isloading = true}) async {
     if (isloading == true) emit(MyMatchesLoading());
-    print('\n[MyMatchesCubit] getMymatches() called with isCurrent: $isCurrent, isloading: $isloading');
+    print(
+        '\n[MyMatchesCubit] getMymatches() called with isCurrent: $isCurrent, isloading: $isloading');
     final res = await myMatchesrepo.getMymatches(isCurrent: isCurrent);
     print('[MyMatchesCubit] getMymatches() raw response: $res');
     if (res != null) {
       try {
         final myMatches = MyMatches.fromMap(res);
-  final count = myMatches.matches?.length ?? 0;
+        final count = myMatches.matches?.length ?? 0;
         print('[MyMatchesCubit] Parsed MyMatches count: $count');
         emit(
           MyMatchesLoaded(

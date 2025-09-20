@@ -9,7 +9,8 @@ import '../request/create_match_request.dart';
 
 abstract class ChallengesRepository {
   Future<List<ChallengeOverviewModel>> getChallengesOverview();
-  Future<CreateChallengeResponse> createChallenge(CreateChallengeRequest request);
+  Future<CreateChallengeResponse> createChallenge(
+      CreateChallengeRequest request);
   Future<List<UserTeamModel>> getUserTeams();
   Future<List<MatchModel>> getAvailableMatches();
   Future<http.Response> createMatch(CreateMatchRequest request);

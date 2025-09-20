@@ -1,11 +1,9 @@
-
 // import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 
 // import '../../../../../../core/extensions/all_extensions.dart';
 // import '../../../../cubit/splash_cubit.dart';
 // import '../../../../cubit/splash_states.dart';
-
 
 // class DotsWidget extends StatefulWidget {
 //   DotsWidget({super.key, required this.index});

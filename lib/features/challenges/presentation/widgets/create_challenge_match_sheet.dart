@@ -24,12 +24,13 @@ class CreateChallengeMatchSheet extends StatefulWidget {
   const CreateChallengeMatchSheet({super.key});
 
   @override
-  State<CreateChallengeMatchSheet> createState() => _CreateChallengeMatchSheetState();
+  State<CreateChallengeMatchSheet> createState() =>
+      _CreateChallengeMatchSheetState();
 }
 
 class _CreateChallengeMatchSheetState extends State<CreateChallengeMatchSheet> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  
+
   TextEditingController playgroundcontroller = TextEditingController();
   TextEditingController date = TextEditingController();
   TextEditingController number = TextEditingController();
@@ -67,7 +68,7 @@ class _CreateChallengeMatchSheetState extends State<CreateChallengeMatchSheet> {
           if (cubit.request.type == null || cubit.request.type!.isEmpty) {
             cubit.request.type = 'challenge';
           }
-          
+
           return Container(
             height: MediaQuery.of(context).size.height * 0.8,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
@@ -108,7 +109,7 @@ class _CreateChallengeMatchSheetState extends State<CreateChallengeMatchSheet> {
                   ],
                 ),
                 24.ph,
-                
+
                 // Form
                 Expanded(
                   child: SingleChildScrollView(
@@ -140,7 +141,7 @@ class _CreateChallengeMatchSheetState extends State<CreateChallengeMatchSheet> {
                             },
                           ),
                           12.ph,
-                          
+
                           // Playground Selection
                           CustomAutoCompleteTextField<PlayGroundModel>(
                             controller: playgroundcontroller,
@@ -157,7 +158,8 @@ class _CreateChallengeMatchSheetState extends State<CreateChallengeMatchSheet> {
                             hint: "اختر الملعب",
                             function: (p0) async {
                               final homeCubit = HomeCubit();
-                              final playgrounds = await homeCubit.getplayground();
+                              final playgrounds =
+                                  await homeCubit.getplayground();
                               return playgrounds?.playgrounds ?? [];
                             },
                             itemAsString: (p0) => p0.name ?? "",
@@ -169,7 +171,7 @@ class _CreateChallengeMatchSheetState extends State<CreateChallengeMatchSheet> {
                             },
                           ),
                           12.ph,
-                          
+
                           // Date
                           TextFormFieldWidget(
                             readOnly: true,
@@ -178,10 +180,12 @@ class _CreateChallengeMatchSheetState extends State<CreateChallengeMatchSheet> {
                                 context: context,
                                 initialDate: DateTime.now(),
                                 firstDate: DateTime.now(),
-                                lastDate: DateTime.now().add(const Duration(days: 365)),
+                                lastDate: DateTime.now()
+                                    .add(const Duration(days: 365)),
                               );
                               if (pickedDate != null) {
-                                date.text = DateFormat('yyyy-MM-dd', 'en_US').format(pickedDate);
+                                date.text = DateFormat('yyyy-MM-dd', 'en_US')
+                                    .format(pickedDate);
                               }
                             },
                             controller: date,
@@ -194,10 +198,11 @@ class _CreateChallengeMatchSheetState extends State<CreateChallengeMatchSheet> {
                             borderRadius: 33,
                             hintText: "تاريخ المباراة",
                             hintColor: LightThemeColors.textPrimary,
-                            activeBorderColor: LightThemeColors.inputFieldBorder,
+                            activeBorderColor:
+                                LightThemeColors.inputFieldBorder,
                           ),
                           12.ph,
-                          
+
                           // Number of subscribers
                           TextFormFieldWidget(
                             controller: number,
@@ -219,10 +224,11 @@ class _CreateChallengeMatchSheetState extends State<CreateChallengeMatchSheet> {
                             borderRadius: 33,
                             hintText: "عدد المشتركين",
                             hintColor: LightThemeColors.textPrimary,
-                            activeBorderColor: LightThemeColors.inputFieldBorder,
+                            activeBorderColor:
+                                LightThemeColors.inputFieldBorder,
                           ),
                           12.ph,
-                          
+
                           // Start Time
                           TextFormFieldWidget(
                             readOnly: true,
@@ -232,14 +238,16 @@ class _CreateChallengeMatchSheetState extends State<CreateChallengeMatchSheet> {
                                 initialTime: TimeOfDay.now(),
                               ).then((value) {
                                 if (value != null) {
-                                  String minute = value.minute.toString().length == 1
-                                      ? "0${value.minute}"
-                                      : value.minute.toString();
+                                  String minute =
+                                      value.minute.toString().length == 1
+                                          ? "0${value.minute}"
+                                          : value.minute.toString();
                                   startTime.text = "${value.hour}:$minute";
                                 }
                               });
                             },
-                            onSaved: (value) => cubit.request.statrtTime = value,
+                            onSaved: (value) =>
+                                cubit.request.statrtTime = value,
                             controller: startTime,
                             validator: Utils.valid.defaultValidation,
                             prefixIcon: "clock".svg(),
@@ -247,10 +255,11 @@ class _CreateChallengeMatchSheetState extends State<CreateChallengeMatchSheet> {
                             borderRadius: 33,
                             hintText: "بداية الفترة",
                             hintColor: LightThemeColors.textPrimary,
-                            activeBorderColor: LightThemeColors.inputFieldBorder,
+                            activeBorderColor:
+                                LightThemeColors.inputFieldBorder,
                           ),
                           12.ph,
-                          
+
                           // End Time
                           TextFormFieldWidget(
                             readOnly: true,
@@ -260,9 +269,10 @@ class _CreateChallengeMatchSheetState extends State<CreateChallengeMatchSheet> {
                                 initialTime: TimeOfDay.now(),
                               ).then((value) {
                                 if (value != null) {
-                                  String minute = value.minute.toString().length == 1
-                                      ? "0${value.minute}"
-                                      : value.minute.toString();
+                                  String minute =
+                                      value.minute.toString().length == 1
+                                          ? "0${value.minute}"
+                                          : value.minute.toString();
                                   endTime.text = "${value.hour}:$minute";
                                 }
                               });
@@ -275,10 +285,11 @@ class _CreateChallengeMatchSheetState extends State<CreateChallengeMatchSheet> {
                             borderRadius: 33,
                             hintText: "نهاية الفترة",
                             hintColor: LightThemeColors.textPrimary,
-                            activeBorderColor: LightThemeColors.inputFieldBorder,
+                            activeBorderColor:
+                                LightThemeColors.inputFieldBorder,
                           ),
                           12.ph,
-                          
+
                           // Duration
                           TextFormFieldWidget(
                             controller: period,
@@ -292,10 +303,11 @@ class _CreateChallengeMatchSheetState extends State<CreateChallengeMatchSheet> {
                             borderRadius: 33,
                             hintText: "مدة المباراة",
                             hintColor: LightThemeColors.textPrimary,
-                            activeBorderColor: LightThemeColors.inputFieldBorder,
+                            activeBorderColor:
+                                LightThemeColors.inputFieldBorder,
                           ),
                           12.ph,
-                          
+
                           // Duration Text
                           TextFormFieldWidget(
                             controller: text,
@@ -308,10 +320,11 @@ class _CreateChallengeMatchSheetState extends State<CreateChallengeMatchSheet> {
                             borderRadius: 33,
                             hintText: "نص المدة",
                             hintColor: LightThemeColors.textPrimary,
-                            activeBorderColor: LightThemeColors.inputFieldBorder,
+                            activeBorderColor:
+                                LightThemeColors.inputFieldBorder,
                           ),
                           12.ph,
-                          
+
                           // Price
                           TextFormFieldWidget(
                             controller: price,
@@ -325,10 +338,11 @@ class _CreateChallengeMatchSheetState extends State<CreateChallengeMatchSheet> {
                             borderRadius: 33,
                             hintText: "السعر للفرد",
                             hintColor: LightThemeColors.textPrimary,
-                            activeBorderColor: LightThemeColors.inputFieldBorder,
+                            activeBorderColor:
+                                LightThemeColors.inputFieldBorder,
                           ),
                           12.ph,
-                          
+
                           // Description
                           TextFormFieldWidget(
                             controller: description,
@@ -342,10 +356,11 @@ class _CreateChallengeMatchSheetState extends State<CreateChallengeMatchSheet> {
                             borderRadius: 33,
                             hintText: "اضافة تفاصيل نصية",
                             hintColor: LightThemeColors.textPrimary,
-                            activeBorderColor: LightThemeColors.inputFieldBorder,
+                            activeBorderColor:
+                                LightThemeColors.inputFieldBorder,
                           ),
                           20.ph,
-                          
+
                           // Submit Button
                           ButtonWidget(
                             onTap: state is CreateMatchLoading
@@ -355,13 +370,21 @@ class _CreateChallengeMatchSheetState extends State<CreateChallengeMatchSheet> {
                                       _formKey.currentState?.save();
                                       // Debug: print request before submission
                                       try {
-                                        print('\n[CreateChallengeMatchSheet] Submitting request: ' + cubit.request.toMap().toString());
+                                        print(
+                                            '\n[CreateChallengeMatchSheet] Submitting request: ' +
+                                                cubit.request
+                                                    .toMap()
+                                                    .toString());
                                       } catch (_) {
-                                        print('[CreateChallengeMatchSheet] Submitting request: ' + cubit.request.toString());
+                                        print(
+                                            '[CreateChallengeMatchSheet] Submitting request: ' +
+                                                cubit.request.toString());
                                       }
-                                      print('[CreateChallengeMatchSheet] Calling cubit.createMatches()');
+                                      print(
+                                          '[CreateChallengeMatchSheet] Calling cubit.createMatches()');
                                       // Ensure type is present in the request payload just before sending
-                                      if (cubit.request.type == null || cubit.request.type!.isEmpty) {
+                                      if (cubit.request.type == null ||
+                                          cubit.request.type!.isEmpty) {
                                         cubit.request.type = 'challenge';
                                       }
                                       cubit.createMatches();

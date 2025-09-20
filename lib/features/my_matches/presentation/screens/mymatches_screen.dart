@@ -50,6 +50,7 @@ class _MyMatchesScreenState extends State<MyMatchesScreen>
       // each tab will refresh when they become visible; ignore errors here.
     }
   }
+
   @override
   Widget build(BuildContext context) {
     // No-op here: listing refreshes are handled via AppEvents.matchesRefresh.

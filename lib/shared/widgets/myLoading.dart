@@ -24,7 +24,8 @@ class MyLoading {
     }
   }
 
-  static Center loadingWidget() => const Center(child: CircularProgressIndicator());
+  static Center loadingWidget() =>
+      const Center(child: CircularProgressIndicator());
 
   static dismis() {
     if (shown) {
@@ -49,8 +50,8 @@ class MySuccess {
           builder: (context) => fullScreen
               ? SuccessWidget()
               : Dialog(
-              child: SizedBox(
-                  width: 200, height: 200, child: SuccessWidget())));
+                  child: SizedBox(
+                      width: 200, height: 200, child: SuccessWidget())));
 
       shown = true;
     }
@@ -64,7 +65,6 @@ class MySuccess {
       shown = false;
     } else {}
   }
-
 }
 
 class SuccessWidget extends StatefulWidget {
@@ -83,6 +83,7 @@ class _SuccessWidgetState extends State<SuccessWidget> {
       MySuccess.dismis();
     });
   }
+
   Widget build(BuildContext context) {
     return Center(child: Lottie.asset("assets/json/success.json"));
   }

@@ -28,7 +28,8 @@ class ChatMessage {
       senderName: json['sender_name']?.toString() ?? '',
       senderAvatar: json['sender_avatar']?.toString() ?? '',
       message: json['message']?.toString() ?? '',
-      timestamp: DateTime.tryParse(json['timestamp']?.toString() ?? '') ?? DateTime.now(),
+      timestamp: DateTime.tryParse(json['timestamp']?.toString() ?? '') ??
+          DateTime.now(),
       teamId: json['team_id']?.toString() ?? '',
       type: MessageType.values.firstWhere(
         (e) => e.name == (json['type'] ?? 'text'),

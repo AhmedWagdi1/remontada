@@ -30,5 +30,6 @@ Future<void> setupLocator() async {
   locator.registerLazySingleton(() => HomeRepo(locator<DioService>()));
   locator.registerLazySingleton(() => MatchDetailsRepo(locator<DioService>()));
   locator.registerLazySingleton(() => ChatDataSource(locator<DioService>()));
-  locator.registerLazySingleton<ChatRepository>(() => ChatRepositoryImpl(locator<ChatDataSource>()));
+  locator.registerLazySingleton<ChatRepository>(
+      () => ChatRepositoryImpl(locator<ChatDataSource>()));
 }

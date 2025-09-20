@@ -61,7 +61,8 @@ class ChampionshipCard extends StatelessWidget {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        const Icon(Icons.emoji_events, size: 20, color: Colors.white),
+                        const Icon(Icons.emoji_events,
+                            size: 20, color: Colors.white),
                         const SizedBox(width: 4),
                         Text(
                           LocaleKeys.rounds_count.tr(args: [rounds.toString()]),
@@ -71,7 +72,8 @@ class ChampionshipCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
@@ -137,7 +139,10 @@ class RemontadaChampionsLeagueCard extends StatelessWidget {
       titleKey: LocaleKeys.champions_league_remontada_championship,
       rounds: 16,
       icon: Icons.emoji_events,
-      gradientColors: [Colors.lightBlue.shade200, Colors.lightBlueAccent.shade100],
+      gradientColors: [
+        Colors.lightBlue.shade200,
+        Colors.lightBlueAccent.shade100
+      ],
     );
   }
 }

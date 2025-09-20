@@ -30,9 +30,11 @@ extension DoubleExtensions on double? {
   /// Returns the value of this [double] in radians by multiplying it with the conversion factor `pi / 180.0`.
   double get toRadians => validate() * (pi / 180.0);
 
-  EdgeInsets get edgeInsetsHorizontal => EdgeInsets.symmetric(horizontal: validate());
+  EdgeInsets get edgeInsetsHorizontal =>
+      EdgeInsets.symmetric(horizontal: validate());
 
-  EdgeInsets get edgeInsetsVertical => EdgeInsets.symmetric(vertical: validate());
+  EdgeInsets get edgeInsetsVertical =>
+      EdgeInsets.symmetric(vertical: validate());
 
   EdgeInsets get edgeInsetsAll => EdgeInsets.all(validate());
 

@@ -42,7 +42,8 @@ class TeamMessagesCubit extends Cubit<TeamMessagesState> {
   int _currentPage = 1;
   static const int _pageSize = 20;
 
-  TeamMessagesCubit(this._repository, this.teamId) : super(TeamMessagesInitial()) {
+  TeamMessagesCubit(this._repository, this.teamId)
+      : super(TeamMessagesInitial()) {
     _listenToNewMessages();
   }
 
@@ -66,7 +67,7 @@ class TeamMessagesCubit extends Cubit<TeamMessagesState> {
       );
 
       final newMessages = await _repository.getTeamMessages(request);
-      
+
       if (refresh) {
         _messages = newMessages;
       } else {
@@ -74,7 +75,7 @@ class TeamMessagesCubit extends Cubit<TeamMessagesState> {
       }
 
       _currentPage++;
-      
+
       emit(TeamMessagesLoaded(
         messages: List.from(_messages),
         hasMore: newMessages.length == _pageSize,
@@ -125,7 +126,7 @@ class TeamMessagesCubit extends Cubit<TeamMessagesState> {
   Future<void> deleteMessage(String messageId) async {
     try {
       await _repository.deleteMessage(messageId);
-      
+
       if (state is TeamMessagesLoaded) {
         final currentState = state as TeamMessagesLoaded;
         final updatedMessages = currentState.messages

@@ -24,12 +24,12 @@ class TeamChat {
       teamId: json['team_id']?.toString() ?? '',
       teamName: json['team_name']?.toString() ?? '',
       teamAvatar: json['team_avatar']?.toString() ?? '',
-      lastMessage: json['last_message'] != null 
+      lastMessage: json['last_message'] != null
           ? ChatMessage.fromJson(json['last_message'])
           : null,
       unreadCount: json['unread_count']?.toInt() ?? 0,
       memberIds: List<String>.from(json['member_ids'] ?? []),
-      lastActivity: json['last_activity'] != null 
+      lastActivity: json['last_activity'] != null
           ? DateTime.tryParse(json['last_activity'])
           : null,
     );

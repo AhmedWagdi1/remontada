@@ -43,7 +43,7 @@ class ChallengeOverviewModel {
       createdAt: json['created_at'] as String? ?? '',
       updatedAt: json['updated_at'] as String? ?? '',
       deletedAt: json['deleted_at'] as String?,
-      ranking: json['ranking'] != null 
+      ranking: json['ranking'] != null
           ? RankingModel.fromJson(json['ranking'] as Map<String, dynamic>)
           : null,
     );

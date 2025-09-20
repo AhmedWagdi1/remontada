@@ -34,8 +34,9 @@ void navigateHero({required BuildContext context, required Widget route}) {
           reverseTransitionDuration: Duration(milliseconds: 300),
           pageBuilder: (_, __, ___) => route));
 }
-class Navigation{
-   static void openScreen(BuildContext? context, Widget screen,
+
+class Navigation {
+  static void openScreen(BuildContext? context, Widget screen,
       {bool replacment = false, bool remove = false}) {
     if (context == null) {
       return;
@@ -54,5 +55,4 @@ class Navigation{
       Navigator.push(context, MaterialPageRoute(builder: (context) => screen));
     }
   }
-
 }

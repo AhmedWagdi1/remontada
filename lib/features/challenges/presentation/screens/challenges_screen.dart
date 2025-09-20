@@ -25,7 +25,6 @@ import '../../domain/model/challenge_match_model.dart';
 import 'match_details_page.dart';
 import '../widgets/expandable_create_challenge.dart';
 
-
 /// Placeholder screen shown for the upcoming Challenges feature.
 class ChallengesScreen extends StatefulWidget {
   /// Optional flag indicating whether the current player already belongs to a team.
@@ -102,6 +101,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     } catch (_) {}
     setState(() => _hasTeam = false);
   }
+
   /// Retrieves the current user's role in their team.
   ///
   /// This makes a GET request to `/team/show/{teamId}` to get detailed team information
@@ -133,7 +133,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
           final currentUserPhone = Utils.user.user?.phone;
           if (currentUserPhone != null) {
             for (final user in users) {
-              if (user is Map<String, dynamic> && user['mobile'] == currentUserPhone) {
+              if (user is Map<String, dynamic> &&
+                  user['mobile'] == currentUserPhone) {
                 setState(() => _userRole = user['role'] as String?);
                 return;
               }
@@ -144,8 +145,6 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     } catch (_) {}
     setState(() => _userRole = null);
   }
-
-
 
   /// Retrieves challenges overview from the backend API.
   /// `{ "status": true, "data": [ { "id": 1, "name": "...", "ranking": {...} } ] }`.
@@ -185,7 +184,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         final data = jsonDecode(res.body) as Map<String, dynamic>;
         if (data['status'] == true) {
           final matchesData = data['data']['matches'] as List<dynamic>;
-          final matches = matchesData.map((m) => ChallengeMatch.fromJson(m)).toList();
+          final matches =
+              matchesData.map((m) => ChallengeMatch.fromJson(m)).toList();
           setState(() => _matches = matches);
         }
       }
@@ -267,7 +267,9 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     final String? team1Logo = team1LogoRaw is String ? team1LogoRaw : null;
     final String? team2Logo = team2LogoRaw is String ? team2LogoRaw : null;
     final badgeText = match != null
-        ? (match.isPast ? 'تحدي مكتمل - ${match.playground} - ${match.date} ${match.startTime}' : 'تحدي جاهز - ${match.playground} - ${match.date} ${match.startTime}')
+        ? (match.isPast
+            ? 'تحدي مكتمل - ${match.playground} - ${match.date} ${match.startTime}'
+            : 'تحدي جاهز - ${match.playground} - ${match.date} ${match.startTime}')
         : '';
 
     return Directionality(
@@ -412,7 +414,9 @@ class _ChallengesScreenState extends State<ChallengesScreen>
 
     final team1Name = match?.team1?['name'] ?? '';
     final team1Logo = match?.team1?['logo_url']?.toString();
-    final badgeText = match != null ? 'انضم للتحدي - ${match.playground} - ${match.date} ${match.startTime}' : '';
+    final badgeText = match != null
+        ? 'انضم للتحدي - ${match.playground} - ${match.date} ${match.startTime}'
+        : '';
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -497,7 +501,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                       const SizedBox(height: 4),
                       InkWell(
                         onTap: () {
-                          print('👆 DEBUG: Join button tapped for match ID: ${match?.id}');
+                          print(
+                              '👆 DEBUG: Join button tapped for match ID: ${match?.id}');
                           _showJoinChallengeDialog(match);
                         },
                         child: Container(
@@ -603,8 +608,6 @@ class _ChallengesScreenState extends State<ChallengesScreen>
       ),
     );
   }
-
-
 
   /// Builds a numbered step item for the how challenges work card.
   Widget _buildHowStep({
@@ -779,7 +782,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     final teamsWithRanking = _challengesOverview
         .where((team) => team.ranking != null)
         .toList()
-      ..sort((a, b) => (b.ranking?.points ?? 0).compareTo(a.ranking?.points ?? 0));
+      ..sort(
+          (a, b) => (b.ranking?.points ?? 0).compareTo(a.ranking?.points ?? 0));
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -847,7 +851,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
               final ranking = team.ranking!;
               final int gd = ranking.goalDifference;
               final rank = index + 1;
-              
+
               return DataRow(
                 cells: [
                   DataCell(Text(rank.toString(), style: dataStyle)),
@@ -857,11 +861,14 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                         CircleAvatar(
                           radius: 12,
                           backgroundColor: Colors.grey.shade300,
-                          backgroundImage: team.logo != null && team.logo!.isNotEmpty
-                              ? NetworkImage('${ConstKeys.baseUrl}/storage/$team.logo')
-                              : null,
+                          backgroundImage:
+                              team.logo != null && team.logo!.isNotEmpty
+                                  ? NetworkImage(
+                                      '${ConstKeys.baseUrl}/storage/$team.logo')
+                                  : null,
                           child: team.logo == null || team.logo!.isEmpty
-                              ? const Icon(Icons.sports_soccer, color: Colors.grey)
+                              ? const Icon(Icons.sports_soccer,
+                                  color: Colors.grey)
                               : null,
                         ),
                         const SizedBox(width: 4),
@@ -945,12 +952,10 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     // Assume you have a field: List<dynamic> _userTeams; (add it to the class)
     // And you fetch it in _fetchUserTeams and store the result
     // We'll use the first team as the user's team for navigation
-    final userTeamId = _userTeams.isNotEmpty
-        ? (_userTeams.first['id'] as int)
-        : null;
-    final userTeamName = _userTeams.isNotEmpty
-        ? (_userTeams.first['name'] as String?)
-        : null;
+    final userTeamId =
+        _userTeams.isNotEmpty ? (_userTeams.first['id'] as int) : null;
+    final userTeamName =
+        _userTeams.isNotEmpty ? (_userTeams.first['name'] as String?) : null;
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Container(
@@ -1048,8 +1053,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (_) => const CreateTeamPage()),
+                    MaterialPageRoute(builder: (_) => const CreateTeamPage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -1111,7 +1115,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                   child: Column(
                     children: [
                       const CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF23425F)),
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(Color(0xFF23425F)),
                       ),
                       const SizedBox(height: 16),
                       Text(
@@ -1146,8 +1151,10 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                           borderRadius: BorderRadius.circular(30),
                         ),
                         labelColor: Colors.white.withValues(alpha: 0.7),
-                        unselectedLabelColor: Colors.grey.withValues(alpha: 0.5),
-                        labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+                        unselectedLabelColor:
+                            Colors.grey.withValues(alpha: 0.5),
+                        labelStyle:
+                            const TextStyle(fontWeight: FontWeight.bold),
                         tabs: [
                           Tab(text: LocaleKeys.challenges_nav.tr()),
                           Tab(text: LocaleKeys.league_results.tr()),
@@ -1250,7 +1257,6 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                           ],
                         ),
                       ),
-
                     CustomText(
                       LocaleKeys.challenge_updates.tr(),
                       color: darkBlue,
@@ -1322,35 +1328,43 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                             ...(() sync* {
                               final showable = _matches.where((m) {
                                 if (m.team1 == null) {
-                                  print('🚫 DEBUG: Hiding match with null team1 ID: ${m.id}');
+                                  print(
+                                      '🚫 DEBUG: Hiding match with null team1 ID: ${m.id}');
                                   return false;
                                 }
 
-                                final isCompleted = m.team1 != null && m.team2 != null;
+                                final isCompleted =
+                                    m.team1 != null && m.team2 != null;
                                 if (isCompleted) {
-                                  print('🔍 DEBUG: Showing completed match ID: ${m.id}, Date: ${m.date}, Teams: ${m.team1?['name']} vs ${m.team2?['name']}');
+                                  print(
+                                      '🔍 DEBUG: Showing completed match ID: ${m.id}, Date: ${m.date}, Teams: ${m.team1?['name']} vs ${m.team2?['name']}');
                                   return true;
                                 }
 
                                 final shouldShow = !m.isPast;
                                 if (!shouldShow) {
-                                  print('🚫 DEBUG: Hiding past non-completed match ID: ${m.id}, Date: ${m.date}, IsPast: ${m.isPast}');
+                                  print(
+                                      '🚫 DEBUG: Hiding past non-completed match ID: ${m.id}, Date: ${m.date}, IsPast: ${m.isPast}');
                                 } else {
-                                  print('✅ DEBUG: Showing future non-completed match ID: ${m.id}, Date: ${m.date}');
+                                  print(
+                                      '✅ DEBUG: Showing future non-completed match ID: ${m.id}, Date: ${m.date}');
                                 }
                                 return shouldShow;
                               }).toList();
 
                               int rankMatch(ChallengeMatch m) {
-                                final isCompleted = m.team1 != null && m.team2 != null;
+                                final isCompleted =
+                                    m.team1 != null && m.team2 != null;
                                 final isPast = m.isPast;
-                                final bool isJoinable = !isCompleted && !isPast && m.team1 != null;
+                                final bool isJoinable =
+                                    !isCompleted && !isPast && m.team1 != null;
                                 if (isJoinable) return 0;
                                 if (isCompleted && !isPast) return 1;
                                 return 2;
                               }
 
-                              showable.sort((a, b) => rankMatch(a).compareTo(rankMatch(b)));
+                              showable.sort((a, b) =>
+                                  rankMatch(a).compareTo(rankMatch(b)));
 
                               for (final match in showable) {
                                 yield _buildMatchCard(match);
@@ -1389,7 +1403,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                             color: Colors.black.withOpacity(0.5),
                             child: Center(
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 12),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(24),
@@ -1404,7 +1419,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Icon(Icons.access_time, color: Colors.orange, size: 28),
+                                    Icon(Icons.access_time,
+                                        color: Colors.orange, size: 28),
                                     const SizedBox(width: 12),
                                     Text(
                                       'قريباً',
@@ -1435,7 +1451,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   /// Shows a custom dialog for joining a challenge
   void _showJoinChallengeDialog(ChallengeMatch? match) {
     print('🔍 DEBUG: Showing join challenge dialog');
-    print('📋 DEBUG: Match ID: ${match?.id}, Playground: ${match?.playground}, Date: ${match?.date}');
+    print(
+        '📋 DEBUG: Match ID: ${match?.id}, Playground: ${match?.playground}, Date: ${match?.date}');
     print('👥 DEBUG: Team1: ${match?.team1}, Team2: ${match?.team2}');
 
     if (_userTeams.isEmpty) {
@@ -1458,7 +1475,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     final date = match?.date ?? '';
     final startTime = match?.startTime ?? '';
 
-    print('🏟️ DEBUG: Challenge details - Playground: $playground, Date: $date, Time: $startTime');
+    print(
+        '🏟️ DEBUG: Challenge details - Playground: $playground, Date: $date, Time: $startTime');
     print('👥 DEBUG: Opposing team: $team1Name');
 
     showDialog(
@@ -1502,7 +1520,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                       const SizedBox(height: 12),
                       Row(
                         children: [
-                          const Icon(Icons.location_on, color: Color(0xFF6C757D), size: 20),
+                          const Icon(Icons.location_on,
+                              color: Color(0xFF6C757D), size: 20),
                           const SizedBox(width: 8),
                           Text('الملعب: $playground'),
                         ],
@@ -1510,7 +1529,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          const Icon(Icons.calendar_today, color: Color(0xFF6C757D), size: 20),
+                          const Icon(Icons.calendar_today,
+                              color: Color(0xFF6C757D), size: 20),
                           const SizedBox(width: 8),
                           Text('التاريخ: $date'),
                         ],
@@ -1518,7 +1538,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          const Icon(Icons.access_time, color: Color(0xFF6C757D), size: 20),
+                          const Icon(Icons.access_time,
+                              color: Color(0xFF6C757D), size: 20),
                           const SizedBox(width: 8),
                           Text('الوقت: $startTime'),
                         ],
@@ -1584,7 +1605,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
               ),
               ElevatedButton(
                 onPressed: () {
-                  print('✅ DEBUG: User confirmed join request - proceeding to send API call');
+                  print(
+                      '✅ DEBUG: User confirmed join request - proceeding to send API call');
                   Navigator.of(context).pop();
                   _sendJoinRequest(match);
                 },
@@ -1609,7 +1631,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   /// Sends a join request to the challenge API
   Future<void> _sendJoinRequest(ChallengeMatch? match) async {
     if (match == null || _userTeams.isEmpty) {
-      print('🔍 DEBUG: Cannot send join request - match is null or user has no teams');
+      print(
+          '🔍 DEBUG: Cannot send join request - match is null or user has no teams');
       return;
     }
 
@@ -1618,7 +1641,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     final requestUrl = '${ConstKeys.baseUrl}/challenge/send-team-match-request';
 
     print('🚀 DEBUG: Sending join request to: $requestUrl');
-    print('📤 DEBUG: Request body: {match_id: $matchId, invited_team_id: $invitedTeamId}');
+    print(
+        '📤 DEBUG: Request body: {match_id: $matchId, invited_team_id: $invitedTeamId}');
     print('🔑 DEBUG: Authorization header: Bearer ${Utils.token}');
 
     try {
@@ -1644,15 +1668,18 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         print('✅ DEBUG: Join request sent successfully');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(responseData['message'] ?? 'تم إرسال طلب الانضمام بنجاح'),
+            content:
+                Text(responseData['message'] ?? 'تم إرسال طلب الانضمام بنجاح'),
             backgroundColor: Colors.green,
           ),
         );
       } else {
-        print('❌ DEBUG: Join request failed - Status: ${responseData['status']}, Message: ${responseData['message']}');
+        print(
+            '❌ DEBUG: Join request failed - Status: ${responseData['status']}, Message: ${responseData['message']}');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(responseData['message'] ?? 'فشل في إرسال طلب الانضمام'),
+            content:
+                Text(responseData['message'] ?? 'فشل في إرسال طلب الانضمام'),
             backgroundColor: Colors.red,
           ),
         );

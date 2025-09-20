@@ -1,3 +1,1 @@
-class layoutModel {
-  
-}
+class layoutModel {}

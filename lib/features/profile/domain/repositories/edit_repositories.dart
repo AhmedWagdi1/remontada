@@ -37,7 +37,7 @@ class EditRepo {
       isForm: true,
       loading: true,
       url: EditEndpoints.confirm_mobile,
-      body: {"code" : code},
+      body: {"code": code},
     );
 
     if (response.isError == false) {

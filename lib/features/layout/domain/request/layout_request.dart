@@ -1,4 +1,1 @@
-
-class layoutRequest {
-  
-}
+class layoutRequest {}

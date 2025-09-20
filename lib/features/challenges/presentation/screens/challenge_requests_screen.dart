@@ -11,14 +11,16 @@ import 'package:remontada/core/utils/Locator.dart';
 /// Screen displaying list of pending challenge requests for the user
 class ChallengeRequestsScreen extends StatefulWidget {
   final List<ChallengeRequest>? initialRequests;
-  
+
   const ChallengeRequestsScreen({super.key, this.initialRequests});
 
   @override
-  State<ChallengeRequestsScreen> createState() => _ChallengeRequestsScreenState();
+  State<ChallengeRequestsScreen> createState() =>
+      _ChallengeRequestsScreenState();
 }
 
-class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> with WidgetsBindingObserver {
+class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen>
+    with WidgetsBindingObserver {
   List<ChallengeRequest> _challengeRequests = [];
   bool _isLoading = true;
 
@@ -48,14 +50,15 @@ class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> with 
   void _initializeData() {
     // Check if we have initial data passed from the navigation
     if (widget.initialRequests != null && widget.initialRequests!.isNotEmpty) {
-      print('🔍 DEBUG: ChallengeRequestsScreen - Using initial data: ${widget.initialRequests!.length} requests');
+      print(
+          '🔍 DEBUG: ChallengeRequestsScreen - Using initial data: ${widget.initialRequests!.length} requests');
       setState(() {
         _challengeRequests = widget.initialRequests!;
         _isLoading = false;
       });
       return;
     }
-    
+
     // If no initial data provided, show empty state
     print('🔍 DEBUG: ChallengeRequestsScreen - No initial data provided');
     setState(() {
@@ -69,22 +72,24 @@ class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> with 
     setState(() {
       _isLoading = true;
     });
-    
+
     try {
       // Get HomeCubit from the locator and fetch fresh data
       final homeCubit = locator<HomeCubit>();
       final requests = await homeCubit.getChallengeRequests();
-      
+
       // Filter only pending requests
-      final pendingRequests = requests.where((request) => request.isPending).toList();
-      print('🔄 DEBUG: Fetched ${requests.length} total requests, ${pendingRequests.length} pending');
-      
+      final pendingRequests =
+          requests.where((request) => request.isPending).toList();
+      print(
+          '🔄 DEBUG: Fetched ${requests.length} total requests, ${pendingRequests.length} pending');
+
       if (mounted) {
         setState(() {
           _challengeRequests = pendingRequests;
           _isLoading = false;
         });
-        
+
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -106,7 +111,7 @@ class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> with 
         setState(() {
           _isLoading = false;
         });
-        
+
         // Show error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -136,23 +141,24 @@ class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> with 
         },
         child: Scaffold(
           backgroundColor: Colors.grey[50],
-        appBar: AppBar(
-          title: const CustomText(
-            'طلبات التحديات',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+          appBar: AppBar(
+            title: const CustomText(
+              'طلبات التحديات',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            backgroundColor: context.primaryColor,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+              onPressed: () => Navigator.pushReplacementNamed(
+                  context, Routes.challengesScreen),
             ),
           ),
-          backgroundColor: context.primaryColor,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-            onPressed: () => Navigator.pushReplacementNamed(context, Routes.challengesScreen),
-          ),
-        ),
-        body: _buildBody(),
+          body: _buildBody(),
         ),
       ),
     );
@@ -334,7 +340,8 @@ class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> with 
 
                 // Status Badge
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: Colors.orange.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
@@ -366,16 +373,17 @@ class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> with 
                   Icons.arrow_upward,
                   context.primaryColor,
                 ),
-                
+
                 const SizedBox(height: 12),
-                
+
                 // VS Divider
                 Row(
                   children: [
                     Expanded(child: Divider(color: Colors.grey.shade300)),
                     Container(
                       margin: const EdgeInsets.symmetric(horizontal: 16),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
                         color: context.primaryColor,
                         borderRadius: BorderRadius.circular(20),
@@ -392,9 +400,9 @@ class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> with 
                     Expanded(child: Divider(color: Colors.grey.shade300)),
                   ],
                 ),
-                
+
                 const SizedBox(height: 12),
-                
+
                 // To Team (Your Team)
                 _buildTeamRow(
                   'فريقك',
@@ -460,7 +468,7 @@ class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> with 
           ),
         ),
         const SizedBox(width: 8),
-        
+
         // Team Logo
         if (logoUrl != null && logoUrl.isNotEmpty) ...[
           NetworkImagesWidgets(
@@ -471,7 +479,7 @@ class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> with 
           ),
           const SizedBox(width: 8),
         ],
-        
+
         Expanded(
           child: CustomText(
             teamName,
@@ -498,6 +506,4 @@ class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> with 
       _fetchChallengeRequests();
     });
   }
-
-
 }

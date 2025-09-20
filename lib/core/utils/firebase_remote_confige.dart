@@ -7,29 +7,30 @@ class FireBaseRemoteService {
   static Future<void> intializeRemoteConfig() async {
     try {
       remoteConfig = FirebaseRemoteConfig.instance;
-      
+
       // Set more reasonable config settings
       RemoteConfigSettings remoteConfigSettings = RemoteConfigSettings(
-        fetchTimeout: Duration(minutes: 1), // Increased from 1 second to 1 minute
-        minimumFetchInterval: Duration(hours: 1), // Increased from 1 second to 1 hour
+        fetchTimeout:
+            Duration(minutes: 1), // Increased from 1 second to 1 minute
+        minimumFetchInterval:
+            Duration(hours: 1), // Increased from 1 second to 1 hour
       );
-      
+
       await remoteConfig.setConfigSettings(remoteConfigSettings);
-      
+
       // Set default values first
       await remoteConfig.setDefaults({
         // Add your default values here if needed
       });
-      
+
       // Try to fetch and activate
       bool activated = await remoteConfig.fetchAndActivate();
-      
+
       if (activated) {
         log('Firebase Remote Config activated successfully');
       } else {
         log('Firebase Remote Config fetch completed but no updates were activated');
       }
-      
     } catch (e) {
       log('Error initializing Firebase Remote Config: $e');
       // Initialize with defaults on error

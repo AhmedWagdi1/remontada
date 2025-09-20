@@ -60,7 +60,7 @@ class FBMessging {
   @pragma('vm:entry-point')
   static Future<void> initUniLink() async {
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-    
+
     // Request permissions with error handling
     try {
       await messaging.requestPermission(
@@ -116,33 +116,40 @@ class FBMessging {
       log('${event.data}');
       log('${event.data}');
 
-    RemoteNotification? notification = event.notification;
-    NotificationModel notificationModel =
-      NotificationModel.fromMap(event.data);
+      RemoteNotification? notification = event.notification;
+      NotificationModel notificationModel =
+          NotificationModel.fromMap(event.data);
       // If this is a chat message notification, attempt to refresh messages
       // so that an already-open chat screen will show the new message.
       try {
         final nmType = notificationModel.type ?? notificationModel.data?.type;
-        final isChatNotification = (nmType == 'chat_message' || nmType == 'chat');
-        debugPrint('FBMessging.onMessage -> notificationModel.type: $nmType, isChat: $isChatNotification');
+        final isChatNotification =
+            (nmType == 'chat_message' || nmType == 'chat');
+        debugPrint(
+            'FBMessging.onMessage -> notificationModel.type: $nmType, isChat: $isChatNotification');
         if (isChatNotification) {
           final ctx = Utils.navigatorKey().currentContext;
           if (ctx != null) {
             try {
-              final teamMessagesCubit = BlocProvider.of<TeamMessagesCubit>(ctx, listen: false);
-              debugPrint('FBMessging: calling TeamMessagesCubit.loadMessages(refresh: true)');
+              final teamMessagesCubit =
+                  BlocProvider.of<TeamMessagesCubit>(ctx, listen: false);
+              debugPrint(
+                  'FBMessging: calling TeamMessagesCubit.loadMessages(refresh: true)');
               teamMessagesCubit.loadMessages(refresh: true);
             } catch (e) {
-              debugPrint('FBMessging: TeamMessagesCubit not found in current context or error calling loadMessages: $e');
+              debugPrint(
+                  'FBMessging: TeamMessagesCubit not found in current context or error calling loadMessages: $e');
             }
           } else {
-            debugPrint('FBMessging: navigator context is null, cannot refresh messages');
+            debugPrint(
+                'FBMessging: navigator context is null, cannot refresh messages');
           }
           // Also try the global callback
           try {
             Utils.refreshCurrentChat?.call();
           } catch (e) {
-            debugPrint('FBMessging: error calling Utils.refreshCurrentChat: $e');
+            debugPrint(
+                'FBMessging: error calling Utils.refreshCurrentChat: $e');
           }
         }
       } catch (e) {
@@ -188,7 +195,7 @@ class FBMessging {
         log('onMessageOpenedApp no 666');
         log(message.toString());
         log(message.data.toString());
-    // NotificationModel notification = NotificationModel.fromMap(message.data);
+        // NotificationModel notification = NotificationModel.fromMap(message.data);
         // handleNotification(
         //   notification,
         //   appIsopened: false,
@@ -313,10 +320,10 @@ class FBMessging {
       }
       // Wait for Firebase to be fully initialized
       await Future.delayed(const Duration(seconds: 2));
-  final tokenFcm = await messaging.getToken();
-  print('FCM Token (fetched): $tokenFcm');
-  Utils.FCMToken = tokenFcm ?? '';
-  print('Utils.FCMToken (set): ${Utils.FCMToken}');
+      final tokenFcm = await messaging.getToken();
+      print('FCM Token (fetched): $tokenFcm');
+      Utils.FCMToken = tokenFcm ?? '';
+      print('Utils.FCMToken (set): ${Utils.FCMToken}');
     } catch (e) {
       print('Error getting FCM token: $e');
       Utils.FCMToken = '';

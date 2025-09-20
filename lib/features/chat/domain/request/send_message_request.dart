@@ -34,11 +34,11 @@ class GetMessagesRequest {
       'page': page.toString(),
       'limit': limit.toString(),
     };
-    
+
     if (lastMessageId != null) {
       params['last_message_id'] = lastMessageId!;
     }
-    
+
     return params;
   }
 }

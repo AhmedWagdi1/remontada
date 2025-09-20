@@ -104,7 +104,8 @@ extension ThemeExtension on BuildContext {
   Color get hintColor => theme.inputDecorationTheme.hintStyle!.color!;
   Color get borderColor => theme.inputDecorationTheme.border!.borderSide.color;
 
-  Color get bottomNavBarSelectedItemColor => theme.bottomNavigationBarTheme.selectedItemColor!;
+  Color get bottomNavBarSelectedItemColor =>
+      theme.bottomNavigationBarTheme.selectedItemColor!;
 
   TextStyle? get hintTextStyle => theme.inputDecorationTheme.hintStyle;
 

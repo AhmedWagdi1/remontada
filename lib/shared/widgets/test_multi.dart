@@ -51,12 +51,16 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
   }
 
   String listItems(List<T> items) {
-    String result = items.map((name) => widget.itemAsString.call(name).split(" ")[0]).join(" , ");
+    String result = items
+        .map((name) => widget.itemAsString.call(name).split(" ")[0])
+        .join(" , ");
     return result;
   }
 
   addOrRemoveItem(T item) {
-    selectedItems.any((element) => element == item) ? selectedItems.remove(item) : selectedItems.add(item);
+    selectedItems.any((element) => element == item)
+        ? selectedItems.remove(item)
+        : selectedItems.add(item);
 
     widget.onChange(selectedItems);
   }
@@ -122,15 +126,18 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
                                   closeOverlay();
                                 },
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 0),
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 0),
                                   child: AnimationAppearanceOpacity(
                                     duration: const Duration(milliseconds: 300),
-                                    child: StatefulBuilder(builder: (context, set) {
+                                    child: StatefulBuilder(
+                                        builder: (context, set) {
                                       return Card(
                                           clipBehavior: Clip.hardEdge,
                                           elevation: 0,
                                           shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(4.0),
+                                              borderRadius:
+                                                  BorderRadius.circular(4.0),
                                               side: const BorderSide(
                                                 color: Color(0xff939393),
                                                 width: 1,
@@ -138,44 +145,66 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
                                           child: FutureBuilder(
                                               future: _future,
                                               builder: (context, items) {
-                                                return items.connectionState == ConnectionState.waiting
+                                                return items.connectionState ==
+                                                        ConnectionState.waiting
                                                     ? const Padding(
-                                                        padding: EdgeInsets.all(15.0),
-                                                        child: Center(child: CircularProgressIndicator()),
+                                                        padding: EdgeInsets.all(
+                                                            15.0),
+                                                        child: Center(
+                                                            child:
+                                                                CircularProgressIndicator()),
                                                       )
                                                     : items.data == null
                                                         ? const SizedBox()
                                                         : ListView.builder(
                                                             shrinkWrap: true,
-                                                            padding: EdgeInsets.zero,
-                                                            itemCount: items.data?.length,
-                                                            itemBuilder: ((context, index) => GestureDetector(
+                                                            padding:
+                                                                EdgeInsets.zero,
+                                                            itemCount: items
+                                                                .data?.length,
+                                                            itemBuilder: ((context,
+                                                                    index) =>
+                                                                GestureDetector(
                                                                   onTap: () {
-                                                                    addOrRemoveItem(items.data![index]);
-                                                                    setState(() {});
+                                                                    addOrRemoveItem(
+                                                                        items.data![
+                                                                            index]);
+                                                                    setState(
+                                                                        () {});
                                                                     set(() {});
                                                                   },
-                                                                  child: Container(
+                                                                  child:
+                                                                      Container(
                                                                     padding: EdgeInsets.symmetric(
-                                                                        horizontal: 8, vertical: 12),
-                                                                    width: double.infinity,
-                                                                    decoration: BoxDecoration(
+                                                                        horizontal:
+                                                                            8,
+                                                                        vertical:
+                                                                            12),
+                                                                    width: double
+                                                                        .infinity,
+                                                                    decoration:
+                                                                        BoxDecoration(
                                                                       border: Border(
-                                                                          bottom: BorderSide(color: Colors.black26)),
+                                                                          bottom:
+                                                                              BorderSide(color: Colors.black26)),
                                                                     ),
                                                                     child: Row(
                                                                       children: [
                                                                         Icon(
-                                                                          selectedItems.any((element) =>
-                                                                                  element == items.data![index])
+                                                                          selectedItems.any((element) => element == items.data![index])
                                                                               ? Icons.check_box
                                                                               : Icons.check_box_outline_blank,
-                                                                          color: context.colorScheme.primary,
+                                                                          color: context
+                                                                              .colorScheme
+                                                                              .primary,
                                                                         ),
                                                                         8.pw,
                                                                         CustomText(
-                                                                          widget.itemAsString.call(items.data![index]),
-                                                                          fontSize: 16,
+                                                                          widget
+                                                                              .itemAsString
+                                                                              .call(items.data![index]),
+                                                                          fontSize:
+                                                                              16,
                                                                         ),
                                                                       ],
                                                                     ),
@@ -191,7 +220,8 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
                           },
                           child: ListTile(
                             key: _key,
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 0),
                             onTap: () {
                               closeOverlay();
                               // _tooltipController.show();
@@ -219,9 +249,16 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
                                                 setState(() {});
                                               },
                                               shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(4.0),
-                                                  side: BorderSide(color: context.colorScheme.primary, width: 0.5)),
-                                              backgroundColor: context.colorScheme.primary.withOpacity(0.1),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          4.0),
+                                                  side: BorderSide(
+                                                      color: context
+                                                          .colorScheme.primary,
+                                                      width: 0.5)),
+                                              backgroundColor: context
+                                                  .colorScheme.primary
+                                                  .withOpacity(0.1),
                                               label: CustomText(
                                                 widget.itemAsString.call(e),
                                               ),
@@ -234,7 +271,9 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
                                 AnimatedSwitcher(
                                   duration: const Duration(milliseconds: 300),
                                   child: Icon(
-                                    _hasOpenedOverlay ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                                    _hasOpenedOverlay
+                                        ? Icons.keyboard_arrow_up
+                                        : Icons.keyboard_arrow_down,
                                     key: ValueKey(_hasOpenedOverlay),
                                     color: Color(0xff8CAAC5),
                                   ),
@@ -306,10 +345,13 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
                             child: FutureBuilder(
                                 future: _future,
                                 builder: (context, items) {
-                                  return items.connectionState == ConnectionState.waiting
+                                  return items.connectionState ==
+                                          ConnectionState.waiting
                                       ? const Padding(
                                           padding: EdgeInsets.all(15.0),
-                                          child: Center(child: CircularProgressIndicator()),
+                                          child: Center(
+                                              child:
+                                                  CircularProgressIndicator()),
                                         )
                                       : items.data == null
                                           ? const SizedBox()
@@ -317,30 +359,50 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
                                               shrinkWrap: true,
                                               padding: EdgeInsets.zero,
                                               itemCount: items.data?.length,
-                                              itemBuilder: ((context, index) => GestureDetector(
+                                              itemBuilder: ((context, index) =>
+                                                      GestureDetector(
                                                         onTap: () {
-                                                          addOrRemoveItem(items.data![index]);
+                                                          addOrRemoveItem(items
+                                                              .data![index]);
                                                           setState(() {});
                                                           set(() {});
                                                         },
                                                         child: Container(
-                                                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                                                          width: double.infinity,
-                                                          decoration: BoxDecoration(
-                                                            border: Border(bottom: BorderSide(color: Colors.black26)),
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal: 8,
+                                                                  vertical: 12),
+                                                          width:
+                                                              double.infinity,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            border: Border(
+                                                                bottom: BorderSide(
+                                                                    color: Colors
+                                                                        .black26)),
                                                           ),
                                                           child: Row(
                                                             children: [
                                                               Icon(
-                                                                selectedItems
-                                                                        .any((element) => element == items.data![index])
-                                                                    ? Icons.check_box
-                                                                    : Icons.check_box_outline_blank,
-                                                                color: context.colorScheme.primary,
+                                                                selectedItems.any((element) =>
+                                                                        element ==
+                                                                        items.data![
+                                                                            index])
+                                                                    ? Icons
+                                                                        .check_box
+                                                                    : Icons
+                                                                        .check_box_outline_blank,
+                                                                color: context
+                                                                    .colorScheme
+                                                                    .primary,
                                                               ),
                                                               8.pw,
                                                               CustomText(
-                                                                widget.itemAsString.call(items.data![index]),
+                                                                widget
+                                                                    .itemAsString
+                                                                    .call(items
+                                                                            .data![
+                                                                        index]),
                                                                 fontSize: 16,
                                                               ),
                                                             ],
@@ -547,7 +609,9 @@ class _MultiSelectDropDownState<T> extends State<MultiSelectDropDown<T>> {
   }
 
   void closeOverlay() {
-    _tooltipController.isShowing ? _tooltipController.hide() : _tooltipController.show();
+    _tooltipController.isShowing
+        ? _tooltipController.hide()
+        : _tooltipController.show();
     setState(() {});
     // if (_hasOpenedOverlay) {
     //   _overlayEntry!.remove();

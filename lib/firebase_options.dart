@@ -83,5 +83,4 @@ class DefaultFirebaseOptions {
     authDomain: 'remon-b6ffa.firebaseapp.com',
     storageBucket: 'remon-b6ffa.appspot.com',
   );
-
 }

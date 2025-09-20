@@ -14,10 +14,12 @@ class ChallengeNotificationsWidget extends StatefulWidget {
   const ChallengeNotificationsWidget({super.key});
 
   @override
-  State<ChallengeNotificationsWidget> createState() => _ChallengeNotificationsWidgetState();
+  State<ChallengeNotificationsWidget> createState() =>
+      _ChallengeNotificationsWidgetState();
 }
 
-class _ChallengeNotificationsWidgetState extends State<ChallengeNotificationsWidget> with WidgetsBindingObserver {
+class _ChallengeNotificationsWidgetState
+    extends State<ChallengeNotificationsWidget> with WidgetsBindingObserver {
   List<ChallengeRequest> _challengeRequests = [];
   bool _isLoading = false;
 
@@ -56,9 +58,11 @@ class _ChallengeNotificationsWidgetState extends State<ChallengeNotificationsWid
         if (state is ChallengeRequestsLoading) {
           setState(() => _isLoading = true);
         } else if (state is ChallengeRequestsLoaded) {
-          final pendingCount = state.requests.where((request) => request.isPending).length;
-          print('🔔 DEBUG: Notification widget received ${state.requests.length} total requests, ${pendingCount} pending');
-          
+          final pendingCount =
+              state.requests.where((request) => request.isPending).length;
+          print(
+              '🔔 DEBUG: Notification widget received ${state.requests.length} total requests, ${pendingCount} pending');
+
           setState(() {
             _challengeRequests = state.requests;
             _isLoading = false;
@@ -73,7 +77,8 @@ class _ChallengeNotificationsWidgetState extends State<ChallengeNotificationsWid
   }
 
   Widget _buildNotificationCard() {
-    final pendingCount = HomeCubit.get(context).getPendingChallengeRequestsCount(_challengeRequests);
+    final pendingCount = HomeCubit.get(context)
+        .getPendingChallengeRequestsCount(_challengeRequests);
 
     if (pendingCount == 0 && !_isLoading) {
       return const SizedBox.shrink(); // Don't show if no pending requests
@@ -163,7 +168,8 @@ class _ChallengeNotificationsWidgetState extends State<ChallengeNotificationsWid
                       ? LocaleKeys.challenge_loading.tr()
                       : pendingCount == 1
                           ? LocaleKeys.challenge_single_request.tr()
-                          : LocaleKeys.challenge_multiple_requests.tr(args: [pendingCount.toString()]),
+                          : LocaleKeys.challenge_multiple_requests
+                              .tr(args: [pendingCount.toString()]),
                   style: TextStyle(
                     color: LightThemeColors.secondaryText,
                     fontSize: 14,
@@ -207,20 +213,25 @@ class _ChallengeNotificationsWidgetState extends State<ChallengeNotificationsWid
         .fold<ChallengeRequest?>(
           null,
           (previous, current) => previous == null ||
-                  DateTime.parse(current.createdAt).isAfter(DateTime.parse(previous.createdAt))
+                  DateTime.parse(current.createdAt)
+                      .isAfter(DateTime.parse(previous.createdAt))
               ? current
               : previous,
         );
 
     if (latestRequest == null) return '';
 
-  return '${latestRequest.fromTeamName} ${LocaleKeys.challenge_challenged_you.tr(namedArgs: {'date': latestRequest.formattedDate})}';
+    return '${latestRequest.fromTeamName} ${LocaleKeys.challenge_challenged_you.tr(namedArgs: {
+          'date': latestRequest.formattedDate
+        })}';
   }
 
   void _navigateToChallenges() {
-    final pendingRequests = _challengeRequests.where((request) => request.isPending).toList();
-    print('🧭 DEBUG: Navigating - Found ${pendingRequests.length} pending requests');
-    
+    final pendingRequests =
+        _challengeRequests.where((request) => request.isPending).toList();
+    print(
+        '🧭 DEBUG: Navigating - Found ${pendingRequests.length} pending requests');
+
     if (pendingRequests.length == 1) {
       // If only one pending request, navigate directly to details
       print('🧭 DEBUG: Navigating to single request details');
@@ -230,27 +241,31 @@ class _ChallengeNotificationsWidgetState extends State<ChallengeNotificationsWid
         arguments: pendingRequests.first.id,
       ).then((_) {
         // Refresh challenge notifications when returning from details
-        print('🔄 DEBUG: Returned from challenge details, refreshing notifications');
+        print(
+            '🔄 DEBUG: Returned from challenge details, refreshing notifications');
         _loadChallengeRequests();
       });
     } else if (pendingRequests.length > 1) {
       // If multiple pending requests, navigate to challenge requests list screen
       print('🧭 DEBUG: Navigating to challenge requests list screen');
       Navigator.pushNamed(
-        context, 
+        context,
         Routes.challengeRequestsScreen,
         arguments: pendingRequests, // Pass the pending requests directly
       ).then((_) {
         // Refresh challenge notifications when returning from list
-        print('🔄 DEBUG: Returned from challenge requests list, refreshing notifications');
+        print(
+            '🔄 DEBUG: Returned from challenge requests list, refreshing notifications');
         _loadChallengeRequests();
       });
     } else {
       // If no pending requests, navigate to general challenges screen
-      print('🧭 DEBUG: Navigating to general challenges screen (no pending requests)');
+      print(
+          '🧭 DEBUG: Navigating to general challenges screen (no pending requests)');
       Navigator.pushNamed(context, Routes.challengesScreen).then((_) {
         // Refresh challenge notifications when returning from challenges screen
-        print('🔄 DEBUG: Returned from challenges screen, refreshing notifications');
+        print(
+            '🔄 DEBUG: Returned from challenges screen, refreshing notifications');
         _loadChallengeRequests();
       });
     }

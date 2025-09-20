@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import '../../extensions/context_extensions.dart';
 
-
 class ItemOfContact extends StatelessWidget {
   final void Function()? onTap;
   final bool choose, isImage;
@@ -39,7 +38,8 @@ class ItemOfContact extends StatelessWidget {
                 ),
                 const Spacer(),
                 choose
-                    ? Icon(Icons.camera_alt_outlined, color: context.primaryColor)
+                    ? Icon(Icons.camera_alt_outlined,
+                        color: context.primaryColor)
                     : Icon(Icons.image_outlined, color: context.primaryColor)
               ],
             ),

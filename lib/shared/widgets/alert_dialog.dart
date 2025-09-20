@@ -48,7 +48,7 @@ AlertDialog alertDialog(
       Card(
           clipBehavior: Clip.hardEdge,
           elevation: 0,
-          color:Colors.purple,
+          color: Colors.purple,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
               side: BorderSide(color: Colors.purple, width: 1)),

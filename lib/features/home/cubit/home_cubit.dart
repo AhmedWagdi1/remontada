@@ -141,17 +141,20 @@ class HomeCubit extends Cubit<HomeState> {
         if (data['status'] == true) {
           final List<dynamic> requestsData = data['data'] as List<dynamic>;
           final requests = requestsData
-              .map((requestJson) => ChallengeRequest.fromJson(requestJson as Map<String, dynamic>))
+              .map((requestJson) => ChallengeRequest.fromJson(
+                  requestJson as Map<String, dynamic>))
               .toList();
 
           emit(ChallengeRequestsLoaded(requests));
           return requests;
         } else {
-          emit(ChallengeRequestsFailed(data['message'] ?? 'Failed to fetch challenge requests'));
+          emit(ChallengeRequestsFailed(
+              data['message'] ?? 'Failed to fetch challenge requests'));
           return [];
         }
       } else {
-        emit(ChallengeRequestsFailed('Failed to fetch challenge requests: ${response.statusCode}'));
+        emit(ChallengeRequestsFailed(
+            'Failed to fetch challenge requests: ${response.statusCode}'));
         return [];
       }
     } catch (e) {

@@ -21,10 +21,12 @@ class ChallengeRequestDetailsScreen extends StatefulWidget {
   });
 
   @override
-  State<ChallengeRequestDetailsScreen> createState() => _ChallengeRequestDetailsScreenState();
+  State<ChallengeRequestDetailsScreen> createState() =>
+      _ChallengeRequestDetailsScreenState();
 }
 
-class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsScreen> {
+class _ChallengeRequestDetailsScreenState
+    extends State<ChallengeRequestDetailsScreen> {
   ChallengeRequestDetails? _challengeDetails;
   bool _isLoading = true;
   bool _isResponding = false;
@@ -68,7 +70,8 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
           }
         } else {
           setState(() => _isLoading = false);
-          _showError(data['message'] ?? LocaleKeys.challenges_failed_to_load.tr());
+          _showError(
+              data['message'] ?? LocaleKeys.challenges_failed_to_load.tr());
         }
       } else {
         setState(() => _isLoading = false);
@@ -102,21 +105,26 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
       final data = jsonDecode(response.body) as Map<String, dynamic>;
 
       if (data['status'] == true) {
-        _showSuccess(data['message'] ?? LocaleKeys.challenges_response_sent.tr());
+        _showSuccess(
+            data['message'] ?? LocaleKeys.challenges_response_sent.tr());
         // Navigate back to challenges screen after successful response
-        await Future.delayed(const Duration(seconds: 1)); // Brief delay to show success message
+        await Future.delayed(
+            const Duration(seconds: 1)); // Brief delay to show success message
         if (mounted) {
           Navigator.pushNamedAndRemoveUntil(
             context,
             Routes.challengesScreen,
-            (route) => route.isFirst, // Keep only the first route (usually the home/layout screen)
+            (route) => route
+                .isFirst, // Keep only the first route (usually the home/layout screen)
           );
         }
       } else {
-        _showError(data['message'] ?? LocaleKeys.challenges_error_responding.tr(args: ['']));
+        _showError(data['message'] ??
+            LocaleKeys.challenges_error_responding.tr(args: ['']));
       }
     } catch (e) {
-      _showError(LocaleKeys.challenges_error_responding.tr(args: [e.toString()]));
+      _showError(
+          LocaleKeys.challenges_error_responding.tr(args: [e.toString()]));
     } finally {
       setState(() => _isResponding = false);
     }
@@ -209,8 +217,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
           SizedBox(height: 24),
 
           // Action Buttons (only show if pending)
-          if (details.isPending)
-            _buildActionButtons(),
+          if (details.isPending) _buildActionButtons(),
 
           SizedBox(height: 24),
         ],
@@ -304,7 +311,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
 
         SizedBox(height: 12),
 
-        // To Team (Your Team)  
+        // To Team (Your Team)
         _buildTeamCard(
           LocaleKeys.challenges_your_team.tr(),
           details.toTeamName,
@@ -316,7 +323,8 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
     );
   }
 
-  Widget _buildTeamCard(String label, String teamName, Map<String, dynamic>? teamData, IconData icon, Color iconColor) {
+  Widget _buildTeamCard(String label, String teamName,
+      Map<String, dynamic>? teamData, IconData icon, Color iconColor) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -369,7 +377,8 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
             if (teamData['leader'] != null) ...[
               Row(
                 children: [
-                  Icon(Icons.person, color: LightThemeColors.secondaryText, size: 16),
+                  Icon(Icons.person,
+                      color: LightThemeColors.secondaryText, size: 16),
                   SizedBox(width: 8),
                   CustomText(
                     '${LocaleKeys.challenges_team_leader.tr()}: ${(teamData['leader'] as Map<String, dynamic>)['name'] ?? 'N/A'}',
@@ -387,7 +396,8 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
             if (teamData['members_count'] != null) ...[
               Row(
                 children: [
-                  Icon(Icons.group, color: LightThemeColors.secondaryText, size: 16),
+                  Icon(Icons.group,
+                      color: LightThemeColors.secondaryText, size: 16),
                   SizedBox(width: 8),
                   CustomText(
                     '${LocaleKeys.challenges_team_members.tr()}: ${teamData['members_count']}',
@@ -402,11 +412,13 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
             ],
 
             // Team Bio
-            if (teamData['bio'] != null && teamData['bio'].toString().isNotEmpty) ...[
+            if (teamData['bio'] != null &&
+                teamData['bio'].toString().isNotEmpty) ...[
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.info_outline, color: LightThemeColors.secondaryText, size: 16),
+                  Icon(Icons.info_outline,
+                      color: LightThemeColors.secondaryText, size: 16),
                   SizedBox(width: 8),
                   Expanded(
                     child: CustomText(
@@ -498,12 +510,12 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
           ),
         ),
         SizedBox(height: 12),
-
         Row(
           children: [
             Expanded(
               child: ElevatedButton(
-                onPressed: _isResponding ? null : () => _respondToChallenge('accept'),
+                onPressed:
+                    _isResponding ? null : () => _respondToChallenge('accept'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                   padding: const EdgeInsets.symmetric(vertical: 12),
@@ -517,7 +529,8 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
                         height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       )
                     : CustomText(
@@ -533,7 +546,8 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
             SizedBox(width: 12),
             Expanded(
               child: ElevatedButton(
-                onPressed: _isResponding ? null : () => _respondToChallenge('reject'),
+                onPressed:
+                    _isResponding ? null : () => _respondToChallenge('reject'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
                   padding: const EdgeInsets.symmetric(vertical: 12),
@@ -547,7 +561,8 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
                         height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       )
                     : CustomText(

@@ -1,5 +1,4 @@
 class OnBoardingModel {
-
   String stackUrl;
   String imageUrl;
   String title;
@@ -11,5 +10,4 @@ class OnBoardingModel {
     required this.title,
     required this.subTitle,
   });
-
 }

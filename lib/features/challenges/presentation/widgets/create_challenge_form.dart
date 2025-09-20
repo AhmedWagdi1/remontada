@@ -84,26 +84,30 @@ class _CreateChallengeFormState extends State<CreateChallengeForm> {
       if (_selectedTeam == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(_userTeams.isEmpty 
+            content: Text(_userTeams.isEmpty
                 ? 'No teams available. Please create a team first.'
                 : 'Please select a team'),
             backgroundColor: Colors.red,
           ),
         );
-        setState(() { _isLoading = false; });
+        setState(() {
+          _isLoading = false;
+        });
         return;
       }
 
       if (_selectedMatch == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(_availableMatches.isEmpty 
+            content: Text(_availableMatches.isEmpty
                 ? LocaleKeys.challenge_no_matches_available.tr()
                 : 'Please select a match'),
             backgroundColor: Colors.red,
           ),
         );
-        setState(() { _isLoading = false; });
+        setState(() {
+          _isLoading = false;
+        });
         return;
       }
 
@@ -116,7 +120,9 @@ class _CreateChallengeFormState extends State<CreateChallengeForm> {
       final repository = ChallengesRepositoryImpl();
       final response = await repository.createChallenge(request);
 
-      setState(() { _isLoading = false; });
+      setState(() {
+        _isLoading = false;
+      });
 
       if (response.status) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -135,7 +141,9 @@ class _CreateChallengeFormState extends State<CreateChallengeForm> {
         );
       }
     } catch (e) {
-      setState(() { _isLoading = false; });
+      setState(() {
+        _isLoading = false;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error creating challenge: $e'),
@@ -213,11 +221,14 @@ class _CreateChallengeFormState extends State<CreateChallengeForm> {
                           CircleAvatar(
                             radius: 16,
                             backgroundColor: Colors.grey.shade300,
-                            backgroundImage: team.logo != null && team.logo!.isNotEmpty
-                                ? NetworkImage('${ConstKeys.baseUrl}/storage/${team.logo}')
+                            backgroundImage: team.logo != null &&
+                                    team.logo!.isNotEmpty
+                                ? NetworkImage(
+                                    '${ConstKeys.baseUrl}/storage/${team.logo}')
                                 : null,
                             child: team.logo == null || team.logo!.isEmpty
-                                ? const Icon(Icons.sports_soccer, color: Colors.grey)
+                                ? const Icon(Icons.sports_soccer,
+                                    color: Colors.grey)
                                 : null,
                           ),
                           const SizedBox(width: 8),
@@ -225,7 +236,8 @@ class _CreateChallengeFormState extends State<CreateChallengeForm> {
                             child: Text(
                               team.name,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontWeight: FontWeight.bold),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
                         ],
@@ -397,7 +409,7 @@ class _CreateChallengeFormState extends State<CreateChallengeForm> {
           ),
           const SizedBox(height: 8),
           Text(
-            _isCompetitive 
+            _isCompetitive
                 ? LocaleKeys.challenge_competitive_description.tr()
                 : LocaleKeys.challenge_friendly_description.tr(),
             style: TextStyle(
@@ -411,7 +423,7 @@ class _CreateChallengeFormState extends State<CreateChallengeForm> {
           SizedBox(
             width: double.infinity,
             child: ButtonWidget(
-              title: _isLoading 
+              title: _isLoading
                   ? LocaleKeys.challenge_creating.tr()
                   : LocaleKeys.challenge_create_challenge.tr(),
               onTap: _isLoading ? null : _createChallenge,

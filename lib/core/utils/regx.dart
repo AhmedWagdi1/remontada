@@ -11,4 +11,4 @@ class AppRegx {
   RegExp englishReg = RegExp(r"^[a-zA-Z]+$");
   RegExp phoneRegex =
       RegExp(r"^(?:\966)?(5|50|53|56|54|59|51|58|57)([0-9]{8})$");
-  }
+}

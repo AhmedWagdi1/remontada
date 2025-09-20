@@ -16,8 +16,7 @@ import 'package:remontada/features/home/presentation/widgets/challenge_notificat
 import 'package:remontada/features/home/cubit/home_cubit.dart';
 import 'edit_team_page.dart';
 
-  late TabController _tabController;
-
+late TabController _tabController;
 
 /// Finds a member with the given [role] inside the provided [users] list.
 Map<String, dynamic>? findMemberByRole(List<dynamic> users, String role) {
@@ -74,7 +73,8 @@ class TeamDetailsPage extends StatefulWidget {
   State<TeamDetailsPage> createState() => _TeamDetailsPageState();
 }
 
-class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderStateMixin, WidgetsBindingObserver {
+class _TeamDetailsPageState extends State<TeamDetailsPage>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   Map<String, dynamic>? _teamData;
   String? _currentUserRole;
   List<dynamic> _invites = [];
@@ -83,7 +83,8 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _tabController = TabController(length: 5, vsync: this); // Default to 5, will be updated in build
+    _tabController = TabController(
+        length: 5, vsync: this); // Default to 5, will be updated in build
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) return;
       _fetchTeamData();
@@ -139,12 +140,12 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
 
         final rankings = team['rankings'] as Map<String, dynamic>?;
         team['competitive'] = rankings?['competitive'] as Map<String, dynamic>?;
-        
+
         // Debug: Print level data
         debugPrint('Rankings: $rankings');
         debugPrint('Competitive: ${team['competitive']}');
         debugPrint('Level: ${team['competitive']?['level']}');
-        
+
         setState(() {
           _teamData = team;
           _currentUserRole = currentUserRole;
@@ -169,7 +170,11 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
       if (data['status'] == true) {
         final invites = data['data'] as List<dynamic>;
         setState(() {
-          _invites = invites.where((invite) => invite['invited_team_id'] == widget.teamId && invite['status'] == 'pending').toList();
+          _invites = invites
+              .where((invite) =>
+                  invite['invited_team_id'] == widget.teamId &&
+                  invite['status'] == 'pending')
+              .toList();
         });
       }
     }
@@ -189,10 +194,12 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
             itemBuilder: (context, index) {
               final invite = invites[index] as Map<String, dynamic>;
               final match = invite['match'] as Map<String, dynamic>;
-              final requester = invite['requester_team'] as Map<String, dynamic>;
+              final requester =
+                  invite['requester_team'] as Map<String, dynamic>;
               return ListTile(
                 title: Text(requester['name']),
-                subtitle: Text('تاريخ: ${match['date']} - وقت: ${match['start_time']}'),
+                subtitle: Text(
+                    'تاريخ: ${match['date']} - وقت: ${match['start_time']}'),
                 trailing: Text(invite['status']),
               );
             },
@@ -211,14 +218,14 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
   /// Navigates to the edit team page and refreshes data on return.
   Future<void> _navigateToEditTeam(BuildContext context) async {
     if (_teamData == null) return;
-    
+
     final result = await Navigator.push<bool>(
       context,
       MaterialPageRoute(
         builder: (context) => EditTeamPage(teamData: _teamData!),
       ),
     );
-    
+
     // If the team was successfully updated, refresh the team data
     if (result == true) {
       _fetchTeamData();
@@ -230,7 +237,8 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
     const darkBlue = Color(0xFF23425F);
 
     // Determine if user can manage members (captain or subleader)
-    final canManageMembers = _currentUserRole == 'leader' || _currentUserRole == 'subLeader';
+    final canManageMembers =
+        _currentUserRole == 'leader' || _currentUserRole == 'subLeader';
 
     // Update TabController length if needed
     final tabCount = canManageMembers ? 5 : 3;
@@ -297,7 +305,8 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
               membersCount: _teamData?['members_count'] as int?,
               logoUrl: _teamData?['logo_url'] as String?,
               ranking: _teamData?['competitive'] as Map<String, dynamic>?,
-              level: (_teamData?['competitive'] as Map<String, dynamic>?)?['level'] as String?,
+              level: (_teamData?['competitive']
+                  as Map<String, dynamic>?)?['level'] as String?,
             ),
             SizedBox(height: 16),
             _AchievementsSection(
@@ -324,7 +333,9 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
             _InviteSettingsSection(),
             if (_currentUserRole == 'leader' && _invites.isNotEmpty) ...[
               const SizedBox(height: 16),
-              _ChallengeRequestsSection(invites: _invites, onPressed: () => _showInvitesDialog(context, _invites)),
+              _ChallengeRequestsSection(
+                  invites: _invites,
+                  onPressed: () => _showInvitesDialog(context, _invites)),
             ],
           ],
         ),
@@ -463,7 +474,7 @@ class _TeamSummaryCard extends StatelessWidget {
     const darkBlue = Color(0xFF23425F);
     final name = teamName ?? 'ريـمونتادا';
     final description = bio ?? 'فريق يبحث عن التحديات و الصراعات الكوراوويه';
-  final members = membersCount != null ? membersCount.toString() : '0';
+    final members = membersCount != null ? membersCount.toString() : '0';
     final logo = logoUrl;
     return Container(
       padding: const EdgeInsets.all(16),
@@ -579,39 +590,40 @@ class _AchievementsSection extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 8),
-          if (ranking != null && ranking!['trophies'] != null)
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                _Badge(
-                  label: 'دوري ريمونتادا',
-                  color: Colors.amber,
-                  count: ranking!['trophies']['remuntada_challenge_league'].toString(),
-                  icon: Icons.emoji_events,
-                ),
-                _Badge(
-                  label: 'كأس النخبة',
-                  color: Colors.blue,
-                  count: ranking!['trophies']['remuntada_elite_cup'].toString(),
-                  icon: Icons.emoji_events,
-                ),
-                _Badge(
-                  label: 'كأس السوبر',
-                  color: Colors.red,
-                  count: ranking!['trophies']['remuntada_super_cup'].toString(),
-                  icon: Icons.emoji_events,
-                ),
-                _Badge(
-                  label: 'إجمالي البطولات',
-                  color: Colors.green,
-                  count: ranking!['trophies']['total'].toString(),
-                  icon: Icons.emoji_events,
-                ),
-              ],
-            )
-          else
-            const Text('لا يوجد اوسمة و انجازات بعد'),
+        if (ranking != null && ranking!['trophies'] != null)
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _Badge(
+                label: 'دوري ريمونتادا',
+                color: Colors.amber,
+                count: ranking!['trophies']['remuntada_challenge_league']
+                    .toString(),
+                icon: Icons.emoji_events,
+              ),
+              _Badge(
+                label: 'كأس النخبة',
+                color: Colors.blue,
+                count: ranking!['trophies']['remuntada_elite_cup'].toString(),
+                icon: Icons.emoji_events,
+              ),
+              _Badge(
+                label: 'كأس السوبر',
+                color: Colors.red,
+                count: ranking!['trophies']['remuntada_super_cup'].toString(),
+                icon: Icons.emoji_events,
+              ),
+              _Badge(
+                label: 'إجمالي البطولات',
+                color: Colors.green,
+                count: ranking!['trophies']['total'].toString(),
+                icon: Icons.emoji_events,
+              ),
+            ],
+          )
+        else
+          const Text('لا يوجد اوسمة و انجازات بعد'),
       ],
     );
   }
@@ -969,7 +981,8 @@ class _ChallengeRequestsSection extends StatelessWidget {
   final VoidCallback onPressed;
 
   /// Creates a const [_ChallengeRequestsSection].
-  const _ChallengeRequestsSection({required this.invites, required this.onPressed});
+  const _ChallengeRequestsSection(
+      {required this.invites, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -1038,7 +1051,9 @@ class _MembersTab extends StatelessWidget {
     final allUsers = users ?? [];
     final captain = allUsers.where((u) => u['role'] == 'leader').toList();
     final subCaptain = allUsers.where((u) => u['role'] == 'subLeader').toList();
-    final members = allUsers.where((u) => u['role'] != 'leader' && u['role'] != 'subLeader').toList();
+    final members = allUsers
+        .where((u) => u['role'] != 'leader' && u['role'] != 'subLeader')
+        .toList();
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -1058,7 +1073,11 @@ class _MembersTab extends StatelessWidget {
             if (captain.isNotEmpty) ...[
               Padding(
                 padding: const EdgeInsets.only(right: 16, bottom: 8),
-                child: Text('الكابتن', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 16)),
+                child: Text('الكابتن',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                        fontSize: 16)),
               ),
               _PlayerList(players: captain),
               const SizedBox(height: 16),
@@ -1067,7 +1086,11 @@ class _MembersTab extends StatelessWidget {
             if (subCaptain.isNotEmpty) ...[
               Padding(
                 padding: const EdgeInsets.only(right: 16, bottom: 8),
-                child: Text('المساعد أو نائب الكابتن', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 16)),
+                child: Text('المساعد أو نائب الكابتن',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                        fontSize: 16)),
               ),
               _PlayerList(players: subCaptain),
               const SizedBox(height: 16),
@@ -1076,7 +1099,11 @@ class _MembersTab extends StatelessWidget {
             if (members.isNotEmpty) ...[
               Padding(
                 padding: const EdgeInsets.only(right: 16, bottom: 8),
-                child: Text('الأعضاء', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 16)),
+                child: Text('الأعضاء',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                        fontSize: 16)),
               ),
               _PlayerList(players: members),
             ],
@@ -1361,7 +1388,10 @@ class _JoinRequestsTabState extends State<_JoinRequestsTab> {
   Future<bool> _isPhoneRegistered(String phone) async {
     final res = await http.post(
       Uri.parse('https://pre-montada.gostcode.com/api/login'),
-      headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
       body: jsonEncode({'mobile': phone}),
     );
     final data = jsonDecode(res.body);
@@ -1380,7 +1410,9 @@ class _JoinRequestsTabState extends State<_JoinRequestsTab> {
     if (res.statusCode < 400 && data['status'] == true) {
       final teams = data['data'] as List<dynamic>;
       for (final team in teams) {
-        if ((team['users'] as List<dynamic>?)?.any((u) => u['mobile'] == phone) ?? false) {
+        if ((team['users'] as List<dynamic>?)
+                ?.any((u) => u['mobile'] == phone) ??
+            false) {
           return true;
         }
       }
@@ -1483,12 +1515,14 @@ class _JoinRequestsTabState extends State<_JoinRequestsTab> {
       _phoneController.clear();
       _selectedRole = 'member';
     });
-    
+
     // Refresh team data to show the new member in members tab
     widget.onMemberAdded?.call();
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('تم إضافة العضو بنجاح!'), backgroundColor: Colors.green),
+      const SnackBar(
+          content: Text('تم إضافة العضو بنجاح!'),
+          backgroundColor: Colors.green),
     );
   }
 
@@ -1537,7 +1571,9 @@ class _JoinRequestsTabState extends State<_JoinRequestsTab> {
                           border: OutlineInputBorder(),
                         ),
                         keyboardType: TextInputType.phone,
-                        validator: (v) => v == null || v.isEmpty ? 'يرجى إدخال رقم الجوال' : null,
+                        validator: (v) => v == null || v.isEmpty
+                            ? 'يرجى إدخال رقم الجوال'
+                            : null,
                         enabled: !_isSubmitting,
                       ),
                       const SizedBox(height: 12),
@@ -1545,13 +1581,19 @@ class _JoinRequestsTabState extends State<_JoinRequestsTab> {
                         value: _selectedRole,
                         items: widget.currentUserRole == 'leader'
                             ? const [
-                                DropdownMenuItem(value: 'member', child: Text('عضو')),
-                                DropdownMenuItem(value: 'subLeader', child: Text('مساعد')),
+                                DropdownMenuItem(
+                                    value: 'member', child: Text('عضو')),
+                                DropdownMenuItem(
+                                    value: 'subLeader', child: Text('مساعد')),
                               ]
                             : const [
-                                DropdownMenuItem(value: 'member', child: Text('عضو')),
+                                DropdownMenuItem(
+                                    value: 'member', child: Text('عضو')),
                               ],
-                        onChanged: _isSubmitting ? null : (v) => setState(() => _selectedRole = v ?? 'member'),
+                        onChanged: _isSubmitting
+                            ? null
+                            : (v) =>
+                                setState(() => _selectedRole = v ?? 'member'),
                         decoration: const InputDecoration(
                           labelText: 'الدور المطلوب',
                           border: OutlineInputBorder(),
@@ -1560,7 +1602,8 @@ class _JoinRequestsTabState extends State<_JoinRequestsTab> {
                       ),
                       const SizedBox(height: 12),
                       if (_error != null)
-                        Text(_error!, style: const TextStyle(color: Colors.red)),
+                        Text(_error!,
+                            style: const TextStyle(color: Colors.red)),
                       const SizedBox(height: 12),
                       AbsorbPointer(
                         absorbing: _isSubmitting,
@@ -1568,13 +1611,15 @@ class _JoinRequestsTabState extends State<_JoinRequestsTab> {
                           onPressed: _isSubmitting
                               ? null
                               : () {
-                                  if (_formKey.currentState?.validate() ?? false) {
+                                  if (_formKey.currentState?.validate() ??
+                                      false) {
                                     _addMember();
                                   }
                                 },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: _isSubmitting ? Colors.grey : null,
-                            foregroundColor: _isSubmitting ? Colors.white : null,
+                            foregroundColor:
+                                _isSubmitting ? Colors.white : null,
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             minimumSize: const Size(double.infinity, 48),
                           ),
@@ -1587,7 +1632,9 @@ class _JoinRequestsTabState extends State<_JoinRequestsTab> {
                                       height: 20,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2,
-                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
                                       ),
                                     ),
                                     SizedBox(width: 12),
@@ -2042,7 +2089,7 @@ class _ChatTab extends StatefulWidget {
   /// Creates a [_ChatTab].
   const _ChatTab({
     required this.teamId,
-    this.teamName, 
+    this.teamName,
     this.logoUrl,
   });
 
@@ -2061,21 +2108,17 @@ class _ChatTabState extends State<_ChatTab> {
   void initState() {
     super.initState();
     // Initialize cubits with the actual team ID using service locator
-    _messagesCubit = TeamMessagesCubit(
-      locator<ChatRepository>(), 
-      widget.teamId
-    );
-    _sendMessageCubit = SendMessageCubit(
-      locator<ChatRepository>()
-    );
-    
+    _messagesCubit =
+        TeamMessagesCubit(locator<ChatRepository>(), widget.teamId);
+    _sendMessageCubit = SendMessageCubit(locator<ChatRepository>());
+
     _messagesCubit.loadMessages(refresh: true);
-    
+
     // Set the global refresh callback for notifications
     Utils.refreshCurrentChat = () => _messagesCubit.loadMessages(refresh: true);
-    
+
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels >= 
+      if (_scrollController.position.pixels >=
           _scrollController.position.maxScrollExtent - 200) {
         _messagesCubit.loadMoreMessages();
       }
@@ -2103,10 +2146,12 @@ class _ChatTabState extends State<_ChatTab> {
         'content': message,
       };
       // Mask token a little to avoid printing full secret in logs (show last 6 chars)
-  final token = Utils.token;
-      final maskedToken = token.length > 6 ? '***' + token.substring(token.length - 6) : token;
+      final token = Utils.token;
+      final maskedToken =
+          token.length > 6 ? '***' + token.substring(token.length - 6) : token;
       debugPrint('CHAT SEND REQUEST -> url: $requestUrl');
-      debugPrint('CHAT SEND REQUEST -> headers: Authorization: Bearer $maskedToken');
+      debugPrint(
+          'CHAT SEND REQUEST -> headers: Authorization: Bearer $maskedToken');
       debugPrint('CHAT SEND REQUEST -> body: ${jsonEncode(requestBody)}');
 
       // record start time to calculate duration on response
@@ -2125,7 +2170,7 @@ class _ChatTabState extends State<_ChatTab> {
   @override
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
-    
+
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(value: _messagesCubit),
@@ -2169,32 +2214,35 @@ class _ChatTabState extends State<_ChatTab> {
                   if (state is TeamMessagesLoading) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  
+
                   if (state is TeamMessagesError) {
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.error_outline, size: 64, color: Colors.grey),
+                          const Icon(Icons.error_outline,
+                              size: 64, color: Colors.grey),
                           const SizedBox(height: 16),
                           Text(state.message),
                           const SizedBox(height: 16),
                           ElevatedButton(
-                            onPressed: () => _messagesCubit.loadMessages(refresh: true),
+                            onPressed: () =>
+                                _messagesCubit.loadMessages(refresh: true),
                             child: Text(LocaleKeys.chat_retry.tr()),
                           ),
                         ],
                       ),
                     );
                   }
-                  
+
                   if (state is TeamMessagesLoaded) {
                     if (state.messages.isEmpty) {
                       return Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.chat_bubble_outline, size: 64, color: Colors.grey),
+                            const Icon(Icons.chat_bubble_outline,
+                                size: 64, color: Colors.grey),
                             const SizedBox(height: 16),
                             Text(LocaleKeys.chat_no_messages.tr()),
                             const SizedBox(height: 8),
@@ -2206,12 +2254,13 @@ class _ChatTabState extends State<_ChatTab> {
                         ),
                       );
                     }
-                    
+
                     return ListView.builder(
                       controller: _scrollController,
                       reverse: true,
                       padding: const EdgeInsets.all(12),
-                      itemCount: state.messages.length + (state.isLoadingMore ? 1 : 0),
+                      itemCount:
+                          state.messages.length + (state.isLoadingMore ? 1 : 0),
                       itemBuilder: (context, index) {
                         if (index == state.messages.length) {
                           return const Center(
@@ -2221,10 +2270,10 @@ class _ChatTabState extends State<_ChatTab> {
                             ),
                           );
                         }
-                        
+
                         final message = state.messages[index];
                         final isMyMessage = message.senderId == Utils.userId;
-                        
+
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4),
                           child: _MessageBubble(
@@ -2232,13 +2281,15 @@ class _ChatTabState extends State<_ChatTab> {
                             message: message.message,
                             time: _formatTime(message.timestamp),
                             isSender: isMyMessage,
-                            onDelete: isMyMessage ? () => _messagesCubit.deleteMessage(message.id) : null,
+                            onDelete: isMyMessage
+                                ? () => _messagesCubit.deleteMessage(message.id)
+                                : null,
                           ),
                         );
                       },
                     );
                   }
-                  
+
                   return const SizedBox.shrink();
                 },
               ),
@@ -2246,19 +2297,23 @@ class _ChatTabState extends State<_ChatTab> {
             BlocListener<SendMessageCubit, SendMessageState>(
               listener: (context, state) {
                 if (state is SendMessageLoading) {
-                  debugPrint('SendMessageCubit: loading... started at: $_lastSendStart');
+                  debugPrint(
+                      'SendMessageCubit: loading... started at: $_lastSendStart');
                 } else if (state is SendMessageSuccess) {
                   try {
                     final duration = _lastSendStart == null
                         ? 'unknown'
                         : '${DateTime.now().difference(_lastSendStart!).inMilliseconds} ms';
                     // log the returned message object (toJson)
-                    debugPrint('SendMessageCubit: success - duration: $duration');
-                    debugPrint('SendMessageCubit: response message: ${state.message.toJson()}');
+                    debugPrint(
+                        'SendMessageCubit: success - duration: $duration');
+                    debugPrint(
+                        'SendMessageCubit: response message: ${state.message.toJson()}');
                     // Refresh messages after successful send
                     _messagesCubit.loadMessages(refresh: true);
                   } catch (e) {
-                    debugPrint('SendMessageCubit: success - but failed to dump message: $e');
+                    debugPrint(
+                        'SendMessageCubit: success - but failed to dump message: $e');
                   }
                 } else if (state is SendMessageError) {
                   debugPrint('SendMessageCubit: error -> ${state.message}');
@@ -2300,7 +2355,8 @@ class _ChatTabState extends State<_ChatTab> {
                 decoration: InputDecoration(
                   hintText: LocaleKeys.chat_type_message.tr(),
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 ),
                 onSubmitted: (_) => _sendMessage(),
               ),
@@ -2339,7 +2395,15 @@ class _ChatTabState extends State<_ChatTab> {
     } else if (now.difference(messageDate).inDays == 1) {
       return 'أمس';
     } else if (now.difference(messageDate).inDays < 7) {
-      const weekdays = ['الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت', 'الأحد'];
+      const weekdays = [
+        'الإثنين',
+        'الثلاثاء',
+        'الأربعاء',
+        'الخميس',
+        'الجمعة',
+        'السبت',
+        'الأحد'
+      ];
       return weekdays[dateTime.weekday - 1];
     } else {
       return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
@@ -2379,7 +2443,7 @@ class _MessageBubble extends StatelessWidget {
     final bubbleColor = isSender ? darkBlue : Colors.white;
     final textColor = isSender ? Colors.white : Colors.black87;
     final mainAxis = isSender ? MainAxisAlignment.end : MainAxisAlignment.start;
-    
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -2395,16 +2459,22 @@ class _MessageBubble extends StatelessWidget {
           ],
           Flexible(
             child: GestureDetector(
-              onLongPress: onDelete != null ? () => _showDeleteDialog(context) : null,
+              onLongPress:
+                  onDelete != null ? () => _showDeleteDialog(context) : null,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
                   color: bubbleColor,
                   borderRadius: BorderRadius.only(
                     topLeft: const Radius.circular(16),
                     topRight: const Radius.circular(16),
-                    bottomLeft: isSender ? const Radius.circular(16) : const Radius.circular(4),
-                    bottomRight: isSender ? const Radius.circular(4) : const Radius.circular(16),
+                    bottomLeft: isSender
+                        ? const Radius.circular(16)
+                        : const Radius.circular(4),
+                    bottomRight: isSender
+                        ? const Radius.circular(4)
+                        : const Radius.circular(16),
                   ),
                   boxShadow: [
                     BoxShadow(
@@ -2475,7 +2545,8 @@ class _MessageBubble extends StatelessWidget {
               Navigator.pop(context);
               onDelete?.call();
             },
-            child: Text(LocaleKeys.chat_delete.tr(), style: const TextStyle(color: Colors.red)),
+            child: Text(LocaleKeys.chat_delete.tr(),
+                style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -2495,7 +2566,7 @@ class _RankBadge extends StatelessWidget {
   Color _getRankColor(String rank) {
     // Extract the main rank name without numbers (e.g., "برونز 1" -> "برونز")
     final mainRank = rank.toLowerCase().split(' ')[0];
-    
+
     switch (mainRank) {
       case 'bronze':
       case 'برونز':
@@ -2540,7 +2611,7 @@ class _RankBadge extends StatelessWidget {
   IconData _getRankIcon(String rank) {
     // Extract the main rank name without numbers (e.g., "برونز 1" -> "برونز")
     final mainRank = rank.toLowerCase().split(' ')[0];
-    
+
     switch (mainRank) {
       case 'bronze':
       case 'برونز':
@@ -2580,7 +2651,7 @@ class _RankBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     debugPrint('RankBadge level received: $level');
-    
+
     if (level == null || level!.isEmpty) {
       debugPrint('RankBadge: Level is null or empty, not showing badge');
       return const SizedBox.shrink();
@@ -2588,7 +2659,7 @@ class _RankBadge extends StatelessWidget {
 
     final rankColor = _getRankColor(level!);
     final rankIcon = _getRankIcon(level!);
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
@@ -2642,7 +2713,7 @@ class _EditTeamButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
-    
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Container(

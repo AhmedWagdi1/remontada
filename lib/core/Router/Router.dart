@@ -59,7 +59,8 @@ class Routes {
   static const String createMatch = "/createMatch";
   static const String PlayersScreenSupervisor = "/PlayersScreenSupervisor";
   static const String challengesScreen = "/ChallengesScreen";
-  static const String challengeRequestDetailsScreen = "/ChallengeRequestDetailsScreen";
+  static const String challengeRequestDetailsScreen =
+      "/ChallengeRequestDetailsScreen";
   static const String challengeRequestsScreen = "/ChallengeRequestsScreen";
   static const String UpdateAppScreen = "/UpdateAppScreen";
   static const String TeamChatsScreen = "/TeamChatsScreen";
@@ -264,7 +265,8 @@ class RouteGenerator {
         return CupertinoPageRoute(
           settings: routeSettings,
           builder: (_) {
-            final initialRequests = routeSettings.arguments as List<ChallengeRequest>?;
+            final initialRequests =
+                routeSettings.arguments as List<ChallengeRequest>?;
             return ChallengeRequestsScreen(initialRequests: initialRequests);
           },
         );
@@ -283,14 +285,16 @@ class RouteGenerator {
           settings: routeSettings,
           builder: (_) {
             final args = routeSettings.arguments as Map<String, dynamic>;
-            
+
             return MultiBlocProvider(
               providers: [
                 BlocProvider(
-                  create: (context) => TeamMessagesCubit(locator<ChatRepository>(), args['teamId']),
+                  create: (context) => TeamMessagesCubit(
+                      locator<ChatRepository>(), args['teamId']),
                 ),
                 BlocProvider(
-                  create: (context) => SendMessageCubit(locator<ChatRepository>()),
+                  create: (context) =>
+                      SendMessageCubit(locator<ChatRepository>()),
                 ),
               ],
               child: TeamMessagesScreen(

@@ -37,11 +37,11 @@ class _TeamMessagesScreenState extends State<TeamMessagesScreen> {
     super.initState();
     _messagesCubit = context.read<TeamMessagesCubit>();
     _sendMessageCubit = context.read<SendMessageCubit>();
-    
+
     _messagesCubit.loadMessages(refresh: true);
-    
+
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels >= 
+      if (_scrollController.position.pixels >=
           _scrollController.position.maxScrollExtent - 200) {
         _messagesCubit.loadMoreMessages();
       }
@@ -97,7 +97,7 @@ class _TeamMessagesScreenState extends State<TeamMessagesScreen> {
                     child: CircularProgressIndicator(),
                   );
                 }
-                
+
                 if (state is TeamMessagesError) {
                   return Center(
                     child: Column(
@@ -128,7 +128,7 @@ class _TeamMessagesScreenState extends State<TeamMessagesScreen> {
                     ),
                   );
                 }
-                
+
                 if (state is TeamMessagesLoaded) {
                   if (state.messages.isEmpty) {
                     return Center(
@@ -160,7 +160,7 @@ class _TeamMessagesScreenState extends State<TeamMessagesScreen> {
                       ),
                     );
                   }
-                  
+
                   return RefreshIndicator(
                     onRefresh: () async {
                       await _messagesCubit.loadMessages(refresh: true);
@@ -169,7 +169,8 @@ class _TeamMessagesScreenState extends State<TeamMessagesScreen> {
                       controller: _scrollController,
                       reverse: true,
                       padding: EdgeInsets.all(16.w),
-                      itemCount: state.messages.length + (state.isLoadingMore ? 1 : 0),
+                      itemCount:
+                          state.messages.length + (state.isLoadingMore ? 1 : 0),
                       itemBuilder: (context, index) {
                         if (index == state.messages.length) {
                           return const Center(
@@ -179,7 +180,7 @@ class _TeamMessagesScreenState extends State<TeamMessagesScreen> {
                             ),
                           );
                         }
-                        
+
                         final message = state.messages[index];
                         return MessageItem(
                           message: message,
@@ -191,7 +192,7 @@ class _TeamMessagesScreenState extends State<TeamMessagesScreen> {
                     ),
                   );
                 }
-                
+
                 return const SizedBox.shrink();
               },
             ),
@@ -210,7 +211,8 @@ class _TeamMessagesScreenState extends State<TeamMessagesScreen> {
             child: MessageInput(
               controller: _messageController,
               onSend: _sendMessage,
-              isLoading: context.watch<SendMessageCubit>().state is SendMessageLoading,
+              isLoading:
+                  context.watch<SendMessageCubit>().state is SendMessageLoading,
             ),
           ),
         ],

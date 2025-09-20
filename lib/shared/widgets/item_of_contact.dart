@@ -40,8 +40,10 @@ class ItemOfContact extends StatelessWidget {
                 ),
                 const Spacer(),
                 choose
-                    ? Icon(Icons.camera_alt_outlined, color: context.colorScheme.primary)
-                    : Icon(Icons.image_outlined, color: context.colorScheme.primary)
+                    ? Icon(Icons.camera_alt_outlined,
+                        color: context.colorScheme.primary)
+                    : Icon(Icons.image_outlined,
+                        color: context.colorScheme.primary)
               ],
             ),
           )
@@ -79,7 +81,8 @@ class ItemOfContact extends StatelessWidget {
                           width: 20,
                           decoration: BoxDecoration(
                               color: context.colorScheme.primary,
-                              border: Border.all(color: context.colorScheme.primary),
+                              border: Border.all(
+                                  color: context.colorScheme.primary),
                               shape: BoxShape.circle),
                         )
                       : null,

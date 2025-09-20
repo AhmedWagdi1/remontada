@@ -62,7 +62,6 @@ class _DropDownItemState<T> extends State<DropDownItem<T>> {
         color: widget.color ?? context.background,
         borderRadius: BorderRadius.circular(radius),
       ),
-
       child: DropdownButtonFormField<T>(
 
           // padding: EdgeInsets.symmetric(

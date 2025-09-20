@@ -15,8 +15,7 @@ class AuthCubit extends Cubit<AuthStates> {
   /// Creates [AuthCubit] with an optional custom [AuthRepository].
   /// This allows dependency injection for testing purposes.
   AuthCubit({AuthRepository? repository})
-      : authRepository =
-            repository ?? AuthRepository(locator<DioService>()),
+      : authRepository = repository ?? AuthRepository(locator<DioService>()),
         super(AuthInitial());
   static AuthCubit get(context) => BlocProvider.of(context);
 

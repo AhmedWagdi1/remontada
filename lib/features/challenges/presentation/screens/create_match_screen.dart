@@ -191,9 +191,8 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                     ),
                   ],
                   onChanged: (val) => setState(() => _type = val),
-                  validator: (val) => val == null
-                      ? LocaleKeys.valid_requiredField.tr()
-                      : null,
+                  validator: (val) =>
+                      val == null ? LocaleKeys.valid_requiredField.tr() : null,
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(

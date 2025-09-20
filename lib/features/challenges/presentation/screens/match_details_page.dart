@@ -41,12 +41,17 @@ class MatchDetailsPage extends StatelessWidget {
             children: [
               // Match Status Badge
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: match.isPast ? Colors.green.shade100 : Colors.blue.shade100,
+                  color: match.isPast
+                      ? Colors.green.shade100
+                      : Colors.blue.shade100,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: match.isPast ? Colors.green.shade300 : Colors.blue.shade300,
+                    color: match.isPast
+                        ? Colors.green.shade300
+                        : Colors.blue.shade300,
                   ),
                 ),
                 child: Row(
@@ -54,14 +59,18 @@ class MatchDetailsPage extends StatelessWidget {
                   children: [
                     Icon(
                       match.isPast ? Icons.check_circle : Icons.schedule,
-                      color: match.isPast ? Colors.green.shade700 : Colors.blue.shade700,
+                      color: match.isPast
+                          ? Colors.green.shade700
+                          : Colors.blue.shade700,
                       size: 16,
                     ),
                     const SizedBox(width: 6),
                     Text(
                       match.isPast ? 'تحدي مكتمل' : 'تحدي جاهز',
                       style: TextStyle(
-                        color: match.isPast ? Colors.green.shade700 : Colors.blue.shade700,
+                        color: match.isPast
+                            ? Colors.green.shade700
+                            : Colors.blue.shade700,
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
                       ),
@@ -88,11 +97,17 @@ class MatchDetailsPage extends StatelessWidget {
                         CircleAvatar(
                           radius: 25,
                           backgroundColor: Colors.grey.shade200,
-                          backgroundImage: _getTeamLogoImage(match.team1?['logo_url']),
-                          child: match.team1?['logo_url'] == null || 
-                                (match.team1!['logo_url'] is String && (match.team1!['logo_url'] as String).isEmpty) ||
-                                (match.team1!['logo_url'] is String && !(match.team1!['logo_url'] as String).startsWith('http'))
-                              ? const Icon(Icons.groups, color: Colors.grey, size: 20)
+                          backgroundImage:
+                              _getTeamLogoImage(match.team1?['logo_url']),
+                          child: match.team1?['logo_url'] == null ||
+                                  (match.team1!['logo_url'] is String &&
+                                      (match.team1!['logo_url'] as String)
+                                          .isEmpty) ||
+                                  (match.team1!['logo_url'] is String &&
+                                      !(match.team1!['logo_url'] as String)
+                                          .startsWith('http'))
+                              ? const Icon(Icons.groups,
+                                  color: Colors.grey, size: 20)
                               : null,
                         ),
                         const SizedBox(width: 12),
@@ -116,7 +131,8 @@ class MatchDetailsPage extends StatelessWidget {
                         Expanded(child: Divider(color: Colors.grey.shade300)),
                         Container(
                           margin: const EdgeInsets.symmetric(horizontal: 16),
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
                             color: darkBlue,
                             borderRadius: BorderRadius.circular(16),
@@ -142,11 +158,17 @@ class MatchDetailsPage extends StatelessWidget {
                         CircleAvatar(
                           radius: 25,
                           backgroundColor: Colors.grey.shade200,
-                          backgroundImage: _getTeamLogoImage(match.team2?['logo_url']),
-                          child: match.team2?['logo_url'] == null || 
-                                (match.team2!['logo_url'] is String && (match.team2!['logo_url'] as String).isEmpty) ||
-                                (match.team2!['logo_url'] is String && !(match.team2!['logo_url'] as String).startsWith('http'))
-                              ? const Icon(Icons.groups, color: Colors.grey, size: 20)
+                          backgroundImage:
+                              _getTeamLogoImage(match.team2?['logo_url']),
+                          child: match.team2?['logo_url'] == null ||
+                                  (match.team2!['logo_url'] is String &&
+                                      (match.team2!['logo_url'] as String)
+                                          .isEmpty) ||
+                                  (match.team2!['logo_url'] is String &&
+                                      !(match.team2!['logo_url'] as String)
+                                          .startsWith('http'))
+                              ? const Icon(Icons.groups,
+                                  color: Colors.grey, size: 20)
                               : null,
                         ),
                         const SizedBox(width: 12),
@@ -191,7 +213,8 @@ class MatchDetailsPage extends StatelessWidget {
                     // Playground
                     Row(
                       children: [
-                        Icon(Icons.location_on, color: Colors.grey.shade600, size: 20),
+                        Icon(Icons.location_on,
+                            color: Colors.grey.shade600, size: 20),
                         const SizedBox(width: 8),
                         Text(
                           'الملعب: ${match.playground}',
@@ -208,7 +231,8 @@ class MatchDetailsPage extends StatelessWidget {
                     // Date and Time
                     Row(
                       children: [
-                        Icon(Icons.calendar_today, color: Colors.grey.shade600, size: 20),
+                        Icon(Icons.calendar_today,
+                            color: Colors.grey.shade600, size: 20),
                         const SizedBox(width: 8),
                         Text(
                           'التاريخ والوقت: ${match.date} ${match.startTime}',
@@ -225,7 +249,8 @@ class MatchDetailsPage extends StatelessWidget {
                     // Amount
                     Row(
                       children: [
-                        Icon(Icons.attach_money, color: Colors.grey.shade600, size: 20),
+                        Icon(Icons.attach_money,
+                            color: Colors.grey.shade600, size: 20),
                         const SizedBox(width: 8),
                         Text(
                           'المبلغ: ${match.amount} ريال',

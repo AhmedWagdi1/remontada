@@ -1,5 +1,5 @@
-class AppStrings{
- static String get skip => "Skip";
+class AppStrings {
+  static String get skip => "Skip";
   static String get startNow => "Start Now";
   static String get next => "Next";
   static String get onboarding1 => "Onboarding1";
@@ -19,7 +19,8 @@ class AppStrings{
   static String get forgetPassword => "do_you_forget_your_password";
   static String get enterYourEmailToSendOtp => "Enter your email to send otp";
   static String get OTP => "OTP";
-  static String get enterTheVerificationCode => "Enter the verification code sent to you";
+  static String get enterTheVerificationCode =>
+      "Enter the verification code sent to you";
   static String get theCodeWasNotSent => "The code was not sent";
   static String get sendAgain => "Send again";
   static String get confirm => "confirm";
@@ -53,14 +54,16 @@ class AppStrings{
   static String get logout => "logout";
   static String get addNewAddress => "add_new_address";
   static String get showDetails => "show_details";
-  static String get doYouWantToDeleteYourAccount => "do_you_want_to_delete_your_account";
+  static String get doYouWantToDeleteYourAccount =>
+      "do_you_want_to_delete_your_account";
   static String get yes => "yes";
   static String get no => "no";
   static String get language => "language";
   static String get changeLanguage => "change_language";
   static String get haveAnAccount => "have_an_account";
   static String get signUp => "signUp";
-    ///VALIDATION
+
+  ///VALIDATION
   static String get requiredField => "requiredField";
   static String get requiredPhone => "requiredPhone";
   static String get requiredEmail => "requiredEmail";

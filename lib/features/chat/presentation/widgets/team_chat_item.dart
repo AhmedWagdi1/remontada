@@ -80,7 +80,9 @@ class TeamChatItem extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Text(
-                  teamChat.unreadCount > 99 ? '99+' : teamChat.unreadCount.toString(),
+                  teamChat.unreadCount > 99
+                      ? '99+'
+                      : teamChat.unreadCount.toString(),
                   style: TextStyle(
                     fontSize: 10.sp,
                     color: Colors.white,

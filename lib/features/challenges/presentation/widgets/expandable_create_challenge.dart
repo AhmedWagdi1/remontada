@@ -7,7 +7,8 @@ class ExpandableCreateChallenge extends StatefulWidget {
   const ExpandableCreateChallenge({Key? key, this.onCreated}) : super(key: key);
 
   @override
-  State<ExpandableCreateChallenge> createState() => _ExpandableCreateChallengeState();
+  State<ExpandableCreateChallenge> createState() =>
+      _ExpandableCreateChallengeState();
 }
 
 class _ExpandableCreateChallengeState extends State<ExpandableCreateChallenge> {
@@ -54,7 +55,8 @@ class _ExpandableCreateChallengeState extends State<ExpandableCreateChallenge> {
               ),
             ),
           ),
-          crossFadeState: _expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          crossFadeState:
+              _expanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
           duration: const Duration(milliseconds: 300),
         ),
       ],

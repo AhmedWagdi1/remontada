@@ -20,13 +20,12 @@ class MessageItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMyMessage = message.senderId == Utils.userId;
-    
+
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 4.h),
       child: Row(
-        mainAxisAlignment: isMyMessage 
-            ? MainAxisAlignment.end 
-            : MainAxisAlignment.start,
+        mainAxisAlignment:
+            isMyMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isMyMessage) ...[
@@ -43,9 +42,8 @@ class MessageItem extends StatelessWidget {
           ],
           Flexible(
             child: GestureDetector(
-              onLongPress: isMyMessage 
-                  ? () => _showDeleteDialog(context)
-                  : null,
+              onLongPress:
+                  isMyMessage ? () => _showDeleteDialog(context) : null,
               child: Container(
                 padding: EdgeInsets.symmetric(
                   horizontal: 12.w,
@@ -58,11 +56,11 @@ class MessageItem extends StatelessWidget {
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(16.r),
                     topRight: Radius.circular(16.r),
-                    bottomLeft: isMyMessage 
-                        ? Radius.circular(16.r) 
+                    bottomLeft: isMyMessage
+                        ? Radius.circular(16.r)
                         : Radius.circular(4.r),
-                    bottomRight: isMyMessage 
-                        ? Radius.circular(4.r) 
+                    bottomRight: isMyMessage
+                        ? Radius.circular(4.r)
                         : Radius.circular(16.r),
                   ),
                 ),
@@ -94,20 +92,17 @@ class MessageItem extends StatelessWidget {
                           _formatTime(message.timestamp),
                           style: TextStyle(
                             fontSize: 10.sp,
-                            color: isMyMessage 
-                                ? Colors.white70 
-                                : Colors.grey[600],
+                            color:
+                                isMyMessage ? Colors.white70 : Colors.grey[600],
                           ),
                         ),
                         if (isMyMessage) ...[
                           SizedBox(width: 4.w),
                           Icon(
-                            message.isRead 
-                                ? Icons.done_all 
-                                : Icons.done,
+                            message.isRead ? Icons.done_all : Icons.done,
                             size: 12.r,
-                            color: message.isRead 
-                                ? Colors.blue[300] 
+                            color: message.isRead
+                                ? Colors.blue[300]
                                 : Colors.white70,
                           ),
                         ],

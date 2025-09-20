@@ -48,8 +48,10 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _coachNameController = TextEditingController();
   final TextEditingController _coachPhoneController = TextEditingController();
-  final TextEditingController _assistantNameController = TextEditingController();
-  final TextEditingController _assistantPhoneController = TextEditingController();
+  final TextEditingController _assistantNameController =
+      TextEditingController();
+  final TextEditingController _assistantPhoneController =
+      TextEditingController();
 
   final List<TextEditingController> _playerPhoneControllers = [
     TextEditingController(),
@@ -116,7 +118,6 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
     super.dispose();
   }
 
-
   /// Handles the multi-step create team flow as described in the docs.
   Future<void> _submitForm() async {
     if (_isSubmitting) return;
@@ -148,17 +149,20 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
       }
       // Validate phone formats
       if (!(Validation.isValidSaudiPhoneNumber(captainPhone) ?? false)) {
-        await _showError('رقم جوال الكابتن غير صالح. يجب أن يبدأ بـ 0 ويتكون من 10 أرقام.');
+        await _showError(
+            'رقم جوال الكابتن غير صالح. يجب أن يبدأ بـ 0 ويتكون من 10 أرقام.');
         setState(() => _isSubmitting = false);
         return;
       }
       if (!(Validation.isValidSaudiPhoneNumber(subPhone) ?? false)) {
-        await _showError('رقم جوال المساعد غير صالح. يجب أن يبدأ بـ 0 ويتكون من 10 أرقام.');
+        await _showError(
+            'رقم جوال المساعد غير صالح. يجب أن يبدأ بـ 0 ويتكون من 10 أرقام.');
         setState(() => _isSubmitting = false);
         return;
       }
       if (captainPhone == subPhone) {
-        await _showError('رقم جوال الكابتن والمساعد متطابقان. يرجى إدخال رقمين مختلفين.');
+        await _showError(
+            'رقم جوال الكابتن والمساعد متطابقان. يرجى إدخال رقمين مختلفين.');
         setState(() => _isSubmitting = false);
         return;
       }
@@ -198,7 +202,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
           },
         );
         final teamShowData = jsonDecode(teamShowRes.body);
-        if (teamShowRes.statusCode >= 400 || teamShowData['status'] != true) continue;
+        if (teamShowRes.statusCode >= 400 || teamShowData['status'] != true)
+          continue;
         final List<dynamic> users = teamShowData['data']['users'] ?? [];
         for (final user in users) {
           final mobile = user['mobile'].toString().trim();
@@ -206,7 +211,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
         }
       }
       if (subleaderInTeam) {
-        await _showError('المساعد بالفعل عضو في فريق آخر. يرجى اختيار مساعد آخر.');
+        await _showError(
+            'المساعد بالفعل عضو في فريق آخر. يرجى اختيار مساعد آخر.');
         setState(() => _isSubmitting = false);
         return;
       }
@@ -225,6 +231,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
         // If status is true, phone is registered
         return loginRes.statusCode < 400 && loginData['status'] == true;
       }
+
       if (!await isPhoneRegistered(captainPhone)) {
         await _showError('رقم جوال الكابتن غير مسجل في النظام.');
         setState(() => _isSubmitting = false);
@@ -296,9 +303,13 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
         addedPhones.add(subPhone);
       }
       // Add normal members if any (from player phone controllers)
-      final List<String> memberPhones = _playerPhoneControllers.map((c) => c.text.trim()).where((p) => p.isNotEmpty).toList();
+      final List<String> memberPhones = _playerPhoneControllers
+          .map((c) => c.text.trim())
+          .where((p) => p.isNotEmpty)
+          .toList();
       for (final phone in memberPhones) {
-        if (phone == captainPhone || phone == subPhone) continue; // skip captain and subleader
+        if (phone == captainPhone || phone == subPhone)
+          continue; // skip captain and subleader
         final memberRes = await http.post(
           Uri.parse('${ConstKeys.baseUrl}/team/add-member'),
           headers: {
@@ -339,7 +350,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
               },
             );
           } catch (_) {}
-          await _showError(memberData['message'] ?? 'خطأ في إضافة العضو ذو الرقم $phone');
+          await _showError(
+              memberData['message'] ?? 'خطأ في إضافة العضو ذو الرقم $phone');
           setState(() => _isSubmitting = false);
           return;
         } else {
@@ -449,7 +461,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
   }
 
   /// Builds a single player card for entering a player's phone number.
-  Widget _buildPlayerCard(int index, TextEditingController phoneController, TextEditingController nameController) {
+  Widget _buildPlayerCard(int index, TextEditingController phoneController,
+      TextEditingController nameController) {
     const darkBlue = Color(0xFF23425F);
     return Stack(
       children: [
@@ -607,9 +620,11 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                             ),
                             child: _logo != null
                                 ? ClipOval(
-                                    child: Image.file(_logo!, fit: BoxFit.cover),
+                                    child:
+                                        Image.file(_logo!, fit: BoxFit.cover),
                                   )
-                                : const Icon(Icons.add_a_photo, color: darkBlue),
+                                : const Icon(Icons.add_a_photo,
+                                    color: darkBlue),
                           ),
                           const SizedBox(height: 8),
                           CustomText(
@@ -654,7 +669,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                     const SizedBox(height: 16),
                     Row(
                       children: [
-                        const Icon(Icons.info_outline, color: darkBlue, size: 18),
+                        const Icon(Icons.info_outline,
+                            color: darkBlue, size: 18),
                         const SizedBox(width: 4),
                         CustomText(
                           LocaleKeys.team_level_label.tr(),
@@ -799,7 +815,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                                 controller: _assistantNameController,
                                 enabled: !_isSubmitting,
                                 decoration: InputDecoration(
-                                  labelText: LocaleKeys.assistant_name_label.tr(),
+                                  labelText:
+                                      LocaleKeys.assistant_name_label.tr(),
                                   hintText: LocaleKeys.assistant_name_hint.tr(),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
@@ -811,8 +828,10 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                                 controller: _assistantPhoneController,
                                 enabled: !_isSubmitting,
                                 decoration: InputDecoration(
-                                  labelText: LocaleKeys.assistant_phone_label.tr(),
-                                  hintText: LocaleKeys.assistant_phone_hint.tr(),
+                                  labelText:
+                                      LocaleKeys.assistant_phone_label.tr(),
+                                  hintText:
+                                      LocaleKeys.assistant_phone_hint.tr(),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),
@@ -866,23 +885,28 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                               color: darkBlue,
                             ),
                           ),
-                          const Icon(Icons.info_outline, color: darkBlue, size: 18),
+                          const Icon(Icons.info_outline,
+                              color: darkBlue, size: 18),
                         ],
                       ),
                     ),
                     const SizedBox(height: 12),
                     for (int i = 0; i < _playerPhoneControllers.length; i++)
-                      _buildPlayerCard(i + 1, _playerPhoneControllers[i], _playerNameControllers[i]),
+                      _buildPlayerCard(i + 1, _playerPhoneControllers[i],
+                          _playerNameControllers[i]),
                     const SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton.icon(
-                        onPressed: _playerPhoneControllers.length >= 10 || _isSubmitting
+                        onPressed: _playerPhoneControllers.length >= 10 ||
+                                _isSubmitting
                             ? null
                             : () {
                                 setState(() {
-                                  _playerPhoneControllers.add(TextEditingController());
-                                  _playerNameControllers.add(TextEditingController());
+                                  _playerPhoneControllers
+                                      .add(TextEditingController());
+                                  _playerNameControllers
+                                      .add(TextEditingController());
                                 });
                               },
                         icon: const Icon(Icons.add, color: darkBlue),
@@ -994,7 +1018,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF23425F)),
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(Color(0xFF23425F)),
                     ),
                     const SizedBox(height: 24),
                     CustomText(

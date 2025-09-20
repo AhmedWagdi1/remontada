@@ -213,7 +213,8 @@ class _MatchesBodyState extends State<MatchesSupervisorsBodyBody>
         if (state is MyMatchesLoaded) {
           myMatches = state.mymatches;
           final count = myMatches.matches?.length ?? 0;
-          print('\n[MatchesSupervisorsBody] MyMatchesLoaded with count: $count');
+          print(
+              '\n[MatchesSupervisorsBody] MyMatchesLoaded with count: $count');
         }
         if (state is DeleteMatchSuccess) {
           MyMatchesCubit.get(context).getMymatches(

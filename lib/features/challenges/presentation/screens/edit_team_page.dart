@@ -94,7 +94,7 @@ class _EditTeamPageState extends State<EditTeamPage> {
       print('Logo file: ${_logo?.path ?? 'none'}');
       print('Token: ${Utils.token}');
 
-      final url = '${ConstKeys.baseUrl}/team/${widget.teamData['id']}';
+      final url = '${ConstKeys.baseUrl}/team/update/${widget.teamData['id']}';
       print('Request Method: POST');
       print('Request URL: $url');
 
@@ -238,7 +238,8 @@ class _EditTeamPageState extends State<EditTeamPage> {
                               ? ClipOval(
                                   child: Image.file(_logo!, fit: BoxFit.cover),
                                 )
-                              : currentLogoUrl != null && currentLogoUrl.isNotEmpty
+                              : currentLogoUrl != null &&
+                                      currentLogoUrl.isNotEmpty
                                   ? ClipOval(
                                       child: NetworkImagesWidgets(
                                         currentLogoUrl,
@@ -247,7 +248,8 @@ class _EditTeamPageState extends State<EditTeamPage> {
                                         height: 100,
                                       ),
                                     )
-                                  : const Icon(Icons.add_a_photo, color: darkBlue),
+                                  : const Icon(Icons.add_a_photo,
+                                      color: darkBlue),
                         ),
                         const SizedBox(height: 8),
                         CustomText(
@@ -302,11 +304,13 @@ class _EditTeamPageState extends State<EditTeamPage> {
                   const SizedBox(height: 8),
                   DropdownButtonFormField<int>(
                     value: _selectedAreaId,
-                    onChanged: _isSubmitting ? null : (value) {
-                      setState(() {
-                        _selectedAreaId = value;
-                      });
-                    },
+                    onChanged: _isSubmitting
+                        ? null
+                        : (value) {
+                            setState(() {
+                              _selectedAreaId = value;
+                            });
+                          },
                     decoration: InputDecoration(
                       labelText: 'اختر المنطقة',
                       border: OutlineInputBorder(
@@ -339,12 +343,14 @@ class _EditTeamPageState extends State<EditTeamPage> {
                             width: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
                             ),
                           )
                         : const Text(
                             'حفظ التغييرات',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                   ),
                 ],

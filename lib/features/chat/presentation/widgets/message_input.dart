@@ -74,7 +74,8 @@ class MessageInput extends StatelessWidget {
                         padding: EdgeInsets.all(12.w),
                         child: const CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       )
                     : Icon(

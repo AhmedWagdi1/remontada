@@ -63,13 +63,14 @@ class _CreateChallengePageState extends State<CreateChallengePage> {
     try {
       final repository = ChallengesRepositoryImpl();
       final matches = await repository.getAvailableMatches();
-      
+
       // Debug: Log all matches
       print('🎯 CHALLENGE DEBUG: Total matches received: ${matches.length}');
       for (final match in matches) {
-        print('🎯 CHALLENGE DEBUG: Match ID: ${match.id}, Playground: ${match.details}, Date: ${match.date}, Time: ${match.startTime}, Amount: ${match.amount}');
+        print(
+            '🎯 CHALLENGE DEBUG: Match ID: ${match.id}, Playground: ${match.details}, Date: ${match.date}, Time: ${match.startTime}, Amount: ${match.amount}');
       }
-      
+
       setState(() {
         _availableMatches = matches;
         _selectedMatch = matches.isNotEmpty ? matches.first : null;
@@ -82,22 +83,28 @@ class _CreateChallengePageState extends State<CreateChallengePage> {
         if (errorMessage.contains('Exception: ')) {
           errorMessage = errorMessage.replaceAll('Exception: ', '');
         }
-        
+
         // Provide more user-friendly error messages
-        if (errorMessage.contains('401') || errorMessage.contains('Unauthorized')) {
+        if (errorMessage.contains('401') ||
+            errorMessage.contains('Unauthorized')) {
           errorMessage = 'Authentication failed. Please log in again.';
-        } else if (errorMessage.contains('404') || errorMessage.contains('Not Found')) {
+        } else if (errorMessage.contains('404') ||
+            errorMessage.contains('Not Found')) {
           errorMessage = 'No matches available at the moment.';
-        } else if (errorMessage.contains('500') || errorMessage.contains('Internal Server Error')) {
+        } else if (errorMessage.contains('500') ||
+            errorMessage.contains('Internal Server Error')) {
           errorMessage = 'Server error. Please try again later.';
-        } else if (errorMessage.contains('Network') || errorMessage.contains('Connection')) {
-          errorMessage = 'Network error. Please check your connection and try again.';
+        } else if (errorMessage.contains('Network') ||
+            errorMessage.contains('Connection')) {
+          errorMessage =
+              'Network error. Please check your connection and try again.';
         } else if (errorMessage.contains('No matches available')) {
-          errorMessage = 'No matches available at the moment. Please check back later.';
+          errorMessage =
+              'No matches available at the moment. Please check back later.';
         } else if (errorMessage.contains('Failed to parse')) {
           errorMessage = 'Error processing match data. Please try again.';
         }
-        
+
         _matchesError = errorMessage;
         _isLoadingMatches = false;
       });
@@ -117,7 +124,7 @@ class _CreateChallengePageState extends State<CreateChallengePage> {
       if (_selectedTeam == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(_userTeams.isEmpty 
+            content: Text(_userTeams.isEmpty
                 ? 'No teams available. Please create a team first.'
                 : 'Please select a team'),
             backgroundColor: Colors.red,
@@ -129,7 +136,7 @@ class _CreateChallengePageState extends State<CreateChallengePage> {
       if (_selectedMatch == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(_availableMatches.isEmpty 
+            content: Text(_availableMatches.isEmpty
                 ? LocaleKeys.challenge_no_matches_available.tr()
                 : 'Please select a match'),
             backgroundColor: Colors.red,
@@ -189,7 +196,7 @@ class _CreateChallengePageState extends State<CreateChallengePage> {
         setState(() {
           _isLoading = false;
         });
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error creating challenge: $e'),
@@ -203,7 +210,7 @@ class _CreateChallengePageState extends State<CreateChallengePage> {
   @override
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
-    
+
     return Scaffold(
       appBar: AppBar(
         title: CustomText(
@@ -285,19 +292,24 @@ class _CreateChallengePageState extends State<CreateChallengePage> {
                                   CircleAvatar(
                                     radius: 16,
                                     backgroundColor: Colors.grey.shade300,
-                                    backgroundImage: team.logo != null && team.logo!.isNotEmpty
-                                        ? NetworkImage('${ConstKeys.baseUrl}/storage/${team.logo}')
+                                    backgroundImage: team.logo != null &&
+                                            team.logo!.isNotEmpty
+                                        ? NetworkImage(
+                                            '${ConstKeys.baseUrl}/storage/${team.logo}')
                                         : null,
-                                    child: team.logo == null || team.logo!.isEmpty
-                                        ? const Icon(Icons.sports_soccer, color: Colors.grey)
-                                        : null,
+                                    child:
+                                        team.logo == null || team.logo!.isEmpty
+                                            ? const Icon(Icons.sports_soccer,
+                                                color: Colors.grey)
+                                            : null,
                                   ),
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(
                                       team.name,
                                       overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(fontWeight: FontWeight.bold),
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ],
@@ -400,7 +412,8 @@ class _CreateChallengePageState extends State<CreateChallengePage> {
                         hint: Text(LocaleKeys.challenge_match_id.tr()),
                         isExpanded: true,
                         underline: const SizedBox(),
-                        itemHeight: 80, // Increased height for better readability
+                        itemHeight:
+                            80, // Increased height for better readability
                         items: _availableMatches.map((match) {
                           return DropdownMenuItem<MatchModel>(
                             value: match,
@@ -413,7 +426,8 @@ class _CreateChallengePageState extends State<CreateChallengePage> {
                                 children: [
                                   Text(
                                     'Match #${match.id} - ${match.date}',
-                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   Text(
@@ -469,7 +483,7 @@ class _CreateChallengePageState extends State<CreateChallengePage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    _isCompetitive 
+                    _isCompetitive
                         ? LocaleKeys.challenge_competitive_description.tr()
                         : LocaleKeys.challenge_friendly_description.tr(),
                     style: TextStyle(
@@ -483,7 +497,7 @@ class _CreateChallengePageState extends State<CreateChallengePage> {
                   SizedBox(
                     width: double.infinity,
                     child: ButtonWidget(
-                      title: _isLoading 
+                      title: _isLoading
                           ? LocaleKeys.challenge_creating.tr()
                           : LocaleKeys.challenge_create_challenge.tr(),
                       onTap: _isLoading ? null : _createChallenge,

@@ -29,15 +29,14 @@ Future<void> main() async {
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
       );
-      
+
       // Initialize Firebase services after core Firebase is ready
       FirebaseMessaging.onBackgroundMessage(
         FBMessging.firebaseMessagingBackgroundHandler,
       );
-      
+
       // Initialize Remote Config with proper error handling
       await FireBaseRemoteService.intializeRemoteConfig();
-      
     } catch (e) {
       // Handle platforms where Firebase is not configured (like Linux)
       print('Firebase initialization skipped: $e');

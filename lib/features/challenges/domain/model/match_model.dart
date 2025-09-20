@@ -49,13 +49,16 @@ class MatchModel {
           playgroundId: 0, // Not provided in new API
           date: json['date'] as String? ?? '',
           startTime: json['start_time'] as String? ?? '',
-          endTime: json['start_time'] as String? ?? '', // Use start_time as end_time if not provided
+          endTime: json['start_time'] as String? ??
+              '', // Use start_time as end_time if not provided
           durations: 0, // Not provided
           durationsText: '', // Not provided
           amount: json['amount']?.toString() ?? '0',
           subscribersQty: 0, // Not provided
-          details: json['playground'] as String? ?? '', // Use playground as details
-          status: json['is_reserved'] == true ? 1 : 0, // Map is_reserved to status
+          details:
+              json['playground'] as String? ?? '', // Use playground as details
+          status:
+              json['is_reserved'] == true ? 1 : 0, // Map is_reserved to status
           isCompetitive: false, // Default
           type: 'challenge', // Assume challenge
           team1Id: null,
@@ -78,10 +81,13 @@ class MatchModel {
           subscribersQty: _parseInt(json['subscribers_qty']),
           details: json['details'] as String? ?? '',
           status: _parseInt(json['status']),
-          isCompetitive: json['is_competitive'] == 1 || json['is_competitive'] == true,
+          isCompetitive:
+              json['is_competitive'] == 1 || json['is_competitive'] == true,
           type: json['type'] as String? ?? '',
-          team1Id: json['team1_id'] != null ? _parseInt(json['team1_id']) : null,
-          team2Id: json['team2_id'] != null ? _parseInt(json['team2_id']) : null,
+          team1Id:
+              json['team1_id'] != null ? _parseInt(json['team1_id']) : null,
+          team2Id:
+              json['team2_id'] != null ? _parseInt(json['team2_id']) : null,
           supervisorId: _parseInt(json['supervisor_id']),
           createdAt: json['created_at'] as String? ?? '',
           updatedAt: json['updated_at'] as String? ?? '',
@@ -125,4 +131,3 @@ class MatchModel {
     };
   }
 }
-

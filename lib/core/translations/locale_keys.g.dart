@@ -2,7 +2,7 @@
 
 // ignore_for_file: constant_identifier_names
 
-abstract class  LocaleKeys {
+abstract class LocaleKeys {
   static const contactUs = 'contactUs';
   static const coaching_failed = 'coaching_failed';
   static const request_sent = 'request_sent';
@@ -29,7 +29,8 @@ abstract class  LocaleKeys {
   static const auth_check = 'auth.check';
   static const auth_send_otp_again = 'auth.send_otp_again';
   static const auth_hint_password = 'auth.hint_password';
-  static const auth_do_you_forget_your_password = 'auth.do_you_forget_your_password';
+  static const auth_do_you_forget_your_password =
+      'auth.do_you_forget_your_password';
   static const auth_hint_password_confirm = 'auth.hint_password_confirm';
   static const auth_description_forget = 'auth.description_forget';
   static const auth_new_password = 'auth.new_password';
@@ -86,9 +87,11 @@ abstract class  LocaleKeys {
   static const finished_matches = 'finished_matches';
   static const home_describtion = 'home_describtion';
   static const match_filter_playground = 'match_filter_playground';
-  static const match_filter_playground_description = 'match_filter_playground_description';
+  static const match_filter_playground_description =
+      'match_filter_playground_description';
   static const match_filter_clender = 'match_filter_clender';
-  static const match_filter_clender_description = 'match_filter_clender_description';
+  static const match_filter_clender_description =
+      'match_filter_clender_description';
   static const confirmation_button = 'confirmation_button';
   static const refresh_button = 'refresh_button';
   static const my_matches_subtitles = 'my_matches_subtitles';
@@ -96,8 +99,10 @@ abstract class  LocaleKeys {
   static const havnot_matches = 'havnot_matches';
   static const language = 'language';
   static const change_language = 'change_language';
-  static const match_details_match_details_title = 'match_details.match_details_title';
-  static const match_details_match_details_subtitle = 'match_details.match_details_subtitle';
+  static const match_details_match_details_title =
+      'match_details.match_details_title';
+  static const match_details_match_details_subtitle =
+      'match_details.match_details_subtitle';
   static const match_details_arena = 'match_details.arena';
   static const match_details_location = 'match_details.location';
   static const match_details_match_date = 'match_details.match_date';
@@ -105,14 +110,21 @@ abstract class  LocaleKeys {
   static const match_details_match_long = 'match_details.match_long';
   static const match_details_price = 'match_details.price';
   static const match_details_subscribers = 'match_details.subscribers';
-  static const match_details_subscribers_details = 'match_details.subscribers_details';
-  static const match_details_subscribe_button = 'match_details.subscribe_button';
-  static const match_details_subscribe_confirmation = 'match_details.subscribe_confirmation';
+  static const match_details_subscribers_details =
+      'match_details.subscribers_details';
+  static const match_details_subscribe_button =
+      'match_details.subscribe_button';
+  static const match_details_subscribe_confirmation =
+      'match_details.subscribe_confirmation';
   static const match_details_confirm = 'match_details.confirm';
-  static const match_details_apology_take_part = 'match_details.apology_take_part';
-  static const match_details_subscribers_list = 'match_details.subscribers_list';
-  static const match_details_subscribers_list_sub = 'match_details.subscribers_list_sub';
-  static const match_details_subscribe_confirmation_desciption = 'match_details.subscribe_confirmation_desciption';
+  static const match_details_apology_take_part =
+      'match_details.apology_take_part';
+  static const match_details_subscribers_list =
+      'match_details.subscribers_list';
+  static const match_details_subscribers_list_sub =
+      'match_details.subscribers_list_sub';
+  static const match_details_subscribe_confirmation_desciption =
+      'match_details.subscribe_confirmation_desciption';
   static const match_details = 'match_details';
   static const more_subtitle = 'more.subtitle';
   static const more_profile = 'more.profile';
@@ -145,7 +157,8 @@ abstract class  LocaleKeys {
   static const settings_change_pass = 'settings.change_pass';
   static const settings_change_pass_desc = 'settings.change_pass_desc';
   static const settings_current_pass = 'settings.current_pass';
-  static const settings_pick_image_from_gallery = 'settings.pick_image_from_gallery';
+  static const settings_pick_image_from_gallery =
+      'settings.pick_image_from_gallery';
   static const settings_remove_current_image = 'settings.remove_current_image';
   static const settings_ignore_edit = 'settings.ignore_edit';
   static const settings_ignore_edit_desc = 'settings.ignore_edit_desc';
@@ -189,14 +202,18 @@ abstract class  LocaleKeys {
   static const challenge_team_id = 'challenge_team_id';
   static const challenge_match_id = 'challenge_match_id';
   static const challenge_competitive_match = 'challenge_competitive_match';
-  static const challenge_competitive_description = 'challenge_competitive_description';
-  static const challenge_friendly_description = 'challenge_friendly_description';
+  static const challenge_competitive_description =
+      'challenge_competitive_description';
+  static const challenge_friendly_description =
+      'challenge_friendly_description';
   static const challenge_creating = 'challenge_creating';
   static const challenge_team_id_required = 'challenge_team_id_required';
   static const challenge_match_id_required = 'challenge_match_id_required';
   static const challenge_invalid_number = 'challenge_invalid_number';
-  static const challenge_no_matches_available = 'challenge_no_matches_available';
-  static const challenge_error_loading_matches = 'challenge_error_loading_matches';
+  static const challenge_no_matches_available =
+      'challenge_no_matches_available';
+  static const challenge_error_loading_matches =
+      'challenge_error_loading_matches';
   static const league_results = 'league_results';
   static const championships = 'championships';
   static const under_construction = 'under_construction';
@@ -221,7 +238,8 @@ abstract class  LocaleKeys {
   static const league_points = 'league_points';
   static const super_remontada_championship = 'super_remontada_championship';
   static const elite_remontada_championship = 'elite_remontada_championship';
-  static const champions_league_remontada_championship = 'champions_league_remontada_championship';
+  static const champions_league_remontada_championship =
+      'champions_league_remontada_championship';
   static const rounds_count = 'rounds_count';
   static const available_to_join = 'available_to_join';
   static const create_team_title = 'create_team_title';
@@ -331,7 +349,8 @@ abstract class  LocaleKeys {
   static const logout = 'logout';
   static const add_new_address = 'add_new_address';
   static const show_details = 'show_details';
-  static const do_you_want_to_delete_your_account = 'do_you_want_to_delete_your_account';
+  static const do_you_want_to_delete_your_account =
+      'do_you_want_to_delete_your_account';
   static const yes = 'yes';
   static const no = 'no';
   static const enter_your_password = 'enter_your_password';
@@ -376,7 +395,8 @@ abstract class  LocaleKeys {
   static const challenges_pending = 'challenges.pending';
   static const challenges_accepted = 'challenges.accepted';
   static const challenges_rejected = 'challenges.rejected';
-  static const challenges_respond_to_challenge = 'challenges.respond_to_challenge';
+  static const challenges_respond_to_challenge =
+      'challenges.respond_to_challenge';
   static const challenges_accept = 'challenges.accept';
   static const challenges_reject = 'challenges.reject';
   static const challenges_response_sent = 'challenges.response_sent';
@@ -385,5 +405,4 @@ abstract class  LocaleKeys {
   static const challenges_error_responding = 'challenges.error_responding';
   static const challenges_retry = 'challenges.retry';
   static const challenges = 'challenges';
-
 }

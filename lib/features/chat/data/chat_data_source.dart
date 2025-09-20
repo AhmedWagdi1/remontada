@@ -8,7 +8,8 @@ import '../domain/request/send_message_request.dart';
 
 class ChatDataSource {
   final DioService _dioService;
-  final StreamController<ChatMessage> _messageStreamController = StreamController<ChatMessage>.broadcast();
+  final StreamController<ChatMessage> _messageStreamController =
+      StreamController<ChatMessage>.broadcast();
 
   ChatDataSource(this._dioService);
 
@@ -21,15 +22,19 @@ class ChatDataSource {
 
       if (!response.isError && response.response?.data != null) {
         final List<dynamic> data = response.response!.data ?? [];
-        return data.map((json) => TeamChat.fromJson({
-          'team_id': json['id'].toString(),
-          'team_name': json['name'],
-          'team_avatar': json['logo_url'] ?? '',
-          'last_message': null, // We'll need to get this separately if needed
-          'unread_count': 0,
-          'member_ids': [], // We'll need to get this from team details if needed
-          'last_activity': json['updated_at'],
-        })).toList();
+        return data
+            .map((json) => TeamChat.fromJson({
+                  'team_id': json['id'].toString(),
+                  'team_name': json['name'],
+                  'team_avatar': json['logo_url'] ?? '',
+                  'last_message':
+                      null, // We'll need to get this separately if needed
+                  'unread_count': 0,
+                  'member_ids':
+                      [], // We'll need to get this from team details if needed
+                  'last_activity': json['updated_at'],
+                }))
+            .toList();
       }
       return [];
     } catch (e) {
@@ -52,17 +57,19 @@ class ChatDataSource {
       if (!response.isError && response.response?.data != null) {
         final data = response.response!.data['data'];
         final List<dynamic> messages = data['messages'] ?? [];
-        return messages.map((json) => ChatMessage.fromJson({
-          'id': json['id'].toString(),
-          'sender_id': json['user']['id'].toString(),
-          'sender_name': json['user']['name'],
-          'sender_avatar': json['user']['image'] ?? '',
-          'message': json['content'],
-          'timestamp': json['created_at'],
-          'team_id': request.teamId,
-          'type': 'text',
-          'is_read': true, // Assume read for now
-        })).toList();
+        return messages
+            .map((json) => ChatMessage.fromJson({
+                  'id': json['id'].toString(),
+                  'sender_id': json['user']['id'].toString(),
+                  'sender_name': json['user']['name'],
+                  'sender_avatar': json['user']['image'] ?? '',
+                  'message': json['content'],
+                  'timestamp': json['created_at'],
+                  'team_id': request.teamId,
+                  'type': 'text',
+                  'is_read': true, // Assume read for now
+                }))
+            .toList();
       }
       return [];
     } catch (e) {
@@ -95,10 +102,10 @@ class ChatDataSource {
           'type': 'text',
           'is_read': false,
         });
-        
+
         // Emit the new message to the stream
         _messageStreamController.add(message);
-        
+
         return message;
       }
       return null;
@@ -132,7 +139,8 @@ class ChatDataSource {
   Stream<ChatMessage> listenToNewMessages(String teamId) {
     // In a real implementation, you might use WebSocket or Server-Sent Events
     // For now, we'll return the broadcast stream
-    return _messageStreamController.stream.where((message) => message.teamId == teamId);
+    return _messageStreamController.stream
+        .where((message) => message.teamId == teamId);
   }
 
   void dispose() {

@@ -41,7 +41,7 @@ class _TeamChatsScreenState extends State<TeamChatsScreen> {
                 child: CircularProgressIndicator(),
               );
             }
-            
+
             if (state is ChatError) {
               return Center(
                 child: Column(
@@ -72,7 +72,7 @@ class _TeamChatsScreenState extends State<TeamChatsScreen> {
                 ),
               );
             }
-            
+
             if (state is ChatLoaded) {
               if (state.teamChats.isEmpty) {
                 return Center(
@@ -96,7 +96,7 @@ class _TeamChatsScreenState extends State<TeamChatsScreen> {
                   ),
                 );
               }
-              
+
               return ListView.builder(
                 padding: EdgeInsets.all(16.w),
                 itemCount: state.teamChats.length,
@@ -119,7 +119,7 @@ class _TeamChatsScreenState extends State<TeamChatsScreen> {
                 },
               );
             }
-            
+
             return const SizedBox.shrink();
           },
         ),
