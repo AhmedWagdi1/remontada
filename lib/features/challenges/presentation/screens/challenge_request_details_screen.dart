@@ -285,7 +285,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
         ),
         SizedBox(height: 12),
 
-        // From Team
+        // From Team (Challenging Team)
         _buildTeamCard(
           LocaleKeys.challenges_challenging_team.tr(),
           details.fromTeamName,
@@ -296,7 +296,7 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
 
         SizedBox(height: 12),
 
-        // To Team
+        // To Team (Your Team)  
         _buildTeamCard(
           LocaleKeys.challenges_your_team.tr(),
           details.toTeamName,

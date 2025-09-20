@@ -27,14 +27,14 @@ class ChallengeRequestDetails {
   factory ChallengeRequestDetails.fromJson(Map<String, dynamic> json) {
     return ChallengeRequestDetails(
       id: json['id'] ?? 0,
-      fromTeamId: json['from_team_id'] ?? 0,
-      toTeamId: json['to_team_id'] ?? 0,
-      fromTeamName: json['from_team_name'] ?? '',
-      toTeamName: json['to_team_name'] ?? '',
+      fromTeamId: json['requester_team_id'] ?? json['from_team_id'] ?? 0,
+      toTeamId: json['invited_team_id'] ?? json['to_team_id'] ?? 0,
+      fromTeamName: json['requester_team']?['name'] ?? json['from_team_name'] ?? '',
+      toTeamName: json['invited_team']?['name'] ?? json['to_team_name'] ?? '',
       status: json['status'] ?? 'pending',
       createdAt: json['created_at'] ?? '',
-      fromTeam: json['from_team'],
-      toTeam: json['to_team'],
+      fromTeam: json['requester_team'] ?? json['from_team'],
+      toTeam: json['invited_team'] ?? json['to_team'],
       matchDetails: json['match_details'],
     );
   }
