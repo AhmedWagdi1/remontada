@@ -39,6 +39,9 @@ class _ChallengeNotificationsWidgetState extends State<ChallengeNotificationsWid
         if (state is ChallengeRequestsLoading) {
           setState(() => _isLoading = true);
         } else if (state is ChallengeRequestsLoaded) {
+          final pendingCount = state.requests.where((request) => request.isPending).length;
+          print('🔔 DEBUG: Notification widget received ${state.requests.length} total requests, ${pendingCount} pending');
+          
           setState(() {
             _challengeRequests = state.requests;
             _isLoading = false;
@@ -199,9 +202,11 @@ class _ChallengeNotificationsWidgetState extends State<ChallengeNotificationsWid
 
   void _navigateToChallenges() {
     final pendingRequests = _challengeRequests.where((request) => request.isPending).toList();
-
+    print('🧭 DEBUG: Navigating - Found ${pendingRequests.length} pending requests');
+    
     if (pendingRequests.length == 1) {
       // If only one pending request, navigate directly to details
+      print('🧭 DEBUG: Navigating to single request details');
       Navigator.pushNamed(
         context,
         Routes.challengeRequestDetailsScreen,
@@ -209,9 +214,15 @@ class _ChallengeNotificationsWidgetState extends State<ChallengeNotificationsWid
       );
     } else if (pendingRequests.length > 1) {
       // If multiple pending requests, navigate to challenge requests list screen
-      Navigator.pushNamed(context, Routes.challengeRequestsScreen);
+      print('🧭 DEBUG: Navigating to challenge requests list screen');
+      Navigator.pushNamed(
+        context, 
+        Routes.challengeRequestsScreen,
+        arguments: pendingRequests, // Pass the pending requests directly
+      );
     } else {
       // If no pending requests, navigate to general challenges screen
+      print('🧭 DEBUG: Navigating to general challenges screen (no pending requests)');
       Navigator.pushNamed(context, Routes.challengesScreen);
     }
   }

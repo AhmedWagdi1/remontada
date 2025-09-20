@@ -13,6 +13,7 @@ import 'package:remontada/features/challenges/presentation/screens/create_match_
     as challenges;
 import 'package:remontada/features/challenges/presentation/screens/challenge_request_details_screen.dart';
 import 'package:remontada/features/challenges/presentation/screens/challenge_requests_screen.dart';
+import 'package:remontada/features/home/domain/model/challenge_request_model.dart';
 import 'package:remontada/features/player_details/presentation/screens/player_details.dart';
 import 'package:remontada/features/profile/presentation/screens/edit_profile.screen.dart';
 import 'package:remontada/features/splash/cubit/splash_cubit.dart';
@@ -263,7 +264,8 @@ class RouteGenerator {
         return CupertinoPageRoute(
           settings: routeSettings,
           builder: (_) {
-            return const ChallengeRequestsScreen();
+            final initialRequests = routeSettings.arguments as List<ChallengeRequest>?;
+            return ChallengeRequestsScreen(initialRequests: initialRequests);
           },
         );
       case Routes.TeamChatsScreen:

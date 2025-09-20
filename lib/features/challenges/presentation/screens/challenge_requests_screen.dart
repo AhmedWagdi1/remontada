@@ -11,7 +11,9 @@ import 'package:remontada/shared/widgets/network_image.dart';
 
 /// Screen displaying list of pending challenge requests for the user
 class ChallengeRequestsScreen extends StatefulWidget {
-  const ChallengeRequestsScreen({super.key});
+  final List<ChallengeRequest>? initialRequests;
+  
+  const ChallengeRequestsScreen({super.key, this.initialRequests});
 
   @override
   State<ChallengeRequestsScreen> createState() => _ChallengeRequestsScreenState();
@@ -24,63 +26,111 @@ class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchChallengeRequests();
+    _initializeData();
+  }
+
+  void _initializeData() {
+    // Check if we have initial data passed from the navigation
+    if (widget.initialRequests != null && widget.initialRequests!.isNotEmpty) {
+      print('🔍 DEBUG: ChallengeRequestsScreen - Using initial data: ${widget.initialRequests!.length} requests');
+      setState(() {
+        _challengeRequests = widget.initialRequests!;
+        _isLoading = false;
+      });
+      return;
+    }
+    
+    // First try to get any existing data from the HomeCubit
+    final homeCubit = context.read<HomeCubit>();
+    final currentState = homeCubit.state;
+    
+    print('🔍 DEBUG: ChallengeRequestsScreen - Current state: ${currentState.runtimeType}');
+    
+    if (currentState is ChallengeRequestsLoaded) {
+      // We already have data, use it
+      final pendingRequests = currentState.requests.where((request) => request.isPending).toList();
+      print('📊 DEBUG: Found ${pendingRequests.length} pending requests from existing state');
+      
+      setState(() {
+        _challengeRequests = pendingRequests;
+        _isLoading = false;
+      });
+    } else {
+      // No existing data, fetch it
+      print('🔄 DEBUG: No existing data, fetching fresh data...');
+      _fetchChallengeRequests();
+    }
   }
 
   Future<void> _fetchChallengeRequests() async {
     setState(() {
       _isLoading = true;
     });
-
-    try {
-      final homeCubit = context.read<HomeCubit>();
-      await homeCubit.getChallengeRequests();
-      
-      if (mounted) {
-        final state = homeCubit.state;
-        if (state is ChallengeRequestsLoaded) {
-          setState(() {
-            _challengeRequests = state.requests.where((request) => request.isPending).toList();
-            _isLoading = false;
-          });
-        } else {
-          setState(() {
-            _isLoading = false;
-          });
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
+    
+    final homeCubit = context.read<HomeCubit>();
+    await homeCubit.getChallengeRequests();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        backgroundColor: Colors.grey[50],
-        appBar: AppBar(
-          title: const CustomText(
-            'طلبات التحديات',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+    return BlocListener<HomeCubit, HomeState>(
+      listener: (context, state) {
+        if (state is ChallengeRequestsLoading) {
+          if (mounted) {
+            setState(() => _isLoading = true);
+          }
+        } else if (state is ChallengeRequestsLoaded) {
+          if (mounted) {
+            final pendingRequests = state.requests.where((request) => request.isPending).toList();
+            print('📊 DEBUG: BlocListener received ${pendingRequests.length} pending requests');
+            
+            setState(() {
+              _challengeRequests = pendingRequests;
+              _isLoading = false;
+            });
+          }
+        } else if (state is ChallengeRequestsFailed) {
+          if (mounted) {
+            setState(() => _isLoading = false);
+            // Show error message
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: CustomText(
+                  'خطأ في تحميل طلبات التحديات: ${state.error}',
+                  style: const TextStyle(color: Colors.white),
+                ),
+                backgroundColor: Colors.red,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            );
+          }
+        }
+      },
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Scaffold(
+          backgroundColor: Colors.grey[50],
+          appBar: AppBar(
+            title: const CustomText(
+              'طلبات التحديات',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            backgroundColor: context.primaryColor,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+              onPressed: () => Navigator.pop(context),
             ),
           ),
-          backgroundColor: context.primaryColor,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-            onPressed: () => Navigator.pop(context),
-          ),
+          body: _buildBody(),
         ),
-        body: _buildBody(),
       ),
     );
   }
