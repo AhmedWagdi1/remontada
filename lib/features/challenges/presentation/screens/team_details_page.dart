@@ -74,7 +74,7 @@ class TeamDetailsPage extends StatefulWidget {
   State<TeamDetailsPage> createState() => _TeamDetailsPageState();
 }
 
-class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderStateMixin {
+class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderStateMixin, WidgetsBindingObserver {
   Map<String, dynamic>? _teamData;
   String? _currentUserRole;
   List<dynamic> _invites = [];
@@ -82,6 +82,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _tabController = TabController(length: 5, vsync: this); // Default to 5, will be updated in build
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) return;
@@ -89,6 +90,24 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
     });
     _fetchTeamData();
     _fetchInvites();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    // Refresh when app comes to foreground
+    if (state == AppLifecycleState.resumed && mounted) {
+      print('🔄 DEBUG: App resumed, refreshing team details and invites');
+      _fetchTeamData();
+      _fetchInvites();
+    }
   }
 
   /// Fetches the team information from the backend and stores it in [_teamData].

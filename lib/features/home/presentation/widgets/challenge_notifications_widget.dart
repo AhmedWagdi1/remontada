@@ -17,14 +17,31 @@ class ChallengeNotificationsWidget extends StatefulWidget {
   State<ChallengeNotificationsWidget> createState() => _ChallengeNotificationsWidgetState();
 }
 
-class _ChallengeNotificationsWidgetState extends State<ChallengeNotificationsWidget> {
+class _ChallengeNotificationsWidgetState extends State<ChallengeNotificationsWidget> with WidgetsBindingObserver {
   List<ChallengeRequest> _challengeRequests = [];
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadChallengeRequests();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    // Refresh when app comes to foreground
+    if (state == AppLifecycleState.resumed && mounted) {
+      print('🔄 DEBUG: App resumed, refreshing challenge notifications');
+      _loadChallengeRequests();
+    }
   }
 
   Future<void> _loadChallengeRequests() async {
@@ -211,7 +228,11 @@ class _ChallengeNotificationsWidgetState extends State<ChallengeNotificationsWid
         context,
         Routes.challengeRequestDetailsScreen,
         arguments: pendingRequests.first.id,
-      );
+      ).then((_) {
+        // Refresh challenge notifications when returning from details
+        print('🔄 DEBUG: Returned from challenge details, refreshing notifications');
+        _loadChallengeRequests();
+      });
     } else if (pendingRequests.length > 1) {
       // If multiple pending requests, navigate to challenge requests list screen
       print('🧭 DEBUG: Navigating to challenge requests list screen');
@@ -219,11 +240,19 @@ class _ChallengeNotificationsWidgetState extends State<ChallengeNotificationsWid
         context, 
         Routes.challengeRequestsScreen,
         arguments: pendingRequests, // Pass the pending requests directly
-      );
+      ).then((_) {
+        // Refresh challenge notifications when returning from list
+        print('🔄 DEBUG: Returned from challenge requests list, refreshing notifications');
+        _loadChallengeRequests();
+      });
     } else {
       // If no pending requests, navigate to general challenges screen
       print('🧭 DEBUG: Navigating to general challenges screen (no pending requests)');
-      Navigator.pushNamed(context, Routes.challengesScreen);
+      Navigator.pushNamed(context, Routes.challengesScreen).then((_) {
+        // Refresh challenge notifications when returning from challenges screen
+        print('🔄 DEBUG: Returned from challenges screen, refreshing notifications');
+        _loadChallengeRequests();
+      });
     }
   }
 }

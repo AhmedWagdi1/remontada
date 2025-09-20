@@ -5,6 +5,8 @@ import 'package:remontada/features/home/domain/model/challenge_request_model.dar
 import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/core/Router/Router.dart';
 import 'package:remontada/shared/widgets/network_image.dart';
+import 'package:remontada/features/home/cubit/home_cubit.dart';
+import 'package:remontada/core/utils/Locator.dart';
 
 /// Screen displaying list of pending challenge requests for the user
 class ChallengeRequestsScreen extends StatefulWidget {
@@ -16,14 +18,31 @@ class ChallengeRequestsScreen extends StatefulWidget {
   State<ChallengeRequestsScreen> createState() => _ChallengeRequestsScreenState();
 }
 
-class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> {
+class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> with WidgetsBindingObserver {
   List<ChallengeRequest> _challengeRequests = [];
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _initializeData();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    // Refresh when app comes to foreground
+    if (state == AppLifecycleState.resumed && mounted) {
+      print('🔄 DEBUG: App resumed, refreshing challenge requests');
+      _fetchChallengeRequests();
+    }
   }
 
   void _initializeData() {
@@ -47,35 +66,62 @@ class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> {
 
   Future<void> _fetchChallengeRequests() async {
     // This method is for pull-to-refresh functionality
-    // Since we don't have direct access to HomeCubit, we'll simulate a refresh
     setState(() {
       _isLoading = true;
     });
     
-    // Simulate a refresh delay
-    await Future.delayed(const Duration(milliseconds: 1000));
-    
-    // For now, just reset the loading state
-    // In a real implementation, you might want to navigate back or implement a direct API call
-    if (mounted) {
-      setState(() {
-        _isLoading = false;
-      });
+    try {
+      // Get HomeCubit from the locator and fetch fresh data
+      final homeCubit = locator<HomeCubit>();
+      final requests = await homeCubit.getChallengeRequests();
       
-      // Show message that refresh completed
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const CustomText(
-            'تم تحديث البيانات',
-            style: TextStyle(color: Colors.white),
+      // Filter only pending requests
+      final pendingRequests = requests.where((request) => request.isPending).toList();
+      print('🔄 DEBUG: Fetched ${requests.length} total requests, ${pendingRequests.length} pending');
+      
+      if (mounted) {
+        setState(() {
+          _challengeRequests = pendingRequests;
+          _isLoading = false;
+        });
+        
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const CustomText(
+              'تم تحديث البيانات',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
-          backgroundColor: Colors.green,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+        );
+      }
+    } catch (e) {
+      print('❌ DEBUG: Error refreshing challenge requests: $e');
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        
+        // Show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const CustomText(
+              'حدث خطأ أثناء تحديث البيانات',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
   }
 
@@ -466,7 +512,9 @@ class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> {
       Routes.challengeRequestDetailsScreen,
       arguments: request.id,
     ).then((_) {
-      // Refresh the list when returning from details screen
+      // Always refresh the list when returning from details screen
+      // This ensures we get the latest status updates
+      print('🔄 DEBUG: Returned from challenge details, refreshing list');
       _fetchChallengeRequests();
     });
   }
@@ -530,25 +578,55 @@ class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> {
     );
   }
 
-  void _rejectChallenge(ChallengeRequest request) {
-    // TODO: Implement the API call to reject the challenge request
-    // For now, just remove from local list and show success message
-    setState(() {
-      _challengeRequests.removeWhere((r) => r.id == request.id);
-    });
-    
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const CustomText(
-          'تم رفض الطلب بنجاح',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.green,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-    );
+  Future<void> _rejectChallenge(ChallengeRequest request) async {
+    try {
+      // TODO: Implement the actual API call to reject the challenge request
+      // For now, we'll simulate the API call and then refresh the data
+      print('🚫 DEBUG: Rejecting challenge request ${request.id}');
+      
+      // Remove from local list immediately for instant feedback
+      setState(() {
+        _challengeRequests.removeWhere((r) => r.id == request.id);
+      });
+      
+      // TODO: Add actual reject API call here
+      // await homeCubit.rejectChallengeRequest(request.id);
+      
+      // Refresh the data to ensure consistency
+      await _fetchChallengeRequests();
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const CustomText(
+              'تم رفض الطلب بنجاح',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      print('❌ DEBUG: Error rejecting challenge: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const CustomText(
+              'حدث خطأ أثناء رفض الطلب',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        );
+      }
+    }
   }
 }
