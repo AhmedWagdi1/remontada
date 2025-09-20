@@ -129,8 +129,13 @@ class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> with 
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: Scaffold(
-        backgroundColor: Colors.grey[50],
+      child: WillPopScope(
+        onWillPop: () async {
+          Navigator.pushReplacementNamed(context, Routes.challengesScreen);
+          return false; // Prevent default back behavior
+        },
+        child: Scaffold(
+          backgroundColor: Colors.grey[50],
         appBar: AppBar(
           title: const CustomText(
             'طلبات التحديات',
@@ -144,7 +149,7 @@ class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> with 
           elevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pushReplacementNamed(context, Routes.challengesScreen),
           ),
         ),
         body: _buildBody(),
@@ -411,49 +416,23 @@ class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> with 
                 bottomRight: Radius.circular(12),
               ),
             ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => _viewRequestDetails(request),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: context.primaryColor,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: const CustomText(
-                      'عرض التفاصيل',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+            child: ElevatedButton(
+              onPressed: () => _viewRequestDetails(request),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: context.primaryColor,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => _quickReject(request),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.red,
-                      side: const BorderSide(color: Colors.red),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: const CustomText(
-                      'رفض',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+              ),
+              child: const CustomText(
+                'عرض التفاصيل',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
+              ),
             ),
           ),
         ],
@@ -519,114 +498,5 @@ class _ChallengeRequestsScreenState extends State<ChallengeRequestsScreen> with 
     });
   }
 
-  void _quickReject(ChallengeRequest request) {
-    showDialog(
-      context: context,
-      builder: (BuildContext dialogContext) {
-        return Directionality(
-          textDirection: TextDirection.rtl,
-          child: AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            title: Row(
-              children: [
-                const Icon(Icons.warning, color: Colors.red, size: 24),
-                const SizedBox(width: 8),
-                const CustomText(
-                  'تأكيد رفض الطلب',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            content: CustomText(
-              'هل تريد رفض طلب التحدي من فريق ${request.fromTeamName}؟ لن تتمكن من التراجع عن هذا القرار.',
-              style: TextStyle(
-                color: LightThemeColors.secondaryText,
-                fontSize: 14,
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(dialogContext).pop(),
-                child: const CustomText(
-                  'إلغاء',
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(dialogContext).pop();
-                  // TODO: Implement reject functionality
-                  _rejectChallenge(request);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                ),
-                child: const CustomText(
-                  'رفض',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 
-  Future<void> _rejectChallenge(ChallengeRequest request) async {
-    try {
-      // TODO: Implement the actual API call to reject the challenge request
-      // For now, we'll simulate the API call and then refresh the data
-      print('🚫 DEBUG: Rejecting challenge request ${request.id}');
-      
-      // Remove from local list immediately for instant feedback
-      setState(() {
-        _challengeRequests.removeWhere((r) => r.id == request.id);
-      });
-      
-      // TODO: Add actual reject API call here
-      // await homeCubit.rejectChallengeRequest(request.id);
-      
-      // Refresh the data to ensure consistency
-      await _fetchChallengeRequests();
-      
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const CustomText(
-              'تم رفض الطلب بنجاح',
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: Colors.green,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-        );
-      }
-    } catch (e) {
-      print('❌ DEBUG: Error rejecting challenge: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const CustomText(
-              'حدث خطأ أثناء رفض الطلب',
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-        );
-      }
-    }
-  }
 }

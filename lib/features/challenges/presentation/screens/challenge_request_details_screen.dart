@@ -9,6 +9,7 @@ import 'package:remontada/shared/widgets/customtext.dart';
 import 'package:remontada/core/utils/utils.dart';
 import 'package:remontada/core/config/key.dart';
 import 'package:remontada/core/translations/locale_keys.g.dart';
+import 'package:remontada/core/Router/Router.dart';
 import '../../domain/model/challenge_request_details_model.dart';
 
 class ChallengeRequestDetailsScreen extends StatefulWidget {
@@ -102,8 +103,15 @@ class _ChallengeRequestDetailsScreenState extends State<ChallengeRequestDetailsS
 
       if (data['status'] == true) {
         _showSuccess(data['message'] ?? LocaleKeys.challenges_response_sent.tr());
-        // Refresh the details to update the status
-        await _loadChallengeDetails();
+        // Navigate back to challenges screen after successful response
+        await Future.delayed(const Duration(seconds: 1)); // Brief delay to show success message
+        if (mounted) {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            Routes.challengesScreen,
+            (route) => route.isFirst, // Keep only the first route (usually the home/layout screen)
+          );
+        }
       } else {
         _showError(data['message'] ?? LocaleKeys.challenges_error_responding.tr(args: ['']));
       }
