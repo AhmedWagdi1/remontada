@@ -194,7 +194,7 @@ class _ChallengeNotificationsWidgetState extends State<ChallengeNotificationsWid
 
     if (latestRequest == null) return '';
 
-    return '${latestRequest.fromTeamName} ${LocaleKeys.challenge_challenged_you.tr(args: [latestRequest.formattedDate])}';
+  return '${latestRequest.fromTeamName} ${LocaleKeys.challenge_challenged_you.tr(namedArgs: {'date': latestRequest.formattedDate})}';
   }
 
   void _navigateToChallenges() {
