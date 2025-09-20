@@ -150,7 +150,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> with TickerProviderSt
       if (data['status'] == true) {
         final invites = data['data'] as List<dynamic>;
         setState(() {
-          _invites = invites.where((invite) => invite['invited_team_id'] == widget.teamId && invite['status'] != 'accepted').toList();
+          _invites = invites.where((invite) => invite['invited_team_id'] == widget.teamId && invite['status'] == 'pending').toList();
         });
       }
     }
