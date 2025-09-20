@@ -369,10 +369,10 @@
     "requests": "Challenge Requests",
     "request_details": "Challenge Request Details",
     "loading": "Loading...",
-    "single_request": "You have 1 pending challenge request",
-    "multiple_requests": "You have {{count}} pending challenge requests",
-    "latest": "Latest:",
-    "challenged_you": "challenged you {{date}}",
+        "single_request": "You have 1 pending challenge request",
+    "multiple_requests": "You have {} pending challenge requests",
+    "latest": "Latest from",
+    "challenged_you": "challenged you {date}",
     "teams": "Teams",
     "challenging_team": "Challenging Team",
     "your_team": "Your Team",
@@ -388,8 +388,8 @@
     "reject": "Reject Challenge",
     "response_sent": "Response sent successfully",
     "failed_to_load": "Failed to load challenge details",
-    "error_loading": "Error loading challenge details: {{error}}",
-    "error_responding": "Error responding to challenge: {{error}}",
+    "error_loading": "Error loading challenge details: {}",
+    "error_responding": "Error responding to challenge: {}",
     "retry": "Retry"
   }
 }
