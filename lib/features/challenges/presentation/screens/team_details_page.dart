@@ -371,6 +371,9 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
             _TopBar(
               teamName: _teamData?['name'] as String?,
               logoUrl: _teamData?['logo_url'] as String?,
+              // show gear icon and wire edit action only for captain
+              onEdit: _currentUserRole == 'leader' ? () => _navigateToEditTeam(context) : null,
+              showEditIcon: _currentUserRole == 'leader',
             ),
             const SizedBox(height: 16),
             // Edit Team Button (Captain Only)
@@ -554,14 +557,21 @@ class _TopBar extends StatelessWidget {
   /// Optional logo URL for the team.
   final String? logoUrl;
 
+  /// Optional callback when the edit (gear) icon is pressed.
+  final VoidCallback? onEdit;
+
+  /// Whether to show the edit (gear) icon. Default false.
+  final bool showEditIcon;
+
   /// Creates a [_TopBar] with optional team details.
-  const _TopBar({this.teamName, this.logoUrl});
+  const _TopBar({this.teamName, this.logoUrl, this.onEdit, this.showEditIcon = false});
 
   @override
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
     final name = teamName ?? 'ريـمونتادا';
     final logo = logoUrl;
+    // Show logo if available, otherwise keep an empty space to align title
     final leading = (logo != null && logo.isNotEmpty)
         ? NetworkImagesWidgets(
             logo,
@@ -570,7 +580,7 @@ class _TopBar extends StatelessWidget {
             fit: BoxFit.cover,
             radius: 12,
           )
-        : const Icon(Icons.settings, color: darkBlue);
+        : const SizedBox(width: 24, height: 24);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
@@ -585,7 +595,14 @@ class _TopBar extends StatelessWidget {
               fontSize: 18,
             ),
           ),
-          // Removed extra arrow icon that duplicated navigation affordance
+          // Show gear icon for editing team info when allowed (captain only)
+          if (showEditIcon && onEdit != null)
+            IconButton(
+              onPressed: onEdit,
+              icon: const Icon(Icons.settings),
+              color: darkBlue,
+              tooltip: 'تعديل معلومات الفريق',
+            ),
         ],
       ),
     );
@@ -1221,7 +1238,7 @@ class _MembersTab extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _TopBar(teamName: teamName, logoUrl: logoUrl),
+            _TopBar(teamName: teamName, logoUrl: logoUrl, onEdit: null, showEditIcon: false),
             const SizedBox(height: 16),
             _StatsSummaryRow(
               activePlayers: countActivePlayers(allUsers),
@@ -1767,7 +1784,7 @@ class _JoinRequestsTabState extends State<_JoinRequestsTab> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _TopBar(teamName: widget.teamName, logoUrl: widget.logoUrl),
+            _TopBar(teamName: widget.teamName, logoUrl: widget.logoUrl, onEdit: null, showEditIcon: false),
             const SizedBox(height: 16),
             Form(
               key: _formKey,
@@ -2102,7 +2119,7 @@ class _TransferRequestsTab extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _TopBar(teamName: teamName, logoUrl: logoUrl),
+                    _TopBar(teamName: teamName, logoUrl: logoUrl, onEdit: null, showEditIcon: false),
                     const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -2394,7 +2411,7 @@ class _ChatTabState extends State<_ChatTab> {
         textDirection: TextDirection.rtl,
         child: Column(
           children: [
-            _TopBar(teamName: widget.teamName, logoUrl: widget.logoUrl),
+            _TopBar(teamName: widget.teamName, logoUrl: widget.logoUrl, onEdit: null, showEditIcon: false),
             Container(
               color: const Color(0xFFF2F2F2),
               padding: const EdgeInsets.all(12),
