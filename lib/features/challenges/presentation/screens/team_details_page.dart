@@ -404,6 +404,133 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
     }
   }
 
+  /// Shows two-step confirmation and performs API call to delete the team.
+  Future<void> _onDeleteTeamPressed(BuildContext context) async {
+    final teamName = _teamData?['name'] as String? ?? '';
+    final displayName = (teamName.trim().isNotEmpty) ? teamName : '';
+
+    // First confirmation dialog explaining there will be a second confirmation
+    final isRtl = context.locale.languageCode.startsWith('ar');
+    final first = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(LocaleKeys.delete_team_title.tr()),
+        content: Directionality(
+          textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
+          child: Text(LocaleKeys.delete_team_first_confirm_message
+              .tr(args: [displayName])),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(LocaleKeys.delete_cancel_button.tr()),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(LocaleKeys.delete_confirm_button.tr()),
+          ),
+        ],
+      ),
+    );
+
+    if (first != true) return;
+
+    // Second (final) confirmation dialog
+    final second = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(LocaleKeys.delete_team_second_confirm_title.tr()),
+        content: Directionality(
+          textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
+          child: Text(LocaleKeys.delete_team_second_confirm_message
+              .tr(args: [displayName])),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(LocaleKeys.delete_cancel_button.tr()),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(foregroundColor: Colors.white, backgroundColor: Colors.red),
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(LocaleKeys.delete_confirm_button.tr()),
+          ),
+        ],
+      ),
+    );
+
+    if (second != true) return;
+
+    // show full screen loading overlay (non-dismissible)
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => WillPopScope(
+        onWillPop: () async => false,
+        child: const Center(child: CircularProgressIndicator()),
+      ),
+    );
+
+    try {
+      final url = '${ConstKeys.baseUrl}/team/${widget.teamId}';
+      final res = await http
+          .delete(Uri.parse(url), headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${Utils.token}',
+      }).timeout(const Duration(seconds: 15));
+
+      Navigator.of(context).pop(); // hide loading
+
+      if (res.statusCode < 400) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        final message = (data['message'] as String?) ?? LocaleKeys.delete_success_toast.tr();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message), backgroundColor: Colors.green),
+        );
+
+        if (data['status'] == true) {
+          // navigate to app home clearing stack
+          Navigator.of(context).pushNamedAndRemoveUntil(Routes.LayoutScreen, (r) => false);
+        }
+      } else if (res.statusCode == 403) {
+        // parse message if available
+        String message;
+        try {
+          final data = jsonDecode(res.body) as Map<String, dynamic>;
+          message = (data['message'] as String?) ?? LocaleKeys.delete_failed_toast.tr();
+        } catch (_) {
+          message = LocaleKeys.delete_failed_toast.tr();
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message), backgroundColor: Colors.red),
+        );
+      } else if (res.statusCode == 401) {
+        // Auth issue: clear loader and trigger app auth flow
+        final message = LocaleKeys.delete_failed_toast.tr();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message), backgroundColor: Colors.red),
+        );
+        // TODO: trigger app logout/reauth if required by app architecture
+      } else {
+        String message;
+        try {
+          final data = jsonDecode(res.body) as Map<String, dynamic>;
+          message = (data['message'] as String?) ?? LocaleKeys.delete_failed_toast.tr();
+        } catch (_) {
+          message = LocaleKeys.delete_failed_toast.tr();
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message), backgroundColor: Colors.red),
+        );
+      }
+    } catch (e) {
+      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(LocaleKeys.delete_failed_toast.tr()), backgroundColor: Colors.red),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
@@ -467,6 +594,9 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
               // show leave icon for non-leaders
               onLeave: _currentUserRole != 'leader' ? () => _onLeaveTeamPressed(context) : null,
               showLeaveIcon: _currentUserRole != 'leader',
+              // show delete icon for leader only
+              onDelete: _currentUserRole == 'leader' ? () => _onDeleteTeamPressed(context) : null,
+              showDeleteIcon: _currentUserRole == 'leader',
             ),
             const SizedBox(height: 16),
             // Edit action moved to the gear icon in the top bar (captain only)
@@ -655,6 +785,12 @@ class _TopBar extends StatelessWidget {
   /// Whether to show the leave icon. Default false.
   final bool showLeaveIcon;
 
+  /// Optional callback when the delete icon is pressed (leader only).
+  final VoidCallback? onDelete;
+
+  /// Whether to show the delete icon. Default false.
+  final bool showDeleteIcon;
+
   /// Creates a [_TopBar] with optional team details.
   const _TopBar({
     this.teamName,
@@ -663,6 +799,8 @@ class _TopBar extends StatelessWidget {
     this.showEditIcon = false,
     this.onLeave,
     this.showLeaveIcon = false,
+    this.onDelete,
+    this.showDeleteIcon = false,
   });
 
   @override
@@ -709,6 +847,14 @@ class _TopBar extends StatelessWidget {
               icon: const Icon(Icons.exit_to_app),
               color: Colors.redAccent,
               tooltip: LocaleKeys.leave_team_title.tr(),
+            ),
+          // Show delete icon for captain (leader) only
+          if (showDeleteIcon && onDelete != null)
+            IconButton(
+              onPressed: onDelete,
+              icon: const Icon(Icons.delete_forever),
+              color: Colors.redAccent,
+              tooltip: LocaleKeys.delete_double_confirm_notice.tr(),
             ),
         ],
       ),

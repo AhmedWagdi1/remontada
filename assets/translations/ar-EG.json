@@ -410,4 +410,16 @@
     "leave_success_toast": "لقد غادرت الفريق بنجاح.",
     "leave_failed_toast": "فشل في مغادرة الفريق. حاول مرة أخرى."
   }
+  ,
+  "delete": {
+    "delete_team_title": "حذف الفريق",
+    "delete_team_first_confirm_message": "هل أنت متأكد أنك تريد حذف {}؟ هذا الإجراء لا يمكن التراجع عنه. سيُطلب منك التأكيد مرة أخرى.",
+    "delete_team_second_confirm_title": "تأكيد الحذف",
+    "delete_team_second_confirm_message": "تأكيد نهائي: حذف {} سيؤدي إلى إزالة الفريق نهائيًا ولا يمكن التراجع عنه. هل تريد المتابعة؟",
+    "delete_confirm_button": "حذف",
+    "delete_cancel_button": "إلغاء",
+    "delete_success_toast": "تم حذف الفريق بنجاح.",
+    "delete_failed_toast": "فشل في حذف الفريق. حاول مرة أخرى.",
+    "delete_double_confirm_notice": "حذف (يتطلب تأكيدين)"
+  }
 }

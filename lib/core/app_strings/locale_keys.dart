@@ -394,5 +394,14 @@ abstract class LocaleKeys {
     static const leave_cancel_button = 'leave.leave_cancel_button';
     static const leave_success_toast = 'leave.leave_success_toast';
     static const leave_failed_toast = 'leave.leave_failed_toast';
+    static const delete_team_title = 'delete.delete_team_title';
+    static const delete_team_first_confirm_message = 'delete.delete_team_first_confirm_message';
+    static const delete_team_second_confirm_title = 'delete.delete_team_second_confirm_title';
+    static const delete_team_second_confirm_message = 'delete.delete_team_second_confirm_message';
+    static const delete_confirm_button = 'delete.delete_confirm_button';
+    static const delete_cancel_button = 'delete.delete_cancel_button';
+    static const delete_success_toast = 'delete.delete_success_toast';
+    static const delete_failed_toast = 'delete.delete_failed_toast';
+    static const delete_double_confirm_notice = 'delete.delete_double_confirm_notice';
   // end challenges
 }

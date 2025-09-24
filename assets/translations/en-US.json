@@ -410,4 +410,16 @@
     "leave_success_toast": "You have left the team successfully.",
     "leave_failed_toast": "Failed to leave the team. Please try again."
   }
+  ,
+  "delete": {
+    "delete_team_title": "Delete Team",
+    "delete_team_first_confirm_message": "Are you sure you want to delete {}? This action is irreversible. You will be asked to confirm again.",
+    "delete_team_second_confirm_title": "Confirm Delete",
+    "delete_team_second_confirm_message": "Final confirmation: Deleting {} will permanently remove the team and cannot be undone. Do you want to proceed?",
+    "delete_confirm_button": "Delete",
+    "delete_cancel_button": "Cancel",
+    "delete_success_toast": "Team deleted successfully.",
+    "delete_failed_toast": "Failed to delete the team. Please try again.",
+    "delete_double_confirm_notice": "Delete (double confirm)"
+  }
 }
