@@ -318,23 +318,30 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
   /// Shows confirmation dialog and performs API call to leave the team.
   Future<void> _onLeaveTeamPressed(BuildContext context) async {
     final teamName = _teamData?['name'] as String? ?? '';
+    final displayName = (teamName.trim().isNotEmpty) ? teamName : '';
     final confirm = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(LocaleKeys.leave_team_title.tr()),
-        content: Text(LocaleKeys.leave_team_confirm_message
-            .tr(args: [teamName])),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(LocaleKeys.leave_cancel_button.tr()),
+      builder: (context) {
+        // Ensure proper direction for Arabic and wrapping behavior
+        final isRtl = context.locale.languageCode.startsWith('ar');
+        return AlertDialog(
+          title: Text(LocaleKeys.leave_team_title.tr()),
+          content: Directionality(
+            textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
+            child: Text(LocaleKeys.leave_team_confirm_message.tr(args: [displayName])),
           ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(LocaleKeys.leave_confirm_button.tr()),
-          ),
-        ],
-      ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(LocaleKeys.leave_cancel_button.tr()),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(LocaleKeys.leave_confirm_button.tr()),
+            ),
+          ],
+        );
+      },
     );
 
     if (confirm != true) return;

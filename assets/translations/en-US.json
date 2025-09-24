@@ -404,7 +404,7 @@
   ,
   "leave": {
     "leave_team_title": "Leave Team",
-    "leave_team_confirm_message": "Are you sure you want to leave {0}?",
+  "leave_team_confirm_message": "Are you sure you want to leave {}?",
     "leave_confirm_button": "Leave",
     "leave_cancel_button": "Cancel",
     "leave_success_toast": "You have left the team successfully.",
