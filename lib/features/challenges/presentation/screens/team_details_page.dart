@@ -7,6 +7,7 @@ import '../../../../core/config/key.dart';
 import '../../../../core/utils/utils.dart';
 import '../../../../core/utils/Locator.dart';
 import '../../../../core/app_strings/locale_keys.dart';
+import '../../../../core/Router/Router.dart';
 import '../../../../shared/widgets/network_image.dart';
 import '../../../chat/cubit/chat_cubit.dart';
 import '../../../chat/cubit/chat_states.dart';
@@ -314,6 +315,88 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
     }
   }
 
+  /// Shows confirmation dialog and performs API call to leave the team.
+  Future<void> _onLeaveTeamPressed(BuildContext context) async {
+    final teamName = _teamData?['name'] as String? ?? '';
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(LocaleKeys.leave_team_title.tr()),
+        content: Text(LocaleKeys.leave_team_confirm_message
+            .tr(args: [teamName])),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(LocaleKeys.leave_cancel_button.tr()),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(LocaleKeys.leave_confirm_button.tr()),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true) return;
+
+    // show full screen loading overlay (non-dismissible)
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => WillPopScope(
+        onWillPop: () async => false,
+        child: const Center(child: CircularProgressIndicator()),
+      ),
+    );
+
+    try {
+      final url = '${ConstKeys.baseUrl}/team/leave/${widget.teamId}';
+      final res = await http
+          .post(Uri.parse(url), headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${Utils.token}',
+      }).timeout(const Duration(seconds: 15));
+
+      Navigator.of(context).pop(); // hide loading
+
+      if (res.statusCode < 400) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        final message = (data['message'] as String?) ??
+            LocaleKeys.leave_success_toast.tr();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message), backgroundColor: Colors.green),
+        );
+
+        if (data['status'] == true) {
+          // navigate to app home clearing stack
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil(Routes.LayoutScreen, (r) => false);
+        }
+      } else {
+        // handle server error
+        String message;
+        try {
+          final data = jsonDecode(res.body) as Map<String, dynamic>;
+          message = (data['message'] as String?) ??
+              LocaleKeys.leave_failed_toast.tr();
+        } catch (_) {
+          message = LocaleKeys.leave_failed_toast.tr();
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message), backgroundColor: Colors.red),
+        );
+      }
+    } catch (e) {
+      // network / timeout / unexpected
+      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(LocaleKeys.leave_failed_toast.tr()),
+            backgroundColor: Colors.red),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
@@ -374,6 +457,9 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
               // show gear icon and wire edit action only for captain
               onEdit: _currentUserRole == 'leader' ? () => _navigateToEditTeam(context) : null,
               showEditIcon: _currentUserRole == 'leader',
+              // show leave icon for non-leaders
+              onLeave: _currentUserRole != 'leader' ? () => _onLeaveTeamPressed(context) : null,
+              showLeaveIcon: _currentUserRole != 'leader',
             ),
             const SizedBox(height: 16),
             // Edit action moved to the gear icon in the top bar (captain only)
@@ -556,8 +642,21 @@ class _TopBar extends StatelessWidget {
   /// Whether to show the edit (gear) icon. Default false.
   final bool showEditIcon;
 
+  /// Optional callback when the leave icon is pressed.
+  final VoidCallback? onLeave;
+
+  /// Whether to show the leave icon. Default false.
+  final bool showLeaveIcon;
+
   /// Creates a [_TopBar] with optional team details.
-  const _TopBar({this.teamName, this.logoUrl, this.onEdit, this.showEditIcon = false});
+  const _TopBar({
+    this.teamName,
+    this.logoUrl,
+    this.onEdit,
+    this.showEditIcon = false,
+    this.onLeave,
+    this.showLeaveIcon = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -595,6 +694,14 @@ class _TopBar extends StatelessWidget {
               icon: const Icon(Icons.settings),
               color: darkBlue,
               tooltip: 'تعديل معلومات الفريق',
+            ),
+          // Show leave icon for non-captain members (member/subLeader)
+          if (showLeaveIcon && onLeave != null)
+            IconButton(
+              onPressed: onLeave,
+              icon: const Icon(Icons.exit_to_app),
+              color: Colors.redAccent,
+              tooltip: LocaleKeys.leave_team_title.tr(),
             ),
         ],
       ),
@@ -1231,7 +1338,14 @@ class _MembersTab extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _TopBar(teamName: teamName, logoUrl: logoUrl, onEdit: null, showEditIcon: false),
+            _TopBar(
+              teamName: teamName,
+              logoUrl: logoUrl,
+              onEdit: null,
+              showEditIcon: false,
+              onLeave: null,
+              showLeaveIcon: false,
+            ),
             const SizedBox(height: 16),
             _StatsSummaryRow(
               activePlayers: countActivePlayers(allUsers),
@@ -1777,7 +1891,14 @@ class _JoinRequestsTabState extends State<_JoinRequestsTab> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _TopBar(teamName: widget.teamName, logoUrl: widget.logoUrl, onEdit: null, showEditIcon: false),
+            _TopBar(
+              teamName: widget.teamName,
+              logoUrl: widget.logoUrl,
+              onEdit: null,
+              showEditIcon: false,
+              onLeave: null,
+              showLeaveIcon: false,
+            ),
             const SizedBox(height: 16),
             Form(
               key: _formKey,
@@ -2112,7 +2233,14 @@ class _TransferRequestsTab extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _TopBar(teamName: teamName, logoUrl: logoUrl, onEdit: null, showEditIcon: false),
+                    _TopBar(
+                      teamName: teamName,
+                      logoUrl: logoUrl,
+                      onEdit: null,
+                      showEditIcon: false,
+                      onLeave: null,
+                      showLeaveIcon: false,
+                    ),
                     const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

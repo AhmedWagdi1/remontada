@@ -388,5 +388,11 @@ abstract class LocaleKeys {
   static const challenge_error_loading = 'challenges.error_loading';
   static const challenge_error_responding = 'challenges.error_responding';
   static const challenge_retry = 'challenges.retry';
+    static const leave_team_title = 'leave.leave_team_title';
+    static const leave_team_confirm_message = 'leave.leave_team_confirm_message';
+    static const leave_confirm_button = 'leave.leave_confirm_button';
+    static const leave_cancel_button = 'leave.leave_cancel_button';
+    static const leave_success_toast = 'leave.leave_success_toast';
+    static const leave_failed_toast = 'leave.leave_failed_toast';
   // end challenges
 }

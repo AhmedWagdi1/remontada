@@ -401,4 +401,13 @@
     "error_responding": "خطأ في الرد على التحدي: {}",
     "retry": "إعادة المحاولة"
   }
+  ,
+  "leave": {
+    "leave_team_title": "مغادرة الفريق",
+    "leave_team_confirm_message": "هل أنت متأكد أنك تريد مغادرة {0}؟",
+    "leave_confirm_button": "مغادرة",
+    "leave_cancel_button": "إلغاء",
+    "leave_success_toast": "لقد غادرت الفريق بنجاح.",
+    "leave_failed_toast": "فشل في مغادرة الفريق. حاول مرة أخرى."
+  }
 }

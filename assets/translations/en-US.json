@@ -401,4 +401,13 @@
     "error_responding": "Error responding to challenge: {}",
     "retry": "Retry"
   }
+  ,
+  "leave": {
+    "leave_team_title": "Leave Team",
+    "leave_team_confirm_message": "Are you sure you want to leave {0}?",
+    "leave_confirm_button": "Leave",
+    "leave_cancel_button": "Cancel",
+    "leave_success_toast": "You have left the team successfully.",
+    "leave_failed_toast": "Failed to leave the team. Please try again."
+  }
 }
