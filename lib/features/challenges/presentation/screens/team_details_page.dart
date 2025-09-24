@@ -78,6 +78,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
   Map<String, dynamic>? _teamData;
   String? _currentUserRole;
   List<dynamic> _invites = [];
+  bool _isRemoving = false;
 
   @override
   void initState() {
@@ -177,6 +178,87 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
               .toList();
         });
       }
+    }
+  }
+
+  /// Removes a member from the team using the API.
+  Future<void> _removeMember(
+      {required String phoneNumber, required int teamId}) async {
+    if (phoneNumber.isEmpty || teamId == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(LocaleKeys.remove_failed.tr())),
+      );
+      return;
+    }
+
+    setState(() => _isRemoving = true);
+
+    try {
+      final url = '${ConstKeys.baseUrl}/team/remove-member';
+      final res = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${Utils.token}',
+        },
+        body: jsonEncode({
+          'phone_number': phoneNumber,
+          'team_id': teamId,
+        }),
+      );
+
+      if (res.statusCode == 200) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        if (data['status'] == true) {
+          // Success
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(LocaleKeys.remove_success.tr()),
+              backgroundColor: Colors.green,
+            ),
+          );
+          // Refresh team data to update members list
+          await _fetchTeamData();
+        } else {
+          // Server returned status false
+          if (!mounted) return;
+          final message =
+              data['message'] as String? ?? LocaleKeys.remove_failed.tr();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(message),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } else if (res.statusCode == 403) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        final message =
+            data['message'] as String? ?? LocaleKeys.remove_no_permission.tr();
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message), backgroundColor: Colors.red),
+        );
+      } else {
+        // Other error
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(LocaleKeys.remove_failed.tr()),
+              backgroundColor: Colors.red),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(LocaleKeys.remove_failed.tr()),
+            backgroundColor: Colors.red),
+      );
+    } finally {
+      if (mounted) setState(() => _isRemoving = false);
     }
   }
 
@@ -345,6 +427,50 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
         logoUrl: _teamData?['logo_url'] as String?,
         users: _teamData?['users'] as List<dynamic>?,
         membersCount: _teamData?['members_count'] as int?,
+        canShowRemove: _currentUserRole == 'leader',
+        onRemoveMember: (String phone) async {
+          // try to find the member's display name from loaded team data
+          Map<String, dynamic>? member;
+          final users = (_teamData?['users'] as List<dynamic>?) ?? [];
+          for (final u in users) {
+            if (u is Map<String, dynamic>) {
+              final mobile = (u['mobile'] ?? u['phone'] ?? '') as String;
+              if (mobile == phone) {
+                member = u;
+                break;
+              }
+            }
+          }
+          final displayName =
+              member != null ? (member['name'] as String? ?? phone) : phone;
+
+          // Show confirmation dialog with member name
+          final confirmed = await showDialog<bool>(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text(LocaleKeys.confirm_remove_title.tr()),
+              content: Text(LocaleKeys.confirm_remove_text
+                  .tr(namedArgs: {'memberName': displayName})),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: Text(LocaleKeys.cancel_button.tr()),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: Text(LocaleKeys.confirm_button_remove.tr()),
+                ),
+              ],
+            ),
+          );
+
+          if (confirmed == true) {
+            // call parent's remove
+            await _removeMember(phoneNumber: phone, teamId: widget.teamId);
+          }
+        },
+        isRemoving: _isRemoving,
       ),
       if (canManageMembers) ...[
         _JoinRequestsTab(
@@ -383,9 +509,34 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
               tabs: tabs,
             ),
           ),
-          body: TabBarView(
-            controller: _tabController,
-            children: children,
+          body: Stack(
+            children: [
+              TabBarView(
+                controller: _tabController,
+                children: children,
+              ),
+              if (_isRemoving)
+                Positioned.fill(
+                  child: AbsorbPointer(
+                    absorbing: true,
+                    child: Container(
+                      color: Colors.black.withOpacity(0.4),
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const CircularProgressIndicator(),
+                            const SizedBox(height: 12),
+                            Text(LocaleKeys.loading_removing.tr(),
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 16)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
       ),
@@ -1036,6 +1187,9 @@ class _MembersTab extends StatelessWidget {
 
   /// Total members count for the team.
   final int? membersCount;
+  final bool canShowRemove;
+  final Future<void> Function(String phone)? onRemoveMember;
+  final bool isRemoving;
 
   /// Creates a [_MembersTab].
   const _MembersTab({
@@ -1043,6 +1197,9 @@ class _MembersTab extends StatelessWidget {
     this.logoUrl,
     this.users,
     this.membersCount,
+    this.canShowRemove = false,
+    this.onRemoveMember,
+    this.isRemoving = false,
   });
 
   @override
@@ -1079,7 +1236,11 @@ class _MembersTab extends StatelessWidget {
                         color: Colors.blue,
                         fontSize: 16)),
               ),
-              _PlayerList(players: captain),
+              _PlayerList(
+                  players: captain,
+                  canShowRemove: canShowRemove,
+                  onRemoveMember: onRemoveMember,
+                  isRemoving: isRemoving),
               const SizedBox(height: 16),
             ],
             // Sub Captain Section
@@ -1092,7 +1253,11 @@ class _MembersTab extends StatelessWidget {
                         color: Colors.blue,
                         fontSize: 16)),
               ),
-              _PlayerList(players: subCaptain),
+              _PlayerList(
+                  players: subCaptain,
+                  canShowRemove: canShowRemove,
+                  onRemoveMember: onRemoveMember,
+                  isRemoving: isRemoving),
               const SizedBox(height: 16),
             ],
             // Members Section
@@ -1105,7 +1270,11 @@ class _MembersTab extends StatelessWidget {
                         color: Colors.blue,
                         fontSize: 16)),
               ),
-              _PlayerList(players: members),
+              _PlayerList(
+                  players: members,
+                  canShowRemove: canShowRemove,
+                  onRemoveMember: onRemoveMember,
+                  isRemoving: isRemoving),
             ],
           ],
         ),
@@ -1185,9 +1354,16 @@ class _StatsSummaryRow extends StatelessWidget {
 class _PlayerList extends StatelessWidget {
   /// List of players to display.
   final List<dynamic> players;
+  final bool canShowRemove;
+  final Future<void> Function(String phone)? onRemoveMember;
+  final bool isRemoving;
 
   /// Creates a const [_PlayerList].
-  const _PlayerList({required this.players});
+  const _PlayerList(
+      {required this.players,
+      this.canShowRemove = false,
+      this.onRemoveMember,
+      this.isRemoving = false});
 
   @override
   Widget build(BuildContext context) {
@@ -1198,12 +1374,18 @@ class _PlayerList extends StatelessWidget {
       separatorBuilder: (_, __) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
         final p = players[index] as Map<String, dynamic>;
+        final rawPhone = (p['phone'] ?? p['mobile'] ?? '') as String;
+        final isLeader = (p['role'] == 'leader');
         return PlayerCard(
           number: (p['num'] ?? index + 1) as int,
           name: p['name'] as String? ?? '',
           shirt: (p['shirt'] ?? p['shirt_number'] ?? 0) as int,
-          phone: obfuscatePhone((p['phone'] ?? p['mobile'] ?? '') as String),
+          phone: obfuscatePhone(rawPhone),
+          rawPhone: rawPhone,
           isActive: p['active'] == true,
+          canShowRemove: canShowRemove && !isLeader,
+          onRemove: onRemoveMember,
+          isRemoving: isRemoving,
         );
       },
     );
@@ -1226,6 +1408,10 @@ class PlayerCard extends StatelessWidget {
 
   /// Whether the player is currently active.
   final bool isActive;
+  final String? rawPhone;
+  final bool canShowRemove;
+  final Future<void> Function(String phone)? onRemove;
+  final bool isRemoving;
 
   /// Creates a const [PlayerCard].
   const PlayerCard({
@@ -1234,6 +1420,10 @@ class PlayerCard extends StatelessWidget {
     required this.shirt,
     required this.phone,
     required this.isActive,
+    this.rawPhone,
+    this.canShowRemove = false,
+    this.onRemove,
+    this.isRemoving = false,
   });
 
   @override
@@ -1282,6 +1472,28 @@ class PlayerCard extends StatelessWidget {
                   ],
                 ),
               ),
+              if (canShowRemove)
+                PopupMenuButton<String>(
+                  onSelected: (value) async {
+                    if (value == 'remove' &&
+                        onRemove != null &&
+                        rawPhone != null) {
+                      await onRemove!(rawPhone!);
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 'remove',
+                      child: Row(
+                        children: [
+                          Icon(Icons.delete, color: Colors.red),
+                          const SizedBox(width: 8),
+                          Text(LocaleKeys.confirm_button_remove.tr()),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
         ),

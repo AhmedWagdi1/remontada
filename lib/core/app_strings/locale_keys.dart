@@ -308,6 +308,15 @@ abstract class LocaleKeys {
   static const team_details_chat = 'team_details_chat';
   static const player_active = 'player_active';
   static const player_inactive = 'player_inactive';
+  static const confirm_remove_title = 'confirm_remove_title';
+  static const confirm_remove_text = 'confirm_remove_text';
+  static const confirm_button_remove = 'confirm_button_remove';
+  static const cancel_button = 'cancel_button';
+  static const remove_success = 'remove_success';
+  static const remove_no_permission = 'remove_no_permission';
+  static const remove_cannot_self = 'remove_cannot_self';
+  static const remove_failed = 'remove_failed';
+  static const loading_removing = 'loading_removing';
 
   // Chat keys
   static const chat_team_chats = 'chat.team_chats';
