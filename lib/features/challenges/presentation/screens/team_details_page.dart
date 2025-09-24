@@ -495,8 +495,8 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
         length: tabCount,
         child: Scaffold(
           appBar: AppBar(
-            automaticallyImplyLeading: false,
-            // prevent Flutter from showing a default back arrow here
+            // show explicit back button so users can return to previous screens
+            leading: const BackButton(),
             title: Text(LocaleKeys.manage_your_team.tr()),
             bottom: TabBar(
               controller: _tabController,
