@@ -499,6 +499,8 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
         length: tabCount,
         child: Scaffold(
           appBar: AppBar(
+            automaticallyImplyLeading: false,
+            // prevent Flutter from showing a default back arrow here
             title: Text(LocaleKeys.manage_your_team.tr()),
             bottom: TabBar(
               controller: _tabController,
@@ -583,7 +585,7 @@ class _TopBar extends StatelessWidget {
               fontSize: 18,
             ),
           ),
-          const Icon(Icons.arrow_forward_ios, color: darkBlue),
+          // Removed extra arrow icon that duplicated navigation affordance
         ],
       ),
     );
