@@ -376,14 +376,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
               showEditIcon: _currentUserRole == 'leader',
             ),
             const SizedBox(height: 16),
-            // Edit Team Button (Captain Only)
-            if (_currentUserRole == 'leader') ...[
-              _EditTeamButton(
-                onPressed: () => _navigateToEditTeam(context),
-                isEnabled: _teamData != null,
-              ),
-              const SizedBox(height: 16),
-            ],
+            // Edit action moved to the gear icon in the top bar (captain only)
             _TeamSummaryCard(
               teamName: _teamData?['name'] as String?,
               bio: _teamData?['bio'] as String?,
@@ -2927,49 +2920,4 @@ class _RankBadge extends StatelessWidget {
   }
 }
 
-/// Edit Team Button widget - only visible to team captain.
-class _EditTeamButton extends StatelessWidget {
-  /// Callback when the edit button is pressed.
-  final VoidCallback? onPressed;
-
-  /// Whether the button is enabled.
-  final bool isEnabled;
-
-  /// Creates an [_EditTeamButton].
-  const _EditTeamButton({
-    this.onPressed,
-    this.isEnabled = true,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    const darkBlue = Color(0xFF23425F);
-
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Container(
-        width: double.infinity,
-        child: ElevatedButton.icon(
-          onPressed: isEnabled ? onPressed : null,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: darkBlue,
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            elevation: 2,
-          ),
-          icon: const Icon(Icons.edit, size: 18),
-          label: const Text(
-            'تعديل معلومات الفريق',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+// _EditTeamButton removed: edit action moved to the top-bar gear icon for captains.
