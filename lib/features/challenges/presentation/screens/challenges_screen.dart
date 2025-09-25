@@ -1,3 +1,75 @@
+  // Pagination state for infinite scroll
+  int _currentPage = 1;
+  int _lastPage = 1;
+  bool _isLoadingMore = false;
+  bool _hasMorePages = true;
+  final ScrollController _matchesScrollController = ScrollController();
+
+  void _onMatchesScroll() {
+    if (_matchesScrollController.position.pixels >=
+        _matchesScrollController.position.maxScrollExtent - 200) {
+      if (_hasMorePages && !_isLoadingMore && !_loadingMatches) {
+        _fetchMatchesPage(page: _currentPage + 1, append: true);
+      }
+    }
+  }
+
+  Future<void> _fetchMatches() async {
+    setState(() {
+      _loadingMatches = true;
+      _matchesError = null;
+      _currentPage = 1;
+      _hasMorePages = true;
+      _lastPage = 1;
+    });
+    await _fetchMatchesPage(page: 1, append: false);
+    setState(() => _loadingMatches = false);
+  }
+
+  Future<void> _fetchMatchesPage({required int page, bool append = true}) async {
+    if (_isLoadingMore) return;
+    setState(() => _isLoadingMore = true);
+    try {
+      final res = await http.get(
+        Uri.parse('${ConstKeys.baseUrl}/challenges-index?page=$page'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Utils.token}',
+        },
+      );
+      if (res.statusCode < 400) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        if (data['status'] == true) {
+          final matchesData = data['data']['matches'] as List<dynamic>;
+          final matches = matchesData.map((m) => ChallengeMatch.fromJson(m)).toList();
+          final pagination = data['data']['pagination'] as Map<String, dynamic>?;
+          final lastPage = pagination?['lastPage'] ?? pagination?['total_pages'] ?? 1;
+          final currentPage = pagination?['currentPage'] ?? page;
+          final nextPageUrl = pagination?['next_page_url'];
+
+          setState(() {
+            _lastPage = lastPage is int ? lastPage : int.tryParse(lastPage.toString()) ?? 1;
+            _currentPage = currentPage is int ? currentPage : int.tryParse(currentPage.toString()) ?? page;
+            if (append) {
+              // Avoid duplicates
+              final existingIds = _matches.map((m) => m.id).toSet();
+              _matches.addAll(matches.where((m) => !existingIds.contains(m.id)));
+            } else {
+              _matches = matches;
+            }
+            _hasMorePages = nextPageUrl != null;
+          });
+        }
+      }
+    } catch (e) {
+      setState(() {
+        _matchesError = 'Failed to load matches: $e';
+        _hasMorePages = false;
+      });
+    } finally {
+      setState(() => _isLoadingMore = false);
+    }
+  }
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:carousel_slider/carousel_slider.dart';
@@ -8,11 +80,9 @@ import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/features/home/presentation/widgets/custom_dots.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import '../../../../core/services/app_events.dart';
-
 import '../widgets/championship_card.dart';
 import 'create_team_page.dart';
 import 'team_details_page.dart';
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../../../core/config/key.dart';
@@ -56,6 +126,106 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   bool _loadingMatches = false;
   String? _matchesError;
   bool _isRefreshingMatches = false;
+
+  // Pagination state
+  int _currentPage = 1;
+  int _lastPage = 1;
+  bool _isLoadingMore = false;
+  bool _hasMorePages = true;
+  final ScrollController _matchesScrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+    if (widget.hasTeam != null) {
+      _hasTeam = widget.hasTeam;
+      if (_hasTeam == true) {
+        _fetchUserTeams().then((_) => _fetchUserRole());
+      }
+    } else {
+      _fetchUserTeams().then((_) => _fetchUserRole());
+    }
+    _fetchChallengesOverview();
+    _fetchMatches();
+    _matchesScrollController.addListener(_onMatchesScroll);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    try {
+      AppEvents.matchesRefresh.removeListener(_onMatchesRefreshEvent);
+    } catch (_) {}
+    super.dispose();
+        _matchesScrollController.dispose();
+  }
+
+  void _onMatchesScroll() {
+    if (_matchesScrollController.position.pixels >=
+        _matchesScrollController.position.maxScrollExtent - 200) {
+      if (_hasMorePages && !_isLoadingMore && !_loadingMatches) {
+        _fetchMatchesPage(page: _currentPage + 1, append: true);
+      }
+    }
+  }
+
+  Future<void> _fetchMatches() async {
+    setState(() {
+      _loadingMatches = true;
+      _matchesError = null;
+      _currentPage = 1;
+      _hasMorePages = true;
+      _lastPage = 1;
+    });
+    await _fetchMatchesPage(page: 1, append: false);
+    setState(() => _loadingMatches = false);
+  }
+
+  Future<void> _fetchMatchesPage({required int page, bool append = true}) async {
+    if (_isLoadingMore) return;
+    setState(() => _isLoadingMore = true);
+    try {
+      final res = await http.get(
+        Uri.parse('${ConstKeys.baseUrl}/challenges-index?page=$page'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Utils.token}',
+        },
+      );
+      if (res.statusCode < 400) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        if (data['status'] == true) {
+          final matchesData = data['data']['matches'] as List<dynamic>;
+          final matches = matchesData.map((m) => ChallengeMatch.fromJson(m)).toList();
+          final pagination = data['data']['pagination'] as Map<String, dynamic>?;
+          final lastPage = pagination?['lastPage'] ?? pagination?['total_pages'] ?? 1;
+          final currentPage = pagination?['currentPage'] ?? page;
+          final nextPageUrl = pagination?['next_page_url'];
+
+          setState(() {
+            _lastPage = lastPage is int ? lastPage : int.tryParse(lastPage.toString()) ?? 1;
+            _currentPage = currentPage is int ? currentPage : int.tryParse(currentPage.toString()) ?? page;
+            if (append) {
+              // Avoid duplicates
+              final existingIds = _matches.map((m) => m.id).toSet();
+              _matches.addAll(matches.where((m) => !existingIds.contains(m.id)));
+            } else {
+              _matches = matches;
+            }
+            _hasMorePages = nextPageUrl != null;
+          });
+        }
+      }
+    } catch (e) {
+      setState(() {
+        _matchesError = 'Failed to load matches: $e';
+        _hasMorePages = false;
+      });
+    } finally {
+      setState(() => _isLoadingMore = false);
+    }
+  }
 
   /// Retrieves the list of teams the current user belongs to.
   ///
@@ -266,10 +436,20 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     setState(() {
       _loadingMatches = true;
       _matchesError = null;
+      _currentPage = 1;
+      _hasMorePages = true;
+      _lastPage = 1;
     });
+    await _fetchMatchesPage(page: 1, append: false);
+    setState(() => _loadingMatches = false);
+  }
+
+  Future<void> _fetchMatchesPage({required int page, bool append = true}) async {
+    if (_isLoadingMore) return;
+    setState(() => _isLoadingMore = true);
     try {
       final res = await http.get(
-        Uri.parse('${ConstKeys.baseUrl}/challenges-index'),
+        Uri.parse('${ConstKeys.baseUrl}/challenges-index?page=$page'),
         headers: {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${Utils.token}',
@@ -279,18 +459,35 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         final data = jsonDecode(res.body) as Map<String, dynamic>;
         if (data['status'] == true) {
           final matchesData = data['data']['matches'] as List<dynamic>;
-          final matches =
-              matchesData.map((m) => ChallengeMatch.fromJson(m)).toList();
-          setState(() => _matches = matches);
+          final matches = matchesData.map((m) => ChallengeMatch.fromJson(m)).toList();
+          final pagination = data['data']['pagination'] as Map<String, dynamic>?;
+          final lastPage = pagination?['lastPage'] ?? pagination?['total_pages'] ?? 1;
+          final currentPage = pagination?['currentPage'] ?? page;
+          final nextPageUrl = pagination?['next_page_url'];
+
+          setState(() {
+            _lastPage = lastPage is int ? lastPage : int.tryParse(lastPage.toString()) ?? 1;
+            _currentPage = currentPage is int ? currentPage : int.tryParse(currentPage.toString()) ?? page;
+            if (append) {
+              // Avoid duplicates
+              final existingIds = _matches.map((m) => m.id).toSet();
+              _matches.addAll(matches.where((m) => !existingIds.contains(m.id)));
+            } else {
+              _matches = matches;
+            }
+            _hasMorePages = nextPageUrl != null;
+          });
         }
       }
     } catch (e) {
-      _matchesError = 'Failed to load matches: $e';
+      setState(() {
+        _matchesError = 'Failed to load matches: $e';
+        _hasMorePages = false;
+      });
     } finally {
-      if (mounted) {
-        setState(() => _loadingMatches = false);
-      }
+      setState(() => _isLoadingMore = false);
     }
+  }
   }
 
   @override
@@ -306,8 +503,9 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     } else {
       _fetchUserTeams().then((_) => _fetchUserRole());
     }
-    _fetchChallengesOverview();
-    _fetchMatches();
+  _fetchChallengesOverview();
+  _fetchMatches();
+  _matchesScrollController.addListener(_onMatchesScroll);
     // Listen to global matches refresh events (e.g., when creating a match)
     try {
       AppEvents.matchesRefresh.addListener(_onMatchesRefreshEvent);
@@ -317,10 +515,12 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   @override
   void dispose() {
     _tabController.dispose();
+    _matchesScrollController.dispose();
     try {
       AppEvents.matchesRefresh.removeListener(_onMatchesRefreshEvent);
     } catch (_) {}
     super.dispose();
+
   }
 
   void _onMatchesRefreshEvent() {
@@ -329,23 +529,28 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     // to increase chance the newly-created match appears immediately.
     if (_isRefreshingMatches) return;
     _isRefreshingMatches = true;
-
     () async {
       try {
-        // First immediate attempt
         await _fetchMatches();
-
-        // If still not present, do up to 2 retries with a short delay
         for (var attempt = 0; attempt < 2; attempt++) {
           await Future.delayed(const Duration(seconds: 1));
           await _fetchMatches();
         }
       } catch (_) {
-        // ignore
       } finally {
         _isRefreshingMatches = false;
       }
     }();
+
+  }
+
+  void _onMatchesScroll() {
+    if (_matchesScrollController.position.pixels >=
+        _matchesScrollController.position.maxScrollExtent - 200) {
+      if (_hasMorePages && !_isLoadingMore && !_loadingMatches) {
+        _fetchMatchesPage(page: _currentPage + 1, append: true);
+      }
+    }
   }
 
   /// Builds the card displaying a completed challenge summary.
@@ -837,37 +1042,55 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         icon,
         const SizedBox(width: 8),
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: const TextStyle(fontSize: 12, color: Colors.black54),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// Creates an informational card explaining how challenges work.
-  Widget _howChallengesWorkCard() {
-    final borderColor = Colors.grey.shade300;
-    const infoColor = Colors.blue;
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: borderColor),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    NotificationListener<ScrollNotification>(
+                      onNotification: (scrollInfo) {
+                        if (scrollInfo.metrics.pixels >=
+                            scrollInfo.metrics.maxScrollExtent - 200) {
+                          if (_hasMorePages && !_isLoadingMore && !_loadingMatches) {
+                            _fetchMatchesPage(page: _currentPage + 1, append: true);
+                          }
+                        }
+                        return false;
+                      },
+                      child: ListView.builder(
+                        controller: _matchesScrollController,
+                        itemCount: _matches.length + 2,
+                        itemBuilder: (context, index) {
+                          if (index == 0) {
+                            return const SizedBox(height: 12);
+                          }
+                          if (index == _matches.length + 1) {
+                            if (_loadingMatches) {
+                              return const Center(child: CircularProgressIndicator());
+                            } else if (_matchesError != null) {
+                              return Center(child: Text(_matchesError!));
+                            } else if (_isLoadingMore) {
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                child: Center(child: CircularProgressIndicator()),
+                              );
+                            } else if (!_hasMorePages) {
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                child: Center(child: Text('لا توجد مباريات أخرى للعرض')), // No more matches
+                              );
+                            } else {
+                              return const SizedBox.shrink();
+                            }
+                          }
+                          final match = _matches[index - 1];
+                          return Column(
+                            children: [
+                              _buildMatchCard(match),
+                              const SizedBox(height: 12),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
           children: [
             Row(
               children: [
@@ -1519,32 +1742,50 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                 child: TabBarView(
                   controller: _tabController,
                   children: [
-                    SingleChildScrollView(
-                      child: Column(
-                        children: [
-                            const SizedBox(height: 12),
-                          // Dynamic matches list
-                          if (_loadingMatches) ...[
-                            const Center(child: CircularProgressIndicator()),
-                            const SizedBox(height: 12),
-                          ] else if (_matchesError != null) ...[
-                            Center(child: Text(_matchesError!)),
-                            const SizedBox(height: 12),
-                          ] else ...[
-                            // Render all fetched matches without filtering — show every match returned
-                            ...(() sync* {
-                              final showable =
-                                  List<ChallengeMatch>.from(_matches);
-
-                              // Yield matches in fetched order; do not filter or hide any items.
-                              for (final match in showable) {
-                                yield _buildMatchCard(match);
-                                yield const SizedBox(height: 12);
-                              }
-                            })(),
-                          ],
-                          _howChallengesWorkCard(),
-                        ],
+                    NotificationListener<ScrollNotification>(
+                      onNotification: (scrollInfo) {
+                        if (scrollInfo.metrics.pixels >=
+                            scrollInfo.metrics.maxScrollExtent - 200) {
+                          if (_hasMorePages && !_isLoadingMore && !_loadingMatches) {
+                            _fetchMatchesPage(page: _currentPage + 1, append: true);
+                          }
+                        }
+                        return false;
+                      },
+                      child: ListView.builder(
+                        controller: _matchesScrollController,
+                        itemCount: _matches.length + 2,
+                        itemBuilder: (context, index) {
+                          if (index == 0) {
+                            return const SizedBox(height: 12);
+                          }
+                          if (index == _matches.length + 1) {
+                            if (_loadingMatches) {
+                              return const Center(child: CircularProgressIndicator());
+                            } else if (_matchesError != null) {
+                              return Center(child: Text(_matchesError!));
+                            } else if (_isLoadingMore) {
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                child: Center(child: CircularProgressIndicator()),
+                              );
+                            } else if (!_hasMorePages) {
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                child: Center(child: Text('لا توجد مباريات أخرى للعرض')), // No more matches
+                              );
+                            } else {
+                              return const SizedBox.shrink();
+                            }
+                          }
+                          final match = _matches[index - 1];
+                          return Column(
+                            children: [
+                              _buildMatchCard(match),
+                              const SizedBox(height: 12),
+                            ],
+                          );
+                        },
                       ),
                     ),
                     SingleChildScrollView(
