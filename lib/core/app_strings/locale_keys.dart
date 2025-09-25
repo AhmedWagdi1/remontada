@@ -360,8 +360,9 @@ abstract class LocaleKeys {
   static const create_match_type = 'create_match.type';
   static const create_match_challenge = 'create_match.challenge';
   static const create_match_friendly = 'create_match.friendly';
-    static const create_match_is_competitive = 'create_match.is_competitive';
-    static const create_match_is_competitive_label_ar = 'create_match.is_competitive_label_ar';
+  static const create_match_is_competitive = 'create_match.is_competitive';
+  static const create_match_is_competitive_label_ar =
+      'create_match.is_competitive_label_ar';
   static const create_match_submit = 'create_match.submit';
   static const create_match_success = 'create_match.success';
   static const create_match_error = 'create_match.error';
@@ -390,25 +391,33 @@ abstract class LocaleKeys {
   static const challenge_error_loading = 'challenges.error_loading';
   static const challenge_error_responding = 'challenges.error_responding';
   static const challenge_retry = 'challenges.retry';
-  
+
   // Match slot texts
   static const challenge_reserve_match = 'challenge_reserve_match';
   static const challenge_join_match = 'challenge_join_match';
-  
-    static const leave_team_title = 'leave.leave_team_title';
-    static const leave_team_confirm_message = 'leave.leave_team_confirm_message';
-    static const leave_confirm_button = 'leave.leave_confirm_button';
-    static const leave_cancel_button = 'leave.leave_cancel_button';
-    static const leave_success_toast = 'leave.leave_success_toast';
-    static const leave_failed_toast = 'leave.leave_failed_toast';
-    static const delete_team_title = 'delete.delete_team_title';
-    static const delete_team_first_confirm_message = 'delete.delete_team_first_confirm_message';
-    static const delete_team_second_confirm_title = 'delete.delete_team_second_confirm_title';
-    static const delete_team_second_confirm_message = 'delete.delete_team_second_confirm_message';
-    static const delete_confirm_button = 'delete.delete_confirm_button';
-    static const delete_cancel_button = 'delete.delete_cancel_button';
-    static const delete_success_toast = 'delete.delete_success_toast';
-    static const delete_failed_toast = 'delete.delete_failed_toast';
-    static const delete_double_confirm_notice = 'delete.delete_double_confirm_notice';
+  static const challenge_captain_required = 'challenge_captain_required';
+  static const challenge_reserve_success = 'challenge_reserve_success';
+  static const challenge_reserve_confirm = 'challenge_reserve_confirm';
+  static const challenge_reserve_title = 'challenge_reserve_title';
+
+  static const leave_team_title = 'leave.leave_team_title';
+  static const leave_team_confirm_message = 'leave.leave_team_confirm_message';
+  static const leave_confirm_button = 'leave.leave_confirm_button';
+  static const leave_cancel_button = 'leave.leave_cancel_button';
+  static const leave_success_toast = 'leave.leave_success_toast';
+  static const leave_failed_toast = 'leave.leave_failed_toast';
+  static const delete_team_title = 'delete.delete_team_title';
+  static const delete_team_first_confirm_message =
+      'delete.delete_team_first_confirm_message';
+  static const delete_team_second_confirm_title =
+      'delete.delete_team_second_confirm_title';
+  static const delete_team_second_confirm_message =
+      'delete.delete_team_second_confirm_message';
+  static const delete_confirm_button = 'delete.delete_confirm_button';
+  static const delete_cancel_button = 'delete.delete_cancel_button';
+  static const delete_success_toast = 'delete.delete_success_toast';
+  static const delete_failed_toast = 'delete.delete_failed_toast';
+  static const delete_double_confirm_notice =
+      'delete.delete_double_confirm_notice';
   // end challenges
 }
