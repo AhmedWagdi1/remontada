@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
@@ -96,7 +97,6 @@ class _ChallengesScreenState extends State<ChallengesScreen>
       }
     }
   }
-
   Future<void> _fetchMatches() async {
     setState(() {
       _loadingMatches = true;
@@ -982,7 +982,6 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         ],
       ),
     );
-  }
   }
 
   /// Displays the league table header with a trophy icon.
@@ -2215,3 +2214,4 @@ class _ChallengesScreenState extends State<ChallengesScreen>
       );
     }
   }
+    }
