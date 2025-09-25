@@ -199,6 +199,8 @@
   "challenge_invalid_number": "يرجى إدخال رقم صحيح",
   "challenge_no_matches_available": "لا توجد مباريات متاحة للحجز",
   "challenge_error_loading_matches": "خطأ في تحميل المباريات",
+  "challenge_reserve_match": "احجز هذا المباراة",
+  "challenge_join_match": "انضم لهذا المباراة",
   "league_results": "نتائج الدوري",
   "championships": "البطولات",
   "under_construction": "🚧 تحت الإنشاء",

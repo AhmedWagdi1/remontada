@@ -259,12 +259,6 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     const badgeTextColor = Color(0xFF28A745);
     const buttonColor = Color(0xFF23425F);
 
-    final team1Name = match?.team1?['name'] ?? '';
-    final team2Name = match?.team2?['name'] ?? '';
-    final dynamic team1LogoRaw = match?.team1?['logo_url'];
-    final dynamic team2LogoRaw = match?.team2?['logo_url'];
-    final String? team1Logo = team1LogoRaw is String ? team1LogoRaw : null;
-    final String? team2Logo = team2LogoRaw is String ? team2LogoRaw : null;
     final badgeText = match != null
         ? (match.isPast
             ? 'تحدي مكتمل - ${match.playground} - ${match.date} ${match.startTime}'
@@ -360,19 +354,13 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                   Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Column(
-                    children: [
-                      Text(
-                        team1Name,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 4),
-                      CircleAvatar(
-                        radius: 20,
-                        backgroundImage: _getTeamLogoImage(team1Logo),
-                      ),
-                    ],
+                  // Slot 1 - Left side (before VS)
+                  _buildCompletedTeamSlot(
+                    match: match,
+                    team: match?.team1,
+                    isSlot1: true,
                   ),
+                  // VS Section
                   Column(
                     children: [
                       const Text(
@@ -387,18 +375,11 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                       ),
                     ],
                   ),
-                  Column(
-                    children: [
-                      Text(
-                        team2Name,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 4),
-                      CircleAvatar(
-                        radius: 20,
-                        backgroundImage: _getTeamLogoImage(team2Logo),
-                      ),
-                    ],
+                  // Slot 2 - Right side (after VS)
+                  _buildCompletedTeamSlot(
+                    match: match,
+                    team: match?.team2,
+                    isSlot1: false,
                   ),
                 ],
               ),
@@ -458,8 +439,6 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     const badgeColor = Color(0xFFFFF3E0);
     const highlightColor = Color(0xFFF9A825);
 
-    final team1Name = match?.team1?['name'] ?? '';
-    final team1Logo = match?.team1?['logo_url']?.toString();
     final badgeText = match != null
         ? 'انضم للتحدي - ${match.playground} - ${match.date} ${match.startTime}'
         : '';
@@ -550,19 +529,15 @@ class _ChallengesScreenState extends State<ChallengesScreen>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Column(
-                    children: [
-                      Text(
-                        team1Name,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 4),
-                      CircleAvatar(
-                        radius: 20,
-                        backgroundImage: _getTeamLogoImage(team1Logo),
-                      ),
-                    ],
+                  // Slot 1 - Left side (before VS)
+                  _buildTeamSlot(
+                    match: match,
+                    team: match?.team1,
+                    isSlot1: true,
+                    highlightColor: highlightColor,
+                    badgeColor: badgeColor,
                   ),
+                  // VS Section
                   Column(
                     children: [
                       const Text(
@@ -580,30 +555,13 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                       ),
                     ],
                   ),
-                  Column(
-                    children: [
-                      const Text(
-                        'انضم',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 4),
-                      InkWell(
-                        onTap: () {
-                          print(
-                              '👆 DEBUG: Join button tapped for match ID: ${match?.id}');
-                          _showJoinChallengeDialog(match);
-                        },
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: const BoxDecoration(
-                            color: badgeColor,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(Icons.add, color: highlightColor),
-                        ),
-                      ),
-                    ],
+                  // Slot 2 - Right side (after VS)
+                  _buildTeamSlot(
+                    match: match,
+                    team: match?.team2,
+                    isSlot1: false,
+                    highlightColor: highlightColor,
+                    badgeColor: badgeColor,
                   ),
                 ],
               ),
@@ -630,6 +588,137 @@ class _ChallengesScreenState extends State<ChallengesScreen>
       return NetworkImage(logoUrl);
     }
     return const AssetImage('assets/images/profile_image.png');
+  }
+
+  /// Builds a team slot with conditional logic for team display
+  Widget _buildTeamSlot({
+    required ChallengeMatch? match,
+    required Map<String, dynamic>? team,
+    required bool isSlot1,
+    required Color highlightColor,
+    required Color badgeColor,
+  }) {
+    // Case 1: Both teams are null - only show reserve button in slot 1
+    if (match?.team1 == null && match?.team2 == null) {
+      if (isSlot1) {
+        return _buildActionSlot(
+          text: LocaleKeys.challenge_reserve_match.tr(),
+          onTap: () => _showJoinChallengeDialog(match),
+          highlightColor: highlightColor,
+          badgeColor: badgeColor,
+        );
+      } else {
+        return _buildEmptySlot();
+      }
+    }
+    
+    // Case 2: Only team1 exists, team2 is null
+    if (match?.team1 != null && match?.team2 == null) {
+      if (isSlot1) {
+        return _buildTeamInfo(team: match!.team1!);
+      } else {
+        return _buildActionSlot(
+          text: LocaleKeys.challenge_join_match.tr(),
+          onTap: () => _showJoinChallengeDialog(match),
+          highlightColor: highlightColor,
+          badgeColor: badgeColor,
+        );
+      }
+    }
+    
+    // Case 3: Both teams exist
+    if (match?.team1 != null && match?.team2 != null) {
+      if (isSlot1) {
+        return _buildTeamInfo(team: match!.team1!);
+      } else {
+        return _buildTeamInfo(team: match!.team2!);
+      }
+    }
+    
+    // Default case - empty slot
+    return _buildEmptySlot();
+  }
+
+  /// Builds a team slot for completed challenge cards (simplified logic)
+  Widget _buildCompletedTeamSlot({
+    required ChallengeMatch? match,
+    required Map<String, dynamic>? team,
+    required bool isSlot1,
+  }) {
+    if (team != null) {
+      return _buildTeamInfo(team: team);
+    } else {
+      return _buildEmptySlot();
+    }
+  }
+
+  /// Builds team info display with name and logo
+  Widget _buildTeamInfo({required Map<String, dynamic> team}) {
+    final teamName = team['name']?.toString() ?? '';
+    final teamLogo = team['logo_url']?.toString();
+    
+    return Column(
+      children: [
+        Text(
+          teamName,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 4),
+        CircleAvatar(
+          radius: 20,
+          backgroundImage: _getTeamLogoImage(teamLogo),
+          child: teamLogo == null || teamLogo.isEmpty || !teamLogo.startsWith('http')
+              ? const Icon(Icons.groups, color: Colors.grey)
+              : null,
+        ),
+      ],
+    );
+  }
+
+  /// Builds action slot with + icon and text
+  Widget _buildActionSlot({
+    required String text,
+    required VoidCallback onTap,
+    required Color highlightColor,
+    required Color badgeColor,
+  }) {
+    return Column(
+      children: [
+        Text(
+          text,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 4),
+        InkWell(
+          onTap: onTap,
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: badgeColor,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(Icons.add, color: highlightColor),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Builds empty slot
+  Widget _buildEmptySlot() {
+    return const Column(
+      children: [
+        SizedBox(height: 20), // Match text height
+        SizedBox(height: 4),
+        SizedBox(
+          width: 40,
+          height: 40, // Match avatar height
+        ),
+      ],
+    );
   }
 
   /// Builds a button for supervisors to create challenge matches.

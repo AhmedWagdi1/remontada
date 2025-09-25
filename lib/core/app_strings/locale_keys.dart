@@ -390,6 +390,11 @@ abstract class LocaleKeys {
   static const challenge_error_loading = 'challenges.error_loading';
   static const challenge_error_responding = 'challenges.error_responding';
   static const challenge_retry = 'challenges.retry';
+  
+  // Match slot texts
+  static const challenge_reserve_match = 'challenge_reserve_match';
+  static const challenge_join_match = 'challenge_join_match';
+  
     static const leave_team_title = 'leave.leave_team_title';
     static const leave_team_confirm_message = 'leave.leave_team_confirm_message';
     static const leave_confirm_button = 'leave.leave_confirm_button';
