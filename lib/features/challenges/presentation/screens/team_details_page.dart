@@ -472,7 +472,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
     );
 
     try {
-      final url = '${ConstKeys.baseUrl}/team/${widget.teamId}';
+  final url = '${ConstKeys.baseUrl}/team/destroy/${widget.teamId}';
       final res = await http
           .delete(Uri.parse(url), headers: {
         'Accept': 'application/json',

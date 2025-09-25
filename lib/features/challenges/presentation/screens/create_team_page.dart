@@ -289,7 +289,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
         // Rollback: delete the team
         try {
           await http.delete(
-            Uri.parse('${ConstKeys.baseUrl}/team/$teamId'),
+            Uri.parse('${ConstKeys.baseUrl}/team/destroy/$teamId'),
             headers: {
               'Accept': 'application/json',
               'Authorization': 'Bearer ${Utils.token}',
@@ -343,7 +343,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
           }
           try {
             await http.delete(
-              Uri.parse('${ConstKeys.baseUrl}/team/$teamId'),
+              Uri.parse('${ConstKeys.baseUrl}/team/destroy/$teamId'),
               headers: {
                 'Accept': 'application/json',
                 'Authorization': 'Bearer ${Utils.token}',
@@ -393,7 +393,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
         }
         try {
           await http.delete(
-            Uri.parse('${ConstKeys.baseUrl}/team/$teamId'),
+            Uri.parse('${ConstKeys.baseUrl}/team/destroy/$teamId'),
             headers: {
               'Accept': 'application/json',
               'Authorization': 'Bearer ${Utils.token}',
