@@ -1257,48 +1257,11 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                             Center(child: Text(_matchesError!)),
                             const SizedBox(height: 12),
                           ] else ...[
-                            // Prepare a sorted list of showable matches and then render them.
+                            // Render all fetched matches without filtering — show every match returned
                             ...(() sync* {
-                              final showable = _matches.where((m) {
-                                if (m.team1 == null) {
-                                  print(
-                                      '🚫 DEBUG: Hiding match with null team1 ID: ${m.id}');
-                                  return false;
-                                }
+                              final showable = List<ChallengeMatch>.from(_matches);
 
-                                final isCompleted =
-                                    m.team1 != null && m.team2 != null;
-                                if (isCompleted) {
-                                  print(
-                                      '🔍 DEBUG: Showing completed match ID: ${m.id}, Date: ${m.date}, Teams: ${m.team1?['name']} vs ${m.team2?['name']}');
-                                  return true;
-                                }
-
-                                final shouldShow = !m.isPast;
-                                if (!shouldShow) {
-                                  print(
-                                      '🚫 DEBUG: Hiding past non-completed match ID: ${m.id}, Date: ${m.date}, IsPast: ${m.isPast}');
-                                } else {
-                                  print(
-                                      '✅ DEBUG: Showing future non-completed match ID: ${m.id}, Date: ${m.date}');
-                                }
-                                return shouldShow;
-                              }).toList();
-
-                              int rankMatch(ChallengeMatch m) {
-                                final isCompleted =
-                                    m.team1 != null && m.team2 != null;
-                                final isPast = m.isPast;
-                                final bool isJoinable =
-                                    !isCompleted && !isPast && m.team1 != null;
-                                if (isJoinable) return 0;
-                                if (isCompleted && !isPast) return 1;
-                                return 2;
-                              }
-
-                              showable.sort((a, b) =>
-                                  rankMatch(a).compareTo(rankMatch(b)));
-
+                              // Yield matches in fetched order; do not filter or hide any items.
                               for (final match in showable) {
                                 yield _buildMatchCard(match);
                                 yield const SizedBox(height: 12);
