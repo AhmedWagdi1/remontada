@@ -300,13 +300,27 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                     children: [
                       Icon(Icons.check_circle, color: badgeTextColor, size: 16),
                       const SizedBox(width: 4),
-                      Text(
-                        badgeText,
-                        style: TextStyle(
-                          color: badgeTextColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            badgeText,
+                            style: TextStyle(
+                              color: badgeTextColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                          if (match?.isCompetitive != null)
+                            Text(
+                              match!.isCompetitive == true ? 'تحدى' : 'ودى',
+                              style: TextStyle(
+                                color: badgeTextColor.withOpacity(0.9),
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                        ],
                       ),
                     ],
                   ),
@@ -446,13 +460,27 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                     children: [
                       Icon(Icons.access_time, color: highlightColor, size: 16),
                       const SizedBox(width: 4),
-                      Text(
-                        badgeText,
-                        style: TextStyle(
-                          color: highlightColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            badgeText,
+                            style: TextStyle(
+                              color: highlightColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                          if (match?.isCompetitive != null)
+                            Text(
+                              match!.isCompetitive == true ? 'تحدى' : 'ودى',
+                              style: TextStyle(
+                                color: highlightColor.withOpacity(0.9),
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                        ],
                       ),
                     ],
                   ),

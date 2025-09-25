@@ -6,6 +6,7 @@ class ChallengeMatch {
   final String startTime;
   final String amount;
   final bool isReserved;
+  final bool? isCompetitive;
   final Map<String, dynamic>? team1;
   final Map<String, dynamic>? team2;
 
@@ -16,6 +17,7 @@ class ChallengeMatch {
     required this.startTime,
     required this.amount,
     required this.isReserved,
+    this.isCompetitive,
     this.team1,
     this.team2,
   });
@@ -28,6 +30,14 @@ class ChallengeMatch {
       startTime: json['start_time'] ?? '',
       amount: json['amount']?.toString() ?? '0',
       isReserved: json['is_reserved'] == true,
+      isCompetitive: (() {
+        final v = json['is_competitive'];
+        if (v == null) return null;
+        if (v is bool) return v;
+        if (v is int) return v == 1;
+        if (v is String) return v == '1' || v.toLowerCase() == 'true';
+        return null;
+      })(),
       team1: json['team1'],
       team2: json['team2'],
     );
