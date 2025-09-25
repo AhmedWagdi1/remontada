@@ -125,7 +125,7 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                         ),
                         40.ph,
                         DropDownItem<String>(
-                          options: ['group', 'single'],
+                          options: ['group', 'single', 'challenge'],
                           inistialValue: cubit.request.type,
                           hint: 'نوع المباراة',
                           prefixIcon: 'playground_button',
@@ -139,11 +139,13 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                           itemAsString: (v) {
                             switch (v) {
                               case 'group':
-                                return 'مباراة جماعية';
+                              return 'مباراة جماعية';
                               case 'single':
-                                return 'مباراة فردية';
+                              return 'مباراة فردية';
+                              case 'challenge':
+                              return 'مبارة تحدى';
                               default:
-                                return v.toString();
+                              return v.toString();
                             }
                           },
                           validator: (v) => (v == null || v.isEmpty)
