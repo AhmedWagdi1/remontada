@@ -818,45 +818,53 @@ class _TopBar extends StatelessWidget {
             radius: 12,
           )
         : const SizedBox(width: 24, height: 24);
+    // Build the row items dynamically so we can distribute them evenly
+    final items = <Widget>[];
+    items.add(leading);
+    items.add(Text(
+      name,
+      style: const TextStyle(
+        color: darkBlue,
+        fontWeight: FontWeight.bold,
+        fontSize: 18,
+      ),
+      textAlign: TextAlign.center,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    ));
+
+    // Conditionally add action icons
+    if (showEditIcon && onEdit != null) {
+      items.add(IconButton(
+        onPressed: onEdit,
+        icon: const Icon(Icons.settings),
+        color: darkBlue,
+        tooltip: 'تعديل معلومات الفريق',
+      ));
+    }
+    if (showLeaveIcon && onLeave != null) {
+      items.add(IconButton(
+        onPressed: onLeave,
+        icon: const Icon(Icons.exit_to_app),
+        color: Colors.redAccent,
+        tooltip: LocaleKeys.leave_team_title.tr(),
+      ));
+    }
+    if (showDeleteIcon && onDelete != null) {
+      items.add(IconButton(
+        onPressed: onDelete,
+        icon: const Icon(Icons.delete_forever),
+        color: Colors.redAccent,
+        tooltip: LocaleKeys.delete_double_confirm_notice.tr(),
+      ));
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          leading,
-          Text(
-            name,
-            style: const TextStyle(
-              color: darkBlue,
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
-          ),
-          // Show gear icon for editing team info when allowed (captain only)
-          if (showEditIcon && onEdit != null)
-            IconButton(
-              onPressed: onEdit,
-              icon: const Icon(Icons.settings),
-              color: darkBlue,
-              tooltip: 'تعديل معلومات الفريق',
-            ),
-          // Show leave icon for non-captain members (member/subLeader)
-          if (showLeaveIcon && onLeave != null)
-            IconButton(
-              onPressed: onLeave,
-              icon: const Icon(Icons.exit_to_app),
-              color: Colors.redAccent,
-              tooltip: LocaleKeys.leave_team_title.tr(),
-            ),
-          // Show delete icon for captain (leader) only
-          if (showDeleteIcon && onDelete != null)
-            IconButton(
-              onPressed: onDelete,
-              icon: const Icon(Icons.delete_forever),
-              color: Colors.redAccent,
-              tooltip: LocaleKeys.delete_double_confirm_notice.tr(),
-            ),
-        ],
+        // Use spaceEvenly so items are evenly distributed across the row
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: items.map((w) => Center(child: w)).toList(),
       ),
     );
   }
