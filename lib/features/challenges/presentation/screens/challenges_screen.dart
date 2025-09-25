@@ -22,7 +22,6 @@ import '../../domain/model/challenge_overview_model.dart';
 import '../../data/challenges_repository_impl.dart';
 import '../../domain/model/challenge_match_model.dart';
 import 'match_details_page.dart';
-import '../widgets/expandable_create_challenge.dart';
 
 /// Placeholder screen shown for the upcoming Challenges feature.
 class ChallengesScreen extends StatefulWidget {
@@ -1523,12 +1522,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                     SingleChildScrollView(
                       child: Column(
                         children: [
-                          const SizedBox(height: 12),
-                          // Supervisor Challenge Match Button removed — no button displayed for any user.
-                          if ((_hasTeam ?? false) && _userRole == 'leader') ...[
-                            ExpandableCreateChallenge(),
                             const SizedBox(height: 12),
-                          ],
                           // Dynamic matches list
                           if (_loadingMatches) ...[
                             const Center(child: CircularProgressIndicator()),
