@@ -82,10 +82,22 @@ class _ChallengesScreenState extends State<ChallengesScreen>
           'Authorization': 'Bearer ${Utils.token}',
         },
       );
+
+      print('🔍 DEBUG: Fetching user teams');
+      print('📥 DEBUG: User teams response status: ${res.statusCode}');
+
       if (res.statusCode < 400) {
         final data = jsonDecode(res.body) as Map<String, dynamic>;
+        print('📊 DEBUG: User teams response: ${jsonEncode(data)}');
+
         if (data['status'] == true) {
           final teams = data['data'] as List<dynamic>;
+          print('👥 DEBUG: Found ${teams.length} teams');
+
+          for (int i = 0; i < teams.length; i++) {
+            print('🏆 DEBUG: Team $i: ${jsonEncode(teams[i])}');
+          }
+
           setState(() {
             _userTeams = teams;
             _hasTeam = teams.isNotEmpty;
@@ -95,9 +107,16 @@ class _ChallengesScreenState extends State<ChallengesScreen>
             _fetchUserRole();
           }
           return;
+        } else {
+          print(
+              '❌ DEBUG: User teams API returned status false: ${data['message']}');
         }
+      } else {
+        print('❌ DEBUG: User teams API failed with status: ${res.statusCode}');
       }
-    } catch (_) {}
+    } catch (e) {
+      print('💥 DEBUG: Error fetching user teams: $e');
+    }
     setState(() => _hasTeam = false);
   }
 
@@ -122,27 +141,105 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         },
       );
 
+      print('🔍 DEBUG: Fetching user role for team $teamId');
+      print('📥 DEBUG: Team details response status: ${res.statusCode}');
+
       if (res.statusCode < 400) {
         final data = jsonDecode(res.body) as Map<String, dynamic>;
+        print('📊 DEBUG: Team details response data: ${jsonEncode(data)}');
+
         if (data['status'] == true) {
           final teamData = data['data'] as Map<String, dynamic>;
           final users = teamData['users'] as List<dynamic>? ?? [];
+          print('👥 DEBUG: Team users count: ${users.length}');
 
           // Find current user's role
           final currentUserPhone = Utils.user.user?.phone;
+          print('📱 DEBUG: Current user phone: $currentUserPhone');
+
           if (currentUserPhone != null) {
             for (final user in users) {
-              if (user is Map<String, dynamic> &&
-                  user['mobile'] == currentUserPhone) {
-                setState(() => _userRole = user['role'] as String?);
-                return;
+              if (user is Map<String, dynamic>) {
+                final userMobile = user['mobile']?.toString();
+                final userRole = user['role']?.toString();
+                print(
+                    '👤 DEBUG: Checking user - Mobile: $userMobile, Role: $userRole');
+
+                if (userMobile == currentUserPhone) {
+                  print('✅ DEBUG: Found current user! Role: $userRole');
+                  setState(() => _userRole = userRole);
+                  return;
+                }
               }
             }
+            print('❌ DEBUG: Current user not found in team members list');
+          } else {
+            print('❌ DEBUG: Current user phone is null');
           }
+        } else {
+          print(
+              '❌ DEBUG: Team details API returned status false: ${data['message']}');
+        }
+      } else {
+        print(
+            '❌ DEBUG: Team details API failed with status: ${res.statusCode}');
+      }
+    } catch (e) {
+      print('💥 DEBUG: Error fetching user role: $e');
+    }
+    setState(() => _userRole = null);
+  }
+
+  /// Helper method to check if the current user is a team captain/leader
+  /// Handles different possible role values and formats
+  bool _isUserCaptain() {
+    if (_userRole == null) {
+      print('🔍 DEBUG: User role is null, not leader/captain');
+      return false;
+    }
+
+    final role = _userRole!.toLowerCase().trim();
+    print('🔍 DEBUG: Checking role (normalized): "$role"');
+
+    // Check for different possible captain role values
+    final captainRoles = [
+      'leader', // Primary captain role
+      'captain',
+      'cap',
+      'كابتن',
+      'قائد',
+      'coach',
+      'مدرب',
+      '1', // In case role is stored as numeric
+    ];
+
+    for (final captainRole in captainRoles) {
+      if (role == captainRole.toLowerCase()) {
+        print('✅ DEBUG: User is leader/captain (matched: $captainRole)');
+        return true;
+      }
+    }
+
+    // Additional fallback: Check if user is the team creator/owner
+    if (_userTeams.isNotEmpty) {
+      final currentUserPhone = Utils.user.user?.phone;
+      final team = _userTeams[0];
+
+      // Check if team has owner_phone or creator_phone field
+      final ownerPhone = team['owner_phone']?.toString() ??
+          team['creator_phone']?.toString() ??
+          team['phone']?.toString();
+
+      if (currentUserPhone != null && ownerPhone != null) {
+        if (currentUserPhone == ownerPhone) {
+          print('✅ DEBUG: User is leader/captain (team owner/creator)');
+          return true;
         }
       }
-    } catch (_) {}
-    setState(() => _userRole = null);
+    }
+
+    print('❌ DEBUG: User role "$role" does not match leader/captain roles');
+    return false;
   }
 
   /// Retrieves challenges overview from the backend API.
@@ -1776,10 +1873,13 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   }
 
   /// Shows a dialog to confirm match reservation
-  void _showReserveMatchDialog(ChallengeMatch? match) {
+  Future<void> _showReserveMatchDialog(ChallengeMatch? match) async {
     print('🔍 DEBUG: Showing reserve match dialog');
     print(
         '📋 DEBUG: Match ID: ${match?.id}, Playground: ${match?.playground}, Date: ${match?.date}');
+    print('👤 DEBUG: Current user role: $_userRole');
+    print(
+        '👥 DEBUG: User teams: ${_userTeams.map((t) => t['name']).join(', ')}');
 
     // Check if user has teams
     if (_userTeams.isEmpty) {
@@ -1793,16 +1893,31 @@ class _ChallengesScreenState extends State<ChallengesScreen>
       return;
     }
 
-    // Check if user is captain
-    if (_userRole != 'captain') {
-      print('❌ DEBUG: User is not captain - Role: $_userRole');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(LocaleKeys.challenge_captain_required.tr()),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
+    // Enhanced leader/captain check - handle different possible role values
+    final isCaptain = _isUserCaptain();
+    print('👑 DEBUG: Is user leader/captain? $isCaptain (Role: $_userRole)');
+
+    if (!isCaptain) {
+      print('❌ DEBUG: User is not leader/captain - Role: $_userRole');
+
+      // Try to re-fetch user role in case it was not loaded properly
+      print('🔄 DEBUG: Re-fetching user role to verify...');
+      await _fetchUserRole();
+      final isCapatinAfterRefresh = _isUserCaptain();
+      print(
+          '🔄 DEBUG: After refresh - Is leader/captain? $isCapatinAfterRefresh (Role: $_userRole)');
+
+      if (!isCapatinAfterRefresh) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+                '${LocaleKeys.challenge_captain_required.tr()}\nدورك الحالي: ${_userRole ?? "غير محدد"}'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+        return;
+      }
     }
 
     print('✅ DEBUG: User is captain with ${_userTeams.length} team(s)');

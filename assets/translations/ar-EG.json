@@ -201,7 +201,7 @@
   "challenge_error_loading_matches": "خطأ في تحميل المباريات",
   "challenge_reserve_match": "احجز هذا المباراة",
   "challenge_join_match": "انضم لهذا المباراة",
-  "challenge_captain_required": "يجب أن تكون كابتن الفريق لحجز المباراة",
+  "challenge_captain_required": "يجب أن تكون قائد الفريق لحجز المباراة",
   "challenge_reserve_success": "تم حجز المباراة بنجاح",
   "challenge_reserve_confirm": "هل أنت متأكد من حجز هذه المباراة؟ سيتم تسجيل فريقك في المباراة مباشرة.",
   "challenge_reserve_title": "تأكيد حجز المباراة",
