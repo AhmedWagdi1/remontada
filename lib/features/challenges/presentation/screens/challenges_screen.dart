@@ -1,96 +1,23 @@
-  // Pagination state for infinite scroll
-  int _currentPage = 1;
-  int _lastPage = 1;
-  bool _isLoadingMore = false;
-  bool _hasMorePages = true;
-  final ScrollController _matchesScrollController = ScrollController();
-
-  void _onMatchesScroll() {
-    if (_matchesScrollController.position.pixels >=
-        _matchesScrollController.position.maxScrollExtent - 200) {
-      if (_hasMorePages && !_isLoadingMore && !_loadingMatches) {
-        _fetchMatchesPage(page: _currentPage + 1, append: true);
-      }
-    }
-  }
-
-  Future<void> _fetchMatches() async {
-    setState(() {
-      _loadingMatches = true;
-      _matchesError = null;
-      _currentPage = 1;
-      _hasMorePages = true;
-      _lastPage = 1;
-    });
-    await _fetchMatchesPage(page: 1, append: false);
-    setState(() => _loadingMatches = false);
-  }
-
-  Future<void> _fetchMatchesPage({required int page, bool append = true}) async {
-    if (_isLoadingMore) return;
-    setState(() => _isLoadingMore = true);
-    try {
-      final res = await http.get(
-        Uri.parse('${ConstKeys.baseUrl}/challenges-index?page=$page'),
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ${Utils.token}',
-        },
-      );
-      if (res.statusCode < 400) {
-        final data = jsonDecode(res.body) as Map<String, dynamic>;
-        if (data['status'] == true) {
-          final matchesData = data['data']['matches'] as List<dynamic>;
-          final matches = matchesData.map((m) => ChallengeMatch.fromJson(m)).toList();
-          final pagination = data['data']['pagination'] as Map<String, dynamic>?;
-          final lastPage = pagination?['lastPage'] ?? pagination?['total_pages'] ?? 1;
-          final currentPage = pagination?['currentPage'] ?? page;
-          final nextPageUrl = pagination?['next_page_url'];
-
-          setState(() {
-            _lastPage = lastPage is int ? lastPage : int.tryParse(lastPage.toString()) ?? 1;
-            _currentPage = currentPage is int ? currentPage : int.tryParse(currentPage.toString()) ?? page;
-            if (append) {
-              // Avoid duplicates
-              final existingIds = _matches.map((m) => m.id).toSet();
-              _matches.addAll(matches.where((m) => !existingIds.contains(m.id)));
-            } else {
-              _matches = matches;
-            }
-            _hasMorePages = nextPageUrl != null;
-          });
-        }
-      }
-    } catch (e) {
-      setState(() {
-        _matchesError = 'Failed to load matches: $e';
-        _hasMorePages = false;
-      });
-    } finally {
-      setState(() => _isLoadingMore = false);
-    }
-  }
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:remontada/core/app_strings/locale_keys.dart';
 import 'package:remontada/core/extensions/all_extensions.dart';
 import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/features/home/presentation/widgets/custom_dots.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import '../../../../core/services/app_events.dart';
-import '../widgets/championship_card.dart';
-import 'create_team_page.dart';
-import 'team_details_page.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import '../../../../core/config/key.dart';
 import '../../../../core/utils/utils.dart';
 import '../../../../core/Router/Router.dart';
 import '../../domain/model/challenge_overview_model.dart';
 import '../../data/challenges_repository_impl.dart';
 import '../../domain/model/challenge_match_model.dart';
+import '../widgets/championship_card.dart';
+import 'create_team_page.dart';
+import 'team_details_page.dart';
 import 'match_details_page.dart';
 
 /// Placeholder screen shown for the upcoming Challenges feature.
@@ -154,11 +81,11 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   @override
   void dispose() {
     _tabController.dispose();
+    _matchesScrollController.dispose();
     try {
       AppEvents.matchesRefresh.removeListener(_onMatchesRefreshEvent);
     } catch (_) {}
     super.dispose();
-        _matchesScrollController.dispose();
   }
 
   void _onMatchesScroll() {
@@ -432,96 +359,6 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   }
 
   /// Fetches the list of challenges/matches from the API.
-  Future<void> _fetchMatches() async {
-    setState(() {
-      _loadingMatches = true;
-      _matchesError = null;
-      _currentPage = 1;
-      _hasMorePages = true;
-      _lastPage = 1;
-    });
-    await _fetchMatchesPage(page: 1, append: false);
-    setState(() => _loadingMatches = false);
-  }
-
-  Future<void> _fetchMatchesPage({required int page, bool append = true}) async {
-    if (_isLoadingMore) return;
-    setState(() => _isLoadingMore = true);
-    try {
-      final res = await http.get(
-        Uri.parse('${ConstKeys.baseUrl}/challenges-index?page=$page'),
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ${Utils.token}',
-        },
-      );
-      if (res.statusCode < 400) {
-        final data = jsonDecode(res.body) as Map<String, dynamic>;
-        if (data['status'] == true) {
-          final matchesData = data['data']['matches'] as List<dynamic>;
-          final matches = matchesData.map((m) => ChallengeMatch.fromJson(m)).toList();
-          final pagination = data['data']['pagination'] as Map<String, dynamic>?;
-          final lastPage = pagination?['lastPage'] ?? pagination?['total_pages'] ?? 1;
-          final currentPage = pagination?['currentPage'] ?? page;
-          final nextPageUrl = pagination?['next_page_url'];
-
-          setState(() {
-            _lastPage = lastPage is int ? lastPage : int.tryParse(lastPage.toString()) ?? 1;
-            _currentPage = currentPage is int ? currentPage : int.tryParse(currentPage.toString()) ?? page;
-            if (append) {
-              // Avoid duplicates
-              final existingIds = _matches.map((m) => m.id).toSet();
-              _matches.addAll(matches.where((m) => !existingIds.contains(m.id)));
-            } else {
-              _matches = matches;
-            }
-            _hasMorePages = nextPageUrl != null;
-          });
-        }
-      }
-    } catch (e) {
-      setState(() {
-        _matchesError = 'Failed to load matches: $e';
-        _hasMorePages = false;
-      });
-    } finally {
-      setState(() => _isLoadingMore = false);
-    }
-  }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-    if (widget.hasTeam != null) {
-      _hasTeam = widget.hasTeam;
-      // If we know the user has a team, fetch their role
-      if (_hasTeam == true) {
-        _fetchUserTeams().then((_) => _fetchUserRole());
-      }
-    } else {
-      _fetchUserTeams().then((_) => _fetchUserRole());
-    }
-  _fetchChallengesOverview();
-  _fetchMatches();
-  _matchesScrollController.addListener(_onMatchesScroll);
-    // Listen to global matches refresh events (e.g., when creating a match)
-    try {
-      AppEvents.matchesRefresh.addListener(_onMatchesRefreshEvent);
-    } catch (_) {}
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    _matchesScrollController.dispose();
-    try {
-      AppEvents.matchesRefresh.removeListener(_onMatchesRefreshEvent);
-    } catch (_) {}
-    super.dispose();
-
-  }
 
   void _onMatchesRefreshEvent() {
     // Re-fetch matches when an external event requests a refresh.
@@ -542,15 +379,6 @@ class _ChallengesScreenState extends State<ChallengesScreen>
       }
     }();
 
-  }
-
-  void _onMatchesScroll() {
-    if (_matchesScrollController.position.pixels >=
-        _matchesScrollController.position.maxScrollExtent - 200) {
-      if (_hasMorePages && !_isLoadingMore && !_loadingMatches) {
-        _fetchMatchesPage(page: _currentPage + 1, append: true);
-      }
-    }
   }
 
   /// Builds the card displaying a completed challenge summary.
@@ -1042,130 +870,119 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         icon,
         const SizedBox(width: 8),
         Expanded(
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    NotificationListener<ScrollNotification>(
-                      onNotification: (scrollInfo) {
-                        if (scrollInfo.metrics.pixels >=
-                            scrollInfo.metrics.maxScrollExtent - 200) {
-                          if (_hasMorePages && !_isLoadingMore && !_loadingMatches) {
-                            _fetchMatchesPage(page: _currentPage + 1, append: true);
-                          }
-                        }
-                        return false;
-                      },
-                      child: ListView.builder(
-                        controller: _matchesScrollController,
-                        itemCount: _matches.length + 2,
-                        itemBuilder: (context, index) {
-                          if (index == 0) {
-                            return const SizedBox(height: 12);
-                          }
-                          if (index == _matches.length + 1) {
-                            if (_loadingMatches) {
-                              return const Center(child: CircularProgressIndicator());
-                            } else if (_matchesError != null) {
-                              return Center(child: Text(_matchesError!));
-                            } else if (_isLoadingMore) {
-                              return const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 16),
-                                child: Center(child: CircularProgressIndicator()),
-                              );
-                            } else if (!_hasMorePages) {
-                              return const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 16),
-                                child: Center(child: Text('لا توجد مباريات أخرى للعرض')), // No more matches
-                              );
-                            } else {
-                              return const SizedBox.shrink();
-                            }
-                          }
-                          final match = _matches[index - 1];
-                          return Column(
-                            children: [
-                              _buildMatchCard(match),
-                              const SizedBox(height: 12),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-          children: [
-            Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+  /// Builds a card explaining how challenges work.
+  Widget _buildHowChallengesWorkCard() {
+    const infoColor = Color(0xFF17A2B8);
+    
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.info_outline, color: infoColor),
+              const SizedBox(width: 4),
+              Text(
+                LocaleKeys.how_challenges_work_title.tr(),
+                style: const TextStyle(
+                  color: infoColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          _buildHowStep(
+            icon: const CircleAvatar(
+              radius: 12,
+              backgroundColor: infoColor,
+              child: Text(
+                '1',
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              ),
+            ),
+            title: LocaleKeys.how_challenges_step1_title.tr(),
+            subtitle: LocaleKeys.how_challenges_step1_subtitle.tr(),
+          ),
+          const SizedBox(height: 12),
+          _buildHowStep(
+            icon: const CircleAvatar(
+              radius: 12,
+              backgroundColor: infoColor,
+              child: Icon(Icons.add, size: 16, color: Colors.white),
+            ),
+            title: LocaleKeys.how_challenges_step2_title.tr(),
+            subtitle: LocaleKeys.how_challenges_step2_subtitle.tr(),
+          ),
+          const SizedBox(height: 12),
+          _buildHowStep(
+            icon: const CircleAvatar(
+              radius: 12,
+              backgroundColor: infoColor,
+              child: Text(
+                '3',
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              ),
+            ),
+            title: LocaleKeys.how_challenges_step3_title.tr(),
+            subtitle: LocaleKeys.how_challenges_step3_subtitle.tr(),
+          ),
+          const SizedBox(height: 12),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
               children: [
-                const Icon(Icons.info_outline, color: infoColor),
+                const Icon(Icons.info_outline, size: 16, color: Colors.grey),
                 const SizedBox(width: 4),
-                Text(
-                  LocaleKeys.how_challenges_work_title.tr(),
-                  style: const TextStyle(
-                    color: infoColor,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Text(
+                    LocaleKeys.how_challenges_tip.tr(),
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
-            _buildHowStep(
-              icon: const CircleAvatar(
-                radius: 12,
-                backgroundColor: infoColor,
-                child: Text(
-                  '1',
-                  style: TextStyle(color: Colors.white, fontSize: 12),
-                ),
-              ),
-              title: LocaleKeys.how_challenges_step1_title.tr(),
-              subtitle: LocaleKeys.how_challenges_step1_subtitle.tr(),
-            ),
-            const SizedBox(height: 12),
-            _buildHowStep(
-              icon: const CircleAvatar(
-                radius: 12,
-                backgroundColor: infoColor,
-                child: Icon(Icons.add, size: 16, color: Colors.white),
-              ),
-              title: LocaleKeys.how_challenges_step2_title.tr(),
-              subtitle: LocaleKeys.how_challenges_step2_subtitle.tr(),
-            ),
-            const SizedBox(height: 12),
-            _buildHowStep(
-              icon: const CircleAvatar(
-                radius: 12,
-                backgroundColor: infoColor,
-                child: Text(
-                  '3',
-                  style: TextStyle(color: Colors.white, fontSize: 12),
-                ),
-              ),
-              title: LocaleKeys.how_challenges_step3_title.tr(),
-              subtitle: LocaleKeys.how_challenges_step3_subtitle.tr(),
-            ),
-            const SizedBox(height: 12),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.info_outline, size: 16, color: Colors.grey),
-                  const SizedBox(width: 4),
-                  Expanded(
-                    child: Text(
-                      LocaleKeys.how_challenges_tip.tr(),
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
+  }
   }
 
   /// Displays the league table header with a trophy icon.
@@ -1350,27 +1167,30 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     return Stack(
       alignment: Alignment.center,
       children: [
-        CarouselSlider(
-          items: _sliderImages
-              .map(
-                (img) => ClipRRect(
-                  borderRadius: BorderRadius.circular(18),
-                  child: Image.asset(img, width: 400, fit: BoxFit.fill),
-                ),
-              )
-              .toList(),
-          options: CarouselOptions(
-            onPageChanged: (index, reason) {
-              setState(() => _currentSlideIndex = index);
-            },
-            enlargeCenterPage: true,
-            enlargeStrategy: CenterPageEnlargeStrategy.zoom,
-            autoPlayAnimationDuration: const Duration(seconds: 1),
-            autoPlay: true,
-            height: 170,
-            viewportFraction: 1,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: CarouselSlider(
+            items: _sliderImages
+                .map(
+                  (img) => ClipRRect(
+                    borderRadius: BorderRadius.circular(18),
+                    child: Image.asset(img, width: 400, fit: BoxFit.fill),
+                  ),
+                )
+                .toList(),
+            options: CarouselOptions(
+              onPageChanged: (index, reason) {
+                setState(() => _currentSlideIndex = index);
+              },
+              enlargeCenterPage: true,
+              enlargeStrategy: CenterPageEnlargeStrategy.zoom,
+              autoPlayAnimationDuration: const Duration(seconds: 1),
+              autoPlay: true,
+              height: 170,
+              viewportFraction: 1,
+            ),
           ),
-        ).paddingHorizontal(5),
+        ),
         Positioned(
           bottom: 30,
           child: CustomSliderDots(
@@ -1708,7 +1528,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
               const SizedBox(height: 16),
               _buildCarousel(),
               (_hasTeam ?? false) ? _manageTeamRow() : _buildCreateTeamBanner(),
-              18.ph,
+              const SizedBox(height: 18),
               Directionality(
                 textDirection: TextDirection.rtl,
                 child: Container(
@@ -2395,4 +2215,3 @@ class _ChallengesScreenState extends State<ChallengesScreen>
       );
     }
   }
-}
