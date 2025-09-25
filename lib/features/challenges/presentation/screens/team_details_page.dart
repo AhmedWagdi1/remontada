@@ -31,12 +31,25 @@ Map<String, dynamic>? findMemberByRole(List<dynamic> users, String role) {
 
 /// Finds the current user's role in the team
 String? findCurrentUserRole(List<dynamic> users) {
+  // Try to resolve the logged-in user's phone number from app state.
   final currentUserPhone = Utils.user.user?.phone;
   if (currentUserPhone == null) return null;
 
+  // Some backend responses use different keys for phone (mobile / phone).
+  // Check common variants for a match to make role detection robust.
   for (final u in users) {
-    if (u is Map<String, dynamic> && u['mobile'] == currentUserPhone) {
-      return u['role'] as String?;
+    if (u is Map<String, dynamic>) {
+      final phones = <String?>[
+        u['mobile'] as String?,
+        u['phone'] as String?,
+        u['mobile_number'] as String?,
+        u['phone_number'] as String?
+      ];
+      for (final p in phones) {
+        if (p != null && p == currentUserPhone) {
+          return u['role'] as String?;
+        }
+      }
     }
   }
   return null;
@@ -91,8 +104,12 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
       if (_tabController.indexIsChanging) return;
       _fetchTeamData();
     });
-    _fetchTeamData();
-    _fetchInvites();
+    // Defer fetching until after first frame so app-level singletons
+    // (like Utils.user) have time to initialize and provide user info.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchTeamData();
+      _fetchInvites();
+    });
   }
 
   @override
@@ -130,8 +147,23 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
       if (data['status'] == true) {
         final team = data['data'] as Map<String, dynamic>;
         final users = team['users'] as List<dynamic>? ?? [];
+        // Normalize user entries: ensure phone keys are consistent to help role detection
+        for (final u in users) {
+          if (u is Map<String, dynamic>) {
+            if ((u['mobile'] == null || (u['mobile'] as String).isEmpty) &&
+                (u['phone'] != null && (u['phone'] as String).isNotEmpty)) {
+              u['mobile'] = u['phone'];
+            }
+            if ((u['phone'] == null || (u['phone'] as String).isEmpty) &&
+                (u['mobile'] != null && (u['mobile'] as String).isNotEmpty)) {
+              u['phone'] = u['mobile'];
+            }
+          }
+        }
+
         final leader = findMemberByRole(users, 'leader');
         final subLeader = findMemberByRole(users, 'subLeader');
+        // Compute current user role before updating state so UI immediately reflects role
         final currentUserRole = findCurrentUserRole(users);
         team['leader'] = leader == null
             ? null
