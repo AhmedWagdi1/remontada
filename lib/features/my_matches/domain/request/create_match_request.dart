@@ -10,6 +10,7 @@ class CreateMatchRequest {
   String? amount;
   String? details;
   String? type;
+  int? isCompetitive;
   bool? isUpdate;
   CreateMatchRequest({
     this.playgroundId,
@@ -22,6 +23,7 @@ class CreateMatchRequest {
     this.amount,
     this.details,
     this.isUpdate,
+    this.isCompetitive,
     this.type,
   });
 
@@ -37,6 +39,7 @@ class CreateMatchRequest {
       if (amount != null) 'amount': amount,
       if (details != null) 'details': details,
       if (type != null) 'type': type,
+      if (isCompetitive != null) 'is_competitive': isCompetitive,
       if (isUpdate == true) '_method': "put",
     };
   }

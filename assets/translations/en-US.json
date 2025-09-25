@@ -361,6 +361,8 @@
   "create_match": {
     "title": "Create Match",
     "subscribers_qty": "Subscribers quantity",
+    "is_competitive": "Is Competitive",
+    "is_competitive_label_ar": "هل المباراة تنافسية؟",
     "date": "Date",
     "time": "Time",
     "durations": "Duration",

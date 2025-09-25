@@ -47,6 +47,7 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
   TextEditingController text = TextEditingController();
   TextEditingController price = TextEditingController();
   TextEditingController description = TextEditingController();
+  bool? _isCompetitive; // local UI state: null => not selected, true => competitive, false => friendly
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -403,10 +404,61 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                           activeBorderColor: LightThemeColors.inputFieldBorder,
                         ),
                         20.ph,
+                        // Competitive toggle (required)
+                        FormField<bool>(
+                          initialValue: _isCompetitive,
+                          validator: (v) {
+                            if (v == null) return LocaleKeys.valid_requiredField.tr();
+                            return null;
+                          },
+                          builder: (field) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    CustomText(
+                                      LocaleKeys.create_match_is_competitive.tr(),
+                                      fontSize: 16,
+                                      weight: FontWeight.w600,
+                                      color: context.primaryColor,
+                                    ),
+                                    Switch(
+                                      value: _isCompetitive ?? false,
+                                      onChanged: (val) {
+                                        setState(() {
+                                          _isCompetitive = val;
+                                          field.didChange(val);
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                if (field.hasError)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 6.0, left: 8.0),
+                                    child: Text(
+                                      field.errorText ?? '',
+                                      style: TextStyle(color: Colors.red, fontSize: 12),
+                                    ),
+                                  ),
+                              ],
+                            );
+                          },
+                        ),
+                        20.ph,
                         ButtonWidget(
                           onTap: () {
                             if (cubit.formKey.currentState!.validate()) {
+                              // ensure competitive selection is saved/validated
+                              if (_isCompetitive == null) {
+                                // trigger form validation message
+                                setState(() {});
+                                return;
+                              }
                               cubit.formKey.currentState?.save();
+                              cubit.request.isCompetitive = _isCompetitive == true ? 1 : 0;
                               if (widget.id != null) {
                                 cubit.request.isUpdate = true;
                               }

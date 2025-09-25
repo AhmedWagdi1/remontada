@@ -360,6 +360,8 @@ abstract class LocaleKeys {
   static const create_match_type = 'create_match.type';
   static const create_match_challenge = 'create_match.challenge';
   static const create_match_friendly = 'create_match.friendly';
+    static const create_match_is_competitive = 'create_match.is_competitive';
+    static const create_match_is_competitive_label_ar = 'create_match.is_competitive_label_ar';
   static const create_match_submit = 'create_match.submit';
   static const create_match_success = 'create_match.success';
   static const create_match_error = 'create_match.error';
