@@ -271,38 +271,80 @@ class _ChallengesScreenState extends State<ChallengesScreen>
             : 'تحدي جاهز - ${match.playground} - ${match.date} ${match.startTime}')
         : '';
 
+    final bool _hasType = match?.isCompetitive != null;
+    final Color _typeColor = match?.isCompetitive == true
+        ? const Color(0xFFDC3545) // Bold red for competitive
+        : const Color(0xFF28A745); // Green for friendly
+    final String _typeText = match?.isCompetitive == true 
+        ? LocaleKeys.create_match_challenge.tr() 
+        : LocaleKeys.create_match_friendly.tr();
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Padding(
         padding: const EdgeInsets.only(top: 24),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: borderColor),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: badgeColor,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.check_circle, color: badgeTextColor, size: 16),
-                      const SizedBox(width: 4),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: borderColor),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Match type badge at top
+                  if (_hasType)
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: _typeColor,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                          topRight: Radius.circular(12),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          Icon(
+                            match?.isCompetitive == true 
+                              ? Icons.whatshot 
+                              : Icons.sports_soccer_outlined,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            _typeText,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: badgeColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.check_circle, color: badgeTextColor, size: 16),
+                          const SizedBox(width: 4),
                           Text(
                             badgeText,
                             style: TextStyle(
@@ -311,22 +353,11 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                               fontSize: 12,
                             ),
                           ),
-                          if (match?.isCompetitive != null)
-                            Text(
-                              match!.isCompetitive == true ? 'تحدى' : 'ودى',
-                              style: TextStyle(
-                                color: badgeTextColor.withOpacity(0.9),
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-              Row(
+                  Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Column(
@@ -413,7 +444,9 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                 ),
               ),
             ],
-          ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -431,6 +464,14 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         ? 'انضم للتحدي - ${match.playground} - ${match.date} ${match.startTime}'
         : '';
 
+    final bool _hasType = match?.isCompetitive != null;
+    final Color _typeColor = match?.isCompetitive == true
+        ? const Color(0xFFFF4444) // Bright red-orange for competitive
+        : const Color(0xFF00BCD4); // Cyan blue for friendly
+    final String _typeText = match?.isCompetitive == true 
+        ? LocaleKeys.create_match_challenge.tr() 
+        : LocaleKeys.create_match_friendly.tr();
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Padding(
@@ -444,6 +485,40 @@ class _ChallengesScreenState extends State<ChallengesScreen>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // Match type badge at top
+              if (_hasType)
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: _typeColor,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(12),
+                      topRight: Radius.circular(12),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        match?.isCompetitive == true 
+                          ? Icons.local_fire_department 
+                          : Icons.handshake,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        _typeText,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
@@ -460,27 +535,13 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                     children: [
                       Icon(Icons.access_time, color: highlightColor, size: 16),
                       const SizedBox(width: 4),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            badgeText,
-                            style: TextStyle(
-                              color: highlightColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
-                          ),
-                          if (match?.isCompetitive != null)
-                            Text(
-                              match!.isCompetitive == true ? 'تحدى' : 'ودى',
-                              style: TextStyle(
-                                color: highlightColor.withOpacity(0.9),
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                        ],
+                      Text(
+                        badgeText,
+                        style: TextStyle(
+                          color: highlightColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
                       ),
                     ],
                   ),
