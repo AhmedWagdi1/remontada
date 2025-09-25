@@ -13,7 +13,6 @@ import '../widgets/championship_card.dart';
 import 'create_team_page.dart';
 import 'team_details_page.dart';
 
-import '../widgets/create_challenge_match_sheet.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../../../core/config/key.dart';
@@ -545,69 +544,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   }
 
   /// Builds a button for supervisors to create challenge matches.
-  Widget _buildSupervisorChallengeMatchButton() {
-    const darkBlue = Color(0xFF23425F);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            builder: (context) => const CreateChallengeMatchSheet(),
-          );
-        },
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [darkBlue, Color(0xFF1E3A54)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: darkBlue.withOpacity(0.3),
-                spreadRadius: 0,
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Icon(
-                  Icons.sports_soccer,
-                  color: Colors.white,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 12),
-              const Text(
-                'إضافة فترة لماتش تحدى جديد',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  // Supervisor challenge match button removed — button should not appear for any user.
 
   /// Builds a numbered step item for the how challenges work card.
   Widget _buildHowStep({
@@ -1307,11 +1244,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                       child: Column(
                         children: [
                           const SizedBox(height: 12),
-                          // Supervisor Challenge Match Button
-                          if (Utils.isSuperVisor == true) ...[
-                            _buildSupervisorChallengeMatchButton(),
-                            const SizedBox(height: 12),
-                          ],
+                          // Supervisor Challenge Match Button removed — no button displayed for any user.
                           if ((_hasTeam ?? false) && _userRole == 'leader') ...[
                             ExpandableCreateChallenge(),
                             const SizedBox(height: 12),
