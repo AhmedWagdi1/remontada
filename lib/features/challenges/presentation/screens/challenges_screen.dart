@@ -455,7 +455,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                         team: match?.team1,
                         isSlot1: true,
                       ),
-                      // VS Section
+                      // VS Section with competitive badge
                       Column(
                         children: [
                           const Text(
@@ -468,6 +468,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                             width: 20,
                             color: Colors.blue,
                           ),
+                          const SizedBox(height: 8),
+                          _buildCompetitiveBadge(match),
                         ],
                       ),
                       // Slot 2 - Right side (after VS)
@@ -590,7 +592,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                     highlightColor: highlightColor,
                     badgeColor: badgeColor,
                   ),
-                  // VS Section
+                  // VS Section with competitive badge
                   Column(
                     children: [
                       const Text(
@@ -606,6 +608,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                         width: 20,
                         color: highlightColor,
                       ),
+                      const SizedBox(height: 8),
+                      _buildCompetitiveBadge(match),
                     ],
                   ),
                   // Slot 2 - Right side (after VS)
@@ -773,6 +777,50 @@ class _ChallengesScreenState extends State<ChallengesScreen>
           height: 40, // Match avatar height
         ),
       ],
+    );
+  }
+
+  /// Builds a competitive badge for matches that have at least one team
+  Widget _buildCompetitiveBadge(ChallengeMatch? match) {
+    // Only show badge if match has at least one team
+    if (match == null || (match.team1 == null && match.team2 == null)) {
+      return const SizedBox.shrink();
+    }
+
+    final isCompetitive = match.isCompetitive ?? false;
+    final badgeColor = isCompetitive
+        ? const Color(0xFF28A745) // Green for competitive
+        : const Color(0xFF6C757D); // Gray for friendly
+
+    final badgeText = isCompetitive
+        ? LocaleKeys.challenge_competitive_match.tr()
+        : LocaleKeys.create_match_friendly.tr();
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: badgeColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            isCompetitive ? Icons.emoji_events : Icons.sports_soccer,
+            color: Colors.white,
+            size: 12,
+          ),
+          const SizedBox(width: 2),
+          Text(
+            badgeText,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
