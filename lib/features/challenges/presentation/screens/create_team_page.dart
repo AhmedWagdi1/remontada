@@ -239,6 +239,36 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
         hasError = true;
       }
       
+      // Validate all player phone numbers before proceeding
+      final List<String> allMemberPhones = _playerPhoneControllers
+          .map((c) => c.text.trim())
+          .where((p) => p.isNotEmpty)
+          .toList();
+      
+      Set<String> allPhones = {captainPhone, subPhone};
+      for (int i = 0; i < allMemberPhones.length; i++) {
+        final phone = allMemberPhones[i];
+        if (phone.isEmpty) continue; // Skip empty phones
+        
+        // Check if phone is valid Saudi format
+        if (!(Validation.isValidSaudiPhoneNumber(phone) ?? false)) {
+          if (i < _playerPhoneErrors.length) {
+            _playerPhoneErrors[i] = 'رقم جوال غير صالح. يجب أن يبدأ بـ 0 ويتكون من 10 أرقام';
+          }
+          hasError = true;
+        }
+        
+        // Check for duplicate phones
+        if (allPhones.contains(phone)) {
+          if (i < _playerPhoneErrors.length) {
+            _playerPhoneErrors[i] = 'رقم الجوال مكرر. يرجى إدخال رقم مختلف';
+          }
+          hasError = true;
+        } else {
+          allPhones.add(phone);
+        }
+      }
+      
       if (hasError) {
         setState(() => _isSubmitting = false);
         _scrollToFirstError();
@@ -270,34 +300,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
         return;
       }
 
-      // b. Check subleader is not in other teams
-      bool subleaderInTeam = false;
-      for (final team in teams) {
-        final teamId = team['id'];
-        final teamShowRes = await http.get(
-          Uri.parse('${ConstKeys.baseUrl}/team/show/$teamId'),
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ${Utils.token}',
-          },
-        );
-        final teamShowData = jsonDecode(teamShowRes.body);
-        if (teamShowRes.statusCode >= 400 || teamShowData['status'] != true)
-          continue;
-        final List<dynamic> users = teamShowData['data']['users'] ?? [];
-        for (final user in users) {
-          final mobile = user['mobile'].toString().trim();
-          if (mobile == subPhone) subleaderInTeam = true;
-        }
-      }
-      if (subleaderInTeam) {
-        _assistantPhoneError = 'المساعد بالفعل عضو في فريق آخر. يرجى اختيار مساعد آخر';
-        setState(() => _isSubmitting = false);
-        _scrollToFirstError();
-        return;
-      }
-
-      // c. Check both phones are registered
+      // c. Check ALL phones are registered (captain, assistant, and all players)
       Future<bool> isPhoneRegistered(String phone) async {
         final loginRes = await http.post(
           Uri.parse('${ConstKeys.baseUrl}/login'),
@@ -312,21 +315,84 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
         return loginRes.statusCode < 400 && loginData['status'] == true;
       }
 
+      // Check captain phone
       if (!await isPhoneRegistered(captainPhone)) {
         _coachPhoneError = 'رقم جوال الكابتن غير مسجل في النظام';
         setState(() => _isSubmitting = false);
         _scrollToFirstError();
         return;
       }
+      
+      // Check assistant phone
       if (!await isPhoneRegistered(subPhone)) {
         _assistantPhoneError = 'رقم جوال المساعد غير مسجل في النظام';
         setState(() => _isSubmitting = false);
         _scrollToFirstError();
         return;
       }
+      
+      // Check all player phones
+      for (int i = 0; i < allMemberPhones.length; i++) {
+        final phone = allMemberPhones[i];
+        if (phone == captainPhone || phone == subPhone) continue; // Skip captain and assistant
+        
+        if (!await isPhoneRegistered(phone)) {
+          if (i < _playerPhoneErrors.length) {
+            _playerPhoneErrors[i] = 'رقم الجوال غير مسجل في النظام';
+          }
+          setState(() => _isSubmitting = false);
+          _scrollToFirstError();
+          return;
+        }
+      }
+      
+      // d. Check that ALL members (including players) are not already in other teams
+      for (final team in teams) {
+        final teamId = team['id'];
+        final teamShowRes = await http.get(
+          Uri.parse('${ConstKeys.baseUrl}/team/show/$teamId'),
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${Utils.token}',
+          },
+        );
+        final teamShowData = jsonDecode(teamShowRes.body);
+        if (teamShowRes.statusCode >= 400 || teamShowData['status'] != true)
+          continue;
+        final List<dynamic> users = teamShowData['data']['users'] ?? [];
+        
+        // Check assistant
+        for (final user in users) {
+          final mobile = user['mobile'].toString().trim();
+          if (mobile == subPhone) {
+            _assistantPhoneError = 'المساعد بالفعل عضو في فريق آخر. يرجى اختيار مساعد آخر';
+            setState(() => _isSubmitting = false);
+            _scrollToFirstError();
+            return;
+          }
+        }
+        
+        // Check all players
+        for (int i = 0; i < allMemberPhones.length; i++) {
+          final phone = allMemberPhones[i];
+          if (phone == captainPhone || phone == subPhone) continue; // Skip captain and assistant
+          
+          for (final user in users) {
+            final mobile = user['mobile'].toString().trim();
+            if (mobile == phone) {
+              if (i < _playerPhoneErrors.length) {
+                _playerPhoneErrors[i] = 'اللاعب بالفعل عضو في فريق آخر';
+              }
+              setState(() => _isSubmitting = false);
+              _scrollToFirstError();
+              return;
+            }
+          }
+        }
+      }
 
       // --- END VALIDATION & CHECKS ---
-      // All checks passed, now create the team
+      // All checks passed, now create the team (everything is validated, so should succeed)
       final request = http.MultipartRequest(
         'POST',
         Uri.parse('${ConstKeys.baseUrl}/team/store'),
@@ -345,16 +411,15 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
       final res = await http.Response.fromStream(streamed);
       final data = jsonDecode(res.body);
       if (res.statusCode >= 400 || data['status'] != true) {
-        _teamNameError = data['message'] ?? 'خطأ غير متوقع';
+        _teamNameError = data['message'] ?? 'خطأ غير متوقع في إنشاء الفريق';
         setState(() => _isSubmitting = false);
         _scrollToFirstError();
         return;
       }
       final dynamic teamIdRaw = data['data']['id'];
       final teamId = parseTeamId(teamIdRaw);
-      // Step 2: add subleader and normal members as members
-      List<String> addedPhones = [];
-      // Add subleader as member
+      
+      // Step 2: Add assistant as subleader member (should succeed since validated)
       final subRes = await http.post(
         Uri.parse('${ConstKeys.baseUrl}/team/add-member'),
         headers: {
@@ -369,31 +434,17 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
       );
       final subData = jsonDecode(subRes.body);
       if (subRes.statusCode >= 400 || subData['status'] != true) {
-        // Rollback: delete the team
-        try {
-          await http.delete(
-            Uri.parse('${ConstKeys.baseUrl}/team/destroy/$teamId'),
-            headers: {
-              'Accept': 'application/json',
-              'Authorization': 'Bearer ${Utils.token}',
-            },
-          );
-        } catch (_) {}
-        _assistantPhoneError = subData['message'] ?? 'خطأ في إضافة المساعد كعضو';
+        // This should not happen since we validated, but handle gracefully
+        _assistantPhoneError = subData['message'] ?? 'خطأ غير متوقع في إضافة المساعد';
         setState(() => _isSubmitting = false);
         _scrollToFirstError();
         return;
-      } else {
-        addedPhones.add(subPhone);
       }
-      // Add normal members if any (from player phone controllers)
-      final List<String> memberPhones = _playerPhoneControllers
-          .map((c) => c.text.trim())
-          .where((p) => p.isNotEmpty)
-          .toList();
-      for (final phone in memberPhones) {
-        if (phone == captainPhone || phone == subPhone)
-          continue; // skip captain and subleader
+
+      // Step 3: Add all validated player members
+      for (final phone in allMemberPhones) {
+        if (phone == captainPhone || phone == subPhone) continue; // Skip captain and assistant
+        
         final memberRes = await http.post(
           Uri.parse('${ConstKeys.baseUrl}/team/add-member'),
           headers: {
@@ -408,41 +459,15 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
         );
         final memberData = jsonDecode(memberRes.body);
         if (memberRes.statusCode >= 400 || memberData['status'] != true) {
-          // Rollback: remove added members, then delete the team
-          for (final addedPhone in addedPhones) {
-            try {
-              await http.post(
-                Uri.parse('${ConstKeys.baseUrl}/team/remove-member'),
-                headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json',
-                  'Authorization': 'Bearer ${Utils.token}',
-                },
-                body: jsonEncode({
-                  'phone_number': addedPhone,
-                  'team_id': teamId,
-                }),
-              );
-            } catch (_) {}
-          }
-          try {
-            await http.delete(
-              Uri.parse('${ConstKeys.baseUrl}/team/destroy/$teamId'),
-              headers: {
-                'Accept': 'application/json',
-                'Authorization': 'Bearer ${Utils.token}',
-              },
-            );
-          } catch (_) {}
-          _teamNameError = memberData['message'] ?? 'خطأ في إضافة العضو ذو الرقم $phone';
+          // This should not happen since we validated, but show general error
+          _teamNameError = memberData['message'] ?? 'خطأ غير متوقع في إضافة أحد الأعضاء';
           setState(() => _isSubmitting = false);
           _scrollToFirstError();
           return;
-        } else {
-          addedPhones.add(phone);
         }
       }
-      // Step 3: assign subleader role
+      
+      // Step 4: Assign subleader role (should succeed since validated)
       final roleRes = await http.post(
         Uri.parse('${ConstKeys.baseUrl}/team/member-role'),
         headers: {
@@ -458,33 +483,8 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
       );
       final roleData = jsonDecode(roleRes.body);
       if (roleRes.statusCode >= 400 || roleData['status'] != true) {
-        // Rollback: remove added members, then delete the team
-        for (final addedPhone in addedPhones) {
-          try {
-            await http.post(
-              Uri.parse('${ConstKeys.baseUrl}/team/remove-member'),
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ${Utils.token}',
-              },
-              body: jsonEncode({
-                'phone_number': addedPhone,
-                'team_id': teamId,
-              }),
-            );
-          } catch (_) {}
-        }
-        try {
-          await http.delete(
-            Uri.parse('${ConstKeys.baseUrl}/team/destroy/$teamId'),
-            headers: {
-              'Accept': 'application/json',
-              'Authorization': 'Bearer ${Utils.token}',
-            },
-          );
-        } catch (_) {}
-        _assistantPhoneError = roleData['message'] ?? 'تعذر تعيين الدور للمساعد';
+        // This should not happen since we validated, but handle gracefully
+        _assistantPhoneError = roleData['message'] ?? 'خطأ غير متوقع في تعيين دور المساعد';
         setState(() => _isSubmitting = false);
         _scrollToFirstError();
         return;
