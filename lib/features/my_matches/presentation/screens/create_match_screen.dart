@@ -47,7 +47,7 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
   TextEditingController text = TextEditingController();
   TextEditingController price = TextEditingController();
   TextEditingController description = TextEditingController();
-  bool _isCompetitive = false; // local UI state: true => competitive, false => friendly
+  // Removed isCompetitive logic and toggle
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -100,21 +100,11 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
             description.text = matchModel.details ?? "";
             startTime.text = matchModel.dateDate?.start_time ?? "";
             endTime.text = matchModel.dateDate?.end_time ?? "";
-            final nextIsCompetitive = matchModel.isCompetitive ?? false;
-            if (mounted) {
-              setState(() {
-                _isCompetitive = nextIsCompetitive;
-              });
-            } else {
-              _isCompetitive = nextIsCompetitive;
-            }
-      MyMatchesCubit.get(context).request.isCompetitive =
-        _isCompetitive ? 1 : 0;
           }
         },
         builder: (context, state) {
           final cubit = MyMatchesCubit.get(context);
-          cubit.request.isCompetitive ??= _isCompetitive ? 1 : 0;
+          // Removed isCompetitive from request
           return LoadingAndError(
             isLoading: state is MatchDetailsLoading,
             isError: state is MatchDetailsFailed,
@@ -385,27 +375,7 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                           hintColor: LightThemeColors.textPrimary,
                           activeBorderColor: LightThemeColors.inputFieldBorder,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CustomText(
-                              LocaleKeys.create_match_is_competitive.tr(),
-                              fontSize: 16,
-                              weight: FontWeight.w600,
-                              color: context.primaryColor,
-                            ),
-                            Switch(
-                              value: _isCompetitive,
-                              onChanged: (val) {
-                                setState(() {
-                                  _isCompetitive = val;
-                                });
-                                cubit.request.isCompetitive = val ? 1 : 0;
-                              },
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 24),
+                        // Removed competitive toggle and spacing
                         Builder(
                           builder: (context) {
                             final cubit = MyMatchesCubit.get(context);
@@ -416,7 +386,7 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                                   : () async {
                                       if (cubit.formKey.currentState!.validate()) {
                                         cubit.formKey.currentState?.save();
-                                        cubit.request.isCompetitive = _isCompetitive ? 1 : 0;
+                                        // Removed isCompetitive from request
                                         if (widget.id != null) {
                                           cubit.request.isUpdate = true;
                                         }
