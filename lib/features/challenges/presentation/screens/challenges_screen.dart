@@ -5,8 +5,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:remontada/core/app_strings/locale_keys.dart';
-import 'package:remontada/core/extensions/all_extensions.dart';
-import 'package:remontada/core/utils/extentions.dart';
 import 'package:remontada/features/home/presentation/widgets/custom_dots.dart';
 import 'package:remontada/shared/widgets/customtext.dart';
 import '../../../../core/services/app_events.dart';
@@ -394,14 +392,6 @@ class _ChallengesScreenState extends State<ChallengesScreen>
             : 'تحدي جاهز - ${match.playground} - ${match.date} ${match.startTime}')
         : '';
 
-    final bool _hasType = match?.isCompetitive != null;
-    final Color _typeColor = match?.isCompetitive == true
-        ? const Color(0xFFDC3545) // Bold red for competitive
-        : const Color(0xFF28A745); // Green for friendly
-    final String _typeText = match?.isCompetitive == true
-        ? LocaleKeys.create_match_challenge.tr()
-        : LocaleKeys.create_match_friendly.tr();
-
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Padding(
@@ -418,41 +408,6 @@ class _ChallengesScreenState extends State<ChallengesScreen>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Match type badge at top
-                  if (_hasType)
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: _typeColor,
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(12),
-                          topRight: Radius.circular(12),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            match?.isCompetitive == true
-                                ? Icons.whatshot
-                                : Icons.sports_soccer_outlined,
-                            color: Colors.white,
-                            size: 18,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            _typeText,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
@@ -574,14 +529,6 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         ? 'انضم للتحدي - ${match.playground} - ${match.date} ${match.startTime}'
         : '';
 
-    final bool _hasType = match?.isCompetitive != null;
-    final Color _typeColor = match?.isCompetitive == true
-        ? const Color(0xFFFF4444) // Bright red-orange for competitive
-        : const Color(0xFF00BCD4); // Cyan blue for friendly
-    final String _typeText = match?.isCompetitive == true
-        ? LocaleKeys.create_match_challenge.tr()
-        : LocaleKeys.create_match_friendly.tr();
-
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Padding(
@@ -595,41 +542,6 @@ class _ChallengesScreenState extends State<ChallengesScreen>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Match type badge at top
-              if (_hasType)
-                Container(
-                  width: double.infinity,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: _typeColor,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      topRight: Radius.circular(12),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        match?.isCompetitive == true
-                            ? Icons.local_fire_department
-                            : Icons.handshake,
-                        color: Colors.white,
-                        size: 18,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        _typeText,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
