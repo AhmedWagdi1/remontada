@@ -47,7 +47,7 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
   TextEditingController text = TextEditingController();
   TextEditingController price = TextEditingController();
   TextEditingController description = TextEditingController();
-  bool? _isCompetitive; // local UI state: null => not selected, true => competitive, false => friendly
+  bool _isCompetitive = false; // local UI state: true => competitive, false => friendly
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -65,14 +65,29 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
               Routes.LayoutScreen,
               (r) => false,
             );
+          } else if (state is CreateMatchFailed) {
+            // Show error if Cubit emits failure
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("فشل في إضافة الفترة. حاول مرة أخرى.")),
+            );
           }
           if (state is MatchDetailsLoaded) {
             matchModel = state.matchModel;
             MyMatchesCubit.get(context).request.playgroundId =
                 state.matchModel.playground_id.toString();
             playgroundcontroller.text = matchModel.playGround ?? "";
-            matchType.text =
-                matchModel.type == "group" ? "مباراة جماعية" : "مباراة فردية";
+            matchType.text = () {
+              switch (matchModel.type) {
+                case "group":
+                  return "مباراة جماعية";
+                case "single":
+                  return "مباراة فردية";
+                case "challenge":
+                  return "مبارة تحدى";
+                default:
+                  return matchModel.type ?? "";
+              }
+            }();
             MyMatchesCubit.get(context).request.type = matchModel.type;
             date.text = matchModel.dateDate?.date ?? "";
             number.text = matchModel.subscribers?.split("/").last ?? "";
@@ -85,11 +100,21 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
             description.text = matchModel.details ?? "";
             startTime.text = matchModel.dateDate?.start_time ?? "";
             endTime.text = matchModel.dateDate?.end_time ?? "";
-            // MyMatchesCubit.get(context).request.playgroundId = matchModel.pla;
+            final nextIsCompetitive = matchModel.isCompetitive ?? false;
+            if (mounted) {
+              setState(() {
+                _isCompetitive = nextIsCompetitive;
+              });
+            } else {
+              _isCompetitive = nextIsCompetitive;
+            }
+      MyMatchesCubit.get(context).request.isCompetitive =
+        _isCompetitive ? 1 : 0;
           }
         },
         builder: (context, state) {
           final cubit = MyMatchesCubit.get(context);
+          cubit.request.isCompetitive ??= _isCompetitive ? 1 : 0;
           return LoadingAndError(
             isLoading: state is MatchDetailsLoading,
             isError: state is MatchDetailsFailed,
@@ -123,15 +148,15 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                           fontSize: 16,
                           color: LightThemeColors.textSecondary,
                         ),
-                        40.ph,
+                        SizedBox(height: 40),
                         DropDownItem<String>(
-                          options: ['group', 'single', 'challenge'],
+                          options: const ['group', 'single', 'challenge'],
                           inistialValue: cubit.request.type,
                           hint: 'نوع المباراة',
                           prefixIcon: 'playground_button',
                           radius: 33,
                           color: context.formFieldColor,
-                          contentPadding: EdgeInsets.symmetric(
+                          contentPadding: const EdgeInsets.symmetric(
                             vertical: 18,
                             horizontal: 20,
                           ),
@@ -139,13 +164,13 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                           itemAsString: (v) {
                             switch (v) {
                               case 'group':
-                              return 'مباراة جماعية';
+                                return 'مباراة جماعية';
                               case 'single':
-                              return 'مباراة فردية';
+                                return 'مباراة فردية';
                               case 'challenge':
-                              return 'مبارة تحدى';
+                                return 'مبارة تحدى';
                               default:
-                              return v.toString();
+                                return v.toString();
                             }
                           },
                           validator: (v) => (v == null || v.isEmpty)
@@ -158,18 +183,10 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                             });
                           },
                         ),
-                        12.ph,
+                        SizedBox(height: 12),
                         CustomAutoCompleteTextField<Location>(
                           controller: playgroundcontroller,
-                          // contentPadding: EdgeInsets.only(
-                          //   bottom: 20,
-                          // ),
-                          padding: EdgeInsets.only(
-                            bottom: 20,
-                          ),
-                          // controller: location,
-                          // validator: Utils.valid.defaultValidation,
-
+                          padding: const EdgeInsets.only(bottom: 20),
                           prefixIcon: Padding(
                             padding: const EdgeInsets.only(
                               right: 35,
@@ -179,25 +196,21 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                               "playground_button".svg(),
                             ),
                           ),
-                          // c: context.primaryColor,
                           hint: "اختر الملعب",
                           function: (p0) async {
-                            return (await locator<AuthRepository>()
-                                        .getPlaygrounds())
-                                    ?.playgrounds ??
-                                [];
+                            final repo = locator<AuthRepository>();
+                            final result = await repo.getPlaygrounds();
+                            return result?.playgrounds ?? [];
                           },
                           itemAsString: (p0) => p0.name ?? "",
                           localData: true,
                           showLabel: false,
                           showSufix: true,
-                          // radius: 33,
-                          // options: List.generate(cubit.getlocations()., (index) => null),
                           onChanged: (val) {
                             cubit.request.playgroundId = val.id.toString();
-                            // edit.locationId = val.id;
                           },
                         ),
+                        SizedBox(height: 12),
                         TextFormFieldWidget(
                           readOnly: true,
                           onTap: () {
@@ -205,8 +218,6 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                               context: context,
                               firstDate: DateTime(
                                 DateTime.now().year,
-
-                                // (DateTime.now().hour + 12),
                               ),
                               lastDate: DateTime(
                                 DateTime.now().year + 100,
@@ -221,13 +232,11 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                               },
                             );
                             setState(() {});
-                            ;
                           },
                           controller: date,
                           onSaved: (value) {
                             cubit.request.date = value;
-                          }, // register.email = value,
-                          // controller: email,
+                          },
                           validator: Utils.valid.defaultValidation,
                           prefixIcon: "clender".svg(),
                           hintSize: 16,
@@ -236,7 +245,7 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                           hintColor: LightThemeColors.textPrimary,
                           activeBorderColor: LightThemeColors.inputFieldBorder,
                         ),
-                        12.ph,
+                        SizedBox(height: 12),
                         TextFormFieldWidget(
                           controller: number,
                           type: TextInputType.number,
@@ -262,84 +271,55 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                           hintColor: LightThemeColors.textPrimary,
                           activeBorderColor: LightThemeColors.inputFieldBorder,
                         ),
-                        12.ph,
+                        SizedBox(height: 12),
                         TextFormFieldWidget(
+                          controller: startTime,
                           readOnly: true,
-                          onTap: () {
-                            showTimePicker(
+                          validator: Utils.valid.defaultValidation,
+                          onTap: () async {
+                            final value = await showTimePicker(
                               context: context,
                               initialTime: TimeOfDay.now(),
-                            ).then((value) {
-                              String minute =
-                                  value?.minute.toString().length == 1
-                                      ? "0${value?.minute.toString()}"
-                                      : value?.minute.toString() ?? "";
-                              startTime.text = "${value!.hour}:${minute} ";
-                            });
+                            );
+                            if (value != null) {
+                              final minute = value.minute.toString().padLeft(2, '0');
+                              startTime.text = '${value.hour}:$minute';
+                              cubit.request.statrtTime = startTime.text;
+                            }
                           },
                           onSaved: (value) => cubit.request.statrtTime = value,
-                          controller: startTime,
-                          validator: Utils.valid.defaultValidation,
                           prefixIcon: "clock".svg(),
                           hintSize: 16,
                           borderRadius: 33,
-                          hintText: "بداية الفترة",
+                          hintText: "وقت البداية",
                           hintColor: LightThemeColors.textPrimary,
                           activeBorderColor: LightThemeColors.inputFieldBorder,
                         ),
-                        12.ph,
+                        SizedBox(height: 12),
                         TextFormFieldWidget(
+                          controller: endTime,
                           readOnly: true,
-                          onTap: () {
-                            showTimePicker(
+                          validator: Utils.valid.defaultValidation,
+                          onTap: () async {
+                            final value = await showTimePicker(
                               context: context,
                               initialTime: TimeOfDay.now(),
-                            ).then((value) {
-                              String minute =
-                                  value?.minute.toString().length == 1
-                                      ? "0${value?.minute.toString()}"
-                                      : value?.minute.toString() ?? "";
-                              // startTime.text =
-                              endTime.text = "${value!.hour}:${minute} ";
-                            });
+                            );
+                            if (value != null) {
+                              final minute = value.minute.toString().padLeft(2, '0');
+                              endTime.text = '${value.hour}:$minute';
+                              cubit.request.endTime = endTime.text;
+                            }
                           },
                           onSaved: (value) => cubit.request.endTime = value,
-                          controller: endTime,
-                          validator: Utils.valid.defaultValidation,
                           prefixIcon: "clock".svg(),
                           hintSize: 16,
                           borderRadius: 33,
-                          hintText: "نهاية الفترة",
+                          hintText: "وقت النهاية",
                           hintColor: LightThemeColors.textPrimary,
                           activeBorderColor: LightThemeColors.inputFieldBorder,
                         ),
-                        // HpurFieldWidget(
-                        //   title: "بداية الفترة",
-                        //   onTimeChanged: (hour, minute) {
-                        //     cubit.request.statrtTime = "$hour:$minute";
-                        //   },
-                        // ),
-                        // 12.ph,
-                        // HpurFieldWidget(
-                        //   title: "نهاية الفترة",
-                        //   onTimeChanged: (hour, minute) {
-                        //     cubit.request.endTime = "$hour:$minute";
-                        //   },
-                        // ),
-                        // TextFormFieldWidget(
-                        //   onSaved: (value) {
-                        //     cubit.request.date = value;
-                        //   }, // register.email = value,
-                        //   // controller: email,
-                        //   validator: Utils.valid.emailValidation,
-                        //   prefixIcon: "clender".svg(),
-                        //   hintSize: 16,
-                        //   borderRadius: 33,
-                        //   hintText: "توقيت المباراة",
-                        //   hintColor: LightThemeColors.textPrimary,
-                        //   activeBorderColor: LightThemeColors.inputFieldBorder,
-                        // ),
-                        12.ph,
+                        SizedBox(height: 12),
                         TextFormFieldWidget(
                           controller: peroid,
                           type: TextInputType.number,
@@ -355,7 +335,7 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                           hintColor: LightThemeColors.textPrimary,
                           activeBorderColor: LightThemeColors.inputFieldBorder,
                         ),
-                        12.ph,
+                        SizedBox(height: 12),
                         TextFormFieldWidget(
                           controller: text,
 
@@ -371,7 +351,7 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                           hintColor: LightThemeColors.textPrimary,
                           activeBorderColor: LightThemeColors.inputFieldBorder,
                         ),
-                        12.ph,
+                        SizedBox(height: 12),
                         TextFormFieldWidget(
                           controller: price,
                           type: TextInputType.number,
@@ -387,7 +367,7 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                           hintColor: LightThemeColors.textPrimary,
                           activeBorderColor: LightThemeColors.inputFieldBorder,
                         ),
-                        12.ph,
+                        SizedBox(height: 12),
                         TextFormFieldWidget(
                           controller: description,
 
@@ -405,86 +385,74 @@ class _CreateMatchScreenState extends State<CreateMatchScreen> {
                           hintColor: LightThemeColors.textPrimary,
                           activeBorderColor: LightThemeColors.inputFieldBorder,
                         ),
-                        20.ph,
-                        // Competitive toggle (required)
-                        FormField<bool>(
-                          initialValue: _isCompetitive,
-                          validator: (v) {
-                            if (v == null) return LocaleKeys.valid_requiredField.tr();
-                            return null;
-                          },
-                          builder: (field) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    CustomText(
-                                      LocaleKeys.create_match_is_competitive.tr(),
-                                      fontSize: 16,
-                                      weight: FontWeight.w600,
-                                      color: context.primaryColor,
-                                    ),
-                                    Switch(
-                                      value: _isCompetitive ?? false,
-                                      onChanged: (val) {
-                                        setState(() {
-                                          _isCompetitive = val;
-                                          field.didChange(val);
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CustomText(
+                              LocaleKeys.create_match_is_competitive.tr(),
+                              fontSize: 16,
+                              weight: FontWeight.w600,
+                              color: context.primaryColor,
+                            ),
+                            Switch(
+                              value: _isCompetitive,
+                              onChanged: (val) {
+                                setState(() {
+                                  _isCompetitive = val;
+                                });
+                                cubit.request.isCompetitive = val ? 1 : 0;
+                              },
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 24),
+                        Builder(
+                          builder: (context) {
+                            final cubit = MyMatchesCubit.get(context);
+                            final isLoading = state is CreateMatchLoading;
+                            return ButtonWidget(
+                              onTap: isLoading
+                                  ? null
+                                  : () async {
+                                      if (cubit.formKey.currentState!.validate()) {
+                                        cubit.formKey.currentState?.save();
+                                        cubit.request.isCompetitive = _isCompetitive ? 1 : 0;
+                                        if (widget.id != null) {
+                                          cubit.request.isUpdate = true;
+                                        }
+                                        try {
+                                          print('\n[CreateMatchScreen] Submitting request: ' + cubit.request.toMap().toString());
+                                        } catch (_) {
+                                          print('[CreateMatchScreen] Submitting request: ' + cubit.request.toString());
+                                        }
+                                        print('[CreateMatchScreen] Calling cubit.createMatches(id: ${widget.id ?? matchModel.id})');
+                                        bool stateChanged = false;
+                                        final subscription = cubit.stream.listen((state) {
+                                          if (state is CreateMatchSuccess || state is CreateMatchFailed) {
+                                            stateChanged = true;
+                                          }
                                         });
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                if (field.hasError)
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 6.0, left: 8.0),
-                                    child: Text(
-                                      field.errorText ?? '',
-                                      style: TextStyle(color: Colors.red, fontSize: 12),
-                                    ),
-                                  ),
-                              ],
+                                        cubit.createMatches(
+                                          id: widget.id ?? matchModel.id?.toString(),
+                                        );
+                                        await Future.delayed(const Duration(seconds: 2));
+                                        await subscription.cancel();
+                                        if (!stateChanged && mounted) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(content: Text("لم يتم إرسال الطلب. تحقق من الاتصال أو أعد المحاولة.")),
+                                          );
+                                        }
+                                      }
+                                    },
+                              radius: 33,
+                              title: isLoading
+                                  ? "جاري الحفظ..."
+                                  : (widget.id != null ? "تحديث الفترة" : "إضافة الفترة"),
+                              buttonColor: isLoading ? Colors.grey : null,
                             );
                           },
                         ),
-                        20.ph,
-                        ButtonWidget(
-                          onTap: () {
-                            if (cubit.formKey.currentState!.validate()) {
-                              // ensure competitive selection is saved/validated
-                              if (_isCompetitive == null) {
-                                // trigger form validation message
-                                setState(() {});
-                                return;
-                              }
-                              cubit.formKey.currentState?.save();
-                              cubit.request.isCompetitive = _isCompetitive == true ? 1 : 0;
-                              if (widget.id != null) {
-                                cubit.request.isUpdate = true;
-                              }
-                              // Debug: print request before submission
-                              try {
-                                print(
-                                    '\n[CreateMatchScreen] Submitting request: ' +
-                                        cubit.request.toMap().toString());
-                              } catch (_) {
-                                print(
-                                    '[CreateMatchScreen] Submitting request: ' +
-                                        cubit.request.toString());
-                              }
-                              print(
-                                  '[CreateMatchScreen] Calling cubit.createMatches(id: ${matchModel.id})');
-                              cubit.createMatches(
-                                id: matchModel.id.toString(),
-                              );
-                            }
-                          },
-                          radius: 33,
-                          title: "إضافة الفترة",
-                        ),
-                        20.ph,
+                        SizedBox(height: 20),
                       ],
                     ),
                   ),

@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "mcp:flutter:stdio": "~/.local/share/flutter-mcp-venv/bin/flutter-mcp start",
+    "mcp:flutter:http": "~/.local/share/flutter-mcp-venv/bin/flutter-mcp start --transport http --port 8000"
+  },
   "dependencies": {
     "axios": "^1.11.0",
     "form-data": "^4.0.4"

@@ -23,6 +23,7 @@ class MatchModel {
   String? startTime;
   String? endTime;
   String? durations_text;
+  bool? isCompetitive;
   DateDate? dateDate;
   bool? flag;
   bool? is_reserved;
@@ -56,7 +57,8 @@ class MatchModel {
       this.flag,
       this.duration,
       this.isCCompleted,
-      this.isPending
+      this.isPending,
+  this.isCompetitive,
       // this.validSub,
       });
 
@@ -102,6 +104,12 @@ class MatchModel {
       isCCompleted:
           map['is_completed'] != null ? map['is_completed'] as bool : null,
       duration: map['durations'] != null ? map['durations'] as int : null,
+      isCompetitive: map['is_competitive'] != null
+          ? (map['is_competitive'] is bool
+              ? map['is_competitive'] as bool
+              : map['is_competitive'].toString() == '1' ||
+                  map['is_competitive'].toString().toLowerCase() == 'true')
+          : null,
     );
   }
 
