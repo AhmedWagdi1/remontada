@@ -95,6 +95,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
       }
     }
   }
+
   Future<void> _fetchMatches() async {
     setState(() {
       _loadingMatches = true;
@@ -107,7 +108,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     setState(() => _loadingMatches = false);
   }
 
-  Future<void> _fetchMatchesPage({required int page, bool append = true}) async {
+  Future<void> _fetchMatchesPage(
+      {required int page, bool append = true}) async {
     if (_isLoadingMore) return;
     setState(() => _isLoadingMore = true);
     try {
@@ -122,19 +124,27 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         final data = jsonDecode(res.body) as Map<String, dynamic>;
         if (data['status'] == true) {
           final matchesData = data['data']['matches'] as List<dynamic>;
-          final matches = matchesData.map((m) => ChallengeMatch.fromJson(m)).toList();
-          final pagination = data['data']['pagination'] as Map<String, dynamic>?;
-          final lastPage = pagination?['lastPage'] ?? pagination?['total_pages'] ?? 1;
+          final matches =
+              matchesData.map((m) => ChallengeMatch.fromJson(m)).toList();
+          final pagination =
+              data['data']['pagination'] as Map<String, dynamic>?;
+          final lastPage =
+              pagination?['lastPage'] ?? pagination?['total_pages'] ?? 1;
           final currentPage = pagination?['currentPage'] ?? page;
           final nextPageUrl = pagination?['next_page_url'];
 
           setState(() {
-            _lastPage = lastPage is int ? lastPage : int.tryParse(lastPage.toString()) ?? 1;
-            _currentPage = currentPage is int ? currentPage : int.tryParse(currentPage.toString()) ?? page;
+            _lastPage = lastPage is int
+                ? lastPage
+                : int.tryParse(lastPage.toString()) ?? 1;
+            _currentPage = currentPage is int
+                ? currentPage
+                : int.tryParse(currentPage.toString()) ?? page;
             if (append) {
               // Avoid duplicates
               final existingIds = _matches.map((m) => m.id).toSet();
-              _matches.addAll(matches.where((m) => !existingIds.contains(m.id)));
+              _matches
+                  .addAll(matches.where((m) => !existingIds.contains(m.id)));
             } else {
               _matches = matches;
             }
@@ -376,7 +386,6 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         _isRefreshingMatches = false;
       }
     }();
-
   }
 
   /// Builds the card displaying a completed challenge summary.
@@ -806,10 +815,11 @@ class _ChallengesScreenState extends State<ChallengesScreen>
       ],
     );
   }
+
   /// Builds a card explaining how challenges work.
   Widget _buildHowChallengesWorkCard() {
     const infoColor = Color(0xFF17A2B8);
-    
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -1477,8 +1487,11 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                       onNotification: (scrollInfo) {
                         if (scrollInfo.metrics.pixels >=
                             scrollInfo.metrics.maxScrollExtent - 200) {
-                          if (_hasMorePages && !_isLoadingMore && !_loadingMatches) {
-                            _fetchMatchesPage(page: _currentPage + 1, append: true);
+                          if (_hasMorePages &&
+                              !_isLoadingMore &&
+                              !_loadingMatches) {
+                            _fetchMatchesPage(
+                                page: _currentPage + 1, append: true);
                           }
                         }
                         return false;
@@ -1492,18 +1505,22 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                           }
                           if (index == _matches.length + 1) {
                             if (_loadingMatches) {
-                              return const Center(child: CircularProgressIndicator());
+                              return const Center(
+                                  child: CircularProgressIndicator());
                             } else if (_matchesError != null) {
                               return Center(child: Text(_matchesError!));
                             } else if (_isLoadingMore) {
                               return const Padding(
                                 padding: EdgeInsets.symmetric(vertical: 16),
-                                child: Center(child: CircularProgressIndicator()),
+                                child:
+                                    Center(child: CircularProgressIndicator()),
                               );
                             } else if (!_hasMorePages) {
                               return const Padding(
                                 padding: EdgeInsets.symmetric(vertical: 16),
-                                child: Center(child: Text('لا توجد مباريات أخرى للعرض')), // No more matches
+                                child: Center(
+                                    child: Text(
+                                        'لا توجد مباريات أخرى للعرض')), // No more matches
                               );
                             } else {
                               return const SizedBox.shrink();
@@ -1897,146 +1914,230 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        bool isCompetitive = false; // Default value for the toggle
+
         return Directionality(
           textDirection: TextDirection.rtl,
-          child: AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            title: Text(
-              LocaleKeys.challenge_reserve_title.tr(),
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF23425F),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Match details
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF8F9FA),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFFE9ECEF)),
-                  ),
-                  child: Column(
-                    children: [
-                      const Text(
-                        'تفاصيل المباراة',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Color(0xFF23425F),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          const Icon(Icons.location_on,
-                              color: Color(0xFF6C757D), size: 20),
-                          const SizedBox(width: 8),
-                          Text('الملعب: $playground'),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const Icon(Icons.calendar_today,
-                              color: Color(0xFF6C757D), size: 20),
-                          const SizedBox(width: 8),
-                          Text('التاريخ: $date'),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const Icon(Icons.access_time,
-                              color: Color(0xFF6C757D), size: 20),
-                          const SizedBox(width: 8),
-                          Text('الوقت: $startTime'),
-                        ],
-                      ),
-                    ],
-                  ),
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                const SizedBox(height: 20),
-                // User's team information
-                const Text(
-                  'فريقك',
-                  style: TextStyle(
+                title: Text(
+                  LocaleKeys.challenge_reserve_title.tr(),
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
                     color: Color(0xFF23425F),
                   ),
+                  textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    CircleAvatar(
-                      radius: 25,
-                      backgroundImage: _getTeamLogoImage(userTeamLogo),
+                    // Match details
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8F9FA),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: const Color(0xFFE9ECEF)),
+                      ),
+                      child: Column(
+                        children: [
+                          const Text(
+                            'تفاصيل المباراة',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Color(0xFF23425F),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              const Icon(Icons.location_on,
+                                  color: Color(0xFF6C757D), size: 20),
+                              const SizedBox(width: 8),
+                              Text('الملعب: $playground'),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              const Icon(Icons.calendar_today,
+                                  color: Color(0xFF6C757D), size: 20),
+                              const SizedBox(width: 8),
+                              Text('التاريخ: $date'),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              const Icon(Icons.access_time,
+                                  color: Color(0xFF6C757D), size: 20),
+                              const SizedBox(width: 8),
+                              Text('الوقت: $startTime'),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(width: 12),
-                    Text(
-                      userTeamName,
-                      style: const TextStyle(
+                    const SizedBox(height: 20),
+                    // User's team information
+                    const Text(
+                      'فريقك',
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                        fontSize: 16,
+                        color: Color(0xFF23425F),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: 25,
+                          backgroundImage: _getTeamLogoImage(userTeamLogo),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          userTeamName,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    // Competitive toggle
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8F9FA),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: const Color(0xFFE9ECEF)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              LocaleKeys.challenge_competitive_match.tr(),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Color(0xFF23425F),
+                              ),
+                            ),
+                          ),
+                          Switch(
+                            value: isCompetitive,
+                            onChanged: (value) {
+                              setState(() {
+                                isCompetitive = value;
+                              });
+                            },
+                            activeColor: const Color(0xFF23425F),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    // Competitive description
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: isCompetitive
+                            ? const Color(0xFFE6F4EA)
+                            : const Color(0xFFF8F9FA),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                            color: isCompetitive
+                                ? const Color(0xFF28A745)
+                                : const Color(0xFFE9ECEF)),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            isCompetitive
+                                ? Icons.emoji_events
+                                : Icons.sports_soccer,
+                            color: isCompetitive
+                                ? const Color(0xFF28A745)
+                                : const Color(0xFF6C757D),
+                            size: 16,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              isCompetitive
+                                  ? LocaleKeys.challenge_competitive_description
+                                      .tr()
+                                  : LocaleKeys.challenge_friendly_description
+                                      .tr(),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: isCompetitive
+                                    ? const Color(0xFF28A745)
+                                    : const Color(0xFF6C757D),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    // Confirmation message
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFF3CD),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: const Color(0xFFFFEAA7)),
+                      ),
+                      child: Text(
+                        LocaleKeys.challenge_reserve_confirm.tr(),
+                        style: const TextStyle(
+                          color: Color(0xFF856404),
+                          fontSize: 14,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
-                // Confirmation message
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFF3CD),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: const Color(0xFFFFEAA7)),
-                  ),
-                  child: Text(
-                    LocaleKeys.challenge_reserve_confirm.tr(),
-                    style: const TextStyle(
-                      color: Color(0xFF856404),
-                      fontSize: 14,
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text(
+                      'إلغاء',
+                      style: TextStyle(color: Color(0xFF6C757D)),
                     ),
-                    textAlign: TextAlign.center,
                   ),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text(
-                  'إلغاء',
-                  style: TextStyle(color: Color(0xFF6C757D)),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  print(
-                      '✅ DEBUG: User confirmed reservation - proceeding to book match');
-                  Navigator.of(context).pop();
-                  _sendReserveRequest(match);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF23425F),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                  ElevatedButton(
+                    onPressed: () {
+                      print(
+                          '✅ DEBUG: User confirmed reservation - proceeding to book match (competitive: $isCompetitive)');
+                      Navigator.of(context).pop();
+                      _sendReserveRequest(match, isCompetitive: isCompetitive);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF23425F),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      'تأكيد الحجز',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
-                ),
-                child: const Text(
-                  'تأكيد الحجز',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
+                ],
+              );
+            },
           ),
         );
       },
@@ -2044,7 +2145,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   }
 
   /// Sends a reserve match request to the API
-  Future<void> _sendReserveRequest(ChallengeMatch? match) async {
+  Future<void> _sendReserveRequest(ChallengeMatch? match,
+      {bool isCompetitive = false}) async {
     if (match == null || _userTeams.isEmpty) {
       print(
           '🔍 DEBUG: Cannot send reserve request - match is null or user has no teams');
@@ -2056,7 +2158,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     final requestUrl = '${ConstKeys.baseUrl}/challenge/book-match';
 
     print('🚀 DEBUG: Sending reserve request to: $requestUrl');
-    print('📤 DEBUG: Request body: {team_id: $teamId, match_id: $matchId}');
+    print(
+        '📤 DEBUG: Request body: {team_id: $teamId, match_id: $matchId, is_competitive: ${isCompetitive ? 1 : 0}}');
     print('🔑 DEBUG: Authorization header: Bearer ${Utils.token}');
 
     // Show loading indicator
@@ -2081,6 +2184,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         body: jsonEncode({
           'team_id': teamId,
           'match_id': matchId,
+          'is_competitive': isCompetitive ? 1 : 0,
         }),
       );
 
@@ -2126,4 +2230,4 @@ class _ChallengesScreenState extends State<ChallengesScreen>
       );
     }
   }
-    }
+}
