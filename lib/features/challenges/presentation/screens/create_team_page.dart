@@ -39,6 +39,43 @@ class CreateTeamPage extends StatefulWidget {
 }
 
 class _CreateTeamPageState extends State<CreateTeamPage> {
+  void _scrollToFirstError() {
+    // Scroll to the first error field (team name, coach, assistant, etc.)
+    Future.delayed(Duration(milliseconds: 100), () {
+      if (_teamNameError != null && _teamNameKey.currentContext != null) {
+        Scrollable.ensureVisible(_teamNameKey.currentContext!, duration: Duration(milliseconds: 400), alignment: 0.3);
+        return;
+      }
+      if (_coachNameError != null && _coachNameKey.currentContext != null) {
+        Scrollable.ensureVisible(_coachNameKey.currentContext!, duration: Duration(milliseconds: 400), alignment: 0.3);
+        return;
+      }
+      if (_coachPhoneError != null && _coachPhoneKey.currentContext != null) {
+        Scrollable.ensureVisible(_coachPhoneKey.currentContext!, duration: Duration(milliseconds: 400), alignment: 0.3);
+        return;
+      }
+      if (_assistantNameError != null && _assistantNameKey.currentContext != null) {
+        Scrollable.ensureVisible(_assistantNameKey.currentContext!, duration: Duration(milliseconds: 400), alignment: 0.3);
+        return;
+      }
+      if (_assistantPhoneError != null && _assistantPhoneKey.currentContext != null) {
+        Scrollable.ensureVisible(_assistantPhoneKey.currentContext!, duration: Duration(milliseconds: 400), alignment: 0.3);
+        return;
+      }
+      for (int i = 0; i < _playerNameErrors.length; i++) {
+        if (_playerNameErrors[i] != null && _playerNameKeys.length > i && _playerNameKeys[i].currentContext != null) {
+          Scrollable.ensureVisible(_playerNameKeys[i].currentContext!, duration: Duration(milliseconds: 400), alignment: 0.3);
+          return;
+        }
+      }
+      for (int i = 0; i < _playerPhoneErrors.length; i++) {
+        if (_playerPhoneErrors[i] != null && _playerPhoneKeys.length > i && _playerPhoneKeys[i].currentContext != null) {
+          Scrollable.ensureVisible(_playerPhoneKeys[i].currentContext!, duration: Duration(milliseconds: 400), alignment: 0.3);
+          return;
+        }
+      }
+    });
+  }
   File? _logo;
   bool _inviteEnabled = false;
   final Set<String> _selectedPlatforms = {};
@@ -62,7 +99,24 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
     TextEditingController(),
     TextEditingController(),
   ];
+  // Error state for each field
+  String? _teamNameError;
+  String? _coachNameError;
+  String? _coachPhoneError;
+  String? _assistantNameError;
+  String? _assistantPhoneError;
+  List<String?> _playerPhoneErrors = [null, null];
+  List<String?> _playerNameErrors = [null, null];
 
+  // Keys for scrolling
+  final _scrollController = ScrollController();
+  final _teamNameKey = GlobalKey();
+  final _coachNameKey = GlobalKey();
+  final _coachPhoneKey = GlobalKey();
+  final _assistantNameKey = GlobalKey();
+  final _assistantPhoneKey = GlobalKey();
+  final List<GlobalKey> _playerPhoneKeys = [GlobalKey(), GlobalKey()];
+  final List<GlobalKey> _playerNameKeys = [GlobalKey(), GlobalKey()];
   @override
   void initState() {
     super.initState();
@@ -121,7 +175,22 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
   /// Handles the multi-step create team flow as described in the docs.
   Future<void> _submitForm() async {
     if (_isSubmitting) return;
-    setState(() => _isSubmitting = true);
+    setState(() {
+      _isSubmitting = true;
+      // Reset all errors
+      _teamNameError = null;
+      _coachNameError = null;
+      _coachPhoneError = null;
+      _assistantNameError = null;
+      _assistantPhoneError = null;
+      for (int i = 0; i < _playerPhoneErrors.length; i++) {
+        _playerPhoneErrors[i] = null;
+      }
+      for (int i = 0; i < _playerNameErrors.length; i++) {
+        _playerNameErrors[i] = null;
+      }
+    });
+    
     try {
       // Only require captain and subleader
       final captainName = _coachNameController.text.trim();
@@ -132,38 +201,47 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
 
       // --- VALIDATION & CHECKS FIRST ---
       // 1. Local validation
+      bool hasError = false;
+      
       if (teamName.isEmpty) {
-        await _showError('يرجى إدخال اسم الفريق.');
-        setState(() => _isSubmitting = false);
-        return;
+        _teamNameError = 'يرجى إدخال اسم الفريق';
+        hasError = true;
       }
-      if (captainName.isEmpty || captainPhone.isEmpty) {
-        await _showError('يرجى إدخال بيانات الكابتن (الاسم ورقم الجوال).');
-        setState(() => _isSubmitting = false);
-        return;
+      if (captainName.isEmpty) {
+        _coachNameError = 'يرجى إدخال اسم الكابتن';
+        hasError = true;
       }
-      if (subName.isEmpty || subPhone.isEmpty) {
-        await _showError('يرجى إدخال بيانات المساعد (الاسم ورقم الجوال).');
-        setState(() => _isSubmitting = false);
-        return;
+      if (captainPhone.isEmpty) {
+        _coachPhoneError = 'يرجى إدخال رقم جوال الكابتن';
+        hasError = true;
       }
-      // Validate phone formats
-      if (!(Validation.isValidSaudiPhoneNumber(captainPhone) ?? false)) {
-        await _showError(
-            'رقم جوال الكابتن غير صالح. يجب أن يبدأ بـ 0 ويتكون من 10 أرقام.');
-        setState(() => _isSubmitting = false);
-        return;
+      if (subName.isEmpty) {
+        _assistantNameError = 'يرجى إدخال اسم المساعد';
+        hasError = true;
       }
-      if (!(Validation.isValidSaudiPhoneNumber(subPhone) ?? false)) {
-        await _showError(
-            'رقم جوال المساعد غير صالح. يجب أن يبدأ بـ 0 ويتكون من 10 أرقام.');
-        setState(() => _isSubmitting = false);
-        return;
+      if (subPhone.isEmpty) {
+        _assistantPhoneError = 'يرجى إدخال رقم جوال المساعد';
+        hasError = true;
       }
-      if (captainPhone == subPhone) {
-        await _showError(
-            'رقم جوال الكابتن والمساعد متطابقان. يرجى إدخال رقمين مختلفين.');
+      
+      // Validate phone formats only if they're not empty
+      if (!hasError && captainPhone.isNotEmpty && !(Validation.isValidSaudiPhoneNumber(captainPhone) ?? false)) {
+        _coachPhoneError = 'رقم جوال الكابتن غير صالح. يجب أن يبدأ بـ 0 ويتكون من 10 أرقام';
+        hasError = true;
+      }
+      if (!hasError && subPhone.isNotEmpty && !(Validation.isValidSaudiPhoneNumber(subPhone) ?? false)) {
+        _assistantPhoneError = 'رقم جوال المساعد غير صالح. يجب أن يبدأ بـ 0 ويتكون من 10 أرقام';
+        hasError = true;
+      }
+      if (!hasError && captainPhone.isNotEmpty && subPhone.isNotEmpty && captainPhone == subPhone) {
+        _coachPhoneError = 'رقم جوال الكابتن والمساعد متطابقان. يرجى إدخال رقمين مختلفين';
+        _assistantPhoneError = 'رقم جوال الكابتن والمساعد متطابقان. يرجى إدخال رقمين مختلفين';
+        hasError = true;
+      }
+      
+      if (hasError) {
         setState(() => _isSubmitting = false);
+        _scrollToFirstError();
         return;
       }
 
@@ -178,15 +256,17 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
       );
       final allTeamsData = jsonDecode(allTeamsRes.body);
       if (allTeamsRes.statusCode >= 400 || allTeamsData['status'] != true) {
-        await _showError('تعذر التحقق من أسماء الفرق.');
+        _teamNameError = 'تعذر التحقق من أسماء الفرق';
         setState(() => _isSubmitting = false);
+        _scrollToFirstError();
         return;
       }
       final List<dynamic> teams = allTeamsData['data'] ?? [];
       final teamNames = teams.map((t) => t['name'].toString().trim()).toSet();
       if (teamNames.contains(teamName)) {
-        await _showError('اسم الفريق مستخدم بالفعل. يرجى اختيار اسم آخر.');
+        _teamNameError = 'اسم الفريق مستخدم بالفعل. يرجى اختيار اسم آخر';
         setState(() => _isSubmitting = false);
+        _scrollToFirstError();
         return;
       }
 
@@ -211,9 +291,9 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
         }
       }
       if (subleaderInTeam) {
-        await _showError(
-            'المساعد بالفعل عضو في فريق آخر. يرجى اختيار مساعد آخر.');
+        _assistantPhoneError = 'المساعد بالفعل عضو في فريق آخر. يرجى اختيار مساعد آخر';
         setState(() => _isSubmitting = false);
+        _scrollToFirstError();
         return;
       }
 
@@ -233,13 +313,15 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
       }
 
       if (!await isPhoneRegistered(captainPhone)) {
-        await _showError('رقم جوال الكابتن غير مسجل في النظام.');
+        _coachPhoneError = 'رقم جوال الكابتن غير مسجل في النظام';
         setState(() => _isSubmitting = false);
+        _scrollToFirstError();
         return;
       }
       if (!await isPhoneRegistered(subPhone)) {
-        await _showError('رقم جوال المساعد غير مسجل في النظام.');
+        _assistantPhoneError = 'رقم جوال المساعد غير مسجل في النظام';
         setState(() => _isSubmitting = false);
+        _scrollToFirstError();
         return;
       }
 
@@ -263,8 +345,9 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
       final res = await http.Response.fromStream(streamed);
       final data = jsonDecode(res.body);
       if (res.statusCode >= 400 || data['status'] != true) {
-        await _showError(data['message'] ?? 'خطأ غير متوقع');
+        _teamNameError = data['message'] ?? 'خطأ غير متوقع';
         setState(() => _isSubmitting = false);
+        _scrollToFirstError();
         return;
       }
       final dynamic teamIdRaw = data['data']['id'];
@@ -296,8 +379,9 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
             },
           );
         } catch (_) {}
-        await _showError(subData['message'] ?? 'خطأ في إضافة المساعد كعضو.');
+        _assistantPhoneError = subData['message'] ?? 'خطأ في إضافة المساعد كعضو';
         setState(() => _isSubmitting = false);
+        _scrollToFirstError();
         return;
       } else {
         addedPhones.add(subPhone);
@@ -350,9 +434,9 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
               },
             );
           } catch (_) {}
-          await _showError(
-              memberData['message'] ?? 'خطأ في إضافة العضو ذو الرقم $phone');
+          _teamNameError = memberData['message'] ?? 'خطأ في إضافة العضو ذو الرقم $phone';
           setState(() => _isSubmitting = false);
+          _scrollToFirstError();
           return;
         } else {
           addedPhones.add(phone);
@@ -400,8 +484,9 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
             },
           );
         } catch (_) {}
-        await _showError(roleData['message'] ?? 'تعذر تعيين الدور للمساعد.');
+        _assistantPhoneError = roleData['message'] ?? 'تعذر تعيين الدور للمساعد';
         setState(() => _isSubmitting = false);
+        _scrollToFirstError();
         return;
       }
       if (!mounted) return;
@@ -414,27 +499,14 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
         arguments: 2, // Navigate to challenges tab (index 2)
       );
     } catch (e) {
-      await _showError(e.toString());
+      _teamNameError = e.toString();
+      setState(() => _isSubmitting = false);
+      _scrollToFirstError();
     } finally {
       if (mounted) {
         setState(() => _isSubmitting = false);
       }
     }
-  }
-
-  Future<void> _showError(String message) async {
-    return showDialog<void>(
-      context: context,
-      builder: (_) => AlertDialog(
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
   }
 
   /// Shows a dialog to choose between camera and gallery for logo selection.
@@ -464,6 +536,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
   Widget _buildPlayerCard(int index, TextEditingController phoneController,
       TextEditingController nameController) {
     const darkBlue = Color(0xFF23425F);
+    final arrayIndex = index - 1; // Convert 1-based index to 0-based
     return Stack(
       children: [
         Container(
@@ -500,6 +573,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
               ),
               const SizedBox(height: 12),
               TextFormField(
+                key: _playerNameKeys.length > arrayIndex ? _playerNameKeys[arrayIndex] : null,
                 controller: nameController,
                 enabled: !_isSubmitting,
                 decoration: InputDecoration(
@@ -509,6 +583,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
+                  errorText: _playerNameErrors.length > arrayIndex ? _playerNameErrors[arrayIndex] : null,
                 ),
               ),
               const SizedBox(height: 12),
@@ -524,6 +599,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
               ),
               const SizedBox(height: 12),
               TextFormField(
+                key: _playerPhoneKeys.length > arrayIndex ? _playerPhoneKeys[arrayIndex] : null,
                 controller: phoneController,
                 enabled: !_isSubmitting,
                 decoration: InputDecoration(
@@ -533,6 +609,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
+                  errorText: _playerPhoneErrors.length > arrayIndex ? _playerPhoneErrors[arrayIndex] : null,
                 ),
               ),
             ],
@@ -642,6 +719,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
+                      key: _teamNameKey,
                       controller: _teamNameController,
                       enabled: !_isSubmitting,
                       decoration: InputDecoration(
@@ -650,6 +728,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
+                        errorText: _teamNameError,
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -753,6 +832,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                               ),
                               const SizedBox(height: 8),
                               TextFormField(
+                                key: _coachNameKey,
                                 controller: _coachNameController,
                                 readOnly: true,
                                 decoration: InputDecoration(
@@ -761,10 +841,12 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),
+                                  errorText: _coachNameError,
                                 ),
                               ),
                               const SizedBox(height: 12),
                               TextFormField(
+                                key: _coachPhoneKey,
                                 controller: _coachPhoneController,
                                 readOnly: true,
                                 decoration: InputDecoration(
@@ -773,6 +855,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),
+                                  errorText: _coachPhoneError,
                                 ),
                               ),
                             ],
@@ -812,6 +895,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                               ),
                               const SizedBox(height: 8),
                               TextFormField(
+                                key: _assistantNameKey,
                                 controller: _assistantNameController,
                                 enabled: !_isSubmitting,
                                 decoration: InputDecoration(
@@ -821,10 +905,12 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),
+                                  errorText: _assistantNameError,
                                 ),
                               ),
                               const SizedBox(height: 12),
                               TextFormField(
+                                key: _assistantPhoneKey,
                                 controller: _assistantPhoneController,
                                 enabled: !_isSubmitting,
                                 decoration: InputDecoration(
@@ -835,6 +921,7 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),
+                                  errorText: _assistantPhoneError,
                                 ),
                               ),
                             ],
@@ -907,6 +994,10 @@ class _CreateTeamPageState extends State<CreateTeamPage> {
                                       .add(TextEditingController());
                                   _playerNameControllers
                                       .add(TextEditingController());
+                                  _playerPhoneErrors.add(null);
+                                  _playerNameErrors.add(null);
+                                  _playerPhoneKeys.add(GlobalKey());
+                                  _playerNameKeys.add(GlobalKey());
                                 });
                               },
                         icon: const Icon(Icons.add, color: darkBlue),
