@@ -1903,6 +1903,43 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     }
   }
 
+  /// Fetches team members for a specific team
+  Future<List<Map<String, dynamic>>> _fetchTeamMembers(int teamId) async {
+    try {
+      print('🔍 DEBUG: Fetching members for team $teamId');
+      final res = await http.get(
+        Uri.parse('${ConstKeys.baseUrl}/team/show/$teamId'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Utils.token}',
+        },
+      );
+
+      print('📥 DEBUG: Team members response status: ${res.statusCode}');
+
+      if (res.statusCode < 400) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        if (data['status'] == true) {
+          final team = data['data'] as Map<String, dynamic>;
+          final users = team['users'] as List<dynamic>? ?? [];
+          
+          print('👥 DEBUG: Found ${users.length} team members');
+          
+          // Convert to List<Map<String, dynamic>> and filter out nulls
+          final members = users
+              .where((u) => u is Map<String, dynamic>)
+              .map((u) => u as Map<String, dynamic>)
+              .toList();
+          
+          return members;
+        }
+      }
+    } catch (e) {
+      print('💥 DEBUG: Error fetching team members: $e');
+    }
+    return [];
+  }
+
   /// Shows a dialog to confirm match reservation
   Future<void> _showReserveMatchDialog(ChallengeMatch? match) async {
     print('🔍 DEBUG: Showing reserve match dialog');
@@ -1953,6 +1990,20 @@ class _ChallengesScreenState extends State<ChallengesScreen>
 
     print('✅ DEBUG: User is captain with ${_userTeams.length} team(s)');
 
+    // Fetch team members before showing dialog
+    final teamId = _userTeams[0]['id'] as int;
+    final teamMembers = await _fetchTeamMembers(teamId);
+    
+    if (teamMembers.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('لا يوجد أعضاء في الفريق'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     final playground = match?.playground ?? '';
     final date = match?.date ?? '';
     final startTime = match?.startTime ?? '';
@@ -1963,11 +2014,15 @@ class _ChallengesScreenState extends State<ChallengesScreen>
       context: context,
       builder: (BuildContext context) {
         bool isCompetitive = false; // Default value for the toggle
+        Set<int> selectedPlayerIds = {}; // Track selected player IDs
 
         return Directionality(
           textDirection: TextDirection.rtl,
           child: StatefulBuilder(
             builder: (context, setState) {
+              // Validation: Check if at least 10 players are selected
+              final bool canSubmit = selectedPlayerIds.length >= 10;
+              
               return AlertDialog(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -1980,9 +2035,12 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                   ),
                   textAlign: TextAlign.center,
                 ),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
+                content: SizedBox(
+                  width: double.maxFinite,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
                     // Match details
                     Container(
                       padding: const EdgeInsets.all(16),
@@ -2138,6 +2196,104 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                       ),
                     ),
                     const SizedBox(height: 20),
+                    // Player Selection Section
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8F9FA),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: const Color(0xFFE9ECEF)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                'اختر اللاعبين للمباراة',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Color(0xFF23425F),
+                                ),
+                              ),
+                              Text(
+                                '${selectedPlayerIds.length}/10',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                  color: selectedPlayerIds.length >= 10
+                                      ? const Color(0xFF28A745)
+                                      : const Color(0xFFDC3545),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'يجب اختيار 10 لاعبين على الأقل',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: selectedPlayerIds.length >= 10
+                                  ? const Color(0xFF28A745)
+                                  : const Color(0xFFDC3545),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          // Players list with checkboxes
+                          Container(
+                            constraints: const BoxConstraints(maxHeight: 300),
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: teamMembers.length,
+                              itemBuilder: (context, index) {
+                                final member = teamMembers[index];
+                                final memberId = member['id'] as int?;
+                                final memberName = member['name'] as String? ?? 'لا يوجد اسم';
+                                final memberPhone = (member['mobile'] ?? member['phone'] ?? 'لا يوجد رقم') as String;
+                                
+                                if (memberId == null) return const SizedBox.shrink();
+                                
+                                final isSelected = selectedPlayerIds.contains(memberId);
+                                
+                                return CheckboxListTile(
+                                  dense: true,
+                                  contentPadding: EdgeInsets.zero,
+                                  controlAffinity: ListTileControlAffinity.leading,
+                                  value: isSelected,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      if (value == true) {
+                                        selectedPlayerIds.add(memberId);
+                                      } else {
+                                        selectedPlayerIds.remove(memberId);
+                                      }
+                                    });
+                                  },
+                                  title: Text(
+                                    memberName,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    memberPhone,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                  activeColor: const Color(0xFF23425F),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     // Confirmation message
                     Container(
                       padding: const EdgeInsets.all(12),
@@ -2155,7 +2311,9 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                         textAlign: TextAlign.center,
                       ),
                     ),
-                  ],
+                    ],
+                  ),
+                  ),
                 ),
                 actions: [
                   TextButton(
@@ -2166,14 +2324,31 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      print(
-                          '✅ DEBUG: User confirmed reservation - proceeding to book match (competitive: $isCompetitive)');
-                      Navigator.of(context).pop();
-                      _sendReserveRequest(match, isCompetitive: isCompetitive);
-                    },
+                    onPressed: canSubmit
+                        ? () {
+                            if (selectedPlayerIds.length < 10) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('يجب اختيار 10 لاعبين على الأقل'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                              return;
+                            }
+                            print(
+                                '✅ DEBUG: User confirmed reservation - proceeding to book match (competitive: $isCompetitive, players: ${selectedPlayerIds.length})');
+                            Navigator.of(context).pop();
+                            _sendReserveRequest(
+                              match,
+                              isCompetitive: isCompetitive,
+                              playerIds: selectedPlayerIds.toList(),
+                            );
+                          }
+                        : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF23425F),
+                      backgroundColor: canSubmit
+                          ? const Color(0xFF23425F)
+                          : Colors.grey,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -2193,8 +2368,11 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   }
 
   /// Sends a reserve match request to the API
-  Future<void> _sendReserveRequest(ChallengeMatch? match,
-      {bool isCompetitive = false}) async {
+  Future<void> _sendReserveRequest(
+    ChallengeMatch? match, {
+    bool isCompetitive = false,
+    List<int>? playerIds,
+  }) async {
     if (match == null || _userTeams.isEmpty) {
       print(
           '🔍 DEBUG: Cannot send reserve request - match is null or user has no teams');
@@ -2207,7 +2385,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
 
     print('🚀 DEBUG: Sending reserve request to: $requestUrl');
     print(
-        '📤 DEBUG: Request body: {team_id: $teamId, match_id: $matchId, is_competitive: ${isCompetitive ? 1 : 0}}');
+        '📤 DEBUG: Request body: {team_id: $teamId, match_id: $matchId, is_competitive: ${isCompetitive ? 1 : 0}, players: $playerIds}');
     print('🔑 DEBUG: Authorization header: Bearer ${Utils.token}');
 
     // Show loading indicator
@@ -2222,6 +2400,17 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     );
 
     try {
+      final requestBody = <String, dynamic>{
+        'team_id': teamId,
+        'match_id': matchId,
+        'is_competitive': isCompetitive ? 1 : 0,
+      };
+      
+      // Add players array if provided
+      if (playerIds != null && playerIds.isNotEmpty) {
+        requestBody['players'] = playerIds;
+      }
+      
       final response = await http.post(
         Uri.parse(requestUrl),
         headers: {
@@ -2229,11 +2418,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${Utils.token}',
         },
-        body: jsonEncode({
-          'team_id': teamId,
-          'match_id': matchId,
-          'is_competitive': isCompetitive ? 1 : 0,
-        }),
+        body: jsonEncode(requestBody),
       );
 
       print('📥 DEBUG: Response status code: ${response.statusCode}');
