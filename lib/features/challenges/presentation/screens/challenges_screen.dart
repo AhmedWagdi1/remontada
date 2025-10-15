@@ -2385,7 +2385,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
 
     print('🚀 DEBUG: Sending reserve request to: $requestUrl');
     print(
-        '📤 DEBUG: Request body: {team_id: $teamId, match_id: $matchId, is_competitive: ${isCompetitive ? 1 : 0}, players: $playerIds}');
+        '📤 DEBUG: Request body: {team_id: $teamId, match_id: $matchId, is_competitive: $isCompetitive, players: $playerIds}');
     print('🔑 DEBUG: Authorization header: Bearer ${Utils.token}');
 
     // Show loading indicator
@@ -2403,7 +2403,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
       final requestBody = <String, dynamic>{
         'team_id': teamId,
         'match_id': matchId,
-        'is_competitive': isCompetitive ? 1 : 0,
+        'is_competitive': isCompetitive,
       };
       
       // Add players array if provided
