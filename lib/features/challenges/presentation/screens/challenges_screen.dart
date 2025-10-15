@@ -1657,7 +1657,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   }
 
   /// Shows a custom dialog for joining a challenge
-  void _showJoinChallengeDialog(ChallengeMatch? match) {
+  Future<void> _showJoinChallengeDialog(ChallengeMatch? match) async {
     print('🔍 DEBUG: Showing join challenge dialog');
     print(
         '📋 DEBUG: Match ID: ${match?.id}, Playground: ${match?.playground}, Date: ${match?.date}');
@@ -1683,153 +1683,277 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     final date = match?.date ?? '';
     final startTime = match?.startTime ?? '';
 
-    print(
-        '🏟️ DEBUG: Challenge details - Playground: $playground, Date: $date, Time: $startTime');
-    print('👥 DEBUG: Opposing team: $team1Name');
+    // Fetch team members for player selection
+    final teamId = _userTeams[0]['id'] as int;
+    final teamMembers = await _fetchTeamMembers(teamId);
+    if (teamMembers.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('لا يوجد أعضاء في الفريق'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        Set<int> selectedPlayerIds = {};
         return Directionality(
           textDirection: TextDirection.rtl,
-          child: AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            title: const Text(
-              'طلب الانضمام للتحدي',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF23425F),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Challenge details
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF8F9FA),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFFE9ECEF)),
-                  ),
-                  child: Column(
-                    children: [
-                      const Text(
-                        'تفاصيل التحدي',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Color(0xFF23425F),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          const Icon(Icons.location_on,
-                              color: Color(0xFF6C757D), size: 20),
-                          const SizedBox(width: 8),
-                          Text('الملعب: $playground'),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const Icon(Icons.calendar_today,
-                              color: Color(0xFF6C757D), size: 20),
-                          const SizedBox(width: 8),
-                          Text('التاريخ: $date'),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const Icon(Icons.access_time,
-                              color: Color(0xFF6C757D), size: 20),
-                          const SizedBox(width: 8),
-                          Text('الوقت: $startTime'),
-                        ],
-                      ),
-                    ],
-                  ),
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              final bool canSubmit = selectedPlayerIds.length >= 10;
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                const SizedBox(height: 20),
-                // Team information
-                const Text(
-                  'الفريق الخصم',
+                title: const Text(
+                  'طلب الانضمام للتحدي',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
                     color: Color(0xFF23425F),
                   ),
+                  textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 25,
-                      backgroundImage: _getTeamLogoImage(team1Logo),
+                content: SizedBox(
+                  width: double.maxFinite,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Challenge details
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF8F9FA),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: const Color(0xFFE9ECEF)),
+                          ),
+                          child: Column(
+                            children: [
+                              const Text(
+                                'تفاصيل التحدي',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Color(0xFF23425F),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  const Icon(Icons.location_on,
+                                      color: Color(0xFF6C757D), size: 20),
+                                  const SizedBox(width: 8),
+                                  Text('الملعب: $playground'),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  const Icon(Icons.calendar_today,
+                                      color: Color(0xFF6C757D), size: 20),
+                                  const SizedBox(width: 8),
+                                  Text('التاريخ: $date'),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  const Icon(Icons.access_time,
+                                      color: Color(0xFF6C757D), size: 20),
+                                  const SizedBox(width: 8),
+                                  Text('الوقت: $startTime'),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        // Team information
+                        const Text(
+                          'الفريق الخصم',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color(0xFF23425F),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              radius: 25,
+                              backgroundImage: _getTeamLogoImage(team1Logo),
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              team1Name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        // Player Selection Section
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF8F9FA),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: const Color(0xFFE9ECEF)),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    'اختر اللاعبين للمباراة',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: Color(0xFF23425F),
+                                    ),
+                                  ),
+                                  Text(
+                                    '${selectedPlayerIds.length}/10',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      color: selectedPlayerIds.length >= 10
+                                          ? const Color(0xFF28A745)
+                                          : const Color(0xFFDC3545),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'يجب اختيار 10 لاعبين على الأقل',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: selectedPlayerIds.length >= 10
+                                      ? const Color(0xFF28A745)
+                                      : const Color(0xFFDC3545),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Container(
+                                constraints: const BoxConstraints(maxHeight: 300),
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: teamMembers.length,
+                                  itemBuilder: (context, index) {
+                                    final member = teamMembers[index];
+                                    final memberId = member['id'] as int?;
+                                    final memberName = member['name'] as String? ?? 'لا يوجد اسم';
+                                    final memberPhone = (member['mobile'] ?? member['phone'] ?? 'لا يوجد رقم') as String;
+                                    if (memberId == null) return const SizedBox.shrink();
+                                    final isSelected = selectedPlayerIds.contains(memberId);
+                                    return CheckboxListTile(
+                                      dense: true,
+                                      contentPadding: EdgeInsets.zero,
+                                      controlAffinity: ListTileControlAffinity.leading,
+                                      value: isSelected,
+                                      onChanged: (bool? value) {
+                                        setState(() {
+                                          if (value == true) {
+                                            selectedPlayerIds.add(memberId);
+                                          } else {
+                                            selectedPlayerIds.remove(memberId);
+                                          }
+                                        });
+                                      },
+                                      title: Text(
+                                        memberName,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        memberPhone,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                      activeColor: const Color(0xFF23425F),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        // Confirmation message
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFF3CD),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: const Color(0xFFFFEAA7)),
+                          ),
+                          child: const Text(
+                            'هل أنت متأكد من إرسال طلب الانضمام لهذا التحدي؟ سيتم إرسال الطلب إلى فريق الخصم للموافقة.',
+                            style: TextStyle(
+                              color: Color(0xFF856404),
+                              fontSize: 14,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 12),
-                    Text(
-                      team1Name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text(
+                      'إلغاء',
+                      style: TextStyle(color: Color(0xFF6C757D)),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: canSubmit
+                        ? () {
+                            if (selectedPlayerIds.length < 10) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('يجب اختيار 10 لاعبين على الأقل'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                              return;
+                            }
+                            print('✅ DEBUG: User confirmed join request - proceeding to send API call');
+                            Navigator.of(context).pop();
+                            _sendJoinRequest(match, playerIds: selectedPlayerIds.toList());
+                          }
+                        : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: canSubmit ? const Color(0xFF23425F) : Colors.grey,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                // Confirmation message
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFF3CD),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: const Color(0xFFFFEAA7)),
-                  ),
-                  child: const Text(
-                    'هل أنت متأكد من إرسال طلب الانضمام لهذا التحدي؟ سيتم إرسال الطلب إلى فريق الخصم للموافقة.',
-                    style: TextStyle(
-                      color: Color(0xFF856404),
-                      fontSize: 14,
+                    child: const Text(
+                      'إرسال الطلب',
+                      style: TextStyle(color: Colors.white),
                     ),
-                    textAlign: TextAlign.center,
                   ),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text(
-                  'إلغاء',
-                  style: TextStyle(color: Color(0xFF6C757D)),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  print(
-                      '✅ DEBUG: User confirmed join request - proceeding to send API call');
-                  Navigator.of(context).pop();
-                  _sendJoinRequest(match);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF23425F),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: const Text(
-                  'إرسال الطلب',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
+                ],
+              );
+            },
           ),
         );
       },
@@ -1837,10 +1961,9 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   }
 
   /// Sends a join request to the challenge API
-  Future<void> _sendJoinRequest(ChallengeMatch? match) async {
+  Future<void> _sendJoinRequest(ChallengeMatch? match, {List<int>? playerIds}) async {
     if (match == null || _userTeams.isEmpty) {
-      print(
-          '🔍 DEBUG: Cannot send join request - match is null or user has no teams');
+      print('🔍 DEBUG: Cannot send join request - match is null or user has no teams');
       return;
     }
 
@@ -1849,11 +1972,17 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     final requestUrl = '${ConstKeys.baseUrl}/challenge/send-team-match-request';
 
     print('🚀 DEBUG: Sending join request to: $requestUrl');
-    print(
-        '📤 DEBUG: Request body: {match_id: $matchId, invited_team_id: $invitedTeamId}');
+    print('📤 DEBUG: Request body: {match_id: $matchId, invited_team_id: $invitedTeamId, players: $playerIds}');
     print('🔑 DEBUG: Authorization header: Bearer ${Utils.token}');
 
     try {
+      final requestBody = <String, dynamic>{
+        'match_id': matchId,
+        'invited_team_id': invitedTeamId,
+      };
+      if (playerIds != null && playerIds.isNotEmpty) {
+        requestBody['players'] = playerIds;
+      }
       final response = await http.post(
         Uri.parse(requestUrl),
         headers: {
@@ -1861,10 +1990,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${Utils.token}',
         },
-        body: jsonEncode({
-          'match_id': matchId,
-          'invited_team_id': invitedTeamId,
-        }),
+        body: jsonEncode(requestBody),
       );
 
       print('📥 DEBUG: Response status code: ${response.statusCode}');
@@ -1876,18 +2002,15 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         print('✅ DEBUG: Join request sent successfully');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content:
-                Text(responseData['message'] ?? 'تم إرسال طلب الانضمام بنجاح'),
+            content: Text(responseData['message'] ?? 'تم إرسال طلب الانضمام بنجاح'),
             backgroundColor: Colors.green,
           ),
         );
       } else {
-        print(
-            '❌ DEBUG: Join request failed - Status: ${responseData['status']}, Message: ${responseData['message']}');
+        print('❌ DEBUG: Join request failed - Status: ${responseData['status']}, Message: ${responseData['message']}');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content:
-                Text(responseData['message'] ?? 'فشل في إرسال طلب الانضمام'),
+            content: Text(responseData['message'] ?? 'فشل في إرسال طلب الانضمام'),
             backgroundColor: Colors.red,
           ),
         );
