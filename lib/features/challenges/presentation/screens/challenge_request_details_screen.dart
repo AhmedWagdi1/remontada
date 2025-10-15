@@ -300,24 +300,24 @@ class _ChallengeRequestDetailsScreenState
         ),
         SizedBox(height: 12),
 
-        // From Team (Challenging Team)
-        _buildTeamCard(
-          LocaleKeys.challenges_challenging_team.tr(),
-          details.fromTeamName,
-          details.fromTeam,
-          Icons.arrow_upward,
-          context.primaryColor,
-        ),
-
-        SizedBox(height: 12),
-
-        // To Team (Your Team)
+        // To Team (Your Team) - The team receiving the challenge
         _buildTeamCard(
           LocaleKeys.challenges_your_team.tr(),
           details.toTeamName,
           details.toTeam,
           Icons.arrow_downward,
           Colors.green,
+        ),
+
+        SizedBox(height: 12),
+
+        // From Team (Challenging Team) - The team sending the challenge
+        _buildTeamCard(
+          LocaleKeys.challenges_challenging_team.tr(),
+          details.fromTeamName,
+          details.fromTeam,
+          Icons.arrow_upward,
+          context.primaryColor,
         ),
       ],
     );
