@@ -419,5 +419,40 @@ abstract class LocaleKeys {
   static const delete_failed_toast = 'delete.delete_failed_toast';
   static const delete_double_confirm_notice =
       'delete.delete_double_confirm_notice';
+  
+  // team role management
+  static const team_role_update_failed = 'team.role.update_failed';
+  static const team_role_unexpected_error = 'team.role.unexpected_error';
+  static const team_role_no_current_leader = 'team.role.no_current_leader';
+  static const team_role_assign_captain_title =
+      'team.role.assign_captain_title';
+  static const team_role_assign_captain_message =
+      'team.role.assign_captain_message';
+  static const team_role_assign_captain_success =
+      'team.role.assign_captain_success';
+  static const team_role_assign_assistant_title =
+      'team.role.assign_assistant_title';
+  static const team_role_assign_assistant_message_no_current =
+      'team.role.assign_assistant_message_no_current';
+  static const team_role_assign_assistant_message_replace =
+      'team.role.assign_assistant_message_replace';
+  static const team_role_assign_assistant_success =
+      'team.role.assign_assistant_success';
+  static const team_role_swap_roles_title = 'team.role.swap_roles_title';
+  static const team_role_swap_roles_message = 'team.role.swap_roles_message';
+  static const team_role_swap_roles_success = 'team.role.swap_roles_success';
+  static const team_role_change_to_member_title =
+      'team.role.change_to_member_title';
+  static const team_role_change_to_member_message =
+      'team.role.change_to_member_message';
+  static const team_role_menu_make_captain = 'team.role.menu_make_captain';
+  static const team_role_menu_make_assistant = 'team.role.menu_make_assistant';
+  static const team_role_menu_swap_with_captain =
+      'team.role.menu_swap_with_captain';
+  static const team_role_menu_make_member = 'team.role.menu_make_member';
+  static const team_role_confirm_assign = 'team.role.confirm_assign';
+  static const team_role_confirm = 'team.role.confirm';
+  static const team_role_update_toast = 'team.role.update_toast';
+  static const team_invites_title = 'team.invites_title';
   // end challenges
 }
