@@ -1,4 +1,4 @@
-import 'dart:convert';
+ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
@@ -93,6 +93,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
   String? _currentUserRole;
   List<dynamic> _invites = [];
   bool _isRemoving = false;
+  bool _isChangingRole = false;
 
   @override
   void initState() {
@@ -300,7 +301,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('طلبات التحديات'),
+  title: Text(LocaleKeys.team_invites_title.tr()),
         content: SizedBox(
           width: double.maxFinite,
           child: ListView.builder(
@@ -563,6 +564,402 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
     }
   }
 
+  /// Helper: current leader phone from loaded team data.
+  String? _currentLeaderPhone() {
+    print('🔍 DEBUG: _currentLeaderPhone called');
+    final users = (_teamData?['users'] as List<dynamic>?) ?? [];
+    print('🔍 DEBUG: Total users in team data = ${users.length}');
+    
+    for (final u in users) {
+      if (u is Map<String, dynamic>) {
+        final role = u['role'] as String?;
+        final mobile = u['mobile'] as String?;
+        final phone = u['phone'] as String?;
+        print('🔍 DEBUG: User: role="$role", mobile=$mobile, phone=$phone');
+        
+        if (role == 'leader') {
+          final leaderPhone = mobile ?? phone;
+          print('✅ DEBUG: Found leader with phone = $leaderPhone');
+          return leaderPhone;
+        }
+      }
+    }
+    print('❌ DEBUG: No leader found in team data');
+    return null;
+  }
+
+  /// Helper: current subLeader phone from loaded team data.
+  String? _currentSubLeaderPhone() {
+    print('🔍 DEBUG: _currentSubLeaderPhone called');
+    final users = (_teamData?['users'] as List<dynamic>?) ?? [];
+    print('🔍 DEBUG: Total users in team data = ${users.length}');
+    
+    for (final u in users) {
+      if (u is Map<String, dynamic>) {
+        final role = u['role'] as String?;
+        final mobile = u['mobile'] as String?;
+        final phone = u['phone'] as String?;
+        print('🔍 DEBUG: User: role="$role", mobile=$mobile, phone=$phone');
+        
+        if (role == 'subLeader') {
+          final subLeaderPhone = mobile ?? phone;
+          print('✅ DEBUG: Found subLeader with phone = $subLeaderPhone');
+          return subLeaderPhone;
+        }
+      }
+    }
+    print('❌ DEBUG: No subLeader found in team data');
+    return null;
+  }
+
+  /// Low-level POST to change a member's role.
+  Future<bool> _changeMemberRole({
+    required String phoneNumber,
+    required int teamId,
+    required String role,
+  }) async {
+    print('🔧 DEBUG: _changeMemberRole called');
+    print('🔧 DEBUG: phoneNumber = $phoneNumber');
+    print('🔧 DEBUG: teamId = $teamId');
+    print('🔧 DEBUG: role = "$role" (length: ${role.length})');
+    print('🔧 DEBUG: role chars: ${role.codeUnits}');
+    
+    try {
+      final url = '${ConstKeys.baseUrl}/team/member-role';
+      print('🔧 DEBUG: URL = $url');
+      
+      final requestBody = {
+        'phone_number': phoneNumber,
+        'team_id': teamId,
+        'role': role, // expected: member | subLeader | leader
+      };
+      
+      print('🔧 DEBUG: Request body = ${jsonEncode(requestBody)}');
+      print('🔧 DEBUG: Authorization token length = ${Utils.token.length}');
+      
+      final res = await http
+          .post(
+            Uri.parse(url),
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ${Utils.token}',
+            },
+            body: jsonEncode(requestBody),
+          )
+          .timeout(const Duration(seconds: 15));
+
+      print('🔧 DEBUG: Response status code = ${res.statusCode}');
+      print('🔧 DEBUG: Response body = ${res.body}');
+
+      if (res.statusCode < 400) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        print('🔧 DEBUG: Response data["status"] = ${data['status']}');
+        print('🔧 DEBUG: Response data["message"] = ${data['message']}');
+        
+        if (data['status'] == true) {
+          print('✅ DEBUG: Role change SUCCESS');
+          return true;
+        }
+        
+        print('❌ DEBUG: Role change FAILED - status is false');
+        final message = (data['message'] as String?) ?? LocaleKeys.team_role_update_failed.tr();
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(message), backgroundColor: Colors.red),
+          );
+        }
+        return false;
+      } else {
+        print('❌ DEBUG: HTTP error - status code ${res.statusCode}');
+        String message;
+        try {
+          final data = jsonDecode(res.body) as Map<String, dynamic>;
+          message = (data['message'] as String?) ?? LocaleKeys.team_role_update_failed.tr();
+          print('❌ DEBUG: Error message from server = $message');
+        } catch (_) {
+          message = LocaleKeys.team_role_update_failed.tr();
+          print('❌ DEBUG: Could not parse error response');
+        }
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(message), backgroundColor: Colors.red),
+          );
+        }
+        return false;
+      }
+    } catch (e, stackTrace) {
+      print('❌ DEBUG: Exception in _changeMemberRole: $e');
+      print('❌ DEBUG: Stack trace: $stackTrace');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(LocaleKeys.team_role_unexpected_error.tr()),
+              backgroundColor: Colors.red),
+        );
+      }
+      return false;
+    }
+  }
+
+  /// Ask confirmation and promote a member to captain; current captain becomes member.
+  Future<void> _promoteMemberToCaptain(String newCaptainPhone) async {
+    print('👑 DEBUG: _promoteMemberToCaptain called');
+    print('👑 DEBUG: New captain phone = $newCaptainPhone');
+    
+    final currentLeader = _currentLeaderPhone();
+    print('👑 DEBUG: Current leader phone = $currentLeader');
+    
+    if (currentLeader == null) {
+      print('❌ DEBUG: No current leader found');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(LocaleKeys.team_role_no_current_leader.tr()),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (currentLeader == newCaptainPhone) {
+      print('📱 DEBUG: Target is already the captain, no-op');
+      return; // no-op
+    }
+
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(LocaleKeys.team_role_assign_captain_title.tr()),
+        content: Text(LocaleKeys.team_role_assign_captain_message.tr()),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(LocaleKeys.cancel_button.tr()),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(LocaleKeys.team_role_confirm_assign.tr()),
+          ),
+        ],
+      ),
+    );
+
+    print('👑 DEBUG: User confirmed = $confirm');
+    if (confirm != true) return;
+
+    setState(() => _isChangingRole = true);
+    print('👑 DEBUG: Starting captain promotion process...');
+    
+    // 1) make the selected player the leader
+    print('👑 DEBUG: Step 1: Promoting $newCaptainPhone to leader');
+    final ok1 = await _changeMemberRole(
+        phoneNumber: newCaptainPhone, teamId: widget.teamId, role: 'leader');
+    print('👑 DEBUG: Promotion result = $ok1');
+    
+    if (!ok1) {
+      print('❌ DEBUG: Failed to promote to leader');
+      if (mounted) setState(() => _isChangingRole = false);
+      return;
+    }
+    print('✅ DEBUG: Successfully promoted to leader');
+    
+    // 2) demote old leader to member
+    print('👑 DEBUG: Step 2: Demoting old leader $currentLeader to member');
+    final ok2 = await _changeMemberRole(
+        phoneNumber: currentLeader, teamId: widget.teamId, role: 'member');
+    print('👑 DEBUG: Demotion result = $ok2');
+
+    if (mounted) setState(() => _isChangingRole = false);
+
+    if (ok2) {
+      print('✅ DEBUG: Successfully demoted old leader');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(LocaleKeys.team_role_assign_captain_success.tr()),
+            backgroundColor: Colors.green),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(LocaleKeys.team_role_update_toast.tr())),
+      );
+      // Refresh team
+      await _fetchTeamData();
+
+      // If current user was the old captain => their permissions changed
+      final me = Utils.user.user?.phone;
+      if (me != null && me == currentLeader) {
+        // Navigate to home to refresh permissions/UI
+        if (!mounted) return;
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(Routes.LayoutScreen, (r) => false);
+      }
+    }
+  }
+
+  /// Promote a member to subLeader; current subLeader (if any) becomes member.
+  Future<void> _promoteMemberToAssistant(String phone) async {
+    print('📱 DEBUG: _promoteMemberToAssistant called');
+    print('📱 DEBUG: Target phone = $phone');
+    
+    final currentSub = _currentSubLeaderPhone();
+    print('📱 DEBUG: Current subLeader phone = $currentSub');
+    
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(LocaleKeys.team_role_assign_assistant_title.tr()),
+        content: Text(currentSub == null
+            ? LocaleKeys.team_role_assign_assistant_message_no_current.tr()
+            : LocaleKeys.team_role_assign_assistant_message_replace.tr()),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(LocaleKeys.cancel_button.tr()),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(LocaleKeys.team_role_confirm_assign.tr()),
+          ),
+        ],
+      ),
+    );
+    
+    print('📱 DEBUG: User confirmed = $confirm');
+    if (confirm != true) return;
+
+    setState(() => _isChangingRole = true);
+    print('📱 DEBUG: Starting role change process...');
+    
+    // If there is a current subLeader, demote to member first
+    if (currentSub != null && currentSub != phone) {
+      print('📱 DEBUG: Demoting current subLeader ($currentSub) to member');
+      final okDemote = await _changeMemberRole(
+          phoneNumber: currentSub, teamId: widget.teamId, role: 'member');
+      print('📱 DEBUG: Demotion result = $okDemote');
+      
+      if (!okDemote) {
+        print('❌ DEBUG: Failed to demote current subLeader');
+        if (mounted) setState(() => _isChangingRole = false);
+        return;
+      }
+      print('✅ DEBUG: Current subLeader demoted successfully');
+    } else if (currentSub != null && currentSub == phone) {
+      print('📱 DEBUG: Target is already the current subLeader, skipping demotion');
+    } else {
+      print('📱 DEBUG: No current subLeader to demote');
+    }
+
+    print('📱 DEBUG: Promoting $phone to subLeader');
+    final okMake = await _changeMemberRole(
+        phoneNumber: phone, teamId: widget.teamId, role: 'subLeader');
+    print('📱 DEBUG: Promotion result = $okMake');
+    
+    if (mounted) setState(() => _isChangingRole = false);
+
+    if (okMake) {
+      print('✅ DEBUG: Successfully promoted to subLeader');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(LocaleKeys.team_role_assign_assistant_success.tr()),
+            backgroundColor: Colors.green),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(LocaleKeys.team_role_update_toast.tr())),
+      );
+      print('📱 DEBUG: Refreshing team data...');
+      await _fetchTeamData();
+      print('📱 DEBUG: Team data refreshed');
+    } else {
+      print('❌ DEBUG: Failed to promote to subLeader');
+    }
+  }
+
+  /// Make current subLeader the captain and current captain becomes subLeader (swap).
+  Future<void> _makeSubLeaderCaptainSwap(String subLeaderPhone) async {
+    print('🔄 DEBUG: _makeSubLeaderCaptainSwap called');
+    print('🔄 DEBUG: SubLeader phone = $subLeaderPhone');
+    
+    final currentLeader = _currentLeaderPhone();
+    print('🔄 DEBUG: Current leader phone = $currentLeader');
+    
+    if (currentLeader == null) {
+      print('❌ DEBUG: No current leader found');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(LocaleKeys.team_role_no_current_leader.tr()),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(LocaleKeys.team_role_swap_roles_title.tr()),
+        content: Text(LocaleKeys.team_role_swap_roles_message.tr()),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(LocaleKeys.cancel_button.tr()),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(LocaleKeys.team_role_confirm.tr()),
+          ),
+        ],
+      ),
+    );
+    
+    print('🔄 DEBUG: User confirmed = $confirm');
+    if (confirm != true) return;
+
+    setState(() => _isChangingRole = true);
+    print('🔄 DEBUG: Starting role swap process...');
+
+    print('🔄 DEBUG: Step 1: Promoting subLeader $subLeaderPhone to leader');
+    final ok1 = await _changeMemberRole(
+        phoneNumber: subLeaderPhone, teamId: widget.teamId, role: 'leader');
+    print('🔄 DEBUG: Promotion result = $ok1');
+    
+    if (!ok1) {
+      print('❌ DEBUG: Failed to promote subLeader to leader');
+      if (mounted) setState(() => _isChangingRole = false);
+      return;
+    }
+    print('✅ DEBUG: SubLeader promoted to leader');
+    
+    print('🔄 DEBUG: Step 2: Demoting old leader $currentLeader to subLeader');
+    final ok2 = await _changeMemberRole(
+        phoneNumber: currentLeader, teamId: widget.teamId, role: 'subLeader');
+    print('🔄 DEBUG: Demotion result = $ok2');
+
+    if (mounted) setState(() => _isChangingRole = false);
+
+    if (ok2) {
+      print('✅ DEBUG: Old leader demoted to subLeader - swap complete');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(LocaleKeys.team_role_swap_roles_success.tr()),
+            backgroundColor: Colors.green),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(LocaleKeys.team_role_update_toast.tr())),
+      );
+      await _fetchTeamData();
+
+      // If current user was the old captain, permissions changed
+      final me = Utils.user.user?.phone;
+      if (me != null && me == currentLeader) {
+        if (!mounted) return;
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(Routes.LayoutScreen, (r) => false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     const darkBlue = Color(0xFF23425F);
@@ -679,6 +1076,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
         users: _teamData?['users'] as List<dynamic>?,
         membersCount: _teamData?['members_count'] as int?,
         canShowRemove: _currentUserRole == 'leader',
+        canManageRoles: _currentUserRole == 'leader',
         onRemoveMember: (String phone) async {
           // try to find the member's display name from loaded team data
           Map<String, dynamic>? member;
@@ -719,6 +1117,64 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
           if (confirmed == true) {
             // call parent's remove
             await _removeMember(phoneNumber: phone, teamId: widget.teamId);
+          }
+        },
+        onMakeCaptain: (String phone, String currentRole) async {
+          print('🎯 DEBUG: onMakeCaptain callback - phone=$phone, currentRole=$currentRole');
+          if (currentRole == 'leader') {
+            print('🎯 DEBUG: User is already leader, skipping');
+            return;
+          }
+          if (currentRole == 'subLeader') {
+            print('🎯 DEBUG: User is subLeader, performing swap');
+            await _makeSubLeaderCaptainSwap(phone);
+          } else {
+            print('🎯 DEBUG: User is member, performing promotion');
+            await _promoteMemberToCaptain(phone);
+          }
+        },
+        onMakeAssistant: (String phone, String currentRole) async {
+          print('🎯 DEBUG: onMakeAssistant callback - phone=$phone, currentRole=$currentRole');
+          if (currentRole == 'leader') {
+            print('🎯 DEBUG: User is leader, cannot demote to assistant directly');
+            return;
+          }
+          print('🎯 DEBUG: Calling _promoteMemberToAssistant...');
+          await _promoteMemberToAssistant(phone);
+        },
+        onMakeMember: (String phone, String currentRole) async {
+          print('🎯 DEBUG: onMakeMember callback - phone=$phone, currentRole=$currentRole');
+          // typically used to demote subLeader to member
+          final confirm = await showDialog<bool>(
+            context: context,
+            builder: (_) => AlertDialog(
+              title: Text(LocaleKeys.team_role_change_to_member_title.tr()),
+              content:
+                  Text(LocaleKeys.team_role_change_to_member_message.tr()),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text('إلغاء'),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: Text(LocaleKeys.team_role_confirm.tr()),
+                ),
+              ],
+            ),
+          );
+          print('🎯 DEBUG: User confirmed = $confirm');
+          if (confirm == true) {
+            print('🎯 DEBUG: Demoting to member...');
+            setState(() => _isChangingRole = true);
+            final ok = await _changeMemberRole(
+                phoneNumber: phone, teamId: widget.teamId, role: 'member');
+            print('🎯 DEBUG: Demotion result = $ok');
+            if (mounted) setState(() => _isChangingRole = false);
+            if (ok) {
+              print('🎯 DEBUG: Refreshing team data...');
+              await _fetchTeamData();
+            }
           }
         },
         isRemoving: _isRemoving,
@@ -785,6 +1241,18 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
                                     color: Colors.white, fontSize: 16)),
                           ],
                         ),
+                      ),
+                    ),
+                  ),
+                ),
+              if (_isChangingRole)
+                Positioned.fill(
+                  child: AbsorbPointer(
+                    absorbing: true,
+                    child: Container(
+                      color: Colors.black.withOpacity(0.4),
+                      child: const Center(
+                        child: CircularProgressIndicator(),
                       ),
                     ),
                   ),
@@ -1502,6 +1970,10 @@ class _MembersTab extends StatelessWidget {
   final bool canShowRemove;
   final Future<void> Function(String phone)? onRemoveMember;
   final bool isRemoving;
+  final bool canManageRoles;
+  final Future<void> Function(String phone, String currentRole)? onMakeCaptain;
+  final Future<void> Function(String phone, String currentRole)? onMakeAssistant;
+  final Future<void> Function(String phone, String currentRole)? onMakeMember;
 
   /// Creates a [_MembersTab].
   const _MembersTab({
@@ -1512,6 +1984,10 @@ class _MembersTab extends StatelessWidget {
     this.canShowRemove = false,
     this.onRemoveMember,
     this.isRemoving = false,
+    this.canManageRoles = false,
+    this.onMakeCaptain,
+    this.onMakeAssistant,
+    this.onMakeMember,
   });
 
   @override
@@ -1558,7 +2034,11 @@ class _MembersTab extends StatelessWidget {
               _PlayerList(
                   players: captain,
                   canShowRemove: canShowRemove,
-                  onRemoveMember: onRemoveMember,
+          onRemoveMember: onRemoveMember,
+          canManageRoles: canManageRoles,
+          onMakeCaptain: onMakeCaptain,
+          onMakeAssistant: onMakeAssistant,
+          onMakeMember: onMakeMember,
                   isRemoving: isRemoving),
               const SizedBox(height: 16),
             ],
@@ -1575,7 +2055,11 @@ class _MembersTab extends StatelessWidget {
               _PlayerList(
                   players: subCaptain,
                   canShowRemove: canShowRemove,
-                  onRemoveMember: onRemoveMember,
+          onRemoveMember: onRemoveMember,
+          canManageRoles: canManageRoles,
+          onMakeCaptain: onMakeCaptain,
+          onMakeAssistant: onMakeAssistant,
+          onMakeMember: onMakeMember,
                   isRemoving: isRemoving),
               const SizedBox(height: 16),
             ],
@@ -1592,7 +2076,11 @@ class _MembersTab extends StatelessWidget {
               _PlayerList(
                   players: members,
                   canShowRemove: canShowRemove,
-                  onRemoveMember: onRemoveMember,
+          onRemoveMember: onRemoveMember,
+          canManageRoles: canManageRoles,
+          onMakeCaptain: onMakeCaptain,
+          onMakeAssistant: onMakeAssistant,
+          onMakeMember: onMakeMember,
                   isRemoving: isRemoving),
             ],
           ],
@@ -1676,13 +2164,22 @@ class _PlayerList extends StatelessWidget {
   final bool canShowRemove;
   final Future<void> Function(String phone)? onRemoveMember;
   final bool isRemoving;
+  final bool canManageRoles;
+  final Future<void> Function(String phone, String currentRole)? onMakeCaptain;
+  final Future<void> Function(String phone, String currentRole)?
+      onMakeAssistant;
+  final Future<void> Function(String phone, String currentRole)? onMakeMember;
 
   /// Creates a const [_PlayerList].
   const _PlayerList(
       {required this.players,
       this.canShowRemove = false,
       this.onRemoveMember,
-      this.isRemoving = false});
+    this.isRemoving = false,
+    this.canManageRoles = false,
+    this.onMakeCaptain,
+    this.onMakeAssistant,
+    this.onMakeMember});
 
   @override
   Widget build(BuildContext context) {
@@ -1695,6 +2192,7 @@ class _PlayerList extends StatelessWidget {
         final p = players[index] as Map<String, dynamic>;
         final rawPhone = (p['phone'] ?? p['mobile'] ?? '') as String;
         final isLeader = (p['role'] == 'leader');
+        final currentRole = (p['role'] as String?) ?? 'member';
         return PlayerCard(
           number: (p['num'] ?? index + 1) as int,
           name: p['name'] as String? ?? '',
@@ -1705,6 +2203,11 @@ class _PlayerList extends StatelessWidget {
           canShowRemove: canShowRemove && !isLeader,
           onRemove: onRemoveMember,
           isRemoving: isRemoving,
+          role: currentRole,
+          canManageRoles: canManageRoles,
+          onMakeCaptain: onMakeCaptain,
+          onMakeAssistant: onMakeAssistant,
+          onMakeMember: onMakeMember,
         );
       },
     );
@@ -1731,6 +2234,12 @@ class PlayerCard extends StatelessWidget {
   final bool canShowRemove;
   final Future<void> Function(String phone)? onRemove;
   final bool isRemoving;
+  final String role;
+  final bool canManageRoles;
+  final Future<void> Function(String phone, String currentRole)? onMakeCaptain;
+  final Future<void> Function(String phone, String currentRole)?
+      onMakeAssistant;
+  final Future<void> Function(String phone, String currentRole)? onMakeMember;
 
   /// Creates a const [PlayerCard].
   const PlayerCard({
@@ -1743,6 +2252,11 @@ class PlayerCard extends StatelessWidget {
     this.canShowRemove = false,
     this.onRemove,
     this.isRemoving = false,
+    this.role = 'member',
+    this.canManageRoles = false,
+    this.onMakeCaptain,
+    this.onMakeAssistant,
+    this.onMakeMember,
   });
 
   @override
@@ -1791,28 +2305,104 @@ class PlayerCard extends StatelessWidget {
                   ],
                 ),
               ),
-              if (canShowRemove)
-                PopupMenuButton<String>(
-                  onSelected: (value) async {
-                    if (value == 'remove' &&
-                        onRemove != null &&
-                        rawPhone != null) {
-                      await onRemove!(rawPhone!);
-                    }
-                  },
-                  itemBuilder: (context) => [
+              Builder(builder: (context) {
+                // Build menu items first
+                final items = <PopupMenuEntry<String>>[];
+                if (canManageRoles) {
+                  if (role == 'member') {
+                    items.add(
+                      PopupMenuItem(
+                        value: 'makeCaptain',
+                        child: Row(
+                          children: const [
+                            Icon(Icons.military_tech, color: Colors.blue),
+                            SizedBox(width: 8),
+                            Text('تعيين كابتن'),
+                          ],
+                        ),
+                      ),
+                    );
+                    items.add(
+                      PopupMenuItem(
+                        value: 'makeAssistant',
+                        child: Row(
+                          children: const [
+                            Icon(Icons.workspace_premium, color: Colors.orange),
+                            SizedBox(width: 8),
+                            Text('تعيين مساعد'),
+                          ],
+                        ),
+                      ),
+                    );
+                  } else if (role == 'subLeader') {
+                    items.add(
+                      PopupMenuItem(
+                        value: 'makeCaptain',
+                        child: Row(
+                          children: const [
+                            Icon(Icons.swap_horiz, color: Colors.blue),
+                            SizedBox(width: 8),
+                            Text('اجعله كابتن (تبديل)'),
+                          ],
+                        ),
+                      ),
+                    );
+                    items.add(
+                      PopupMenuItem(
+                        value: 'makeMember',
+                        child: Row(
+                          children: const [
+                            Icon(Icons.person_outline, color: Colors.grey),
+                            SizedBox(width: 8),
+                            Text('اجعله عضواً'),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                }
+                if (canShowRemove) {
+                  items.add(
                     PopupMenuItem(
                       value: 'remove',
                       child: Row(
                         children: [
-                          Icon(Icons.delete, color: Colors.red),
+                          const Icon(Icons.delete, color: Colors.red),
                           const SizedBox(width: 8),
                           Text(LocaleKeys.confirm_button_remove.tr()),
                         ],
                       ),
                     ),
-                  ],
-                ),
+                  );
+                }
+                if (items.isEmpty) return const SizedBox.shrink();
+                return PopupMenuButton<String>(
+                  onSelected: (value) async {
+                    if (rawPhone == null || rawPhone!.isEmpty) return;
+                    switch (value) {
+                      case 'remove':
+                        if (onRemove != null) await onRemove!(rawPhone!);
+                        break;
+                      case 'makeCaptain':
+                        if (onMakeCaptain != null) {
+                          await onMakeCaptain!(rawPhone!, role);
+                        }
+                        break;
+                      case 'makeAssistant':
+                        if (onMakeAssistant != null) {
+                          await onMakeAssistant!(rawPhone!, role);
+                        }
+                        break;
+                      case 'makeMember':
+                        if (onMakeMember != null) {
+                          await onMakeMember!(rawPhone!, role);
+                        }
+                        break;
+                    }
+                  },
+                  itemBuilder: (context) => items,
+                );
+              }),
             ],
           ),
         ),
