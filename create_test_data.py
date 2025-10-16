@@ -207,28 +207,57 @@ class RemuntadaTestDataGenerator:
             print(f"✗ Error adding member {phone_number}: {str(e)}")
             return False
     
+    def normalize_role(self, role: str) -> str:
+        """Normalize and validate role strings. Return exact allowed value or None.
+
+        Allowed exact values: "member", "subleader", "leader" (case-sensitive)
+        This function maps common variants to the exact allowed values.
+        """
+        if not role or not isinstance(role, str):
+            return None
+        mapping = {
+            'member': 'member',
+            'Member': 'member',
+            'MEMBER': 'member',
+            'subleader': 'subleader',
+            'subLeader': 'subleader',
+            'sub_leader': 'subleader',
+            'SubLeader': 'subleader',
+            'Sub-Leader': 'subleader',
+            'SUBLEADER': 'subleader',
+            'leader': 'leader',
+            'Leader': 'leader',
+            'LEADER': 'leader'
+        }
+        return mapping.get(role.strip())
+
     def set_member_role(self, phone_number: str, team_id: int, role: str, auth_token: str) -> bool:
         """Set member role in team"""
         try:
             print(f"Setting role {role} for member {phone_number} in team {team_id}")
-            
+
+            normalized = self.normalize_role(role)
+            if not normalized:
+                print(f"✗ Invalid role '{role}' provided for {phone_number}; allowed values: member, subleader, leader. Skipping.")
+                return False
+
             data = {
                 "phone_number": phone_number,
                 "team_id": team_id,
-                "role": role  # member or subleader (leader is automatic for team creator)
+                "role": normalized  # enforce allowed values
             }
-            
+
             headers = {
                 **HEADERS,
                 "Authorization": f"Bearer {auth_token}"
             }
-            
+
             response = requests.post(f"{BASE_URL}/team/member-role", json=data, headers=headers)
-            
+
             if response.status_code == 200:
                 result = response.json()
                 if result.get('status'):
-                    print(f"✓ Role {role} set for member {phone_number}")
+                    print(f"✓ Role {normalized} set for member {phone_number}")
                     return True
                 else:
                     print(f"✗ Failed to set role for {phone_number}: {result.get('message')}")

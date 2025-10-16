@@ -1,4 +1,4 @@
- import 'dart:convert';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart' hide TextDirection;
@@ -163,7 +163,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
         }
 
         final leader = findMemberByRole(users, 'leader');
-        final subLeader = findMemberByRole(users, 'subLeader');
+        final subLeader = findMemberByRole(users, 'subleader');
         // Compute current user role before updating state so UI immediately reflects role
         final currentUserRole = findCurrentUserRole(users);
         team['leader'] = leader == null
@@ -601,14 +601,14 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
         final phone = u['phone'] as String?;
         print('🔍 DEBUG: User: role="$role", mobile=$mobile, phone=$phone');
         
-        if (role == 'subLeader') {
+        if (role == 'subleader') {
           final subLeaderPhone = mobile ?? phone;
-          print('✅ DEBUG: Found subLeader with phone = $subLeaderPhone');
+          print('✅ DEBUG: Found subleader with phone = $subLeaderPhone');
           return subLeaderPhone;
         }
       }
     }
-    print('❌ DEBUG: No subLeader found in team data');
+    print('❌ DEBUG: No subleader found in team data');
     return null;
   }
 
@@ -631,7 +631,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
       final requestBody = {
         'phone_number': phoneNumber,
         'team_id': teamId,
-        'role': role, // expected: member | subLeader | leader
+        'role': role, // expected: member | subleader | leader
       };
       
       print('🔧 DEBUG: Request body = ${jsonEncode(requestBody)}');
@@ -851,13 +851,13 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
 
     print('📱 DEBUG: Promoting $phone to subLeader');
     final okMake = await _changeMemberRole(
-        phoneNumber: phone, teamId: widget.teamId, role: 'subLeader');
+        phoneNumber: phone, teamId: widget.teamId, role: 'subleader');
     print('📱 DEBUG: Promotion result = $okMake');
     
     if (mounted) setState(() => _isChangingRole = false);
 
     if (okMake) {
-      print('✅ DEBUG: Successfully promoted to subLeader');
+      print('✅ DEBUG: Successfully promoted to subleader');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -966,7 +966,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
 
     // Determine if user can manage members (captain or subleader)
     final canManageMembers =
-        _currentUserRole == 'leader' || _currentUserRole == 'subLeader';
+        _currentUserRole == 'leader' || _currentUserRole == 'subleader';
 
     // Update TabController length if needed
     final tabCount = canManageMembers ? 5 : 3;
