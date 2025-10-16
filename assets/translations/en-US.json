@@ -423,5 +423,30 @@
     "delete_success_toast": "Team deleted successfully.",
     "delete_failed_toast": "Failed to delete the team. Please try again.",
     "delete_double_confirm_notice": "Delete (double confirm)"
+  },
+  "team": {
+    "role": {
+      "update_failed": "Failed to update role. Please try again.",
+      "unexpected_error": "An unexpected error occurred while changing role.",
+      "no_current_leader": "No current leader found in team.",
+      "assign_captain_title": "Assign as Captain",
+      "assign_captain_message": "Are you sure you want to assign this member as team captain? The current captain will become a regular member.",
+      "assign_captain_success": "New captain assigned successfully.",
+      "assign_assistant_title": "Assign as Assistant Captain",
+      "assign_assistant_message_no_current": "Are you sure you want to assign this member as assistant captain?",
+      "assign_assistant_message_replace": "Are you sure you want to assign this member as assistant captain? The current assistant captain will become a regular member.",
+      "assign_assistant_success": "Assistant captain assigned successfully.",
+      "swap_roles_title": "Swap Roles",
+      "swap_roles_message": "Are you sure you want to swap roles? The assistant captain will become captain and the current captain will become assistant captain.",
+      "swap_roles_success": "Roles swapped successfully.",
+      "change_to_member_title": "Change to Member",
+      "change_to_member_message": "Are you sure you want to change this person to a regular member?",
+      "menu_make_captain": "Make Captain",
+      "menu_make_assistant": "Make Assistant Captain",
+      "menu_swap_with_captain": "Swap with Captain",
+      "confirm_assign": "Confirm",
+      "confirm": "Confirm",
+      "update_toast": "Member role updated successfully."
+    }
   }
 }

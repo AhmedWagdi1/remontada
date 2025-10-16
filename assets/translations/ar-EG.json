@@ -429,5 +429,30 @@
     "delete_success_toast": "تم حذف الفريق بنجاح.",
     "delete_failed_toast": "فشل في حذف الفريق. حاول مرة أخرى.",
     "delete_double_confirm_notice": "حذف (يتطلب تأكيدين)"
+  },
+  "team": {
+    "role": {
+      "update_failed": "فشل تحديث الدور. حاول مرة أخرى.",
+      "unexpected_error": "حدث خطأ غير متوقع أثناء تغيير الدور.",
+      "no_current_leader": "لا يوجد قائد حالي في الفريق.",
+      "assign_captain_title": "تعيين كقائد",
+      "assign_captain_message": "هل أنت متأكد أنك تريد تعيين هذا العضو كقائد للفريق؟ القائد الحالي سيصبح عضواً عادياً.",
+      "assign_captain_success": "تم تعيين القائد الجديد بنجاح.",
+      "assign_assistant_title": "تعيين كمساعد قائد",
+      "assign_assistant_message_no_current": "هل أنت متأكد أنك تريد تعيين هذا العضو كمساعد قائد؟",
+      "assign_assistant_message_replace": "هل أنت متأكد أنك تريد تعيين هذا العضو كمساعد قائد؟ مساعد القائد الحالي سيصبح عضواً عادياً.",
+      "assign_assistant_success": "تم تعيين مساعد القائد بنجاح.",
+      "swap_roles_title": "تبديل الأدوار",
+      "swap_roles_message": "هل أنت متأكد أنك تريد تبديل الأدوار؟ مساعد القائد سيصبح قائداً والقائد الحالي سيصبح مساعد قائد.",
+      "swap_roles_success": "تم تبديل الأدوار بنجاح.",
+      "change_to_member_title": "تغيير إلى عضو",
+      "change_to_member_message": "هل أنت متأكد أنك تريد تحويل هذا الشخص إلى عضو عادي؟",
+      "menu_make_captain": "تعيين كقائد",
+      "menu_make_assistant": "تعيين كمساعد قائد",
+      "menu_swap_with_captain": "تبديل مع القائد",
+      "confirm_assign": "تأكيد",
+      "confirm": "تأكيد",
+      "update_toast": "تم تحديث دور العضو بنجاح."
+    }
   }
 }
