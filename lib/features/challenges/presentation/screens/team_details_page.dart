@@ -822,16 +822,20 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(LocaleKeys.team_role_update_toast.tr())),
       );
-      // Refresh team
-      await _fetchTeamData();
 
-      // If current user was the old captain => their permissions changed
+      // Check if current user was the old captain (demoted to member)
       final me = Utils.user.user?.phone;
       if (me != null && me == currentLeader) {
-        // Navigate to home to refresh permissions/UI
+        // Current user's role changed from leader to member
+        // Reload entire app from splash screen to refetch all data with new permissions
+        print('🔄 DEBUG: Current user demoted from leader, reloading app from splash');
         if (!mounted) return;
         Navigator.of(context)
-            .pushNamedAndRemoveUntil(Routes.LayoutScreen, (r) => false);
+            .pushNamedAndRemoveUntil(Routes.splashScreen, (r) => false);
+      } else {
+        // Other user promoted, just refresh team data
+        print('🔄 DEBUG: Other user promoted, refreshing team data');
+        await _fetchTeamData();
       }
     }
   }
@@ -988,14 +992,20 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(LocaleKeys.team_role_update_toast.tr())),
       );
-      await _fetchTeamData();
 
-      // If current user was the old captain, permissions changed
+      // Check if current user was the old captain (demoted to subLeader)
       final me = Utils.user.user?.phone;
       if (me != null && me == currentLeader) {
+        // Current user's role changed from leader to subLeader
+        // Reload entire app from splash screen to refetch all data with new permissions
+        print('🔄 DEBUG: Current user demoted from leader in swap, reloading app from splash');
         if (!mounted) return;
         Navigator.of(context)
-            .pushNamedAndRemoveUntil(Routes.LayoutScreen, (r) => false);
+            .pushNamedAndRemoveUntil(Routes.splashScreen, (r) => false);
+      } else {
+        // Other user promoted, just refresh team data
+        print('🔄 DEBUG: SubLeader promoted to leader, refreshing team data');
+        await _fetchTeamData();
       }
     }
   }
