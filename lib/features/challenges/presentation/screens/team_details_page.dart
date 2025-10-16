@@ -159,6 +159,20 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
                 (u['mobile'] != null && (u['mobile'] as String).isNotEmpty)) {
               u['phone'] = u['mobile'];
             }
+
+            // Normalize role values to canonical forms: 'member', 'subleader', 'leader'
+            try {
+              final rawRole = (u['role'] ?? '') as String;
+              final canonical = rawRole.trim().toLowerCase().replaceAll(RegExp(r'[^a-z]'), '');
+              if (canonical == 'member' || canonical == 'subleader' || canonical == 'leader') {
+                u['role'] = canonical;
+              } else if (rawRole.isNotEmpty) {
+                // If we couldn't canonicalize, keep original trimmed value (defensive)
+                u['role'] = rawRole.trim();
+              }
+            } catch (_) {
+              // ignore malformed role values
+            }
           }
         }
 
@@ -623,20 +637,46 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
     print('🔧 DEBUG: teamId = $teamId');
     print('🔧 DEBUG: role = "$role" (length: ${role.length})');
     print('🔧 DEBUG: role chars: ${role.codeUnits}');
-    
+
+    // Normalize & validate role locally before making the request
+    String? _normalizeRole(String r) {
+      if (r.trim().isEmpty) return null;
+      // normalize to lowercase and remove non-letters so variants like
+      // "subLeader", "sub-leader", "sub_leader" all become "subleader"
+      final canonical = r.trim().toLowerCase().replaceAll(RegExp(r'[^a-z]'), '');
+      if (canonical == 'member') return 'member';
+      if (canonical == 'subleader') return 'subleader';
+      if (canonical == 'leader') return 'leader';
+      return null;
+    }
+
+    final normalizedRole = _normalizeRole(role);
+    print('🔧 DEBUG: normalizedRole = $normalizedRole');
+
+    if (normalizedRole == null) {
+      final msg = 'Invalid role. Allowed values: member, subleader, leader.';
+      print('❌ DEBUG: Invalid role provided: "$role" - skipping request');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(msg), backgroundColor: Colors.red),
+        );
+      }
+      return false;
+    }
+
     try {
       final url = '${ConstKeys.baseUrl}/team/member-role';
       print('🔧 DEBUG: URL = $url');
-      
+
       final requestBody = {
         'phone_number': phoneNumber,
         'team_id': teamId,
-        'role': role, // expected: member | subleader | leader
+        'role': normalizedRole, // send exact allowed value
       };
-      
+
       print('🔧 DEBUG: Request body = ${jsonEncode(requestBody)}');
-      print('🔧 DEBUG: Authorization token length = ${Utils.token.length}');
-      
+      print('🔧 DEBUG: Authorization token length = ${Utils.token?.length ?? 0}');
+
       final res = await http
           .post(
             Uri.parse(url),
@@ -656,12 +696,12 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
         final data = jsonDecode(res.body) as Map<String, dynamic>;
         print('🔧 DEBUG: Response data["status"] = ${data['status']}');
         print('🔧 DEBUG: Response data["message"] = ${data['message']}');
-        
+
         if (data['status'] == true) {
           print('✅ DEBUG: Role change SUCCESS');
           return true;
         }
-        
+
         print('❌ DEBUG: Role change FAILED - status is false');
         final message = (data['message'] as String?) ?? LocaleKeys.team_role_update_failed.tr();
         if (mounted) {
@@ -766,7 +806,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
     // 2) demote old leader to member
     print('👑 DEBUG: Step 2: Demoting old leader $currentLeader to member');
     final ok2 = await _changeMemberRole(
-        phoneNumber: currentLeader, teamId: widget.teamId, role: 'member');
+        phoneNumber: currentLeader, teamId: widget.teamId, role: 'subleader');
     print('👑 DEBUG: Demotion result = $ok2');
 
     if (mounted) setState(() => _isChangingRole = false);
@@ -932,7 +972,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
     
     print('🔄 DEBUG: Step 2: Demoting old leader $currentLeader to subLeader');
     final ok2 = await _changeMemberRole(
-        phoneNumber: currentLeader, teamId: widget.teamId, role: 'subLeader');
+        phoneNumber: currentLeader, teamId: widget.teamId, role: 'subleader');
     print('🔄 DEBUG: Demotion result = $ok2');
 
     if (mounted) setState(() => _isChangingRole = false);
@@ -1125,7 +1165,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
             print('🎯 DEBUG: User is already leader, skipping');
             return;
           }
-          if (currentRole == 'subLeader') {
+          if (currentRole == 'subleader') {
             print('🎯 DEBUG: User is subLeader, performing swap');
             await _makeSubLeaderCaptainSwap(phone);
           } else {
@@ -1994,10 +2034,10 @@ class _MembersTab extends StatelessWidget {
   Widget build(BuildContext context) {
     // Group users by role
     final allUsers = users ?? [];
-    final captain = allUsers.where((u) => u['role'] == 'leader').toList();
-    final subCaptain = allUsers.where((u) => u['role'] == 'subLeader').toList();
+    final captain = allUsers.where((u) => (u['role'] as String?) == 'leader').toList();
+    final subCaptain = allUsers.where((u) => (u['role'] as String?) == 'subleader').toList();
     final members = allUsers
-        .where((u) => u['role'] != 'leader' && u['role'] != 'subLeader')
+        .where((u) => (u['role'] as String?) != 'leader' && (u['role'] as String?) != 'subleader')
         .toList();
 
     return Directionality(
@@ -2166,35 +2206,39 @@ class _PlayerList extends StatelessWidget {
   final bool isRemoving;
   final bool canManageRoles;
   final Future<void> Function(String phone, String currentRole)? onMakeCaptain;
-  final Future<void> Function(String phone, String currentRole)?
-      onMakeAssistant;
+  final Future<void> Function(String phone, String currentRole)? onMakeAssistant;
   final Future<void> Function(String phone, String currentRole)? onMakeMember;
 
   /// Creates a const [_PlayerList].
-  const _PlayerList(
-      {required this.players,
-      this.canShowRemove = false,
-      this.onRemoveMember,
+  const _PlayerList({
+    required this.players,
+    this.canShowRemove = false,
+    this.onRemoveMember,
     this.isRemoving = false,
     this.canManageRoles = false,
     this.onMakeCaptain,
     this.onMakeAssistant,
-    this.onMakeMember});
+    this.onMakeMember,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // Ensure a defensive copy and handle null/empty gracefully
+    final list = players ?? [];
+
     return ListView.separated(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: players.length,
+      itemCount: list.length,
       separatorBuilder: (_, __) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
-        final p = players[index] as Map<String, dynamic>;
+        final p = list[index] as Map<String, dynamic>;
         final rawPhone = (p['phone'] ?? p['mobile'] ?? '') as String;
-        final isLeader = (p['role'] == 'leader');
+        final isLeader = ((p['role'] as String?) == 'leader');
         final currentRole = (p['role'] as String?) ?? 'member';
+
         return PlayerCard(
-          number: (p['num'] ?? index + 1) as int,
+          number: (p['num'] ?? (index + 1)) as int,
           name: p['name'] as String? ?? '',
           shirt: (p['shirt'] ?? p['shirt_number'] ?? 0) as int,
           phone: obfuscatePhone(rawPhone),
@@ -2334,7 +2378,7 @@ class PlayerCard extends StatelessWidget {
                         ),
                       ),
                     );
-                  } else if (role == 'subLeader') {
+                  } else if (role == 'subleader') {
                     items.add(
                       PopupMenuItem(
                         value: 'makeCaptain',
@@ -2553,7 +2597,7 @@ class _JoinRequestsTabState extends State<_JoinRequestsTab> {
     final data = jsonDecode(res.body);
     if (res.statusCode < 400 && data['status'] == true) {
       final users = data['data']['users'] as List<dynamic>;
-      return users.any((u) => u['role'] == 'subLeader');
+      return users.any((u) => u['role'] == 'subleader');
     }
     return false;
   }
@@ -2607,7 +2651,7 @@ class _JoinRequestsTabState extends State<_JoinRequestsTab> {
       return;
     }
     // Assign role if subLeader
-    if (_selectedRole == 'subLeader') {
+    if ((_selectedRole ?? '').toString().toLowerCase() == 'subleader') {
       final roleRes = await http.post(
         Uri.parse('${ConstKeys.baseUrl}/team/member-role'),
         headers: {
@@ -2618,7 +2662,7 @@ class _JoinRequestsTabState extends State<_JoinRequestsTab> {
         body: jsonEncode({
           'phone_number': phone,
           'team_id': widget.teamId, // <-- use widget.teamId
-          'role': 'subLeader',
+          'role': 'subleader',
         }),
       );
       final roleData = jsonDecode(roleRes.body);
@@ -2712,7 +2756,7 @@ class _JoinRequestsTabState extends State<_JoinRequestsTab> {
                                 DropdownMenuItem(
                                     value: 'member', child: Text('عضو')),
                                 DropdownMenuItem(
-                                    value: 'subLeader', child: Text('مساعد')),
+                                    value: 'subleader', child: Text('مساعد')),
                               ]
                             : const [
                                 DropdownMenuItem(

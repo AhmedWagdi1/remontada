@@ -210,24 +210,40 @@ def set_member_role(phone_number: str, team_id: int, role: str, auth_token: str)
     """Set member role in team"""
     try:
         print(f"Setting role {role} for member {phone_number} in team {team_id}")
-        
+
+        # Normalize and validate role
+        def normalize_role(role_str: str) -> str:
+            if not role_str or not isinstance(role_str, str):
+                return None
+            mapping = {
+                'member': 'member', 'Member': 'member', 'MEMBER': 'member',
+                'subleader': 'subleader', 'subLeader': 'subleader', 'SubLeader': 'subleader', 'sub_leader': 'subleader', 'Sub-Leader': 'subleader',
+                'leader': 'leader', 'Leader': 'leader', 'LEADER': 'leader'
+            }
+            return mapping.get(role_str.strip())
+
+        normalized = normalize_role(role)
+        if not normalized:
+            print(f"✗ Invalid role '{role}' provided for {phone_number}; allowed values: member, subleader, leader. Skipping.")
+            return False
+
         data = {
             "phone_number": phone_number,
             "team_id": team_id,
-            "role": role
+            "role": normalized
         }
-        
+
         headers = {
             **HEADERS,
             "Authorization": f"Bearer {auth_token}"
         }
-        
+
         response = requests.post(f"{BASE_URL}/team/member-role", json=data, headers=headers)
-        
+
         if response.status_code == 200:
             result = response.json()
             if result.get('status'):
-                print(f"✓ Role {role} set for member {phone_number}")
+                print(f"✓ Role {normalized} set for member {phone_number}")
                 return True
             else:
                 print(f"✗ Failed to set role for {phone_number}: {result.get('message')}")
