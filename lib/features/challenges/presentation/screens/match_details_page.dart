@@ -261,27 +261,6 @@ class MatchDetailsPage extends StatelessWidget {
                         ),
                       ],
                     ),
-
-                    const SizedBox(height: 12),
-
-                    // Reservation Status
-                    Row(
-                      children: [
-                        Icon(
-                          match.isReserved ? Icons.check_circle : Icons.cancel,
-                          color: match.isReserved ? Colors.green : Colors.red,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          match.isReserved ? 'محجوز' : 'غير محجوز',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: match.isReserved ? Colors.green : Colors.red,
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
               ),
