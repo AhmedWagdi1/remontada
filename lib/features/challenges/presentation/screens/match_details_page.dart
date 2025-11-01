@@ -1,4 +1,6 @@
+import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../domain/model/challenge_match_model.dart';
 
 /// Page for displaying detailed information about a completed challenge match.
@@ -262,17 +264,33 @@ class MatchDetailsPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
 
-                    // Playground
+                    // Playground with open in maps button
                     Row(
                       children: [
                         Icon(Icons.location_on,
                             color: Colors.grey.shade600, size: 20),
                         const SizedBox(width: 8),
-                        Text(
-                          'الملعب: ${match.playground}',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.black87,
+                        Expanded(
+                          child: Text(
+                            'الملعب: ${match.playground}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.black87,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        OutlinedButton.icon(
+                          onPressed: () => _openPlaygroundInMaps(context),
+                          icon: const Icon(Icons.map, size: 18),
+                          label: const Text(
+                            'عرض على الخريطة',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 6),
                           ),
                         ),
                       ],
@@ -354,5 +372,53 @@ class MatchDetailsPage extends StatelessWidget {
       return NetworkImage(logoUrl);
     }
     return null; // Return null to use the child widget (icon)
+  }
+
+  Future<void> _openPlaygroundInMaps(BuildContext context) async {
+    final loc = match.playgroundLocation;
+    final lat = loc?.lat;
+    final lng = loc?.lng;
+
+    if (lat == null || lat.isEmpty || lng == null || lng.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('لا توجد إحداثيات للموقع')),
+      );
+      return;
+    }
+
+    // Build platform-specific URIs
+    Uri? uriToLaunch;
+
+    if (Platform.isIOS) {
+      // Apple Maps
+      uriToLaunch = Uri.parse('https://maps.apple.com/?q=$lat,$lng');
+    } else if (Platform.isAndroid) {
+      // Try geo: scheme to allow user to choose the app if multiple map apps exist
+      final label = Uri.encodeComponent(loc?.location ?? match.playground);
+      final geoUri = Uri.parse('geo:$lat,$lng?q=$lat,$lng($label)');
+      if (await canLaunchUrl(geoUri)) {
+        uriToLaunch = geoUri;
+      } else {
+        // Fallback to Google Maps link (from API if available, else universal query)
+        final gLink = loc?.googleMapsLink;
+        uriToLaunch = Uri.parse(
+            gLink ?? 'https://www.google.com/maps/search/?api=1&query=$lat,$lng');
+      }
+    } else {
+      // Other platforms: open a universal Google Maps URL
+      final gLink = loc?.googleMapsLink;
+      uriToLaunch = Uri.parse(
+          gLink ?? 'https://www.google.com/maps/search/?api=1&query=$lat,$lng');
+    }
+
+    final launched = await launchUrl(
+      uriToLaunch,
+      mode: LaunchMode.externalApplication,
+    );
+    if (!launched) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('تعذّر فتح تطبيق الخرائط')),
+      );
+    }
   }
 }

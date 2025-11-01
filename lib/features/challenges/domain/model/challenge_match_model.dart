@@ -2,6 +2,7 @@
 class ChallengeMatch {
   final int id;
   final String playground;
+  final PlaygroundLocation? playgroundLocation;
   final String date;
   final String startTime;
   final String amount;
@@ -13,6 +14,7 @@ class ChallengeMatch {
   ChallengeMatch({
     required this.id,
     required this.playground,
+    this.playgroundLocation,
     required this.date,
     required this.startTime,
     required this.amount,
@@ -26,6 +28,11 @@ class ChallengeMatch {
     return ChallengeMatch(
       id: json['id'] ?? 0,
       playground: json['playground'] ?? '',
+      playgroundLocation: json['playground_location'] is Map<String, dynamic>
+          ? PlaygroundLocation.fromJson(
+              json['playground_location'] as Map<String, dynamic>,
+            )
+          : null,
       date: json['date'] ?? '',
       startTime: json['start_time'] ?? '',
       amount: json['amount']?.toString() ?? '0',
@@ -51,4 +58,23 @@ class ChallengeMatch {
 
   /// Checks if the match is in the past.
   bool get isPast => parsedDate.isBefore(DateTime.now());
+}
+
+/// Location details for a playground associated with a match.
+class PlaygroundLocation {
+  final String? lat; // kept as String to mirror API; parse to double when needed
+  final String? lng;
+  final String? location; // human readable address
+  final String? googleMapsLink; // direct link if provided by API
+
+  const PlaygroundLocation({this.lat, this.lng, this.location, this.googleMapsLink});
+
+  factory PlaygroundLocation.fromJson(Map<String, dynamic> json) {
+    return PlaygroundLocation(
+      lat: json['lat']?.toString(),
+      lng: json['lng']?.toString(),
+      location: json['location']?.toString(),
+      googleMapsLink: json['google_maps_link']?.toString(),
+    );
+  }
 }
