@@ -39,44 +39,96 @@ class MatchDetailsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Match Status Badge
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: match.isPast
-                      ? Colors.green.shade100
-                      : Colors.blue.shade100,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: match.isPast
-                        ? Colors.green.shade300
-                        : Colors.blue.shade300,
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      match.isPast ? Icons.check_circle : Icons.schedule,
+              // Status Badges Row
+              Row(
+                children: [
+                  // Match Status Badge
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
                       color: match.isPast
-                          ? Colors.green.shade700
-                          : Colors.blue.shade700,
-                      size: 16,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      match.isPast ? 'تحدي مكتمل' : 'تحدي جاهز',
-                      style: TextStyle(
+                          ? Colors.green.shade100
+                          : Colors.blue.shade100,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
                         color: match.isPast
-                            ? Colors.green.shade700
-                            : Colors.blue.shade700,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
+                            ? Colors.green.shade300
+                            : Colors.blue.shade300,
                       ),
                     ),
-                  ],
-                ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          match.isPast ? Icons.check_circle : Icons.schedule,
+                          color: match.isPast
+                              ? Colors.green.shade700
+                              : Colors.blue.shade700,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          match.isPast ? 'تحدي مكتمل' : 'تحدي جاهز',
+                          style: TextStyle(
+                            color: match.isPast
+                                ? Colors.green.shade700
+                                : Colors.blue.shade700,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(width: 8),
+
+                  // Competitive/Friendly Badge
+                  if (match.isCompetitive != null)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: match.isCompetitive == true
+                            ? Colors.orange.shade100
+                            : Colors.purple.shade100,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: match.isCompetitive == true
+                              ? Colors.orange.shade300
+                              : Colors.purple.shade300,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            match.isCompetitive == true
+                                ? Icons.emoji_events
+                                : Icons.handshake,
+                            color: match.isCompetitive == true
+                                ? Colors.orange.shade700
+                                : Colors.purple.shade700,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            match.isCompetitive == true
+                                ? 'مباراة تنافسية'
+                                : 'مباراة ودية',
+                            style: TextStyle(
+                              color: match.isCompetitive == true
+                                  ? Colors.orange.shade700
+                                  : Colors.purple.shade700,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
               ),
 
               const SizedBox(height: 20),
