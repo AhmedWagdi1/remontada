@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:developer' as developer;
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -136,15 +137,53 @@ class _PlayersScreenSupervisorState extends State<PlayersScreenSupervisor> {
                           subscriber: player,
                           endIcon: ButtonWidget(
                             height: 45,
-                            onTap: () => showApsencesheet(
-                              context,
-                              player,
-                              (val) => MatchDetailsCubit.get(context).apcense(
-                                id: player?.id.toString(),
-                                paymentMethod: val,
-                                matchid: widget.id,
-                              ),
-                            ),
+                            onTap: () {
+                              developer.log(
+                                '🔵 [UI] تأكيد اللاعب button clicked',
+                                name: 'PlayersScreenSupervisor',
+                              );
+                              developer.log(
+                                '🔵 [UI] Player ID: ${player?.id}, Name: ${player?.name}',
+                                name: 'PlayersScreenSupervisor',
+                              );
+                              developer.log(
+                                '🔵 [UI] Match ID: ${widget.id}',
+                                name: 'PlayersScreenSupervisor',
+                              );
+                              
+                              showApsencesheet(
+                                context,
+                                player,
+                                (val) {
+                                  developer.log(
+                                    '🔵 [UI] Payment method selected: $val',
+                                    name: 'PlayersScreenSupervisor',
+                                  );
+                                  developer.log(
+                                    '🔵 [UI] Calling MatchDetailsCubit.apcense with params:',
+                                    name: 'PlayersScreenSupervisor',
+                                  );
+                                  developer.log(
+                                    '   - id: ${player?.id.toString()}',
+                                    name: 'PlayersScreenSupervisor',
+                                  );
+                                  developer.log(
+                                    '   - paymentMethod: $val',
+                                    name: 'PlayersScreenSupervisor',
+                                  );
+                                  developer.log(
+                                    '   - matchid: ${widget.id}',
+                                    name: 'PlayersScreenSupervisor',
+                                  );
+                                  
+                                  MatchDetailsCubit.get(context).apcense(
+                                    id: player?.id.toString(),
+                                    paymentMethod: val,
+                                    matchid: widget.id,
+                                  );
+                                },
+                              );
+                            },
                             radius: 33,
                             // width: 60,
                             title: "تأكيد اللاعب",
@@ -313,10 +352,28 @@ showApsencesheet(
           10.ph,
           ButtonWidget(
             onTap: () {
-              Navigator.pop(context);
-              appsence?.call(
-                method,
+              developer.log(
+                '🟢 [BottomSheet] Confirm button clicked in bottom sheet',
+                name: 'showApsencesheet',
               );
+              developer.log(
+                '🟢 [BottomSheet] Selected payment method: $method',
+                name: 'showApsencesheet',
+              );
+              developer.log(
+                '🟢 [BottomSheet] Subscriber ID: ${subscriber?.id}',
+                name: 'showApsencesheet',
+              );
+              
+              if (method.isEmpty) {
+                developer.log(
+                  '⚠️ [BottomSheet] WARNING: Payment method is empty!',
+                  name: 'showApsencesheet',
+                );
+              }
+              
+              Navigator.pop(context);
+              appsence?.call(method);
             },
             radius: 33,
             title: LocaleKeys.confirm.tr(),

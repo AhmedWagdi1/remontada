@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:remontada/core/data_source/dio_helper.dart';
 import 'package:remontada/core/services/alerts.dart';
@@ -63,14 +65,86 @@ class MatchDetailsCubit extends Cubit<MatchDetailsState> {
   }
 
   apcense({String? paymentMethod, String? id, String? matchid}) async {
-    final res = await matchDetailsRepo.apsence(
-      subscriber_id: id,
-      matchid: matchid,
-      paymment_method: paymentMethod,
+    developer.log(
+      '🟡 [Cubit] apcense method called',
+      name: 'MatchDetailsCubit',
     );
-    if (res != null) {
-      emit(RefreshState());
-      return true;
+    developer.log(
+      '🟡 [Cubit] Parameters received:',
+      name: 'MatchDetailsCubit',
+    );
+    developer.log(
+      '   - subscriber_id: $id',
+      name: 'MatchDetailsCubit',
+    );
+    developer.log(
+      '   - paymentMethod: $paymentMethod',
+      name: 'MatchDetailsCubit',
+    );
+    developer.log(
+      '   - matchid: $matchid',
+      name: 'MatchDetailsCubit',
+    );
+
+    if (id == null || id.isEmpty) {
+      developer.log(
+        '❌ [Cubit] ERROR: subscriber_id is null or empty!',
+        name: 'MatchDetailsCubit',
+      );
+    }
+
+    if (matchid == null || matchid.isEmpty) {
+      developer.log(
+        '❌ [Cubit] ERROR: matchid is null or empty!',
+        name: 'MatchDetailsCubit',
+      );
+    }
+
+    if (paymentMethod == null || paymentMethod.isEmpty) {
+      developer.log(
+        '⚠️ [Cubit] WARNING: paymentMethod is null or empty!',
+        name: 'MatchDetailsCubit',
+      );
+    }
+
+    try {
+      developer.log(
+        '🟡 [Cubit] Calling repository apsence method...',
+        name: 'MatchDetailsCubit',
+      );
+      
+      final res = await matchDetailsRepo.apsence(
+        subscriber_id: id,
+        matchid: matchid,
+        paymment_method: paymentMethod,
+      );
+      
+      if (res != null) {
+        developer.log(
+          '✅ [Cubit] Success: apsence returned successfully',
+          name: 'MatchDetailsCubit',
+        );
+        developer.log(
+          '🟡 [Cubit] Emitting RefreshState to reload subscribers',
+          name: 'MatchDetailsCubit',
+        );
+        emit(RefreshState());
+        return true;
+      } else {
+        developer.log(
+          '❌ [Cubit] ERROR: apsence returned null (failed)',
+          name: 'MatchDetailsCubit',
+        );
+        return null;
+      }
+    } catch (e, stackTrace) {
+      developer.log(
+        '❌ [Cubit] EXCEPTION in apcense: $e',
+        name: 'MatchDetailsCubit',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      return null;
     }
   }
 
