@@ -725,16 +725,16 @@ showPlayersheet(BuildContext context,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       CustomText(
-                        "${matchmodel?.constSub ?? 0} / ",
-                        fontSize: 14,
-                        weight: FontWeight.w400,
-                        color: LightThemeColors.background,
-                      ),
-                      CustomText(
-                        "${subscribers?.subscribers?.length ?? 0}",
+                        "${matchmodel?.actualSub ?? 0} / ",
                         fontSize: 14,
                         weight: FontWeight.w400,
                         color: LightThemeColors.black,
+                      ),
+                      CustomText(
+                        "${matchmodel?.constSub ?? 0}",
+                        fontSize: 14,
+                        weight: FontWeight.w400,
+                        color: LightThemeColors.background,
                       ),
                     ],
                   ),
