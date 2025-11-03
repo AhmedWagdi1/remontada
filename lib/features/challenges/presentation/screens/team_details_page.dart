@@ -1109,8 +1109,8 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
               subLeaderPhone: (_teamData?['sub_leader']
                   as Map<String, dynamic>?)?['phone'] as String?,
             ),
-            SizedBox(height: 16),
-            _InviteSettingsSection(),
+            // SizedBox(height: 16),
+            // _InviteSettingsSection(),
             if (_currentUserRole == 'leader' && _invites.isNotEmpty) ...[
               const SizedBox(height: 16),
               _ChallengeRequestsSection(
@@ -1913,6 +1913,7 @@ class _TechnicalStaffSummary extends StatelessWidget {
   }
 }
 
+/* Hidden - Invite Settings Section
 /// Card describing invite settings for the team.
 class _InviteSettingsSection extends StatelessWidget {
   /// Creates a const [_InviteSettingsSection].
@@ -1952,6 +1953,7 @@ class _InviteSettingsSection extends StatelessWidget {
     );
   }
 }
+*/
 
 /// Section showing challenge requests for the team captain.
 class _ChallengeRequestsSection extends StatelessWidget {
