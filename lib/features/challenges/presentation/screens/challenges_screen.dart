@@ -681,8 +681,13 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         
         print('🔍 DEBUG: Slot 2 button clicked - User team ID: $userTeamId, Team1 ID: $team1Id, Is same: $isUserTeamInSlot1');
         
+        // Change text based on whether user's team is in slot 1
+        final buttonText = isUserTeamInSlot1 
+            ? 'قم بدعوة فريق للعب ضدك فى التحدى'
+            : LocaleKeys.challenge_join_match.tr();
+        
         return _buildActionSlot(
-          text: LocaleKeys.challenge_join_match.tr(),
+          text: buttonText,
           onTap: () {
             if (isUserTeamInSlot1) {
               // User's team is already in slot 1, show invite dialog
