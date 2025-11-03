@@ -674,9 +674,26 @@ class _ChallengesScreenState extends State<ChallengesScreen>
       if (isSlot1) {
         return _buildTeamInfo(team: match!.team1!);
       } else {
+        // Check if current user's team is already in team1
+        final userTeamId = _userTeams.isNotEmpty ? _userTeams[0]['id'] : null;
+        final team1Id = match!.team1?['id'];
+        final isUserTeamInSlot1 = userTeamId != null && team1Id != null && userTeamId == team1Id;
+        
+        print('🔍 DEBUG: Slot 2 button clicked - User team ID: $userTeamId, Team1 ID: $team1Id, Is same: $isUserTeamInSlot1');
+        
         return _buildActionSlot(
           text: LocaleKeys.challenge_join_match.tr(),
-          onTap: () => _showJoinChallengeDialog(match),
+          onTap: () {
+            if (isUserTeamInSlot1) {
+              // User's team is already in slot 1, show invite dialog
+              print('✅ DEBUG: User team is in slot 1, showing invite dialog');
+              _showInviteTeamDialog(match);
+            } else {
+              // User's team is not in slot 1, show join dialog
+              print('✅ DEBUG: User team is not in slot 1, showing join dialog');
+              _showJoinChallengeDialog(match);
+            }
+          },
           highlightColor: highlightColor,
           badgeColor: badgeColor,
         );
@@ -2061,6 +2078,496 @@ class _ChallengesScreenState extends State<ChallengesScreen>
       print('💥 DEBUG: Error fetching team members: $e');
     }
     return [];
+  }
+
+  /// Fetches all active teams for invitation
+  Future<List<Map<String, dynamic>>> _fetchAllActiveTeams() async {
+    try {
+      print('🔍 DEBUG: Fetching all active teams');
+      final res = await http.get(
+        Uri.parse('${ConstKeys.baseUrl}/team/all-active'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Utils.token}',
+        },
+      );
+
+      print('📥 DEBUG: All active teams response status: ${res.statusCode}');
+      print('📥 DEBUG: All active teams response body: ${res.body}');
+
+      if (res.statusCode < 400) {
+        final data = jsonDecode(res.body) as Map<String, dynamic>;
+        if (data['status'] == true) {
+          final teams = data['data'] as List<dynamic>? ?? [];
+          
+          print('👥 DEBUG: Found ${teams.length} active teams');
+          
+          // Convert to List<Map<String, dynamic>> and filter out nulls
+          final teamsList = teams
+              .where((t) => t is Map<String, dynamic>)
+              .map((t) => t as Map<String, dynamic>)
+              .toList();
+          
+          return teamsList;
+        }
+      }
+    } catch (e) {
+      print('💥 DEBUG: Error fetching all active teams: $e');
+    }
+    return [];
+  }
+
+  /// Shows a dialog to invite a team to the match
+  Future<void> _showInviteTeamDialog(ChallengeMatch? match) async {
+    print('🔍 DEBUG: Showing invite team dialog');
+    print('📋 DEBUG: Match ID: ${match?.id}, Playground: ${match?.playground}, Date: ${match?.date}');
+    print('👤 DEBUG: Current user role: $_userRole');
+    print('👥 DEBUG: User teams: ${_userTeams.map((t) => t['name']).join(', ')}');
+
+    // Check if user has teams
+    if (_userTeams.isEmpty) {
+      print('❌ DEBUG: User has no teams - cannot invite');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('يجب أن تكون عضواً في فريق لدعوة فريق آخر'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Check if user is captain
+    final isCaptain = _isUserCaptain();
+    print('👑 DEBUG: Is user leader/captain? $isCaptain (Role: $_userRole)');
+
+    if (!isCaptain) {
+      print('❌ DEBUG: User is not leader/captain - Role: $_userRole');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+              '${LocaleKeys.challenge_captain_required.tr()}\nدورك الحالي: ${_userRole ?? "غير محدد"}'),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 4),
+        ),
+      );
+      return;
+    }
+
+    print('✅ DEBUG: User is captain, fetching all active teams');
+
+    // Fetch all active teams
+    final allTeams = await _fetchAllActiveTeams();
+    
+    if (allTeams.isEmpty) {
+      print('❌ DEBUG: No active teams found');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('لا توجد فرق نشطة متاحة للدعوة'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Filter out the current user's team
+    final userTeamId = _userTeams[0]['id'];
+    final filteredTeams = allTeams.where((team) => team['id'] != userTeamId).toList();
+    
+    print('✅ DEBUG: Found ${filteredTeams.length} teams to invite (excluding user team)');
+
+    final playground = match?.playground ?? '';
+    final date = match?.date ?? '';
+    final startTime = match?.startTime ?? '';
+    final userTeamName = _userTeams[0]['name'] ?? '';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String searchQuery = '';
+        Map<String, dynamic>? selectedTeam;
+        List<Map<String, dynamic>> displayedTeams = filteredTeams;
+
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                title: const Text(
+                  'دعوة فريق للمباراة',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF23425F),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                content: SizedBox(
+                  width: double.maxFinite,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Match details
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF8F9FA),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: const Color(0xFFE9ECEF)),
+                          ),
+                          child: Column(
+                            children: [
+                              const Text(
+                                'تفاصيل المباراة',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Color(0xFF23425F),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  const Icon(Icons.groups,
+                                      color: Color(0xFF6C757D), size: 20),
+                                  const SizedBox(width: 8),
+                                  Text('فريقك: $userTeamName'),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  const Icon(Icons.location_on,
+                                      color: Color(0xFF6C757D), size: 20),
+                                  const SizedBox(width: 8),
+                                  Text('الملعب: $playground'),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  const Icon(Icons.calendar_today,
+                                      color: Color(0xFF6C757D), size: 20),
+                                  const SizedBox(width: 8),
+                                  Text('التاريخ: $date'),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  const Icon(Icons.access_time,
+                                      color: Color(0xFF6C757D), size: 20),
+                                  const SizedBox(width: 8),
+                                  Text('الوقت: $startTime'),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        // Search field
+                        TextField(
+                          decoration: InputDecoration(
+                            hintText: 'ابحث عن فريق...',
+                            prefixIcon: const Icon(Icons.search),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              searchQuery = value.toLowerCase();
+                              displayedTeams = filteredTeams.where((team) {
+                                final teamName = team['name']?.toString().toLowerCase() ?? '';
+                                return teamName.contains(searchQuery);
+                              }).toList();
+                              print('🔍 DEBUG: Search query: $searchQuery, Found ${displayedTeams.length} teams');
+                            });
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        // Teams list
+                        const Text(
+                          'اختر الفريق المدعو',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color(0xFF23425F),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Container(
+                          constraints: const BoxConstraints(maxHeight: 300),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: const Color(0xFFE9ECEF)),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: displayedTeams.isEmpty
+                              ? const Padding(
+                                  padding: EdgeInsets.all(16.0),
+                                  child: Text(
+                                    'لا توجد فرق تطابق البحث',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Color(0xFF6C757D)),
+                                  ),
+                                )
+                              : ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: displayedTeams.length,
+                                  itemBuilder: (context, index) {
+                                    final team = displayedTeams[index];
+                                    final teamId = team['id'];
+                                    final teamName = team['name']?.toString() ?? 'لا يوجد اسم';
+                                    final teamLogo = team['logo_url']?.toString();
+
+                                    return ListTile(
+                                      leading: CircleAvatar(
+                                        radius: 20,
+                                        backgroundImage: _getTeamLogoImage(teamLogo),
+                                        child: teamLogo == null ||
+                                                teamLogo.isEmpty ||
+                                                !teamLogo.startsWith('http')
+                                            ? const Icon(Icons.groups, color: Colors.grey)
+                                            : null,
+                                      ),
+                                      title: Text(
+                                        teamName,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      trailing: Radio<int>(
+                                        value: teamId as int,
+                                        groupValue: selectedTeam?['id'] as int?,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedTeam = team;
+                                            print('✅ DEBUG: Selected team: $teamName (ID: $teamId)');
+                                          });
+                                        },
+                                        activeColor: const Color(0xFF23425F),
+                                      ),
+                                      onTap: () {
+                                        setState(() {
+                                          selectedTeam = team;
+                                          print('✅ DEBUG: Selected team: $teamName (ID: $teamId)');
+                                        });
+                                      },
+                                    );
+                                  },
+                                ),
+                        ),
+                        if (selectedTeam != null) ...[
+                          const SizedBox(height: 20),
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFD1ECF1),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: const Color(0xFFBEE5EB)),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.check_circle,
+                                  color: Color(0xFF0C5460),
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    'تم اختيار: ${selectedTeam!['name']}',
+                                    style: const TextStyle(
+                                      color: Color(0xFF0C5460),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 20),
+                        // Confirmation message
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFF3CD),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: const Color(0xFFFFEAA7)),
+                          ),
+                          child: const Text(
+                            'سيتم إرسال دعوة للفريق المختار للانضمام إلى المباراة',
+                            style: TextStyle(
+                              color: Color(0xFF856404),
+                              fontSize: 14,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      print('🚫 DEBUG: User cancelled team invitation');
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      'إلغاء',
+                      style: TextStyle(color: Color(0xFF6C757D)),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: selectedTeam != null
+                        ? () async {
+                            print('✅ DEBUG: User confirmed team invitation');
+                            print('📤 DEBUG: Selected team: ${selectedTeam!['name']} (ID: ${selectedTeam!['id']})');
+                            Navigator.of(context).pop();
+                            await _sendTeamInviteRequest(match, selectedTeam!);
+                          }
+                        : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: selectedTeam != null ? const Color(0xFF23425F) : Colors.grey,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      'إرسال الدعوة',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  /// Sends a team invitation request to the challenge API
+  Future<void> _sendTeamInviteRequest(ChallengeMatch? match, Map<String, dynamic> invitedTeam) async {
+    if (match == null) {
+      print('❌ DEBUG: Cannot send team invite - match is null');
+      return;
+    }
+
+    final matchId = match.id;
+    final invitedTeamId = invitedTeam['id'];
+    final invitedTeamName = invitedTeam['name'] ?? 'Unknown Team';
+
+    print('🚀 DEBUG: Sending team invitation request');
+    print('📤 DEBUG: Match ID: $matchId');
+    print('📤 DEBUG: Invited Team ID: $invitedTeamId');
+    print('📤 DEBUG: Invited Team Name: $invitedTeamName');
+
+    // Fetch team members for the invited team
+    final invitedTeamMembers = await _fetchTeamMembers(invitedTeamId as int);
+    
+    if (invitedTeamMembers.isEmpty) {
+      print('❌ DEBUG: Invited team has no members');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('الفريق المدعو لا يحتوي على أعضاء'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Extract player IDs from team members
+    final playerIds = invitedTeamMembers
+        .where((member) => member['id'] != null)
+        .map((member) => member['id'] as int)
+        .toList();
+
+    print('👥 DEBUG: Invited team has ${playerIds.length} members');
+    print('👥 DEBUG: Player IDs: $playerIds');
+
+    if (playerIds.length < 10) {
+      print('⚠️ DEBUG: Invited team has less than 10 members (${playerIds.length})');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('الفريق المدعو يحتوي على ${playerIds.length} لاعبين فقط (يجب أن يكون 10 على الأقل)'),
+          backgroundColor: Colors.orange,
+          duration: const Duration(seconds: 4),
+        ),
+      );
+      // Continue anyway - let the API handle the validation
+    }
+
+    final requestUrl = '${ConstKeys.baseUrl}/challenge/send-team-match-request';
+
+    print('🚀 DEBUG: Sending team invite request to: $requestUrl');
+    print('📤 DEBUG: Request body: {match_id: $matchId, invited_team_id: $invitedTeamId, players: $playerIds}');
+    print('🔑 DEBUG: Authorization header: Bearer ${Utils.token.substring(0, 20)}...');
+
+    try {
+      final requestBody = {
+        'match_id': matchId,
+        'invited_team_id': invitedTeamId,
+        'players': playerIds,
+      };
+
+      print('📤 DEBUG: Full request body: ${jsonEncode(requestBody)}');
+
+      final response = await http.post(
+        Uri.parse(requestUrl),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${Utils.token}',
+        },
+        body: jsonEncode(requestBody),
+      );
+
+      print('📥 DEBUG: Response status code: ${response.statusCode}');
+      print('📥 DEBUG: Response body: ${response.body}');
+
+      final responseData = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && responseData['status'] == true) {
+        print('✅ DEBUG: Team invitation sent successfully');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(responseData['message'] ?? 'تم إرسال دعوة الفريق بنجاح'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        // Refresh matches to show updated state
+        _fetchMatches();
+      } else {
+        print('❌ DEBUG: Team invitation failed - Status: ${responseData['status']}, Message: ${responseData['message']}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(responseData['message'] ?? 'فشل في إرسال دعوة الفريق'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
+    } catch (e, stackTrace) {
+      print('💥 DEBUG: Error sending team invitation: $e');
+      print('💥 DEBUG: Stack trace: $stackTrace');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   /// Shows a dialog to confirm match reservation
