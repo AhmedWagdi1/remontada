@@ -56,6 +56,10 @@ class _PlayersScreenSupervisorState extends State<PlayersScreenSupervisor> {
           // TODO: implement listener
         },
         builder: (context, state) {
+          developer.log(
+            '[PlayersScreenSupervisor] build — matchId: ${widget.id}, players(list).len: ${subScribersModel.subscribers?.length ?? 0}',
+            name: 'PlayersScreenSupervisor',
+          );
           return Scaffold(
             body: LoadingAndError(
               isLoading: state is SubScribersLoading,

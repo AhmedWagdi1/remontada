@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -54,21 +55,44 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
         listener: (context, state) {
           if (state is MatchDetailsLoaded) {
             matchModel = state.matchDetails;
-            subScribersModel = state.subScribers;
+            // Only replace subscribers if the new payload actually has data; avoid overwriting with empty list from a race
+            final incomingLen = state.subScribers.subscribers?.length ?? 0;
+            if (incomingLen > 0 || (subScribersModel.subscribers?.isEmpty ?? true)) {
+              subScribersModel = state.subScribers;
+            }
+            developer.log(
+              '[MatchDetails] loaded — matchId: ${widget.id}, actual: ${matchModel.actualSub}, max: ${matchModel.constSub}, players(list).len: ${subScribersModel.subscribers?.length ?? 0}',
+              name: 'MatchDetailsScreen',
+            );
           }
-          ;
           if (state is RefreshState) {
-            MatchDetailsCubit.get(context).getMatchDetails(
+            final c = MatchDetailsCubit.get(context);
+            c.getMatchDetails(
               widget.id.toString(),
               isLoading: false,
             );
+            c.getSubscribers(
+              widget.id.toString(),
+              isloading: false,
+              type: matchModel.type,
+            );
           }
-          ;
           // if (state is SubScribersLoaded) subScribersModel = state.subScribers;
         },
         builder: (context, state) {
           final cubit = MatchDetailsCubit.get(context);
           // subScribersModel = cubit.getSubscribers(widget.id.toString());
+          // Debug: log the current counts used for the subscribers badge
+          // Prefer the live subscribers list length when available; fall back to API-provided actualSub
+          final liveLen = subScribersModel.subscribers?.length ?? 0;
+          final computedActual = liveLen > 0
+              ? liveLen
+              : (matchModel.actualSub ?? 0);
+          final computedMax = matchModel.constSub ?? 0;
+          developer.log(
+            '[MatchDetails] build — matchId: ${widget.id}, actual: $computedActual, max: $computedMax, players(list).len: $liveLen',
+            name: 'MatchDetailsScreen',
+          );
           return Scaffold(
             // appBar: CustomAppbar(
             //   title: "تفاصيل المباراة",
@@ -137,11 +161,9 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                         context,
                                         child: SheetBodyAddPlayers(
                                           addPlayer: (phone, name) async {
-                                            final response =
-                                                await cubit.addsubscrubers(
+                                            await cubit.addsubscrubers(
                                               matchid:
-                                                  matchModel.id.toString() ??
-                                                      "",
+                                                  matchModel.id.toString(),
                                               name: name,
                                               phone: phone,
                                             );
@@ -152,7 +174,7 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                         ),
                                       ).then((val) {
                                         cubit.getMatchDetails(
-                                          widget.id.toString() ?? "",
+                                          widget.id.toString(),
                                         );
                                       });
                                     },
@@ -235,7 +257,7 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                           ),
                           MatchDetailswidget(
                             title: LocaleKeys.match_long.tr(),
-                            subtitle: matchModel.duration.toString() ?? "",
+                            subtitle: matchModel.duration?.toString() ?? "",
                             icon: "time",
                           ),
                           MatchDetailswidget(
@@ -283,8 +305,10 @@ class _MatchDetailsScreenState extends State<MatchDetailsScreen> {
                                     //   color: LightThemeColors.black,
                                     // ),
                                     1.pw,
+                                    // Use live values instead of a possibly stale string coming from the backend
+                                    // Previously: matchModel.subscribers (often "0/20")
                                     CustomText(
-                                      matchModel.subscribers ?? "",
+                                      "${computedActual}/${computedMax}",
                                       fontSize: 14,
                                       weight: FontWeight.w400,
                                       color: LightThemeColors.background,
@@ -725,7 +749,7 @@ showPlayersheet(BuildContext context,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       CustomText(
-                        "${matchmodel?.actualSub ?? 0} / ",
+                        "${(subscribers?.subscribers?.length ?? 0) > 0 ? (subscribers?.subscribers?.length ?? 0) : (matchmodel?.actualSub ?? 0)} / ",
                         fontSize: 14,
                         weight: FontWeight.w400,
                         color: LightThemeColors.black,
