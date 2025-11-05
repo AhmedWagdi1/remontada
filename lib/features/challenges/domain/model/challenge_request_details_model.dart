@@ -10,6 +10,7 @@ class ChallengeRequestDetails {
   final Map<String, dynamic>? fromTeam;
   final Map<String, dynamic>? toTeam;
   final Map<String, dynamic>? matchDetails;
+  final int players_required;
 
   ChallengeRequestDetails({
     required this.id,
@@ -22,6 +23,7 @@ class ChallengeRequestDetails {
     this.fromTeam,
     this.toTeam,
     this.matchDetails,
+    required this.players_required,
   });
 
   factory ChallengeRequestDetails.fromJson(Map<String, dynamic> json) {
@@ -37,6 +39,7 @@ class ChallengeRequestDetails {
       fromTeam: json['requester_team'] ?? json['from_team'],
       toTeam: json['invited_team'] ?? json['to_team'],
       matchDetails: json['match_details'],
+      players_required: json['players_required'] ?? 0,
     );
   }
 

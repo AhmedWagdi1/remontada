@@ -30,6 +30,8 @@ class _ChallengeRequestDetailsScreenState
   ChallengeRequestDetails? _challengeDetails;
   bool _isLoading = true;
   bool _isResponding = false;
+  List<dynamic> _teamPlayers = [];
+  Set<int> _selectedPlayerIds = {};
 
   @override
   void initState() {
@@ -130,12 +132,132 @@ class _ChallengeRequestDetailsScreenState
     }
   }
 
+  Future<void> _handleAcceptChallenge() async {
+    if (_challengeDetails == null) return;
+
+    // Check if players are required
+    if (_challengeDetails!.players_required == 1) {
+      // Load team players and show bottom sheet
+      await _loadTeamPlayers();
+      if (_teamPlayers.isNotEmpty && mounted) {
+        _showPlayerSelectionBottomSheet();
+      } else {
+        _showError('Failed to load team players');
+      }
+    } else {
+      // Players not required, accept directly
+      await _respondToChallengeWithPlayers('accept', null);
+    }
+  }
+
+  Future<void> _loadTeamPlayers() async {
+    if (_challengeDetails == null) return;
+
+    try {
+      // Get the current user's team ID (the team receiving the challenge)
+      final teamId = _challengeDetails!.toTeamId;
+
+      final response = await http.get(
+        Uri.parse('${ConstKeys.baseUrl}/team/show/$teamId'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Utils.token}',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+
+        if (data['status'] == true) {
+          final teamData = data['data'] as Map<String, dynamic>;
+          setState(() {
+            _teamPlayers = teamData['users'] as List<dynamic>? ?? [];
+          });
+        }
+      }
+    } catch (e) {
+      print('Error loading team players: $e');
+    }
+  }
+
+  Future<void> _respondToChallengeWithPlayers(
+      String action, List<int>? playerIds) async {
+    if (_challengeDetails == null) return;
+
+    try {
+      setState(() => _isResponding = true);
+
+      final body = {
+        'request_id': widget.requestId,
+        'action': action,
+      };
+
+      // Add players array if provided
+      if (playerIds != null && playerIds.isNotEmpty) {
+        body['players'] = playerIds;
+      }
+
+      final response = await http.post(
+        Uri.parse('${ConstKeys.baseUrl}/challenge/respond-team-match-request'),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${Utils.token}',
+        },
+        body: jsonEncode(body),
+      );
+
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+
+      if (data['status'] == true) {
+        _showSuccess(
+            data['message'] ?? LocaleKeys.challenges_response_sent.tr());
+        // Navigate back to challenges screen after successful response
+        await Future.delayed(
+            const Duration(seconds: 1)); // Brief delay to show success message
+        if (mounted) {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            Routes.challengesScreen,
+            (route) => route
+                .isFirst, // Keep only the first route (usually the home/layout screen)
+          );
+        }
+      } else {
+        _showError(data['message'] ??
+            LocaleKeys.challenges_error_responding.tr(args: ['']));
+      }
+    } catch (e) {
+      _showError(
+          LocaleKeys.challenges_error_responding.tr(args: [e.toString()]));
+    } finally {
+      setState(() => _isResponding = false);
+    }
+  }
+
   void _showSuccess(String message) {
     Alerts.snack(text: message, state: SnackState.success);
   }
 
   void _showError(String message) {
     Alerts.snack(text: message, state: SnackState.failed);
+  }
+
+  void _showPlayerSelectionBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => _PlayerSelectionBottomSheet(
+        players: _teamPlayers,
+        onConfirm: (selectedPlayerIds) {
+          setState(() {
+            _selectedPlayerIds = selectedPlayerIds;
+          });
+          _respondToChallengeWithPlayers('accept', selectedPlayerIds.toList());
+        },
+      ),
+    );
   }
 
   @override
@@ -515,7 +637,7 @@ class _ChallengeRequestDetailsScreenState
             Expanded(
               child: ElevatedButton(
                 onPressed:
-                    _isResponding ? null : () => _respondToChallenge('accept'),
+                    _isResponding ? null : () => _handleAcceptChallenge(),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                   padding: const EdgeInsets.symmetric(vertical: 12),
@@ -578,6 +700,260 @@ class _ChallengeRequestDetailsScreenState
           ],
         ),
       ],
+    );
+  }
+}
+
+/// Bottom sheet widget for selecting team players
+class _PlayerSelectionBottomSheet extends StatefulWidget {
+  final List<dynamic> players;
+  final Function(Set<int>) onConfirm;
+
+  const _PlayerSelectionBottomSheet({
+    required this.players,
+    required this.onConfirm,
+  });
+
+  @override
+  State<_PlayerSelectionBottomSheet> createState() =>
+      _PlayerSelectionBottomSheetState();
+}
+
+class _PlayerSelectionBottomSheetState
+    extends State<_PlayerSelectionBottomSheet> {
+  Set<int> _selectedPlayerIds = {};
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedCount = _selectedPlayerIds.length;
+    final canConfirm = selectedCount >= 10;
+
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.9,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      child: Column(
+        children: [
+          // Header
+          Container(
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: context.primaryColor,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+            ),
+            child: Column(
+              children: [
+                // Drag handle
+                Container(
+                  width: 40,
+                  height: 4,
+                  margin: EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomText(
+                        'Select Players',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.close, color: Colors.white),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomText(
+                        'Select at least 10 players from your team',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.9),
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          // Selection counter
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            color: canConfirm ? Colors.green.shade50 : Colors.orange.shade50,
+            child: Row(
+              children: [
+                Icon(
+                  canConfirm ? Icons.check_circle : Icons.info,
+                  color: canConfirm ? Colors.green : Colors.orange,
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: CustomText(
+                    canConfirm
+                        ? '$selectedCount players selected'
+                        : '$selectedCount/10 players selected (${10 - selectedCount} more needed)',
+                    style: TextStyle(
+                      color: canConfirm
+                          ? Colors.green.shade700
+                          : Colors.orange.shade700,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Players list
+          Expanded(
+            child: widget.players.isEmpty
+                ? Center(
+                    child: CustomText(
+                      'No players available',
+                      style: TextStyle(
+                        color: LightThemeColors.secondaryText,
+                        fontSize: 16,
+                      ),
+                    ),
+                  )
+                : ListView.builder(
+                    padding: EdgeInsets.all(16),
+                    itemCount: widget.players.length,
+                    itemBuilder: (context, index) {
+                      final player =
+                          widget.players[index] as Map<String, dynamic>;
+                      final playerId = player['id'] as int? ?? 0;
+                      final playerName = player['name'] as String? ?? 'Unknown';
+                      final playerPhone = player['mobile'] as String? ??
+                          player['phone'] as String? ??
+                          '';
+                      final isSelected = _selectedPlayerIds.contains(playerId);
+
+                      return Card(
+                        margin: EdgeInsets.only(bottom: 12),
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: BorderSide(
+                            color: isSelected
+                                ? context.primaryColor
+                                : Colors.grey.shade200,
+                            width: isSelected ? 2 : 1,
+                          ),
+                        ),
+                        child: CheckboxListTile(
+                          value: isSelected,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              if (value == true) {
+                                _selectedPlayerIds.add(playerId);
+                              } else {
+                                _selectedPlayerIds.remove(playerId);
+                              }
+                            });
+                          },
+                          title: CustomText(
+                            playerName,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          subtitle: playerPhone.isNotEmpty
+                              ? CustomText(
+                                  playerPhone,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: LightThemeColors.secondaryText,
+                                  ),
+                                )
+                              : null,
+                          secondary: CircleAvatar(
+                            backgroundColor: isSelected
+                                ? context.primaryColor
+                                : Colors.grey.shade300,
+                            child: Icon(
+                              Icons.person,
+                              color: isSelected
+                                  ? Colors.white
+                                  : Colors.grey.shade600,
+                            ),
+                          ),
+                          activeColor: context.primaryColor,
+                          checkColor: Colors.white,
+                          controlAffinity: ListTileControlAffinity.trailing,
+                        ),
+                      );
+                    },
+                  ),
+          ),
+
+          // Confirm button
+          Container(
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: Offset(0, -5),
+                ),
+              ],
+            ),
+            child: ElevatedButton(
+              onPressed: canConfirm
+                  ? () {
+                      Navigator.pop(context);
+                      widget.onConfirm(_selectedPlayerIds);
+                    }
+                  : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: context.primaryColor,
+                disabledBackgroundColor: Colors.grey.shade300,
+                padding: EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                minimumSize: Size(double.infinity, 50),
+              ),
+              child: CustomText(
+                canConfirm
+                    ? 'Confirm Selection ($selectedCount players)'
+                    : 'Select at least 10 players',
+                style: TextStyle(
+                  color: canConfirm ? Colors.white : Colors.grey.shade600,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
