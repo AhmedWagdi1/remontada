@@ -86,10 +86,11 @@ class MatchDetailsRepo {
       name: 'MatchDetailsRepo',
     );
     
-    final url = "/presence/$matchid";
+    final url = "/presence/$subscriber_id";
     final body = {
       if (paymment_method != null) "payment_method": paymment_method,
-      "subscriber_id": subscriber_id,
+      "match_id": matchid,
+      // "subscriber_id": subscriber_id,
     };
 
     developer.log(
