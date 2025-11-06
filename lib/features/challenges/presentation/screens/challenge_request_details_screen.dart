@@ -31,7 +31,6 @@ class _ChallengeRequestDetailsScreenState
   bool _isLoading = true;
   bool _isResponding = false;
   List<dynamic> _teamPlayers = [];
-  Set<int> _selectedPlayerIds = {};
 
   @override
   void initState() {
@@ -85,11 +84,20 @@ class _ChallengeRequestDetailsScreenState
     }
   }
 
-  Future<void> _respondToChallenge(String action) async {
+  Future<void> _respondToChallenge(String action, {List<int>? playerIds}) async {
     if (_challengeDetails == null) return;
 
     try {
       setState(() => _isResponding = true);
+
+      final body = {
+        'request_id': widget.requestId,
+        'action': action,
+      };
+
+      if (playerIds != null && playerIds.isNotEmpty) {
+        body['players'] = playerIds;
+      }
 
       final response = await http.post(
         Uri.parse('${ConstKeys.baseUrl}/challenge/respond-team-match-request'),
@@ -98,10 +106,7 @@ class _ChallengeRequestDetailsScreenState
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${Utils.token}',
         },
-        body: jsonEncode({
-          'request_id': widget.requestId,
-          'action': action,
-        }),
+        body: jsonEncode(body),
       );
 
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -116,8 +121,7 @@ class _ChallengeRequestDetailsScreenState
           Navigator.pushNamedAndRemoveUntil(
             context,
             Routes.challengesScreen,
-            (route) => route
-                .isFirst, // Keep only the first route (usually the home/layout screen)
+            (route) => route.isFirst,
           );
         }
       } else {
@@ -146,7 +150,7 @@ class _ChallengeRequestDetailsScreenState
       }
     } else {
       // Players not required, accept directly
-      await _respondToChallengeWithPlayers('accept', null);
+      await _respondToChallenge('accept');
     }
   }
 
@@ -180,61 +184,6 @@ class _ChallengeRequestDetailsScreenState
     }
   }
 
-  Future<void> _respondToChallengeWithPlayers(
-      String action, List<int>? playerIds) async {
-    if (_challengeDetails == null) return;
-
-    try {
-      setState(() => _isResponding = true);
-
-      final body = {
-        'request_id': widget.requestId,
-        'action': action,
-      };
-
-      // Add players array if provided
-      if (playerIds != null && playerIds.isNotEmpty) {
-        body['players'] = playerIds;
-      }
-
-      final response = await http.post(
-        Uri.parse('${ConstKeys.baseUrl}/challenge/respond-team-match-request'),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${Utils.token}',
-        },
-        body: jsonEncode(body),
-      );
-
-      final data = jsonDecode(response.body) as Map<String, dynamic>;
-
-      if (data['status'] == true) {
-        _showSuccess(
-            data['message'] ?? LocaleKeys.challenges_response_sent.tr());
-        // Navigate back to challenges screen after successful response
-        await Future.delayed(
-            const Duration(seconds: 1)); // Brief delay to show success message
-        if (mounted) {
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            Routes.challengesScreen,
-            (route) => route
-                .isFirst, // Keep only the first route (usually the home/layout screen)
-          );
-        }
-      } else {
-        _showError(data['message'] ??
-            LocaleKeys.challenges_error_responding.tr(args: ['']));
-      }
-    } catch (e) {
-      _showError(
-          LocaleKeys.challenges_error_responding.tr(args: [e.toString()]));
-    } finally {
-      setState(() => _isResponding = false);
-    }
-  }
-
   void _showSuccess(String message) {
     Alerts.snack(text: message, state: SnackState.success);
   }
@@ -251,10 +200,7 @@ class _ChallengeRequestDetailsScreenState
       builder: (context) => _PlayerSelectionBottomSheet(
         players: _teamPlayers,
         onConfirm: (selectedPlayerIds) {
-          setState(() {
-            _selectedPlayerIds = selectedPlayerIds;
-          });
-          _respondToChallengeWithPlayers('accept', selectedPlayerIds.toList());
+          _respondToChallenge('accept', playerIds: selectedPlayerIds.toList());
         },
       ),
     );
