@@ -74,15 +74,11 @@ class MatchDetailsCubit extends Cubit<MatchDetailsState> {
       name: 'MatchDetailsCubit',
     );
     developer.log(
-      '   - subscriber_id: $id',
+      '   - URL matchid: $matchid',
       name: 'MatchDetailsCubit',
     );
     developer.log(
-      '   - paymentMethod: $paymentMethod',
-      name: 'MatchDetailsCubit',
-    );
-    developer.log(
-      '   - matchid: $matchid',
+      '   - Body: {"subscriber_id": $id, "paymentMethod": $paymentMethod}',
       name: 'MatchDetailsCubit',
     );
 

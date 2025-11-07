@@ -86,11 +86,10 @@ class MatchDetailsRepo {
       name: 'MatchDetailsRepo',
     );
     
-    final url = "/presence/$subscriber_id";
+    final url = "/presence/$matchid";
     final body = {
-      if (paymment_method != null) "payment_method": paymment_method,
-      "match_id": matchid,
-      // "subscriber_id": subscriber_id,
+      "subscriber_id": subscriber_id,
+      "payment_method": paymment_method,
     };
 
     developer.log(
@@ -106,7 +105,7 @@ class MatchDetailsRepo {
       name: 'MatchDetailsRepo',
     );
     developer.log(
-      '   - Body: $body',
+      '   - Body: {"subscriber_id": $subscriber_id, "payment_method": $paymment_method}',
       name: 'MatchDetailsRepo',
     );
 
