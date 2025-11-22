@@ -5,7 +5,9 @@
   "copilot.mcp.servers": {
     "flutter-mcp": {
       "command": "/home/ahmed/.local/share/flutter-mcp-venv/bin/flutter-mcp",
-      "args": ["start"],
+      "args": [
+        "start"
+      ],
       "transport": "stdio"
     }
   }

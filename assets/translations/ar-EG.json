@@ -199,6 +199,7 @@
   "challenge_invalid_number": "يرجى إدخال رقم صحيح",
   "challenge_no_matches_available": "لا توجد مباريات متاحة للحجز",
   "challenge_error_loading_matches": "خطأ في تحميل المباريات",
+  "add_match_result": "إضافة نتيجة المباراة",
   "challenge_reserve_match": "احجز هذا المباراة",
   "challenge_join_match": "انضم لهذا المباراة",
   "challenge_captain_required": "يجب أن تكون قائد الفريق لحجز المباراة",

@@ -179,6 +179,7 @@
   "challenge_invalid_number": "Please enter a valid number",
   "challenge_no_matches_available": "No matches available for booking",
   "challenge_error_loading_matches": "Error loading matches",
+  "add_match_result": "Add Match Result",
   "league_results": "League Results",
   "championships": "Championships",
   "under_construction": "🚧 Under Construction",

@@ -47,6 +47,47 @@ class ItemWidget extends StatefulWidget {
 }
 
 class _ItemWidgetState extends State<ItemWidget> {
+  bool _isPastMatch(MatchModel? match) {
+    if (match == null) return false;
+    // Prefer dateDate fields if available
+    String? date = match.dateDate?.date ?? match.date;
+    String? endTime =
+        match.dateDate?.end_time ?? match.endTime ?? match.startTime ?? match.start;
+    if (date == null || endTime == null) return false;
+
+    // The date format from API is likely not YYYY-MM-DD. Let's try to handle DD-MM-YYYY.
+    String isoDate;
+    final dateParts = date.split('-');
+    if (dateParts.length == 3) {
+      // Assuming DD-MM-YYYY and converting to YYYY-MM-DD.
+      // This is safer for DateTime.tryParse.
+      isoDate = "${dateParts[2]}-${dateParts[1]}-${dateParts[0]}";
+    } else {
+      isoDate = date; // Hope for the best with the original string
+    }
+
+    final dateTimeString = "$isoDate $endTime";
+    DateTime? matchEnd;
+    try {
+      matchEnd = DateTime.tryParse(dateTimeString);
+      // Some APIs may return time without seconds; try adding :00
+      if (matchEnd == null && endTime.split(':').length == 2) {
+        matchEnd = DateTime.tryParse("$isoDate ${endTime}:00");
+      }
+    } catch (_) {
+      matchEnd = null;
+    }
+
+    if (matchEnd == null) {
+      // For debugging purposes, let's see what we are trying to parse.
+      // In a real app, you might want a more robust logging solution.
+      print(
+          "DEBUG: Failed to parse datetime string: '$dateTimeString' from original date '$date' and time '$endTime'");
+      return false;
+    }
+    return DateTime.now().isAfter(matchEnd);
+  }
+
   SubScribersModel? subscribers;
   MatchDetailsRepo matchDetailsRepo = locator<MatchDetailsRepo>();
 
@@ -216,6 +257,38 @@ class _ItemWidgetState extends State<ItemWidget> {
                           )
                         ],
                       ),
+                      if (widget.isSupervisor == true)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: ButtonWidget(
+                            height: 40,
+                            radius: 12,
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                Routes.PlayersScreenSupervisor,
+                                arguments: widget.matchModel?.id.toString(),
+                              );
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.edit_note,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                8.pw,
+                                CustomText(
+                                  'add_match_result'.tr(),
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                  weight: FontWeight.w600,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
