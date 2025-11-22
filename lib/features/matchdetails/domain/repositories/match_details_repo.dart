@@ -205,4 +205,42 @@ class MatchDetailsRepo {
       return null;
     }
   }
+
+  setTeamMatchResult({
+    required String matchId,
+    required List<Map<String, dynamic>> results,
+  }) async {
+    final ApiResponse response = await dioService.postData(
+      loading: true,
+      url: "/challenge/set-team-match-result",
+      body: {
+        "match_id": matchId,
+        "results": results,
+      },
+    );
+    if (response.isError == false) {
+      Alerts.snack(
+        text: response.response?.data["message"] ?? "Result submitted successfully!",
+        state: SnackState.success,
+      );
+      return true;
+    } else {
+      Alerts.snack(
+        text: response.response?.data["message"] ?? "Failed to submit result.",
+        state: SnackState.failed,
+      );
+      return false;
+    }
+  }
+
+  Future<dynamic> getTeamMatchResults(String matchId) async {
+    final ApiResponse response = await dioService.getData(
+      url: "/challenge/get-team-match-results/$matchId",
+    );
+    if (response.isError == false) {
+      return response.response?.data;
+    } else {
+      return null;
+    }
+  }
 }

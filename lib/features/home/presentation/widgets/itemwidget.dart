@@ -260,32 +260,35 @@ class _ItemWidgetState extends State<ItemWidget> {
                       if (widget.isSupervisor == true)
                         Padding(
                           padding: const EdgeInsets.only(top: 10),
-                          child: ButtonWidget(
-                            height: 40,
-                            radius: 12,
+                          child: GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(
+                              Alerts.bottomSheet(
                                 context,
-                                Routes.PlayersScreenSupervisor,
-                                arguments: widget.matchModel?.id.toString(),
+                                child: MatchResultSheet(
+                                    matchId: widget.matchModel!.id.toString()),
                               );
                             },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.edit_note,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                                8.pw,
-                                CustomText(
-                                  'add_match_result'.tr(),
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                  weight: FontWeight.w600,
-                                ),
-                              ],
+                            child: ButtonWidget(
+                              height: 40,
+                              radius: 12,
+                              onTap: null,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.edit_note,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                  8.pw,
+                                  CustomText(
+                                    'add_match_result'.tr(),
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                    weight: FontWeight.w600,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -505,6 +508,143 @@ class _ItemWidgetState extends State<ItemWidget> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class MatchResultSheet extends StatefulWidget {
+  final String matchId;
+  const MatchResultSheet({Key? key, required this.matchId}) : super(key: key);
+
+  @override
+  State<MatchResultSheet> createState() => _MatchResultSheetState();
+}
+
+class _MatchResultSheetState extends State<MatchResultSheet> {
+  bool _isLoading = true;
+  dynamic _matchDetails;
+  dynamic _result;
+  String? _error;
+
+  final _team1GoalsController = TextEditingController();
+  final _team2GoalsController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    try {
+      final repo = locator<MatchDetailsRepo>();
+
+      print("Fetching match details for match ID: ${widget.matchId}");
+      final matchDetails = await repo.getMatchDetails(widget.matchId);
+      print("Match Details Response: $matchDetails");
+
+      print("Fetching team match results for match ID: ${widget.matchId}");
+      final result = await repo.getTeamMatchResults(widget.matchId);
+      print("Team Match Results Response: $result");
+
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _matchDetails = matchDetails;
+          _result = result;
+        });
+      }
+    } catch (e) {
+      print("Error fetching data: $e");
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _error = e.toString();
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final team1Name = _matchDetails?['match']?['team1']?['name'] ?? 'Team 1';
+    final team2Name = _matchDetails?['match']?['team2']?['name'] ?? 'Team 2';
+
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+        left: 20,
+        right: 20,
+        top: 20,
+      ),
+      child: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _error != null
+              ? Center(child: Text('Error: $_error'))
+              : Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('add_match_result'.tr(),
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold)),
+                      30.ph,
+                      TextFormField(
+                        controller: _team1GoalsController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: '${'goals_for'.tr()} $team1Name',
+                          border: const OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'required'.tr();
+                          }
+                          if (int.tryParse(value) == null) {
+                            return 'invalid_number'.tr();
+                          }
+                          return null;
+                        },
+                      ),
+                      20.ph,
+                      TextFormField(
+                        controller: _team2GoalsController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: '${'goals_for'.tr()} $team2Name',
+                          border: const OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'required'.tr();
+                          }
+                          if (int.tryParse(value) == null) {
+                            return 'invalid_number'.tr();
+                          }
+                          return null;
+                        },
+                      ),
+                      40.ph,
+                      ButtonWidget(
+                        title: 'submit'.tr(),
+                        onTap: () {
+                          if (_formKey.currentState!.validate()) {
+                            // For now, just print the values
+                            print(
+                                "Team 1 Goals: ${_team1GoalsController.text}");
+                            print(
+                                "Team 2 Goals: ${_team2GoalsController.text}");
+                            Navigator.pop(context);
+                          }
+                        },
+                      ),
+                      20.ph,
+                    ],
+                  ),
+                ),
     );
   }
 }
