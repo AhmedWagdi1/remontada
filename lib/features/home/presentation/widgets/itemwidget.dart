@@ -522,8 +522,7 @@ class MatchResultSheet extends StatefulWidget {
 
 class _MatchResultSheetState extends State<MatchResultSheet> {
   bool _isLoading = true;
-  dynamic _matchDetails;
-  dynamic _result;
+  dynamic _participantsData;
   String? _error;
 
   final _team1GoalsController = TextEditingController();
@@ -540,19 +539,14 @@ class _MatchResultSheetState extends State<MatchResultSheet> {
     try {
       final repo = locator<MatchDetailsRepo>();
 
-      print("Fetching match details for match ID: ${widget.matchId}");
-      final matchDetails = await repo.getMatchDetails(widget.matchId);
-      print("Match Details Response: $matchDetails");
-
-      print("Fetching team match results for match ID: ${widget.matchId}");
-      final result = await repo.getTeamMatchResults(widget.matchId);
-      print("Team Match Results Response: $result");
+      print("Fetching team match participants for match ID: ${widget.matchId}");
+      final participants = await repo.getTeamMatchParticipants(widget.matchId);
+      print("Team Match Participants Response: $participants");
 
       if (mounted) {
         setState(() {
           _isLoading = false;
-          _matchDetails = matchDetails;
-          _result = result;
+          _participantsData = participants;
         });
       }
     } catch (e) {
@@ -568,8 +562,8 @@ class _MatchResultSheetState extends State<MatchResultSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final team1Name = _matchDetails?['match']?['team1']?['name'] ?? 'Team 1';
-    final team2Name = _matchDetails?['match']?['team2']?['name'] ?? 'Team 2';
+    final team1Name = _participantsData?['data']?['match']?['team1']?['name'] ?? 'Team 1';
+    final team2Name = _participantsData?['data']?['match']?['team2']?['name'] ?? 'Team 2';
 
     return Padding(
       padding: EdgeInsets.only(

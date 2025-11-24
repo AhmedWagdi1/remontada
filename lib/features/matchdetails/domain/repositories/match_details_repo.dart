@@ -243,4 +243,15 @@ class MatchDetailsRepo {
       return null;
     }
   }
+
+  Future<dynamic> getTeamMatchParticipants(String matchId) async {
+    final ApiResponse response = await dioService.getData(
+      url: "/challenge/get-team-match-participants/$matchId",
+    );
+    if (response.isError == false) {
+      return response.response?.data;
+    } else {
+      return null;
+    }
+  }
 }
