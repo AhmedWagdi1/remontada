@@ -523,6 +523,7 @@ class MatchResultSheet extends StatefulWidget {
 class _MatchResultSheetState extends State<MatchResultSheet> {
   bool _isLoading = true;
   dynamic _participantsData;
+  dynamic _matchResults;
   String? _error;
 
   final _team1GoalsController = TextEditingController();
@@ -543,10 +544,30 @@ class _MatchResultSheetState extends State<MatchResultSheet> {
       final participants = await repo.getTeamMatchParticipants(widget.matchId);
       print("Team Match Participants Response: $participants");
 
+      print("Fetching team match results for match ID: ${widget.matchId}");
+      final results = await repo.getTeamMatchResults(widget.matchId);
+      print("Team Match Results Response: $results");
+
+      // Prefill goals if data exists
+      if (results != null && results['data'] != null) {
+        final data = results['data'] as List?;
+        if (data != null && data.isNotEmpty) {
+          // Prefill team 1 goals
+          if (data.length > 0 && data[0]['goals'] != null) {
+            _team1GoalsController.text = data[0]['goals'].toString();
+          }
+          // Prefill team 2 goals
+          if (data.length > 1 && data[1]['goals'] != null) {
+            _team2GoalsController.text = data[1]['goals'].toString();
+          }
+        }
+      }
+
       if (mounted) {
         setState(() {
           _isLoading = false;
           _participantsData = participants;
+          _matchResults = results;
         });
       }
     } catch (e) {
@@ -564,6 +585,8 @@ class _MatchResultSheetState extends State<MatchResultSheet> {
   Widget build(BuildContext context) {
     final team1Name = _participantsData?['data']?['match']?['team1']?['name'] ?? 'Team 1';
     final team2Name = _participantsData?['data']?['match']?['team2']?['name'] ?? 'Team 2';
+    final team1Id = _participantsData?['data']?['match']?['team1']?['id'];
+    final team2Id = _participantsData?['data']?['match']?['team2']?['id'];
 
     return Padding(
       padding: EdgeInsets.only(
@@ -624,14 +647,31 @@ class _MatchResultSheetState extends State<MatchResultSheet> {
                       40.ph,
                       ButtonWidget(
                         title: 'submit'.tr(),
-                        onTap: () {
+                        onTap: () async {
                           if (_formKey.currentState!.validate()) {
-                            // For now, just print the values
-                            print(
-                                "Team 1 Goals: ${_team1GoalsController.text}");
-                            print(
-                                "Team 2 Goals: ${_team2GoalsController.text}");
-                            Navigator.pop(context);
+                            if (team1Id == null || team2Id == null) {
+                              Alerts.snack(
+                                text: "خطأ في تحميل بيانات الفرق",
+                                state: SnackState.failed,
+                              );
+                              return;
+                            }
+
+                            final repo = locator<MatchDetailsRepo>();
+                            final team1Goals = int.parse(_team1GoalsController.text);
+                            final team2Goals = int.parse(_team2GoalsController.text);
+
+                            final success = await repo.setTeamMatchResult(
+                              matchId: widget.matchId,
+                              results: [
+                                {"team_id": team1Id, "goals": team1Goals},
+                                {"team_id": team2Id, "goals": team2Goals},
+                              ],
+                            );
+
+                            if (success == true && mounted) {
+                              Navigator.pop(context);
+                            }
                           }
                         },
                       ),
