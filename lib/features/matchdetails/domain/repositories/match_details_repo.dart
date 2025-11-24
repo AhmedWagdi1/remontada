@@ -212,9 +212,10 @@ class MatchDetailsRepo {
   }) async {
     final ApiResponse response = await dioService.postData(
       loading: true,
+      isForm: false,
       url: "/challenge/set-team-match-result",
       body: {
-        "match_id": matchId,
+        "match_id": int.tryParse(matchId) ?? matchId,
         "results": results,
       },
     );
