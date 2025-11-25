@@ -163,8 +163,13 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
             // Normalize role values to canonical forms: 'member', 'subleader', 'leader'
             try {
               final rawRole = (u['role'] ?? '') as String;
-              final canonical = rawRole.trim().toLowerCase().replaceAll(RegExp(r'[^a-z]'), '');
-              if (canonical == 'member' || canonical == 'subleader' || canonical == 'leader') {
+              final canonical = rawRole
+                  .trim()
+                  .toLowerCase()
+                  .replaceAll(RegExp(r'[^a-z]'), '');
+              if (canonical == 'member' ||
+                  canonical == 'subleader' ||
+                  canonical == 'leader') {
                 u['role'] = canonical;
               } else if (rawRole.isNotEmpty) {
                 // If we couldn't canonicalize, keep original trimmed value (defensive)
@@ -315,7 +320,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-  title: Text(LocaleKeys.team_invites_title.tr()),
+        title: Text(LocaleKeys.team_invites_title.tr()),
         content: SizedBox(
           width: double.maxFinite,
           child: ListView.builder(
@@ -375,7 +380,8 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
           title: Text(LocaleKeys.leave_team_title.tr()),
           content: Directionality(
             textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
-            child: Text(LocaleKeys.leave_team_confirm_message.tr(args: [displayName])),
+            child: Text(
+                LocaleKeys.leave_team_confirm_message.tr(args: [displayName])),
           ),
           actions: [
             TextButton(
@@ -405,8 +411,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
 
     try {
       final url = '${ConstKeys.baseUrl}/team/leave/${widget.teamId}';
-      final res = await http
-          .post(Uri.parse(url), headers: {
+      final res = await http.post(Uri.parse(url), headers: {
         'Accept': 'application/json',
         'Authorization': 'Bearer ${Utils.token}',
       }).timeout(const Duration(seconds: 15));
@@ -415,8 +420,8 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
 
       if (res.statusCode < 400) {
         final data = jsonDecode(res.body) as Map<String, dynamic>;
-        final message = (data['message'] as String?) ??
-            LocaleKeys.leave_success_toast.tr();
+        final message =
+            (data['message'] as String?) ?? LocaleKeys.leave_success_toast.tr();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(message), backgroundColor: Colors.green),
         );
@@ -498,7 +503,8 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
             child: Text(LocaleKeys.delete_cancel_button.tr()),
           ),
           TextButton(
-            style: TextButton.styleFrom(foregroundColor: Colors.white, backgroundColor: Colors.red),
+            style: TextButton.styleFrom(
+                foregroundColor: Colors.white, backgroundColor: Colors.red),
             onPressed: () => Navigator.pop(context, true),
             child: Text(LocaleKeys.delete_confirm_button.tr()),
           ),
@@ -519,9 +525,8 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
     );
 
     try {
-  final url = '${ConstKeys.baseUrl}/team/destroy/${widget.teamId}';
-      final res = await http
-          .delete(Uri.parse(url), headers: {
+      final url = '${ConstKeys.baseUrl}/team/destroy/${widget.teamId}';
+      final res = await http.delete(Uri.parse(url), headers: {
         'Accept': 'application/json',
         'Authorization': 'Bearer ${Utils.token}',
       }).timeout(const Duration(seconds: 15));
@@ -530,21 +535,24 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
 
       if (res.statusCode < 400) {
         final data = jsonDecode(res.body) as Map<String, dynamic>;
-        final message = (data['message'] as String?) ?? LocaleKeys.delete_success_toast.tr();
+        final message = (data['message'] as String?) ??
+            LocaleKeys.delete_success_toast.tr();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(message), backgroundColor: Colors.green),
         );
 
         if (data['status'] == true) {
           // navigate to app home clearing stack
-          Navigator.of(context).pushNamedAndRemoveUntil(Routes.LayoutScreen, (r) => false);
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil(Routes.LayoutScreen, (r) => false);
         }
       } else if (res.statusCode == 403) {
         // parse message if available
         String message;
         try {
           final data = jsonDecode(res.body) as Map<String, dynamic>;
-          message = (data['message'] as String?) ?? LocaleKeys.delete_failed_toast.tr();
+          message = (data['message'] as String?) ??
+              LocaleKeys.delete_failed_toast.tr();
         } catch (_) {
           message = LocaleKeys.delete_failed_toast.tr();
         }
@@ -562,7 +570,8 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
         String message;
         try {
           final data = jsonDecode(res.body) as Map<String, dynamic>;
-          message = (data['message'] as String?) ?? LocaleKeys.delete_failed_toast.tr();
+          message = (data['message'] as String?) ??
+              LocaleKeys.delete_failed_toast.tr();
         } catch (_) {
           message = LocaleKeys.delete_failed_toast.tr();
         }
@@ -573,7 +582,9 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
     } catch (e) {
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(LocaleKeys.delete_failed_toast.tr()), backgroundColor: Colors.red),
+        SnackBar(
+            content: Text(LocaleKeys.delete_failed_toast.tr()),
+            backgroundColor: Colors.red),
       );
     }
   }
@@ -583,14 +594,14 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
     print('🔍 DEBUG: _currentLeaderPhone called');
     final users = (_teamData?['users'] as List<dynamic>?) ?? [];
     print('🔍 DEBUG: Total users in team data = ${users.length}');
-    
+
     for (final u in users) {
       if (u is Map<String, dynamic>) {
         final role = u['role'] as String?;
         final mobile = u['mobile'] as String?;
         final phone = u['phone'] as String?;
         print('🔍 DEBUG: User: role="$role", mobile=$mobile, phone=$phone');
-        
+
         if (role == 'leader') {
           final leaderPhone = mobile ?? phone;
           print('✅ DEBUG: Found leader with phone = $leaderPhone');
@@ -607,14 +618,14 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
     print('🔍 DEBUG: _currentSubLeaderPhone called');
     final users = (_teamData?['users'] as List<dynamic>?) ?? [];
     print('🔍 DEBUG: Total users in team data = ${users.length}');
-    
+
     for (final u in users) {
       if (u is Map<String, dynamic>) {
         final role = u['role'] as String?;
         final mobile = u['mobile'] as String?;
         final phone = u['phone'] as String?;
         print('🔍 DEBUG: User: role="$role", mobile=$mobile, phone=$phone');
-        
+
         if (role == 'subleader') {
           final subLeaderPhone = mobile ?? phone;
           print('✅ DEBUG: Found subleader with phone = $subLeaderPhone');
@@ -643,7 +654,8 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
       if (r.trim().isEmpty) return null;
       // normalize to lowercase and remove non-letters so variants like
       // "subLeader", "sub-leader", "sub_leader" all become "subleader"
-      final canonical = r.trim().toLowerCase().replaceAll(RegExp(r'[^a-z]'), '');
+      final canonical =
+          r.trim().toLowerCase().replaceAll(RegExp(r'[^a-z]'), '');
       if (canonical == 'member') return 'member';
       if (canonical == 'subleader') return 'subleader';
       if (canonical == 'leader') return 'leader';
@@ -675,7 +687,8 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
       };
 
       print('🔧 DEBUG: Request body = ${jsonEncode(requestBody)}');
-      print('🔧 DEBUG: Authorization token length = ${Utils.token?.length ?? 0}');
+      print(
+          '🔧 DEBUG: Authorization token length = ${Utils.token?.length ?? 0}');
 
       final res = await http
           .post(
@@ -703,7 +716,8 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
         }
 
         print('❌ DEBUG: Role change FAILED - status is false');
-        final message = (data['message'] as String?) ?? LocaleKeys.team_role_update_failed.tr();
+        final message = (data['message'] as String?) ??
+            LocaleKeys.team_role_update_failed.tr();
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(message), backgroundColor: Colors.red),
@@ -715,7 +729,8 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
         String message;
         try {
           final data = jsonDecode(res.body) as Map<String, dynamic>;
-          message = (data['message'] as String?) ?? LocaleKeys.team_role_update_failed.tr();
+          message = (data['message'] as String?) ??
+              LocaleKeys.team_role_update_failed.tr();
           print('❌ DEBUG: Error message from server = $message');
         } catch (_) {
           message = LocaleKeys.team_role_update_failed.tr();
@@ -746,10 +761,10 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
   Future<void> _promoteMemberToCaptain(String newCaptainPhone) async {
     print('👑 DEBUG: _promoteMemberToCaptain called');
     print('👑 DEBUG: New captain phone = $newCaptainPhone');
-    
+
     final currentLeader = _currentLeaderPhone();
     print('👑 DEBUG: Current leader phone = $currentLeader');
-    
+
     if (currentLeader == null) {
       print('❌ DEBUG: No current leader found');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -789,20 +804,20 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
 
     setState(() => _isChangingRole = true);
     print('👑 DEBUG: Starting captain promotion process...');
-    
+
     // 1) make the selected player the leader
     print('👑 DEBUG: Step 1: Promoting $newCaptainPhone to leader');
     final ok1 = await _changeMemberRole(
         phoneNumber: newCaptainPhone, teamId: widget.teamId, role: 'leader');
     print('👑 DEBUG: Promotion result = $ok1');
-    
+
     if (!ok1) {
       print('❌ DEBUG: Failed to promote to leader');
       if (mounted) setState(() => _isChangingRole = false);
       return;
     }
     print('✅ DEBUG: Successfully promoted to leader');
-    
+
     // 2) demote old leader to member
     print('👑 DEBUG: Step 2: Demoting old leader $currentLeader to member');
     final ok2 = await _changeMemberRole(
@@ -828,7 +843,8 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
       if (me != null && me == currentLeader) {
         // Current user's role changed from leader to member
         // Reload entire app from splash screen to refetch all data with new permissions
-        print('🔄 DEBUG: Current user demoted from leader, reloading app from splash');
+        print(
+            '🔄 DEBUG: Current user demoted from leader, reloading app from splash');
         if (!mounted) return;
         Navigator.of(context)
             .pushNamedAndRemoveUntil(Routes.splashScreen, (r) => false);
@@ -844,10 +860,10 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
   Future<void> _promoteMemberToAssistant(String phone) async {
     print('📱 DEBUG: _promoteMemberToAssistant called');
     print('📱 DEBUG: Target phone = $phone');
-    
+
     final currentSub = _currentSubLeaderPhone();
     print('📱 DEBUG: Current subLeader phone = $currentSub');
-    
+
     final confirm = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
@@ -867,20 +883,20 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
         ],
       ),
     );
-    
+
     print('📱 DEBUG: User confirmed = $confirm');
     if (confirm != true) return;
 
     setState(() => _isChangingRole = true);
     print('📱 DEBUG: Starting role change process...');
-    
+
     // If there is a current subLeader, demote to member first
     if (currentSub != null && currentSub != phone) {
       print('📱 DEBUG: Demoting current subLeader ($currentSub) to member');
       final okDemote = await _changeMemberRole(
           phoneNumber: currentSub, teamId: widget.teamId, role: 'member');
       print('📱 DEBUG: Demotion result = $okDemote');
-      
+
       if (!okDemote) {
         print('❌ DEBUG: Failed to demote current subLeader');
         if (mounted) setState(() => _isChangingRole = false);
@@ -888,7 +904,8 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
       }
       print('✅ DEBUG: Current subLeader demoted successfully');
     } else if (currentSub != null && currentSub == phone) {
-      print('📱 DEBUG: Target is already the current subLeader, skipping demotion');
+      print(
+          '📱 DEBUG: Target is already the current subLeader, skipping demotion');
     } else {
       print('📱 DEBUG: No current subLeader to demote');
     }
@@ -897,7 +914,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
     final okMake = await _changeMemberRole(
         phoneNumber: phone, teamId: widget.teamId, role: 'subleader');
     print('📱 DEBUG: Promotion result = $okMake');
-    
+
     if (mounted) setState(() => _isChangingRole = false);
 
     if (okMake) {
@@ -923,10 +940,10 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
   Future<void> _makeSubLeaderCaptainSwap(String subLeaderPhone) async {
     print('🔄 DEBUG: _makeSubLeaderCaptainSwap called');
     print('🔄 DEBUG: SubLeader phone = $subLeaderPhone');
-    
+
     final currentLeader = _currentLeaderPhone();
     print('🔄 DEBUG: Current leader phone = $currentLeader');
-    
+
     if (currentLeader == null) {
       print('❌ DEBUG: No current leader found');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -955,7 +972,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
         ],
       ),
     );
-    
+
     print('🔄 DEBUG: User confirmed = $confirm');
     if (confirm != true) return;
 
@@ -966,14 +983,14 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
     final ok1 = await _changeMemberRole(
         phoneNumber: subLeaderPhone, teamId: widget.teamId, role: 'leader');
     print('🔄 DEBUG: Promotion result = $ok1');
-    
+
     if (!ok1) {
       print('❌ DEBUG: Failed to promote subLeader to leader');
       if (mounted) setState(() => _isChangingRole = false);
       return;
     }
     print('✅ DEBUG: SubLeader promoted to leader');
-    
+
     print('🔄 DEBUG: Step 2: Demoting old leader $currentLeader to subLeader');
     final ok2 = await _changeMemberRole(
         phoneNumber: currentLeader, teamId: widget.teamId, role: 'subleader');
@@ -998,7 +1015,8 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
       if (me != null && me == currentLeader) {
         // Current user's role changed from leader to subLeader
         // Reload entire app from splash screen to refetch all data with new permissions
-        print('🔄 DEBUG: Current user demoted from leader in swap, reloading app from splash');
+        print(
+            '🔄 DEBUG: Current user demoted from leader in swap, reloading app from splash');
         if (!mounted) return;
         Navigator.of(context)
             .pushNamedAndRemoveUntil(Routes.splashScreen, (r) => false);
@@ -1068,13 +1086,19 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
               teamName: _teamData?['name'] as String?,
               logoUrl: _teamData?['logo_url'] as String?,
               // show gear icon and wire edit action only for captain
-              onEdit: _currentUserRole == 'leader' ? () => _navigateToEditTeam(context) : null,
+              onEdit: _currentUserRole == 'leader'
+                  ? () => _navigateToEditTeam(context)
+                  : null,
               showEditIcon: _currentUserRole == 'leader',
               // show leave icon for non-leaders
-              onLeave: _currentUserRole != 'leader' ? () => _onLeaveTeamPressed(context) : null,
+              onLeave: _currentUserRole != 'leader'
+                  ? () => _onLeaveTeamPressed(context)
+                  : null,
               showLeaveIcon: _currentUserRole != 'leader',
               // show delete icon for leader only
-              onDelete: _currentUserRole == 'leader' ? () => _onDeleteTeamPressed(context) : null,
+              onDelete: _currentUserRole == 'leader'
+                  ? () => _onDeleteTeamPressed(context)
+                  : null,
               showDeleteIcon: _currentUserRole == 'leader',
             ),
             const SizedBox(height: 16),
@@ -1096,8 +1120,7 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
             _DetailedStatsSection(
               ranking: _teamData?['competitive'] as Map<String, dynamic>?,
             ),
-            SizedBox(height: 16),
-            _HonorsAchievementsSection(),
+
             SizedBox(height: 16),
             _TechnicalStaffSummary(
               leaderName: (_teamData?['leader']
@@ -1170,7 +1193,8 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
           }
         },
         onMakeCaptain: (String phone, String currentRole) async {
-          print('🎯 DEBUG: onMakeCaptain callback - phone=$phone, currentRole=$currentRole');
+          print(
+              '🎯 DEBUG: onMakeCaptain callback - phone=$phone, currentRole=$currentRole');
           if (currentRole == 'leader') {
             print('🎯 DEBUG: User is already leader, skipping');
             return;
@@ -1184,23 +1208,25 @@ class _TeamDetailsPageState extends State<TeamDetailsPage>
           }
         },
         onMakeAssistant: (String phone, String currentRole) async {
-          print('🎯 DEBUG: onMakeAssistant callback - phone=$phone, currentRole=$currentRole');
+          print(
+              '🎯 DEBUG: onMakeAssistant callback - phone=$phone, currentRole=$currentRole');
           if (currentRole == 'leader') {
-            print('🎯 DEBUG: User is leader, cannot demote to assistant directly');
+            print(
+                '🎯 DEBUG: User is leader, cannot demote to assistant directly');
             return;
           }
           print('🎯 DEBUG: Calling _promoteMemberToAssistant...');
           await _promoteMemberToAssistant(phone);
         },
         onMakeMember: (String phone, String currentRole) async {
-          print('🎯 DEBUG: onMakeMember callback - phone=$phone, currentRole=$currentRole');
+          print(
+              '🎯 DEBUG: onMakeMember callback - phone=$phone, currentRole=$currentRole');
           // typically used to demote subLeader to member
           final confirm = await showDialog<bool>(
             context: context,
             builder: (_) => AlertDialog(
               title: Text(LocaleKeys.team_role_change_to_member_title.tr()),
-              content:
-                  Text(LocaleKeys.team_role_change_to_member_message.tr()),
+              content: Text(LocaleKeys.team_role_change_to_member_message.tr()),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context, false),
@@ -1796,50 +1822,6 @@ class _StatTile extends StatelessWidget {
   }
 }
 
-/// Section summarizing honors and achievements for the team.
-class _HonorsAchievementsSection extends StatelessWidget {
-  /// Creates a const [_HonorsAchievementsSection].
-  const _HonorsAchievementsSection();
-
-  @override
-  Widget build(BuildContext context) {
-    const headerColor = Colors.green;
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.greenAccent.shade100,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Row(
-              children: [
-                Icon(Icons.star, color: headerColor),
-                SizedBox(width: 8),
-                Text(
-                  'التكريم والإنجازات',
-                  style: TextStyle(
-                    color: headerColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 8),
-            _BulletText('أفضل فريق في الدوري المحلي (2024)'),
-            _BulletText('فريق اللعب النظيف (3 مرات)'),
-            _BulletText('أفضل هجوم في البطولة'),
-            _BulletText('جائزة الروح الرياضية'),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 /// Card summarizing the technical staff information.
 class _TechnicalStaffSummary extends StatelessWidget {
   /// Leader name.
@@ -2024,7 +2006,8 @@ class _MembersTab extends StatelessWidget {
   final bool isRemoving;
   final bool canManageRoles;
   final Future<void> Function(String phone, String currentRole)? onMakeCaptain;
-  final Future<void> Function(String phone, String currentRole)? onMakeAssistant;
+  final Future<void> Function(String phone, String currentRole)?
+      onMakeAssistant;
   final Future<void> Function(String phone, String currentRole)? onMakeMember;
 
   /// Creates a [_MembersTab].
@@ -2046,10 +2029,14 @@ class _MembersTab extends StatelessWidget {
   Widget build(BuildContext context) {
     // Group users by role
     final allUsers = users ?? [];
-    final captain = allUsers.where((u) => (u['role'] as String?) == 'leader').toList();
-    final subCaptain = allUsers.where((u) => (u['role'] as String?) == 'subleader').toList();
+    final captain =
+        allUsers.where((u) => (u['role'] as String?) == 'leader').toList();
+    final subCaptain =
+        allUsers.where((u) => (u['role'] as String?) == 'subleader').toList();
     final members = allUsers
-        .where((u) => (u['role'] as String?) != 'leader' && (u['role'] as String?) != 'subleader')
+        .where((u) =>
+            (u['role'] as String?) != 'leader' &&
+            (u['role'] as String?) != 'subleader')
         .toList();
 
     return Directionality(
@@ -2086,11 +2073,11 @@ class _MembersTab extends StatelessWidget {
               _PlayerList(
                   players: captain,
                   canShowRemove: canShowRemove,
-          onRemoveMember: onRemoveMember,
-          canManageRoles: canManageRoles,
-          onMakeCaptain: onMakeCaptain,
-          onMakeAssistant: onMakeAssistant,
-          onMakeMember: onMakeMember,
+                  onRemoveMember: onRemoveMember,
+                  canManageRoles: canManageRoles,
+                  onMakeCaptain: onMakeCaptain,
+                  onMakeAssistant: onMakeAssistant,
+                  onMakeMember: onMakeMember,
                   isRemoving: isRemoving),
               const SizedBox(height: 16),
             ],
@@ -2107,11 +2094,11 @@ class _MembersTab extends StatelessWidget {
               _PlayerList(
                   players: subCaptain,
                   canShowRemove: canShowRemove,
-          onRemoveMember: onRemoveMember,
-          canManageRoles: canManageRoles,
-          onMakeCaptain: onMakeCaptain,
-          onMakeAssistant: onMakeAssistant,
-          onMakeMember: onMakeMember,
+                  onRemoveMember: onRemoveMember,
+                  canManageRoles: canManageRoles,
+                  onMakeCaptain: onMakeCaptain,
+                  onMakeAssistant: onMakeAssistant,
+                  onMakeMember: onMakeMember,
                   isRemoving: isRemoving),
               const SizedBox(height: 16),
             ],
@@ -2128,11 +2115,11 @@ class _MembersTab extends StatelessWidget {
               _PlayerList(
                   players: members,
                   canShowRemove: canShowRemove,
-          onRemoveMember: onRemoveMember,
-          canManageRoles: canManageRoles,
-          onMakeCaptain: onMakeCaptain,
-          onMakeAssistant: onMakeAssistant,
-          onMakeMember: onMakeMember,
+                  onRemoveMember: onRemoveMember,
+                  canManageRoles: canManageRoles,
+                  onMakeCaptain: onMakeCaptain,
+                  onMakeAssistant: onMakeAssistant,
+                  onMakeMember: onMakeMember,
                   isRemoving: isRemoving),
             ],
           ],
@@ -2218,7 +2205,8 @@ class _PlayerList extends StatelessWidget {
   final bool isRemoving;
   final bool canManageRoles;
   final Future<void> Function(String phone, String currentRole)? onMakeCaptain;
-  final Future<void> Function(String phone, String currentRole)? onMakeAssistant;
+  final Future<void> Function(String phone, String currentRole)?
+      onMakeAssistant;
   final Future<void> Function(String phone, String currentRole)? onMakeMember;
 
   /// Creates a const [_PlayerList].
@@ -2480,26 +2468,6 @@ class PlayerCard extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-/// Helper widget to display a bullet point text line.
-class _BulletText extends StatelessWidget {
-  /// Text to display after the bullet.
-  final String text;
-
-  /// Creates a const [_BulletText].
-  const _BulletText(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Text(
-        '• $text',
-        style: const TextStyle(fontSize: 12, color: Colors.green),
-      ),
     );
   }
 }
@@ -3371,7 +3339,11 @@ class _ChatTabState extends State<_ChatTab> {
         textDirection: TextDirection.rtl,
         child: Column(
           children: [
-            _TopBar(teamName: widget.teamName, logoUrl: widget.logoUrl, onEdit: null, showEditIcon: false),
+            _TopBar(
+                teamName: widget.teamName,
+                logoUrl: widget.logoUrl,
+                onEdit: null,
+                showEditIcon: false),
             Container(
               color: const Color(0xFFF2F2F2),
               padding: const EdgeInsets.all(12),
