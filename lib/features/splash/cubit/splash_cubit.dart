@@ -61,7 +61,11 @@ class SplashCubit extends Cubit<SplashStates> {
   String? route;
   checkLogin() async {
     await getAppversion();
-    await FBMessging.initUniLink();
+    try {
+      await FBMessging.initUniLink();
+    } catch (e) {
+      log('Error initializing FBMessging: $e');
+    }
     await Utils.dataManager.getUserData();
 
     // await Utils.deleteUserData();

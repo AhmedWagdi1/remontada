@@ -24,30 +24,37 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
 
-  if (Firebase.apps.isEmpty) {
-    try {
+  try {
+    if (Firebase.apps.isEmpty) {
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
       );
-
-      // Initialize Firebase services after core Firebase is ready
-      FirebaseMessaging.onBackgroundMessage(
-        FBMessging.firebaseMessagingBackgroundHandler,
-      );
-
-      // Initialize Remote Config with proper error handling
-      await FireBaseRemoteService.intializeRemoteConfig();
-    } catch (e) {
-      // Handle platforms where Firebase is not configured (like Linux)
-      print('Firebase initialization skipped: $e');
     }
-  } else {
-    // Firebase already initialized, just set up Remote Config
-    try {
-      await FireBaseRemoteService.intializeRemoteConfig();
-    } catch (e) {
-      print('Remote Config initialization failed: $e');
+  } on FirebaseException catch (e) {
+    if (e.code == 'duplicate-app') {
+      // Ignore duplicate app error
+      debugPrint('Firebase already initialized: ${e.message}');
+    } else {
+      debugPrint('Firebase initialization failed: $e');
     }
+  } catch (e) {
+    debugPrint('Firebase initialization failed: $e');
+  }
+
+  try {
+    // Initialize Firebase services after core Firebase is ready
+    FirebaseMessaging.onBackgroundMessage(
+      FBMessging.firebaseMessagingBackgroundHandler,
+    );
+  } catch (e) {
+    debugPrint('Failed to set background message handler: $e');
+  }
+
+  // Initialize Remote Config with proper error handling
+  try {
+    await FireBaseRemoteService.intializeRemoteConfig();
+  } catch (e) {
+    print('Remote Config initialization failed: $e');
   }
   Bloc.observer = MyBlocObserver();
   // dotenv.load();
