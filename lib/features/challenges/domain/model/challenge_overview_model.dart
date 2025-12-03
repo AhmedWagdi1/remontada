@@ -5,13 +5,8 @@ class ChallengeOverviewModel {
   final String? logo;
   final int areaId;
   final String? bio;
-  final int remuntadaChallengeLeague;
-  final int remuntadaEliteCup;
-  final int remuntadaSuperCup;
-  final String createdAt;
-  final String updatedAt;
-  final String? deletedAt;
-  final RankingModel? ranking;
+  final ChallengeStatsModel? generalStats;
+  final ChallengeStatsModel? currentMonthStats;
 
   ChallengeOverviewModel({
     required this.id,
@@ -20,13 +15,8 @@ class ChallengeOverviewModel {
     this.logo,
     required this.areaId,
     this.bio,
-    required this.remuntadaChallengeLeague,
-    required this.remuntadaEliteCup,
-    required this.remuntadaSuperCup,
-    required this.createdAt,
-    required this.updatedAt,
-    this.deletedAt,
-    this.ranking,
+    this.generalStats,
+    this.currentMonthStats,
   });
 
   factory ChallengeOverviewModel.fromJson(Map<String, dynamic> json) {
@@ -34,17 +24,14 @@ class ChallengeOverviewModel {
       id: json['id'] as int? ?? 0,
       name: json['name'] as String? ?? '',
       status: json['status'] as int? ?? 0,
-      logo: json['logo'] as String?,
+      logo: json['logo_url'] as String?,
       areaId: json['area_id'] as int? ?? 0,
       bio: json['bio'] as String?,
-      remuntadaChallengeLeague: json['remuntada_challenge_league'] as int? ?? 0,
-      remuntadaEliteCup: json['remuntada_elite_cup'] as int? ?? 0,
-      remuntadaSuperCup: json['remuntada_super_cup'] as int? ?? 0,
-      createdAt: json['created_at'] as String? ?? '',
-      updatedAt: json['updated_at'] as String? ?? '',
-      deletedAt: json['deleted_at'] as String?,
-      ranking: json['ranking'] != null
-          ? RankingModel.fromJson(json['ranking'] as Map<String, dynamic>)
+      generalStats: json['general_stats'] != null
+          ? ChallengeStatsModel.fromJson(json['general_stats'])
+          : null,
+      currentMonthStats: json['current_month_stats'] != null
+          ? ChallengeStatsModel.fromJson(json['current_month_stats'])
           : null,
     );
   }
@@ -54,83 +41,62 @@ class ChallengeOverviewModel {
       'id': id,
       'name': name,
       'status': status,
-      'logo': logo,
+      'logo_url': logo,
       'area_id': areaId,
       'bio': bio,
-      'remuntada_challenge_league': remuntadaChallengeLeague,
-      'remuntada_elite_cup': remuntadaEliteCup,
-      'remuntada_super_cup': remuntadaSuperCup,
-      'created_at': createdAt,
-      'updated_at': updatedAt,
-      'deleted_at': deletedAt,
-      'ranking': ranking?.toJson(),
+      'general_stats': generalStats?.toJson(),
+      'current_month_stats': currentMonthStats?.toJson(),
     };
   }
 }
 
-class RankingModel {
-  final int id;
-  final int teamId;
+class ChallengeStatsModel {
   final int wins;
   final int draws;
   final int losses;
   final int owns;
   final int againsts;
-  final String level;
   final int points;
-  final int isCompetitive;
-  final String createdAt;
-  final String updatedAt;
+  final String level;
+  final int matchCount;
 
-  RankingModel({
-    required this.id,
-    required this.teamId,
+  ChallengeStatsModel({
     required this.wins,
     required this.draws,
     required this.losses,
     required this.owns,
     required this.againsts,
-    required this.level,
     required this.points,
-    required this.isCompetitive,
-    required this.createdAt,
-    required this.updatedAt,
+    required this.level,
+    required this.matchCount,
   });
 
-  factory RankingModel.fromJson(Map<String, dynamic> json) {
-    return RankingModel(
-      id: json['id'] as int? ?? 0,
-      teamId: json['team_id'] as int? ?? 0,
+  factory ChallengeStatsModel.fromJson(Map<String, dynamic> json) {
+    return ChallengeStatsModel(
       wins: json['wins'] as int? ?? 0,
       draws: json['draws'] as int? ?? 0,
       losses: json['losses'] as int? ?? 0,
       owns: json['owns'] as int? ?? 0,
       againsts: json['againsts'] as int? ?? 0,
-      level: json['level'] as String? ?? '',
       points: json['points'] as int? ?? 0,
-      isCompetitive: json['is_competitive'] as int? ?? 0,
-      createdAt: json['created_at'] as String? ?? '',
-      updatedAt: json['updated_at'] as String? ?? '',
+      level: json['level'] as String? ?? '',
+      matchCount: json['match_count'] as int? ?? 0,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'team_id': teamId,
       'wins': wins,
       'draws': draws,
       'losses': losses,
       'owns': owns,
       'againsts': againsts,
-      'level': level,
       'points': points,
-      'is_competitive': isCompetitive,
-      'created_at': createdAt,
-      'updated_at': updatedAt,
+      'level': level,
+      'match_count': matchCount,
     };
   }
 
-  int get played => wins + draws + losses;
+  int get played => matchCount;
   int get goalDifference => owns - againsts;
 }

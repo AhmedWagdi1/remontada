@@ -677,15 +677,17 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         // Check if current user's team is already in team1
         final userTeamId = _userTeams.isNotEmpty ? _userTeams[0]['id'] : null;
         final team1Id = match!.team1?['id'];
-        final isUserTeamInSlot1 = userTeamId != null && team1Id != null && userTeamId == team1Id;
-        
-        print('🔍 DEBUG: Slot 2 button clicked - User team ID: $userTeamId, Team1 ID: $team1Id, Is same: $isUserTeamInSlot1');
-        
+        final isUserTeamInSlot1 =
+            userTeamId != null && team1Id != null && userTeamId == team1Id;
+
+        print(
+            '🔍 DEBUG: Slot 2 button clicked - User team ID: $userTeamId, Team1 ID: $team1Id, Is same: $isUserTeamInSlot1');
+
         // Change text based on whether user's team is in slot 1
-        final buttonText = isUserTeamInSlot1 
+        final buttonText = isUserTeamInSlot1
             ? 'قم بدعوة فريق للعب ضدك فى التحدى'
             : LocaleKeys.challenge_join_match.tr();
-        
+
         return _buildActionSlot(
           text: buttonText,
           onTap: () {
@@ -1025,12 +1027,12 @@ class _ChallengesScreenState extends State<ChallengesScreen>
       return const Center(child: Text('No challenges overview available'));
     }
 
-    // Filter teams that have ranking data and sort by points
-    final teamsWithRanking = _challengesOverview
-        .where((team) => team.ranking != null)
+    // Filter teams that have currentMonthStats data and sort by points
+    final teamsWithStats = _challengesOverview
+        .where((team) => team.currentMonthStats != null)
         .toList()
-      ..sort(
-          (a, b) => (b.ranking?.points ?? 0).compareTo(a.ranking?.points ?? 0));
+      ..sort((a, b) => (b.currentMonthStats?.points ?? 0)
+          .compareTo(a.currentMonthStats?.points ?? 0));
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -1092,11 +1094,11 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                 label: Text(LocaleKeys.league_points.tr(), style: headingStyle),
               ),
             ],
-            rows: teamsWithRanking.asMap().entries.map((entry) {
+            rows: teamsWithStats.asMap().entries.map((entry) {
               final index = entry.key;
               final team = entry.value;
-              final ranking = team.ranking!;
-              final int gd = ranking.goalDifference;
+              final stats = team.currentMonthStats!;
+              final int gd = stats.goalDifference;
               final rank = index + 1;
 
               return DataRow(
@@ -1110,8 +1112,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                           backgroundColor: Colors.grey.shade300,
                           backgroundImage:
                               team.logo != null && team.logo!.isNotEmpty
-                                  ? NetworkImage(
-                                      '${ConstKeys.baseUrl}/storage/$team.logo')
+                                  ? NetworkImage(team.logo!)
                                   : null,
                           child: team.logo == null || team.logo!.isEmpty
                               ? const Icon(Icons.sports_soccer,
@@ -1129,21 +1130,33 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                       ],
                     ),
                   ),
-                  DataCell(Text(ranking.played.toString(), style: dataStyle)),
-                  DataCell(Text(ranking.wins.toString(), style: dataStyle)),
-                  DataCell(Text(ranking.draws.toString(), style: dataStyle)),
-                  DataCell(Text(ranking.losses.toString(), style: dataStyle)),
-                  DataCell(Text(ranking.owns.toString(), style: dataStyle)),
-                  DataCell(Text(ranking.againsts.toString(), style: dataStyle)),
+                  DataCell(Text(stats.played.toString(), style: dataStyle)),
+                  DataCell(Text(stats.wins.toString(), style: dataStyle)),
+                  DataCell(Text(stats.draws.toString(), style: dataStyle)),
+                  DataCell(Text(stats.losses.toString(), style: dataStyle)),
+                  DataCell(Text(stats.owns.toString(), style: dataStyle)),
+                  DataCell(Text(stats.againsts.toString(), style: dataStyle)),
                   DataCell(
                     Text(
                       gd.toString(),
-                      style: dataStyle.copyWith(
-                        color: gd >= 0 ? Colors.green : Colors.red,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: gd > 0
+                            ? Colors.green
+                            : (gd < 0 ? Colors.red : Colors.black),
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  DataCell(Text(ranking.points.toString(), style: dataStyle)),
+                  DataCell(
+                    Text(
+                      stats.points.toString(),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ],
               );
             }).toList(),
@@ -1834,7 +1847,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text(
                                     'اختر اللاعبين للمباراة',
@@ -1868,21 +1882,29 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                               ),
                               const SizedBox(height: 12),
                               Container(
-                                constraints: const BoxConstraints(maxHeight: 300),
+                                constraints:
+                                    const BoxConstraints(maxHeight: 300),
                                 child: ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: teamMembers.length,
                                   itemBuilder: (context, index) {
                                     final member = teamMembers[index];
                                     final memberId = member['id'] as int?;
-                                    final memberName = member['name'] as String? ?? 'لا يوجد اسم';
-                                    final memberPhone = (member['mobile'] ?? member['phone'] ?? 'لا يوجد رقم') as String;
-                                    if (memberId == null) return const SizedBox.shrink();
-                                    final isSelected = selectedPlayerIds.contains(memberId);
+                                    final memberName =
+                                        member['name'] as String? ??
+                                            'لا يوجد اسم';
+                                    final memberPhone = (member['mobile'] ??
+                                        member['phone'] ??
+                                        'لا يوجد رقم') as String;
+                                    if (memberId == null)
+                                      return const SizedBox.shrink();
+                                    final isSelected =
+                                        selectedPlayerIds.contains(memberId);
                                     return CheckboxListTile(
                                       dense: true,
                                       contentPadding: EdgeInsets.zero,
-                                      controlAffinity: ListTileControlAffinity.leading,
+                                      controlAffinity:
+                                          ListTileControlAffinity.leading,
                                       value: isSelected,
                                       onChanged: (bool? value) {
                                         setState(() {
@@ -1951,19 +1973,23 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                             if (selectedPlayerIds.length < 10) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('يجب اختيار 10 لاعبين على الأقل'),
+                                  content:
+                                      Text('يجب اختيار 10 لاعبين على الأقل'),
                                   backgroundColor: Colors.red,
                                 ),
                               );
                               return;
                             }
-                            print('✅ DEBUG: User confirmed join request - proceeding to send API call');
+                            print(
+                                '✅ DEBUG: User confirmed join request - proceeding to send API call');
                             Navigator.of(context).pop();
-                            _sendJoinRequest(match, playerIds: selectedPlayerIds.toList());
+                            _sendJoinRequest(match,
+                                playerIds: selectedPlayerIds.toList());
                           }
                         : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: canSubmit ? const Color(0xFF23425F) : Colors.grey,
+                      backgroundColor:
+                          canSubmit ? const Color(0xFF23425F) : Colors.grey,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -1983,9 +2009,11 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   }
 
   /// Sends a join request to the challenge API
-  Future<void> _sendJoinRequest(ChallengeMatch? match, {List<int>? playerIds}) async {
+  Future<void> _sendJoinRequest(ChallengeMatch? match,
+      {List<int>? playerIds}) async {
     if (match == null || _userTeams.isEmpty) {
-      print('🔍 DEBUG: Cannot send join request - match is null or user has no teams');
+      print(
+          '🔍 DEBUG: Cannot send join request - match is null or user has no teams');
       return;
     }
 
@@ -1994,7 +2022,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     final requestUrl = '${ConstKeys.baseUrl}/challenge/send-team-match-request';
 
     print('🚀 DEBUG: Sending join request to: $requestUrl');
-    print('📤 DEBUG: Request body: {match_id: $matchId, invited_team_id: $invitedTeamId, players: $playerIds}');
+    print(
+        '📤 DEBUG: Request body: {match_id: $matchId, invited_team_id: $invitedTeamId, players: $playerIds}');
     print('🔑 DEBUG: Authorization header: Bearer ${Utils.token}');
 
     try {
@@ -2024,15 +2053,18 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         print('✅ DEBUG: Join request sent successfully');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(responseData['message'] ?? 'تم إرسال طلب الانضمام بنجاح'),
+            content:
+                Text(responseData['message'] ?? 'تم إرسال طلب الانضمام بنجاح'),
             backgroundColor: Colors.green,
           ),
         );
       } else {
-        print('❌ DEBUG: Join request failed - Status: ${responseData['status']}, Message: ${responseData['message']}');
+        print(
+            '❌ DEBUG: Join request failed - Status: ${responseData['status']}, Message: ${responseData['message']}');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(responseData['message'] ?? 'فشل في إرسال طلب الانضمام'),
+            content:
+                Text(responseData['message'] ?? 'فشل في إرسال طلب الانضمام'),
             backgroundColor: Colors.red,
           ),
         );
@@ -2067,15 +2099,15 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         if (data['status'] == true) {
           final team = data['data'] as Map<String, dynamic>;
           final users = team['users'] as List<dynamic>? ?? [];
-          
+
           print('👥 DEBUG: Found ${users.length} team members');
-          
+
           // Convert to List<Map<String, dynamic>> and filter out nulls
           final members = users
               .where((u) => u is Map<String, dynamic>)
               .map((u) => u as Map<String, dynamic>)
               .toList();
-          
+
           return members;
         }
       }
@@ -2104,15 +2136,15 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         final data = jsonDecode(res.body) as Map<String, dynamic>;
         if (data['status'] == true) {
           final teams = data['data'] as List<dynamic>? ?? [];
-          
+
           print('👥 DEBUG: Found ${teams.length} active teams');
-          
+
           // Convert to List<Map<String, dynamic>> and filter out nulls
           final teamsList = teams
               .where((t) => t is Map<String, dynamic>)
               .map((t) => t as Map<String, dynamic>)
               .toList();
-          
+
           return teamsList;
         }
       }
@@ -2125,9 +2157,11 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   /// Shows a dialog to invite a team to the match
   Future<void> _showInviteTeamDialog(ChallengeMatch? match) async {
     print('🔍 DEBUG: Showing invite team dialog');
-    print('📋 DEBUG: Match ID: ${match?.id}, Playground: ${match?.playground}, Date: ${match?.date}');
+    print(
+        '📋 DEBUG: Match ID: ${match?.id}, Playground: ${match?.playground}, Date: ${match?.date}');
     print('👤 DEBUG: Current user role: $_userRole');
-    print('👥 DEBUG: User teams: ${_userTeams.map((t) => t['name']).join(', ')}');
+    print(
+        '👥 DEBUG: User teams: ${_userTeams.map((t) => t['name']).join(', ')}');
 
     // Check if user has teams
     if (_userTeams.isEmpty) {
@@ -2162,7 +2196,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
 
     // Fetch all active teams
     final allTeams = await _fetchAllActiveTeams();
-    
+
     if (allTeams.isEmpty) {
       print('❌ DEBUG: No active teams found');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -2176,9 +2210,11 @@ class _ChallengesScreenState extends State<ChallengesScreen>
 
     // Filter out the current user's team
     final userTeamId = _userTeams[0]['id'];
-    final filteredTeams = allTeams.where((team) => team['id'] != userTeamId).toList();
-    
-    print('✅ DEBUG: Found ${filteredTeams.length} teams to invite (excluding user team)');
+    final filteredTeams =
+        allTeams.where((team) => team['id'] != userTeamId).toList();
+
+    print(
+        '✅ DEBUG: Found ${filteredTeams.length} teams to invite (excluding user team)');
 
     final playground = match?.playground ?? '';
     final date = match?.date ?? '';
@@ -2289,10 +2325,13 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                             setState(() {
                               searchQuery = value.toLowerCase();
                               displayedTeams = filteredTeams.where((team) {
-                                final teamName = team['name']?.toString().toLowerCase() ?? '';
+                                final teamName =
+                                    team['name']?.toString().toLowerCase() ??
+                                        '';
                                 return teamName.contains(searchQuery);
                               }).toList();
-                              print('🔍 DEBUG: Search query: $searchQuery, Found ${displayedTeams.length} teams');
+                              print(
+                                  '🔍 DEBUG: Search query: $searchQuery, Found ${displayedTeams.length} teams');
                             });
                           },
                         ),
@@ -2328,17 +2367,21 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                                   itemBuilder: (context, index) {
                                     final team = displayedTeams[index];
                                     final teamId = team['id'];
-                                    final teamName = team['name']?.toString() ?? 'لا يوجد اسم';
-                                    final teamLogo = team['logo_url']?.toString();
+                                    final teamName = team['name']?.toString() ??
+                                        'لا يوجد اسم';
+                                    final teamLogo =
+                                        team['logo_url']?.toString();
 
                                     return ListTile(
                                       leading: CircleAvatar(
                                         radius: 20,
-                                        backgroundImage: _getTeamLogoImage(teamLogo),
+                                        backgroundImage:
+                                            _getTeamLogoImage(teamLogo),
                                         child: teamLogo == null ||
                                                 teamLogo.isEmpty ||
                                                 !teamLogo.startsWith('http')
-                                            ? const Icon(Icons.groups, color: Colors.grey)
+                                            ? const Icon(Icons.groups,
+                                                color: Colors.grey)
                                             : null,
                                       ),
                                       title: Text(
@@ -2354,7 +2397,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                                         onChanged: (value) {
                                           setState(() {
                                             selectedTeam = team;
-                                            print('✅ DEBUG: Selected team: $teamName (ID: $teamId)');
+                                            print(
+                                                '✅ DEBUG: Selected team: $teamName (ID: $teamId)');
                                           });
                                         },
                                         activeColor: const Color(0xFF23425F),
@@ -2362,7 +2406,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                                       onTap: () {
                                         setState(() {
                                           selectedTeam = team;
-                                          print('✅ DEBUG: Selected team: $teamName (ID: $teamId)');
+                                          print(
+                                              '✅ DEBUG: Selected team: $teamName (ID: $teamId)');
                                         });
                                       },
                                     );
@@ -2376,7 +2421,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                             decoration: BoxDecoration(
                               color: const Color(0xFFD1ECF1),
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: const Color(0xFFBEE5EB)),
+                              border:
+                                  Border.all(color: const Color(0xFFBEE5EB)),
                             ),
                             child: Row(
                               children: [
@@ -2437,13 +2483,16 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                     onPressed: selectedTeam != null
                         ? () async {
                             print('✅ DEBUG: User confirmed team invitation');
-                            print('📤 DEBUG: Selected team: ${selectedTeam!['name']} (ID: ${selectedTeam!['id']})');
+                            print(
+                                '📤 DEBUG: Selected team: ${selectedTeam!['name']} (ID: ${selectedTeam!['id']})');
                             Navigator.of(context).pop();
                             await _sendTeamInviteRequest(match, selectedTeam!);
                           }
                         : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: selectedTeam != null ? const Color(0xFF23425F) : Colors.grey,
+                      backgroundColor: selectedTeam != null
+                          ? const Color(0xFF23425F)
+                          : Colors.grey,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -2463,7 +2512,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
   }
 
   /// Sends a team invitation request to the challenge API
-  Future<void> _sendTeamInviteRequest(ChallengeMatch? match, Map<String, dynamic> invitedTeam) async {
+  Future<void> _sendTeamInviteRequest(
+      ChallengeMatch? match, Map<String, dynamic> invitedTeam) async {
     if (match == null) {
       print('❌ DEBUG: Cannot send team invite - match is null');
       return;
@@ -2480,7 +2530,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
 
     // Fetch team members for the invited team
     final invitedTeamMembers = await _fetchTeamMembers(invitedTeamId as int);
-    
+
     if (invitedTeamMembers.isEmpty) {
       print('❌ DEBUG: Invited team has no members');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -2502,10 +2552,12 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     print('👥 DEBUG: Player IDs: $playerIds');
 
     if (playerIds.length < 10) {
-      print('⚠️ DEBUG: Invited team has less than 10 members (${playerIds.length})');
+      print(
+          '⚠️ DEBUG: Invited team has less than 10 members (${playerIds.length})');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('الفريق المدعو يحتوي على ${playerIds.length} لاعبين فقط (يجب أن يكون 10 على الأقل)'),
+          content: Text(
+              'الفريق المدعو يحتوي على ${playerIds.length} لاعبين فقط (يجب أن يكون 10 على الأقل)'),
           backgroundColor: Colors.orange,
           duration: const Duration(seconds: 4),
         ),
@@ -2516,8 +2568,10 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     final requestUrl = '${ConstKeys.baseUrl}/challenge/send-team-match-request';
 
     print('🚀 DEBUG: Sending team invite request to: $requestUrl');
-    print('📤 DEBUG: Request body: {match_id: $matchId, invited_team_id: $invitedTeamId, players: $playerIds}');
-    print('🔑 DEBUG: Authorization header: Bearer ${Utils.token.substring(0, 20)}...');
+    print(
+        '📤 DEBUG: Request body: {match_id: $matchId, invited_team_id: $invitedTeamId, players: $playerIds}');
+    print(
+        '🔑 DEBUG: Authorization header: Bearer ${Utils.token.substring(0, 20)}...');
 
     try {
       final requestBody = {
@@ -2547,17 +2601,20 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         print('✅ DEBUG: Team invitation sent successfully');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(responseData['message'] ?? 'تم إرسال دعوة الفريق بنجاح'),
+            content:
+                Text(responseData['message'] ?? 'تم إرسال دعوة الفريق بنجاح'),
             backgroundColor: Colors.green,
           ),
         );
         // Refresh matches to show updated state
         _fetchMatches();
       } else {
-        print('❌ DEBUG: Team invitation failed - Status: ${responseData['status']}, Message: ${responseData['message']}');
+        print(
+            '❌ DEBUG: Team invitation failed - Status: ${responseData['status']}, Message: ${responseData['message']}');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(responseData['message'] ?? 'فشل في إرسال دعوة الفريق'),
+            content:
+                Text(responseData['message'] ?? 'فشل في إرسال دعوة الفريق'),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 4),
           ),
@@ -2628,7 +2685,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     // Fetch team members before showing dialog
     final teamId = _userTeams[0]['id'] as int;
     final teamMembers = await _fetchTeamMembers(teamId);
-    
+
     if (teamMembers.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -2657,7 +2714,7 @@ class _ChallengesScreenState extends State<ChallengesScreen>
             builder: (context, setState) {
               // Validation: Check if at least 10 players are selected
               final bool canSubmit = selectedPlayerIds.length >= 10;
-              
+
               return AlertDialog(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -2676,278 +2733,289 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                    // Match details
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF8F9FA),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: const Color(0xFFE9ECEF)),
-                      ),
-                      child: Column(
-                        children: [
-                          const Text(
-                            'تفاصيل المباراة',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: Color(0xFF23425F),
-                            ),
+                        // Match details
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF8F9FA),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: const Color(0xFFE9ECEF)),
                           ),
-                          const SizedBox(height: 12),
-                          Row(
-                            children: [
-                              const Icon(Icons.location_on,
-                                  color: Color(0xFF6C757D), size: 20),
-                              const SizedBox(width: 8),
-                              Text('الملعب: $playground'),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              const Icon(Icons.calendar_today,
-                                  color: Color(0xFF6C757D), size: 20),
-                              const SizedBox(width: 8),
-                              Text('التاريخ: $date'),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              const Icon(Icons.access_time,
-                                  color: Color(0xFF6C757D), size: 20),
-                              const SizedBox(width: 8),
-                              Text('الوقت: $startTime'),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    // User's team information
-                    const Text(
-                      'فريقك',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: Color(0xFF23425F),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircleAvatar(
-                          radius: 25,
-                          backgroundImage: _getTeamLogoImage(userTeamLogo),
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          userTeamName,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    // Competitive toggle
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF8F9FA),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: const Color(0xFFE9ECEF)),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              LocaleKeys.challenge_competitive_match.tr(),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: Color(0xFF23425F),
-                              ),
-                            ),
-                          ),
-                          Switch(
-                            value: isCompetitive,
-                            onChanged: (value) {
-                              setState(() {
-                                isCompetitive = value;
-                              });
-                            },
-                            activeColor: const Color(0xFF23425F),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    // Competitive description
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: isCompetitive
-                            ? const Color(0xFFE6F4EA)
-                            : const Color(0xFFF8F9FA),
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(
-                            color: isCompetitive
-                                ? const Color(0xFF28A745)
-                                : const Color(0xFFE9ECEF)),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            isCompetitive
-                                ? Icons.emoji_events
-                                : Icons.sports_soccer,
-                            color: isCompetitive
-                                ? const Color(0xFF28A745)
-                                : const Color(0xFF6C757D),
-                            size: 16,
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              isCompetitive
-                                  ? LocaleKeys.challenge_competitive_description
-                                      .tr()
-                                  : LocaleKeys.challenge_friendly_description
-                                      .tr(),
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: isCompetitive
-                                    ? const Color(0xFF28A745)
-                                    : const Color(0xFF6C757D),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    // Player Selection Section
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF8F9FA),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: const Color(0xFFE9ECEF)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          child: Column(
                             children: [
                               const Text(
-                                'اختر اللاعبين للمباراة',
+                                'تفاصيل المباراة',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
                                   color: Color(0xFF23425F),
                                 ),
                               ),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  const Icon(Icons.location_on,
+                                      color: Color(0xFF6C757D), size: 20),
+                                  const SizedBox(width: 8),
+                                  Text('الملعب: $playground'),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  const Icon(Icons.calendar_today,
+                                      color: Color(0xFF6C757D), size: 20),
+                                  const SizedBox(width: 8),
+                                  Text('التاريخ: $date'),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  const Icon(Icons.access_time,
+                                      color: Color(0xFF6C757D), size: 20),
+                                  const SizedBox(width: 8),
+                                  Text('الوقت: $startTime'),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        // User's team information
+                        const Text(
+                          'فريقك',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Color(0xFF23425F),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              radius: 25,
+                              backgroundImage: _getTeamLogoImage(userTeamLogo),
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              userTeamName,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        // Competitive toggle
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF8F9FA),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: const Color(0xFFE9ECEF)),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  LocaleKeys.challenge_competitive_match.tr(),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: Color(0xFF23425F),
+                                  ),
+                                ),
+                              ),
+                              Switch(
+                                value: isCompetitive,
+                                onChanged: (value) {
+                                  setState(() {
+                                    isCompetitive = value;
+                                  });
+                                },
+                                activeColor: const Color(0xFF23425F),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        // Competitive description
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: isCompetitive
+                                ? const Color(0xFFE6F4EA)
+                                : const Color(0xFFF8F9FA),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                                color: isCompetitive
+                                    ? const Color(0xFF28A745)
+                                    : const Color(0xFFE9ECEF)),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                isCompetitive
+                                    ? Icons.emoji_events
+                                    : Icons.sports_soccer,
+                                color: isCompetitive
+                                    ? const Color(0xFF28A745)
+                                    : const Color(0xFF6C757D),
+                                size: 16,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  isCompetitive
+                                      ? LocaleKeys
+                                          .challenge_competitive_description
+                                          .tr()
+                                      : LocaleKeys
+                                          .challenge_friendly_description
+                                          .tr(),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: isCompetitive
+                                        ? const Color(0xFF28A745)
+                                        : const Color(0xFF6C757D),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        // Player Selection Section
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF8F9FA),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: const Color(0xFFE9ECEF)),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    'اختر اللاعبين للمباراة',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: Color(0xFF23425F),
+                                    ),
+                                  ),
+                                  Text(
+                                    '${selectedPlayerIds.length}/10',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      color: selectedPlayerIds.length >= 10
+                                          ? const Color(0xFF28A745)
+                                          : const Color(0xFFDC3545),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
                               Text(
-                                '${selectedPlayerIds.length}/10',
+                                'يجب اختيار 10 لاعبين على الأقل',
                                 style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
+                                  fontSize: 12,
                                   color: selectedPlayerIds.length >= 10
                                       ? const Color(0xFF28A745)
                                       : const Color(0xFFDC3545),
                                 ),
                               ),
+                              const SizedBox(height: 12),
+                              // Players list with checkboxes
+                              Container(
+                                constraints:
+                                    const BoxConstraints(maxHeight: 300),
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: teamMembers.length,
+                                  itemBuilder: (context, index) {
+                                    final member = teamMembers[index];
+                                    final memberId = member['id'] as int?;
+                                    final memberName =
+                                        member['name'] as String? ??
+                                            'لا يوجد اسم';
+                                    final memberPhone = (member['mobile'] ??
+                                        member['phone'] ??
+                                        'لا يوجد رقم') as String;
+
+                                    if (memberId == null)
+                                      return const SizedBox.shrink();
+
+                                    final isSelected =
+                                        selectedPlayerIds.contains(memberId);
+
+                                    return CheckboxListTile(
+                                      dense: true,
+                                      contentPadding: EdgeInsets.zero,
+                                      controlAffinity:
+                                          ListTileControlAffinity.leading,
+                                      value: isSelected,
+                                      onChanged: (bool? value) {
+                                        setState(() {
+                                          if (value == true) {
+                                            selectedPlayerIds.add(memberId);
+                                          } else {
+                                            selectedPlayerIds.remove(memberId);
+                                          }
+                                        });
+                                      },
+                                      title: Text(
+                                        memberName,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        memberPhone,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                      activeColor: const Color(0xFF23425F),
+                                    );
+                                  },
+                                ),
+                              ),
                             ],
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'يجب اختيار 10 لاعبين على الأقل',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: selectedPlayerIds.length >= 10
-                                  ? const Color(0xFF28A745)
-                                  : const Color(0xFFDC3545),
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          // Players list with checkboxes
-                          Container(
-                            constraints: const BoxConstraints(maxHeight: 300),
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: teamMembers.length,
-                              itemBuilder: (context, index) {
-                                final member = teamMembers[index];
-                                final memberId = member['id'] as int?;
-                                final memberName = member['name'] as String? ?? 'لا يوجد اسم';
-                                final memberPhone = (member['mobile'] ?? member['phone'] ?? 'لا يوجد رقم') as String;
-                                
-                                if (memberId == null) return const SizedBox.shrink();
-                                
-                                final isSelected = selectedPlayerIds.contains(memberId);
-                                
-                                return CheckboxListTile(
-                                  dense: true,
-                                  contentPadding: EdgeInsets.zero,
-                                  controlAffinity: ListTileControlAffinity.leading,
-                                  value: isSelected,
-                                  onChanged: (bool? value) {
-                                    setState(() {
-                                      if (value == true) {
-                                        selectedPlayerIds.add(memberId);
-                                      } else {
-                                        selectedPlayerIds.remove(memberId);
-                                      }
-                                    });
-                                  },
-                                  title: Text(
-                                    memberName,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  subtitle: Text(
-                                    memberPhone,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                  activeColor: const Color(0xFF23425F),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    // Confirmation message
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFF3CD),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: const Color(0xFFFFEAA7)),
-                      ),
-                      child: Text(
-                        LocaleKeys.challenge_reserve_confirm.tr(),
-                        style: const TextStyle(
-                          color: Color(0xFF856404),
-                          fontSize: 14,
                         ),
-                        textAlign: TextAlign.center,
-                      ),
+                        const SizedBox(height: 20),
+                        // Confirmation message
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFF3CD),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: const Color(0xFFFFEAA7)),
+                          ),
+                          child: Text(
+                            LocaleKeys.challenge_reserve_confirm.tr(),
+                            style: const TextStyle(
+                              color: Color(0xFF856404),
+                              fontSize: 14,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
                     ),
-                    ],
-                  ),
                   ),
                 ),
                 actions: [
@@ -2964,7 +3032,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                             if (selectedPlayerIds.length < 10) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('يجب اختيار 10 لاعبين على الأقل'),
+                                  content:
+                                      Text('يجب اختيار 10 لاعبين على الأقل'),
                                   backgroundColor: Colors.red,
                                 ),
                               );
@@ -2981,9 +3050,8 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                           }
                         : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: canSubmit
-                          ? const Color(0xFF23425F)
-                          : Colors.grey,
+                      backgroundColor:
+                          canSubmit ? const Color(0xFF23425F) : Colors.grey,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -3040,12 +3108,12 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         'match_id': matchId,
         'is_competitive': isCompetitive,
       };
-      
+
       // Add players array if provided
       if (playerIds != null && playerIds.isNotEmpty) {
         requestBody['players'] = playerIds;
       }
-      
+
       final response = await http.post(
         Uri.parse(requestUrl),
         headers: {
