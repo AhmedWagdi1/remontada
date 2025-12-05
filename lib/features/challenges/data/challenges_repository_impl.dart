@@ -231,4 +231,47 @@ class ChallengesRepositoryImpl implements ChallengesRepository {
     );
     return response;
   }
+
+  @override
+  Future<void> withdrawTeamMatch(int teamId, int matchId) async {
+    final url = '${ConstKeys.baseUrl}/challenge/withdraw-team-match';
+    final headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${Utils.token}',
+    };
+    final body = jsonEncode({
+      'team_id': teamId,
+      'match_id': matchId,
+    });
+
+    print('📡 API DEBUG: Withdrawing Team from Match');
+    print('📡 API DEBUG: URL: $url');
+    print('📡 API DEBUG: Body: $body');
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: body,
+      );
+
+      print('📡 API DEBUG: Response Status: ${response.statusCode}');
+      print('📡 API DEBUG: Response Body: ${response.body}');
+
+      if (response.statusCode >= 400) {
+        throw Exception(
+            'Failed to withdraw team from match: ${response.statusCode}');
+      }
+
+      final data = jsonDecode(response.body);
+      if (data['status'] != true) {
+        throw Exception(
+            data['message'] ?? 'Failed to withdraw team from match');
+      }
+    } catch (e) {
+      print('📡 API DEBUG: Error withdrawing team: $e');
+      rethrow;
+    }
+  }
 }

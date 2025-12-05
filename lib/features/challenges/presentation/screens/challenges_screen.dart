@@ -655,6 +655,18 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     required Color highlightColor,
     required Color badgeColor,
   }) {
+    // Helper to check if we should show withdraw button for a specific team
+    bool shouldShowWithdraw(Map<String, dynamic> targetTeam) {
+      if (match == null || match.isPast || !_isUserCaptain()) return false;
+
+      final userTeamId = _userTeams.isNotEmpty ? _userTeams[0]['id'] : null;
+      final targetTeamId = targetTeam['id'];
+
+      return userTeamId != null &&
+          targetTeamId != null &&
+          userTeamId == targetTeamId;
+    }
+
     // Case 1: Both teams are null - only show reserve button in slot 1
     if (match?.team1 == null && match?.team2 == null) {
       if (isSlot1) {
@@ -672,7 +684,13 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     // Case 2: Only team1 exists, team2 is null
     if (match?.team1 != null && match?.team2 == null) {
       if (isSlot1) {
-        return _buildTeamInfo(team: match!.team1!);
+        final team1 = match!.team1!;
+        return _buildTeamInfo(
+          team: team1,
+          showWithdraw: shouldShowWithdraw(team1),
+          onWithdraw: () =>
+              _showWithdrawConfirmationDialog(team1['id'], match.id),
+        );
       } else {
         // Check if current user's team is already in team1
         final userTeamId = _userTeams.isNotEmpty ? _userTeams[0]['id'] : null;
@@ -710,9 +728,21 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     // Case 3: Both teams exist
     if (match?.team1 != null && match?.team2 != null) {
       if (isSlot1) {
-        return _buildTeamInfo(team: match!.team1!);
+        final team1 = match!.team1!;
+        return _buildTeamInfo(
+          team: team1,
+          showWithdraw: shouldShowWithdraw(team1),
+          onWithdraw: () =>
+              _showWithdrawConfirmationDialog(team1['id'], match.id),
+        );
       } else {
-        return _buildTeamInfo(team: match!.team2!);
+        final team2 = match!.team2!;
+        return _buildTeamInfo(
+          team: team2,
+          showWithdraw: shouldShowWithdraw(team2),
+          onWithdraw: () =>
+              _showWithdrawConfirmationDialog(team2['id'], match.id),
+        );
       }
     }
 
@@ -733,8 +763,78 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     }
   }
 
+  /// Shows a confirmation dialog for withdrawing from a match.
+  Future<void> _showWithdrawConfirmationDialog(int teamId, int matchId) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('تأكيد الانسحاب'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('هل أنت متأكد أنك تريد الانسحاب من هذا التحدي؟'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('إلغاء'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text(
+                'تأكيد',
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await _withdrawTeamFromMatch(teamId, matchId);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _withdrawTeamFromMatch(int teamId, int matchId) async {
+    try {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+
+      final repository = ChallengesRepositoryImpl();
+      await repository.withdrawTeamMatch(teamId, matchId);
+
+      if (mounted) {
+        Navigator.of(context).pop(); // Dismiss loading
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('تم الانسحاب بنجاح')),
+        );
+        _onMatchesRefreshEvent(); // Refresh matches
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.of(context).pop(); // Dismiss loading
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('فشل الانسحاب: $e')),
+        );
+      }
+    }
+  }
+
   /// Builds team info display with name and logo
-  Widget _buildTeamInfo({required Map<String, dynamic> team}) {
+  Widget _buildTeamInfo({
+    required Map<String, dynamic> team,
+    bool showWithdraw = false,
+    VoidCallback? onWithdraw,
+  }) {
     final teamName = team['name']?.toString() ?? '';
     final teamLogo = team['logo_url']?.toString();
 
@@ -755,6 +855,29 @@ class _ChallengesScreenState extends State<ChallengesScreen>
               ? const Icon(Icons.groups, color: Colors.grey)
               : null,
         ),
+        if (showWithdraw && onWithdraw != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: InkWell(
+              onTap: onWithdraw,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(color: Colors.red),
+                ),
+                child: const Text(
+                  'انسحاب',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }

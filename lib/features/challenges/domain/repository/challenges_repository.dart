@@ -14,4 +14,5 @@ abstract class ChallengesRepository {
   Future<List<UserTeamModel>> getUserTeams();
   Future<List<MatchModel>> getAvailableMatches();
   Future<http.Response> createMatch(CreateMatchRequest request);
+  Future<void> withdrawTeamMatch(int teamId, int matchId);
 }
