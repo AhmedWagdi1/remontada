@@ -771,7 +771,27 @@ class _ChallengesScreenState extends State<ChallengesScreen>
     required bool isSlot1,
   }) {
     if (team != null) {
-      return _buildTeamInfo(team: team);
+      // Helper to check if we should show withdraw button for a specific team
+      bool shouldShowWithdraw(Map<String, dynamic> targetTeam) {
+        if (match == null || match.isPast || !_isUserCaptain()) return false;
+
+        final userTeamId = _userTeams.isNotEmpty ? _userTeams[0]['id'] : null;
+        final targetTeamId = targetTeam['id'];
+
+        return userTeamId != null &&
+            targetTeamId != null &&
+            userTeamId == targetTeamId;
+      }
+
+      return _buildTeamInfo(
+        team: team,
+        showWithdraw: shouldShowWithdraw(team),
+        onWithdraw: () {
+          if (match != null) {
+            _showWithdrawConfirmationDialog(team['id'], match.id);
+          }
+        },
+      );
     } else {
       return _buildEmptySlot();
     }
