@@ -2019,63 +2019,82 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                               ),
                               const SizedBox(height: 12),
                               Container(
-                                constraints: BoxConstraints(
-                                  maxHeight:
-                                      MediaQuery.of(context).size.height * 0.4,
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                      color: const Color(0xFFE9ECEF)),
                                 ),
-                                child: Scrollbar(
-                                  thumbVisibility: true,
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: const BouncingScrollPhysics(),
-                                    itemCount: teamMembers.length,
-                                    itemBuilder: (context, index) {
-                                      final member = teamMembers[index];
-                                      final memberId = member['id'] as int?;
-                                      final memberName =
-                                          member['name'] as String? ??
-                                              'لا يوجد اسم';
-                                      final memberPhone = (member['mobile'] ??
-                                          member['phone'] ??
-                                          'لا يوجد رقم') as String;
-                                      if (memberId == null)
-                                        return const SizedBox.shrink();
-                                      final isSelected =
-                                          selectedPlayerIds.contains(memberId);
-                                      return CheckboxListTile(
-                                        dense: true,
-                                        contentPadding: EdgeInsets.zero,
-                                        controlAffinity:
-                                            ListTileControlAffinity.leading,
-                                        value: isSelected,
-                                        onChanged: (bool? value) {
-                                          setState(() {
-                                            if (value == true) {
-                                              selectedPlayerIds.add(memberId);
-                                            } else {
-                                              selectedPlayerIds
-                                                  .remove(memberId);
-                                            }
-                                          });
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (selectedPlayerIds.isNotEmpty) ...[
+                                      Wrap(
+                                        spacing: 8,
+                                        runSpacing: 8,
+                                        children: selectedPlayerIds.map((id) {
+                                          final member = teamMembers.firstWhere(
+                                            (m) => m['id'] == id,
+                                            orElse: () => {},
+                                          );
+                                          final name =
+                                              member['name'] ?? 'Unknown';
+                                          return Chip(
+                                            label: Text(
+                                              name,
+                                              style:
+                                                  const TextStyle(fontSize: 12),
+                                            ),
+                                            deleteIcon: const Icon(Icons.close,
+                                                size: 16),
+                                            onDeleted: () {
+                                              setState(() {
+                                                selectedPlayerIds.remove(id);
+                                              });
+                                            },
+                                            backgroundColor:
+                                                const Color(0xFFE9ECEF),
+                                          );
+                                        }).toList(),
+                                      ),
+                                      const SizedBox(height: 12),
+                                    ],
+                                    Center(
+                                      child: ElevatedButton.icon(
+                                        onPressed: () async {
+                                          final result =
+                                              await _showPlayerSelectionDialog(
+                                            teamMembers,
+                                            selectedPlayerIds,
+                                          );
+                                          if (result != null) {
+                                            setState(() {
+                                              selectedPlayerIds =
+                                                  result.toSet();
+                                            });
+                                          }
                                         },
-                                        title: Text(
-                                          memberName,
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
+                                        icon: const Icon(Icons.person_add,
+                                            size: 18),
+                                        label: Text(
+                                          selectedPlayerIds.isEmpty
+                                              ? 'اختر اللاعبين'
+                                              : 'تعديل القائمة',
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              const Color(0xFF23425F),
+                                          foregroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
                                           ),
                                         ),
-                                        subtitle: Text(
-                                          memberPhone,
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey[600],
-                                          ),
-                                        ),
-                                        activeColor: const Color(0xFF23425F),
-                                      );
-                                    },
-                                  ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
@@ -3082,66 +3101,82 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                               const SizedBox(height: 12),
                               // Players list with checkboxes
                               Container(
-                                constraints: BoxConstraints(
-                                  maxHeight:
-                                      MediaQuery.of(context).size.height * 0.4,
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                      color: const Color(0xFFE9ECEF)),
                                 ),
-                                child: Scrollbar(
-                                  thumbVisibility: true,
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: const BouncingScrollPhysics(),
-                                    itemCount: teamMembers.length,
-                                    itemBuilder: (context, index) {
-                                      final member = teamMembers[index];
-                                      final memberId = member['id'] as int?;
-                                      final memberName =
-                                          member['name'] as String? ??
-                                              'لا يوجد اسم';
-                                      final memberPhone = (member['mobile'] ??
-                                          member['phone'] ??
-                                          'لا يوجد رقم') as String;
-
-                                      if (memberId == null)
-                                        return const SizedBox.shrink();
-
-                                      final isSelected =
-                                          selectedPlayerIds.contains(memberId);
-
-                                      return CheckboxListTile(
-                                        dense: true,
-                                        contentPadding: EdgeInsets.zero,
-                                        controlAffinity:
-                                            ListTileControlAffinity.leading,
-                                        value: isSelected,
-                                        onChanged: (bool? value) {
-                                          setState(() {
-                                            if (value == true) {
-                                              selectedPlayerIds.add(memberId);
-                                            } else {
-                                              selectedPlayerIds
-                                                  .remove(memberId);
-                                            }
-                                          });
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (selectedPlayerIds.isNotEmpty) ...[
+                                      Wrap(
+                                        spacing: 8,
+                                        runSpacing: 8,
+                                        children: selectedPlayerIds.map((id) {
+                                          final member = teamMembers.firstWhere(
+                                            (m) => m['id'] == id,
+                                            orElse: () => {},
+                                          );
+                                          final name =
+                                              member['name'] ?? 'Unknown';
+                                          return Chip(
+                                            label: Text(
+                                              name,
+                                              style:
+                                                  const TextStyle(fontSize: 12),
+                                            ),
+                                            deleteIcon: const Icon(Icons.close,
+                                                size: 16),
+                                            onDeleted: () {
+                                              setState(() {
+                                                selectedPlayerIds.remove(id);
+                                              });
+                                            },
+                                            backgroundColor:
+                                                const Color(0xFFE9ECEF),
+                                          );
+                                        }).toList(),
+                                      ),
+                                      const SizedBox(height: 12),
+                                    ],
+                                    Center(
+                                      child: ElevatedButton.icon(
+                                        onPressed: () async {
+                                          final result =
+                                              await _showPlayerSelectionDialog(
+                                            teamMembers,
+                                            selectedPlayerIds,
+                                          );
+                                          if (result != null) {
+                                            setState(() {
+                                              selectedPlayerIds =
+                                                  result.toSet();
+                                            });
+                                          }
                                         },
-                                        title: Text(
-                                          memberName,
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
+                                        icon: const Icon(Icons.person_add,
+                                            size: 18),
+                                        label: Text(
+                                          selectedPlayerIds.isEmpty
+                                              ? 'اختر اللاعبين'
+                                              : 'تعديل القائمة',
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              const Color(0xFF23425F),
+                                          foregroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
                                           ),
                                         ),
-                                        subtitle: Text(
-                                          memberPhone,
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey[600],
-                                          ),
-                                        ),
-                                        activeColor: const Color(0xFF23425F),
-                                      );
-                                    },
-                                  ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
@@ -3316,5 +3351,100 @@ class _ChallengesScreenState extends State<ChallengesScreen>
         ),
       );
     }
+  }
+
+  /// Shows a dialog to select players using chips
+  Future<List<int>?> _showPlayerSelectionDialog(
+    List<Map<String, dynamic>> teamMembers,
+    Set<int> currentSelection,
+  ) async {
+    return showDialog<List<int>>(
+      context: context,
+      builder: (context) {
+        final selectedIds = Set<int>.from(currentSelection);
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text(
+                'اختر اللاعبين',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              content: SizedBox(
+                width: double.maxFinite,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'تم اختيار ${selectedIds.length} لاعبين',
+                        style: TextStyle(
+                          color: selectedIds.length >= 10
+                              ? Colors.green
+                              : Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        alignment: WrapAlignment.center,
+                        children: teamMembers.map((member) {
+                          final id = member['id'] as int?;
+                          final name = member['name'] as String? ?? 'Unknown';
+                          if (id == null) return const SizedBox.shrink();
+
+                          final isSelected = selectedIds.contains(id);
+                          return FilterChip(
+                            label: Text(name),
+                            selected: isSelected,
+                            onSelected: (bool selected) {
+                              setState(() {
+                                if (selected) {
+                                  selectedIds.add(id);
+                                } else {
+                                  selectedIds.remove(id);
+                                }
+                              });
+                            },
+                            selectedColor:
+                                const Color(0xFF23425F).withOpacity(0.2),
+                            checkmarkColor: const Color(0xFF23425F),
+                            labelStyle: TextStyle(
+                              color: isSelected
+                                  ? const Color(0xFF23425F)
+                                  : Colors.black,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('إلغاء'),
+                ),
+                ElevatedButton(
+                  onPressed: () =>
+                      Navigator.of(context).pop(selectedIds.toList()),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF23425F),
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('تأكيد'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 }
