@@ -2019,56 +2019,63 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                               ),
                               const SizedBox(height: 12),
                               Container(
-                                constraints:
-                                    const BoxConstraints(maxHeight: 300),
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: teamMembers.length,
-                                  itemBuilder: (context, index) {
-                                    final member = teamMembers[index];
-                                    final memberId = member['id'] as int?;
-                                    final memberName =
-                                        member['name'] as String? ??
-                                            'لا يوجد اسم';
-                                    final memberPhone = (member['mobile'] ??
-                                        member['phone'] ??
-                                        'لا يوجد رقم') as String;
-                                    if (memberId == null)
-                                      return const SizedBox.shrink();
-                                    final isSelected =
-                                        selectedPlayerIds.contains(memberId);
-                                    return CheckboxListTile(
-                                      dense: true,
-                                      contentPadding: EdgeInsets.zero,
-                                      controlAffinity:
-                                          ListTileControlAffinity.leading,
-                                      value: isSelected,
-                                      onChanged: (bool? value) {
-                                        setState(() {
-                                          if (value == true) {
-                                            selectedPlayerIds.add(memberId);
-                                          } else {
-                                            selectedPlayerIds.remove(memberId);
-                                          }
-                                        });
-                                      },
-                                      title: Text(
-                                        memberName,
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
+                                constraints: BoxConstraints(
+                                  maxHeight:
+                                      MediaQuery.of(context).size.height * 0.4,
+                                ),
+                                child: Scrollbar(
+                                  thumbVisibility: true,
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: const BouncingScrollPhysics(),
+                                    itemCount: teamMembers.length,
+                                    itemBuilder: (context, index) {
+                                      final member = teamMembers[index];
+                                      final memberId = member['id'] as int?;
+                                      final memberName =
+                                          member['name'] as String? ??
+                                              'لا يوجد اسم';
+                                      final memberPhone = (member['mobile'] ??
+                                          member['phone'] ??
+                                          'لا يوجد رقم') as String;
+                                      if (memberId == null)
+                                        return const SizedBox.shrink();
+                                      final isSelected =
+                                          selectedPlayerIds.contains(memberId);
+                                      return CheckboxListTile(
+                                        dense: true,
+                                        contentPadding: EdgeInsets.zero,
+                                        controlAffinity:
+                                            ListTileControlAffinity.leading,
+                                        value: isSelected,
+                                        onChanged: (bool? value) {
+                                          setState(() {
+                                            if (value == true) {
+                                              selectedPlayerIds.add(memberId);
+                                            } else {
+                                              selectedPlayerIds
+                                                  .remove(memberId);
+                                            }
+                                          });
+                                        },
+                                        title: Text(
+                                          memberName,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         ),
-                                      ),
-                                      subtitle: Text(
-                                        memberPhone,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey[600],
+                                        subtitle: Text(
+                                          memberPhone,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey[600],
+                                          ),
                                         ),
-                                      ),
-                                      activeColor: const Color(0xFF23425F),
-                                    );
-                                  },
+                                        activeColor: const Color(0xFF23425F),
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                             ],
@@ -3075,59 +3082,66 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                               const SizedBox(height: 12),
                               // Players list with checkboxes
                               Container(
-                                constraints:
-                                    const BoxConstraints(maxHeight: 300),
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: teamMembers.length,
-                                  itemBuilder: (context, index) {
-                                    final member = teamMembers[index];
-                                    final memberId = member['id'] as int?;
-                                    final memberName =
-                                        member['name'] as String? ??
-                                            'لا يوجد اسم';
-                                    final memberPhone = (member['mobile'] ??
-                                        member['phone'] ??
-                                        'لا يوجد رقم') as String;
+                                constraints: BoxConstraints(
+                                  maxHeight:
+                                      MediaQuery.of(context).size.height * 0.4,
+                                ),
+                                child: Scrollbar(
+                                  thumbVisibility: true,
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: const BouncingScrollPhysics(),
+                                    itemCount: teamMembers.length,
+                                    itemBuilder: (context, index) {
+                                      final member = teamMembers[index];
+                                      final memberId = member['id'] as int?;
+                                      final memberName =
+                                          member['name'] as String? ??
+                                              'لا يوجد اسم';
+                                      final memberPhone = (member['mobile'] ??
+                                          member['phone'] ??
+                                          'لا يوجد رقم') as String;
 
-                                    if (memberId == null)
-                                      return const SizedBox.shrink();
+                                      if (memberId == null)
+                                        return const SizedBox.shrink();
 
-                                    final isSelected =
-                                        selectedPlayerIds.contains(memberId);
+                                      final isSelected =
+                                          selectedPlayerIds.contains(memberId);
 
-                                    return CheckboxListTile(
-                                      dense: true,
-                                      contentPadding: EdgeInsets.zero,
-                                      controlAffinity:
-                                          ListTileControlAffinity.leading,
-                                      value: isSelected,
-                                      onChanged: (bool? value) {
-                                        setState(() {
-                                          if (value == true) {
-                                            selectedPlayerIds.add(memberId);
-                                          } else {
-                                            selectedPlayerIds.remove(memberId);
-                                          }
-                                        });
-                                      },
-                                      title: Text(
-                                        memberName,
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
+                                      return CheckboxListTile(
+                                        dense: true,
+                                        contentPadding: EdgeInsets.zero,
+                                        controlAffinity:
+                                            ListTileControlAffinity.leading,
+                                        value: isSelected,
+                                        onChanged: (bool? value) {
+                                          setState(() {
+                                            if (value == true) {
+                                              selectedPlayerIds.add(memberId);
+                                            } else {
+                                              selectedPlayerIds
+                                                  .remove(memberId);
+                                            }
+                                          });
+                                        },
+                                        title: Text(
+                                          memberName,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         ),
-                                      ),
-                                      subtitle: Text(
-                                        memberPhone,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey[600],
+                                        subtitle: Text(
+                                          memberPhone,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey[600],
+                                          ),
                                         ),
-                                      ),
-                                      activeColor: const Color(0xFF23425F),
-                                    );
-                                  },
+                                        activeColor: const Color(0xFF23425F),
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                             ],
