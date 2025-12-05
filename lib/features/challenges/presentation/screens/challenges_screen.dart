@@ -450,33 +450,40 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       // Slot 1 - Left side (before VS)
-                      _buildCompletedTeamSlot(
-                        match: match,
-                        team: match?.team1,
-                        isSlot1: true,
+                      Expanded(
+                        child: _buildCompletedTeamSlot(
+                          match: match,
+                          team: match?.team1,
+                          isSlot1: true,
+                        ),
                       ),
                       // VS Section with competitive badge
-                      Column(
-                        children: [
-                          const Text(
-                            'VS',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(top: 4),
-                            height: 2,
-                            width: 20,
-                            color: Colors.blue,
-                          ),
-                          const SizedBox(height: 8),
-                          _buildCompetitiveBadge(match),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Column(
+                          children: [
+                            const Text(
+                              'VS',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 4),
+                              height: 2,
+                              width: 20,
+                              color: Colors.blue,
+                            ),
+                            const SizedBox(height: 8),
+                            _buildCompetitiveBadge(match),
+                          ],
+                        ),
                       ),
                       // Slot 2 - Right side (after VS)
-                      _buildCompletedTeamSlot(
-                        match: match,
-                        team: match?.team2,
-                        isSlot1: false,
+                      Expanded(
+                        child: _buildCompletedTeamSlot(
+                          match: match,
+                          team: match?.team2,
+                          isSlot1: false,
+                        ),
                       ),
                     ],
                   ),
@@ -585,40 +592,47 @@ class _ChallengesScreenState extends State<ChallengesScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   // Slot 1 - Left side (before VS)
-                  _buildTeamSlot(
-                    match: match,
-                    team: match?.team1,
-                    isSlot1: true,
-                    highlightColor: highlightColor,
-                    badgeColor: badgeColor,
+                  Expanded(
+                    child: _buildTeamSlot(
+                      match: match,
+                      team: match?.team1,
+                      isSlot1: true,
+                      highlightColor: highlightColor,
+                      badgeColor: badgeColor,
+                    ),
                   ),
                   // VS Section with competitive badge
-                  Column(
-                    children: [
-                      const Text(
-                        'VS',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Column(
+                      children: [
+                        const Text(
+                          'VS',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: highlightColor,
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 4),
+                          height: 2,
+                          width: 20,
                           color: highlightColor,
                         ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 4),
-                        height: 2,
-                        width: 20,
-                        color: highlightColor,
-                      ),
-                      const SizedBox(height: 8),
-                      _buildCompetitiveBadge(match),
-                    ],
+                        const SizedBox(height: 8),
+                        _buildCompetitiveBadge(match),
+                      ],
+                    ),
                   ),
                   // Slot 2 - Right side (after VS)
-                  _buildTeamSlot(
-                    match: match,
-                    team: match?.team2,
-                    isSlot1: false,
-                    highlightColor: highlightColor,
-                    badgeColor: badgeColor,
+                  Expanded(
+                    child: _buildTeamSlot(
+                      match: match,
+                      team: match?.team2,
+                      isSlot1: false,
+                      highlightColor: highlightColor,
+                      badgeColor: badgeColor,
+                    ),
                   ),
                 ],
               ),
